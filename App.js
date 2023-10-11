@@ -16,7 +16,7 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-
+import './src/utils/i18n';
 import {
   Colors,
   DebugInstructions,
@@ -24,6 +24,7 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import LoginScreen from './src/modules/auth/pages/LoginScreen';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -45,8 +46,9 @@ function App() {
         <View
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}
-        />
+          }}>
+          <LoginScreen />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
