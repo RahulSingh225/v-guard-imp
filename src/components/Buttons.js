@@ -10,6 +10,8 @@ const Buttons = ({ label, onPress, disabled, variant, width, icon, iconWidth, ic
             return [styles.filledButton, { width }];
         } else if (variant === 'disabled') {
             return [styles.disabledButton, { width }];
+        } else if (variant === 'blackButton') {
+            return [styles.blackButton, { width }];
         } else {
             return [styles.defaultButton, { width }];
         }
@@ -21,15 +23,16 @@ const Buttons = ({ label, onPress, disabled, variant, width, icon, iconWidth, ic
             onPress={onPress}
             disabled={variant === 'disabled' || disabled}
         >
-            <View style={[styles.buttonContent, {gap: iconGap}]}>
-                <Text style={styles.buttonText}>{label}</Text>
+            <View style={[styles.buttonContent, { gap: iconGap }]}>
+                <Text style={[styles.buttonText, variant === 'blackButton' && styles.whiteText]}>
+                    {label}
+                </Text>
                 <Image
                     source={icon}
                     style={[styles.icon, { width: iconWidth, height: iconHeight }]}
                 />
             </View>
         </TouchableOpacity>
-
     );
 };
 
@@ -51,6 +54,9 @@ const styles = StyleSheet.create({
         color: colors.black,
         fontWeight: 'bold',
     },
+    whiteText: {
+        color: 'white',
+    },
     outlinedButton: {
         backgroundColor: 'transparent',
         borderColor: colors.black,
@@ -58,18 +64,25 @@ const styles = StyleSheet.create({
     },
     filledButton: {
         backgroundColor: colors.yellow,
-        shadowOffset: { width: 0, height: 2 },
-        shadowColor: 'rgba(0, 0, 0, 0.5)',
-        shadowOpacity: 0.5,
-        shadowRadius: 3,
-        elevation: 5,
         borderRadius: 5,
+        shadowColor: 'rgba(0, 0, 0, 0.8)',
+        elevation: 5,
+        shadowOffset: { width: 1, height: 13 }
     },
     disabledButton: {
         backgroundColor: 'gray',
     },
+    blackButton: {
+        backgroundColor: 'black',
+        borderRadius: 5,
+        shadowColor: 'rgba(0, 0, 0, 0.8)',
+        elevation: 5,
+    },
     defaultButton: {
         backgroundColor: colors.yellow,
+    },
+    icon: {
+        marginLeft: 5,
     },
 });
 
