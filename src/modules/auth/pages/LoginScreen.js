@@ -1,10 +1,25 @@
-import {View, Text,StyleSheet} from 'react-native';
-import React from 'react';
+import {View, Text,StyleSheet, ScrollView, Image, TextInput} from 'react-native';
+import React, { useState } from 'react'
 import {useTranslation} from 'react-i18next';
 import colors from '../../../../colors';
+import Buttons from '../../../components/Buttons';
+import arrowIcon from '../../../assets/images/arrow.png';
 
-const LoginScreen = () => {
+const LoginScreen = ({navigation}) => {
   const {t} = useTranslation();
+  const placeholderColor = colors.grey;
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [otp, setOtp] = useState('');
+
+
+  const handleLogin = () => {
+    if (username === 'user' && password === 'password') {
+      navigation.navigate('Home');
+    } else {
+      alert('Invalid credentials. Please try again.');
+    }
+  };
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.loginScreen}>
@@ -43,7 +58,7 @@ const LoginScreen = () => {
           <View style={styles.buttonContainer}>
             <Buttons
               style={styles.button}
-              label="Log In"
+              label={t('auth:login:loginButton')}
               variant="filled"
               onPress={handleLogin}
               width="100%"
@@ -54,7 +69,7 @@ const LoginScreen = () => {
             />
             <Buttons
               style={styles.button}
-              label="New User Registration"
+              label={t('auth:login:registration')}
               variant="blackButton"
               onPress={() => navigation.navigate('register')}
               width="100%"

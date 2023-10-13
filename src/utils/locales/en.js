@@ -10,6 +10,8 @@ export default {
       otp: 'Login via OTP',
       poweredBy: 'Powered By',
       approval: 'By signing up you indicate that you have read and agreed to the Terms of Service.',
+      loginButton: 'Log In',
+      registration: 'New User Registration',
     },
     register: {
       heading: 'New User Registration',
@@ -18,7 +20,8 @@ export default {
       influencer: 'Influencer',
       enterMobile: '2. Enter your mobile number to get OTP',
       getOtpPhone: 'Click Here to get OTP through phone call',
-      mobile: 'Enter your Mobile Number'
+      mobile: 'Enter your Mobile Number',
+      getOtp: 'Get OTP'
     }
   },
 };

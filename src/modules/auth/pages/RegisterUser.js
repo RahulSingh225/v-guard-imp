@@ -83,7 +83,7 @@ const RegisterUser = ({ navigation }) => {
                         <View style={styles.buttonContainer}>
                             <Buttons
                                 style={styles.button}
-                                label="Get OTP"
+                                label={t('auth:register:getOtp')}
                                 variant="filled"
                                 onPress={handleLogin}
                                 width="100%"
