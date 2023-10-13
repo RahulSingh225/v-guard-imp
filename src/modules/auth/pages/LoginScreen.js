@@ -1,27 +1,10 @@
-import { View, Text, Image, StyleSheet, TextInput, ScrollView } from 'react-native'
-import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next';
+import {View, Text,StyleSheet} from 'react-native';
+import React from 'react';
+import {useTranslation} from 'react-i18next';
 import colors from '../../../../colors';
-import Buttons from '../../../components/Buttons';
-import arrowIcon from '../../../assets/images/arrow.png';
 
-const LoginScreen = ({ navigation }) => {
-
-  const placeholderColor = colors.grey;
-
-  const { t } = useTranslation();
-
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [otp, setOtp] = useState('');
-
-  const handleLogin = () => {
-    if (username === 'user' && password === 'password') {
-      navigation.navigate('home');
-    } else {
-      alert('Invalid credentials. Please try again.');
-    }
-  };
+const LoginScreen = () => {
+  const {t} = useTranslation();
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.loginScreen}>
