@@ -65,6 +65,9 @@ const styles = StyleSheet.create({
     filledButton: {
         backgroundColor: colors.yellow,
         borderRadius: 5,
+        shadowColor: 'rgba(0, 0, 0, 0.8)',
+        elevation: 5,
+        shadowOffset: { width: 1, height: 13 }
     },
     disabledButton: {
         backgroundColor: 'gray',
@@ -72,12 +75,14 @@ const styles = StyleSheet.create({
     blackButton: {
         backgroundColor: 'black',
         borderRadius: 5,
+        shadowColor: 'rgba(0, 0, 0, 0.8)',
+        elevation: 5,
     },
     defaultButton: {
         backgroundColor: colors.yellow,
     },
     icon: {
-        marginLeft: 5, // Add spacing between text and icon
+        marginLeft: 5,
     },
 });
 

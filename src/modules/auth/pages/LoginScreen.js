@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet, TextInput, Button } from 'react-native'
+import { View, Text, Image, StyleSheet, TextInput, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import colors from '../../../../colors';
@@ -13,86 +13,109 @@ const LoginScreen = ({ navigation }) => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [otp, setOtp] = useState('');
 
   const handleLogin = () => {
     if (username === 'user' && password === 'password') {
-      navigation.navigate('Home');
+      navigation.navigate('home');
     } else {
       alert('Invalid credentials. Please try again.');
     }
   };
   return (
-    <View style={styles.loginScreen}>
-      <Image
-        source={require('../../../assets/images/group_907.png')}
-        style={styles.imageSaathi}
-      />
-      <Text style={styles.mainHeader}>{t('auth:login:heading')}</Text>
-      <Text style={styles.textHeader}>{t('auth:login:label')}</Text>
-      <View style={styles.formContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder={t('auth:login:login')}
-          placeholderTextColor={placeholderColor}
-          value={username}
-          onChangeText={(text) => setUsername(text)}
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.loginScreen}>
+      <View style={styles.mainWrapper}>
+        <Image
+          source={require('../../../assets/images/group_907.png')}
+          style={styles.imageSaathi}
         />
-        <TextInput
-          style={styles.input}
-          placeholder={t('auth:login:password')}
-          placeholderTextColor={placeholderColor}
-          secureTextEntry={true}
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-        />
-        <Text style={styles.forgotPassword}>{t('auth:login:forgotPassword')}</Text>
-        <Text style={styles.or}>{t('auth:login:or')}</Text>
-        <TextInput
-          style={styles.input}
-          placeholder={t('auth:login:otp')}
-          placeholderTextColor={placeholderColor}
-          secureTextEntry={true}
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-        />
-        <View style={styles.buttonContainer}>
-          <Buttons
-            style={styles.button}
-            label="Log In"
-            variant="filled"
-            onPress={handleLogin}
-            width="100%"
-            iconHeight={10}
-            iconWidth={30}
-            iconGap={30}
-            icon={arrowIcon}
+        <Text style={styles.mainHeader}>{t('auth:login:heading')}</Text>
+        <Text style={styles.textHeader}>{t('auth:login:label')}</Text>
+        <View style={styles.formContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder={t('auth:login:login')}
+            placeholderTextColor={placeholderColor}
+            value={username}
+            onChangeText={(text) => setUsername(text)}
           />
-          <Buttons
-            style={styles.button}
-            label="New User Registration"
-            variant="blackButton"
-            onPress={handleLogin}
-            width="100%"
+          <TextInput
+            style={styles.input}
+            placeholder={t('auth:login:password')}
+            placeholderTextColor={placeholderColor}
+            secureTextEntry={true}
+            value={password}
+            onChangeText={(text) => setPassword(text)}
+          />
+          <Text style={styles.forgotPassword}>{t('auth:login:forgotPassword')}</Text>
+          <Text style={styles.or}>{t('auth:login:or')}</Text>
+          <TextInput
+            style={styles.input}
+            placeholder={t('auth:login:otp')}
+            placeholderTextColor={placeholderColor}
+            value={otp}
+            onChangeText={(text) => setOtp(text)}
+          />
+          <View style={styles.buttonContainer}>
+            <Buttons
+              style={styles.button}
+              label="Log In"
+              variant="filled"
+              onPress={handleLogin}
+              width="100%"
+              iconHeight={10}
+              iconWidth={30}
+              iconGap={30}
+              icon={arrowIcon}
+            />
+            <Buttons
+              style={styles.button}
+              label="New User Registration"
+              variant="blackButton"
+              onPress={() => navigation.navigate('register')}
+              width="100%"
+            />
+          </View>
+        </View>
+      </View>
+      <View style={styles.footer}>
+        <View style={styles.footerTextContainer}>
+        <Image
+            source={require('../../../assets/images/tick_1.png')}
+            style={styles.tick}
+          />
+          <Text style={styles.footerText}>{t('auth:login:approval')}</Text>
+        </View>
+        <View style={styles.footerContainer}>
+          <Text style={styles.footergreyText}>{t('auth:login:poweredBy')}</Text>
+          <Image
+            source={require('../../../assets/images/group_910.png')}
+            style={styles.imageVguard}
           />
         </View>
-        <View style={styles.footer}>
-          
-        </View>
-
       </View>
     </View>
+    </ScrollView>
+
   )
 }
 
 const styles = StyleSheet.create({
-
+  scrollContainer: {
+    flexGrow: 1,
+  },
   loginScreen: {
+    height: '100%',
+    backgroundColor: colors.white,
+    display: 'flex',
+  },
+  mainWrapper: {
     padding: 30,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    height: '100%',
-    backgroundColor: colors.white
+    flexGrow: 1
   },
   textHeader: {
     color: colors.grey,
@@ -107,22 +130,28 @@ const styles = StyleSheet.create({
   },
   imageSaathi: {
     width: 100,
-    height: 96,
+    height: 98,
     marginBottom: 30
+  },
+  imageVguard: {
+    width: 100,
+    height: 36,
   },
   formContainer: {
     width: '100%',
-    flex: 1,
     justifyContent: 'center',
     padding: 16,
+    flex: 2,
   },
   input: {
     height: 40,
     marginBottom: 20,
     padding: 10,
     borderRadius: 5,
-    borderColor: colors.lightGrey,
-    borderWidth: 1,
+    color: colors.black,
+    backgroundColor: colors.white,
+    shadowColor: 'rgba(0, 0, 0, 0.8)',
+    elevation: 5,
   },
   forgotPassword: {
     color: colors.grey,
@@ -140,7 +169,43 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     gap: 20,
-    marginTop: 30
+
+  },
+  footer: {
+  },
+  footerText: {
+    textAlign: 'left',
+    fontSize: 10,
+    color: colors.black,
+  },
+  footerTextContainer: {
+    paddingBottom: 5,
+    paddingHorizontal: 80,
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  tick: {
+    height: 15,
+    width: 15
+  },
+  footergreyText: {
+    textAlign: 'center',
+    fontSize: 12,
+    color: colors.grey,
+    paddingBottom: 5,
+  },
+  footerContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    justifyContent: 'center',
+    backgroundColor: colors.lightGrey,
+    width: '100%',
+    paddingVertical: 10
   }
 })
 
