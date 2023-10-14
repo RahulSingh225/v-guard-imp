@@ -4,23 +4,22 @@ import {height, width} from '../utils/dimensions';
 
 const BottomTabLogo = () => {
   return (
-    <View style={{height: 100, width: 100}}>
+    <View style={{height: "100%", width: "20%"}}>
       <ImageBackground
         style={{
-          marginLeft: 50,
-          marginTop: height * 0.8,
+          
+          
+          marginTop:'auto',
           height: 80,
-          width: 80,
-          justifyContent: 'center',
+          width: 100,
+         
         }}
-        
         resizeMethod="resize"
         source={require('../assets/images/ic_home_logo_bg2.png')}>
-        <View style={{height: 100, width: 100, justifyContent: 'center'}}>
+        <View style={{height: '100%', width: '100%', justifyContent: 'space-around'}}>
           <Image
-            style={{height: 40, width: 40, justifyContent: 'center'}}
-            resizeMode='contain'
-            
+            style={{height: "50%", width: "50%", marginLeft:'10%'}}
+            resizeMode="contain"
             source={require('../assets/images/ic_rishta_logo.png')}
           />
         </View>
