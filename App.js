@@ -11,7 +11,7 @@ const App = () => {
   return (
     <NavigationContainer>
       <View style={styles.fullscreen}>
-        <BottomTabLogo/>
+        <BottomTab/>
       </View>
     </NavigationContainer>
   );
