@@ -8,35 +8,22 @@ import Notification from '../../notifications/pages/Notification';
 import Profile from '../../profile/pages/Profile';
 import BottomTabBar from '../../../components/BottomTabBar';
 import HomeScreen from '../../home/pages/HomeScreen';
+import ContactPage from '../../contact/pages/ContactPage';
 
 const BottomTab = () => {
   const Tab = createBottomTabNavigator();
   return (
     <Tab.Navigator
       initialRouteName="HomeStack"
-      tabBar={props => <BottomTabBar {...props} />}>
-      {/* // screenOptions={{
-      //   tabBarShowLabel: false,
-      //   tabBarHideOnKeyboard: true,
-      //   tabBarStyle: [
-      //     {
-      //       // #353935
-      //       backgroundColor: '#ffffff',
-      //       borderRadius: 0,
-      //       // height:height*0.10,
-      //       width: width,
-      //       height: height * 0.05,
-      //       alignContent: 'center',
-      //       alignItems: 'center',
-      //       alignSelf: 'center',
-
-      //       position: 'relative',
-      //       margin: 0,
-      //     },
-      //     null,
-      //   ],
-      //   headerShown: false,
-      // }}> */}
+      tabBar={props => <BottomTabBar {...props} />}
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: colors.yellow,
+        },
+        headerTitleStyle: {
+          color: colors.black,
+        },
+      }}>
       <Tab.Screen
         name="Home"
         component={HomeScreen}
@@ -54,8 +41,8 @@ const BottomTab = () => {
         
       />
       <Tab.Screen
-        name="Support"
-        component={Profile}
+        name="Contact Us"
+        component={ContactPage}
        
       />
 
