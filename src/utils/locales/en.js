@@ -29,6 +29,19 @@ export default {
     loginWIthOtp: {
       heading: 'OTP Verification',
       submit: 'Submit'
-    }
+    },
   },
+  contact: {
+    heading: 'Need Help?',
+    subHeading: 'Rishta Program Centre Contact Details',
+    customerCareNumber: 'V-Guard customer care numbers',
+    Airtel: 'Airtel',
+    tollfree: 'Toll Free',
+    BSNL: 'BSNL',
+    chargesApply: 'Charges Apply',
+    officeHeading: 'V-Guard corporate office',
+    officeSubheading: 'V-Guard Industries Ltd.',
+    officeName: 'Regd. Office:',
+    officeAddress: '42/962. Vennala Highschool Road Vennala. Kochi-682028'
+  }
 };
