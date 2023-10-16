@@ -5,6 +5,9 @@ import LoginScreen from '../pages/LoginScreen';
 import HomeScreen from '../../home/pages/HomeScreen';
 import SplashScreen from '../pages/SplashScreen';
 import RegisterUser from '../pages/RegisterUser';
+import CategorySelection from '../pages/CategorySelection';
+import LoginWithOtp from '../pages/LoginWithOtp';
+import NewUser from '../pages/NewUser';
 
 const AuthNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -14,11 +17,15 @@ const AuthNavigator = () => {
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="splash" component={SplashScreen} />
+      <Stack.Screen name="category" component={CategorySelection} />
+
+      {/* <Stack.Screen name="splash" component={SplashScreen} /> */}
 
       <Stack.Screen name="login" component={LoginScreen} />
       <Stack.Screen name="home" component={HomeScreen} />
       <Stack.Screen name="register" component={RegisterUser} />
+      <Stack.Screen name="loginwithotp" component={LoginWithOtp} />
+      <Stack.Screen name="newUser" component={NewUser} />
 
     </Stack.Navigator>
   );

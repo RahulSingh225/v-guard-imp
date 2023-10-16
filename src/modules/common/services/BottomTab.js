@@ -7,6 +7,7 @@ import {height, width} from '../../../utils/dimensions';
 import Notification from '../../notifications/pages/Notification';
 import Profile from '../../profile/pages/Profile';
 import BottomTabBar from '../../../components/BottomTabBar';
+import HomeScreen from '../../home/pages/HomeScreen';
 
 const BottomTab = () => {
   const Tab = createBottomTabNavigator();
@@ -36,6 +37,11 @@ const BottomTab = () => {
       //   ],
       //   headerShown: false,
       // }}> */}
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+       
+      />
       <Tab.Screen
         name="Notification"
         component={Notification}

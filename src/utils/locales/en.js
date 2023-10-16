@@ -12,6 +12,7 @@ export default {
       approval: 'By signing up you indicate that you have read and agreed to the Terms of Service.',
       loginButton: 'Log In',
       registration: 'New User Registration',
+      withotp: 'Login with OTP'
     },
     register: {
       heading: 'New User Registration',
@@ -21,7 +22,13 @@ export default {
       enterMobile: '2. Enter your mobile number to get OTP',
       getOtpPhone: 'Click Here to get OTP through phone call',
       mobile: 'Enter your Mobile Number',
-      getOtp: 'Get OTP'
+      getOtp: 'Get OTP',
+      enterOtp: 'Enter Your One Time Password (OTP)',
+      enterOtpHeading: 'Please enter the 4-digit OTP received through SMS/VR using mobile no.'
+    },
+    loginWIthOtp: {
+      heading: 'OTP Verification',
+      submit: 'Submit'
     }
   },
 };
