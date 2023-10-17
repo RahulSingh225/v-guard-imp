@@ -1,7 +1,12 @@
-import { Text, StyleSheet, View } from 'react-native';
+import { Text, StyleSheet, View, Image } from 'react-native';
 import React from 'react';
 import colors from '../../../../colors';
 import { useTranslation } from 'react-i18next';
+import {
+    responsiveHeight,
+    responsiveWidth,
+    responsiveFontSize
+  } from "react-native-responsive-dimensions";
 
 
 const ContactPage = ({ navigation }) => {
@@ -10,9 +15,33 @@ const ContactPage = ({ navigation }) => {
         <View style={styles.mainWrapper}>
             <Text style={styles.mainHeader}>{t('contact:heading')}</Text>
             <Text style={styles.text}>{t('contact:subHeading')}</Text>
-            <Text style={styles.detail}>9717500011</Text>
-            <Text style={styles.detail}>info@vguardrishta.com</Text>
-            <Text style={styles.detail}>9818900011</Text>
+            <View style={styles.helpContainer}>
+                <Image
+                    source={require('../../../assets/images/ic_phone_call_2.png')}
+                    style={styles.icon}
+                />
+                <Text style={styles.textHelp}>
+                    9717500011
+                </Text>
+            </View>
+            <View style={styles.helpContainer}>
+                <Image
+                    source={require('../../../assets/images/ic_email.png')}
+                    style={styles.icon}
+                />
+                <Text style={styles.textHelp}>
+                    info@vguardrishta.com
+                </Text>
+            </View>
+            <View style={styles.helpContainer}>
+                <Image
+                    source={require('../../../assets/images/ic_whatsapp.webp')}
+                    style={styles.icon}
+                />
+                <Text style={styles.textHelp}>
+                    9818900011
+                </Text>
+            </View>
             <View style={styles.container}>
                 <Text style={styles.text}>
                     {t('contact:customerCareNumber')}
@@ -93,10 +122,21 @@ const styles = StyleSheet.create({
         marginTop: 10,
         fontSize: 16
     },
-    detail: {
-        color: colors.black,
+    helpContainer: {
+        display: 'flex',
+        flexDirection: 'row',
         marginTop: 10,
-        fontSize: 14
+        alignItems: 'center',
+        gap: 10
+    },
+    icon: {
+        height: 20,
+        width: 20,
+    },
+    textHelp: {
+        fontSize: responsiveFontSize(1.7),
+        fontWeight: 'bold',
+        color: colors.black
     },
     smallContainer: {
         backgroundColor: colors.lightYellow,

@@ -43,5 +43,31 @@ export default {
     officeSubheading: 'V-Guard Industries Ltd.',
     officeName: 'Regd. Office:',
     officeAddress: '42/962. Vennala Highschool Road Vennala. Kochi-682028'
+  },
+  dashboard: {
+    points: {
+      balance: 'Points Balance',
+      redeemed: 'Redeemed Points',
+      scans: 'Number of Scans'
+    },
+    options: {
+      scan: 'Scan Code',
+      redeem: 'Redeem Points',
+      dashboard: 'Dashboard',
+      updateKyc: 'Update KYC',
+      schemes: 'Schemes/Offers',
+      info: 'Info Desk', 
+      welfare: 'Welfare',
+      new: "What's New",
+      ticket: 'Raise Ticket',
+      bank: 'Update Bank',
+      TDS: 'TDS Certificate',
+      engagement: 'Engagement',
+      manual: 'Instruction Manual'
+    },
+    help: {
+      header: 'Need Help?',
+      
+    }
   }
 };
