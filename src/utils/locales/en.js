@@ -67,7 +67,17 @@ export default {
     },
     help: {
       header: 'Need Help?',
-      
+    },
+    scan: {
+      buttonText: 'Click here to scan a unique code',
+      enterCode: 'Enter coupon code manually below',
+      enterInput: 'Enter Code',
+      proceed: 'Proceed',
+      scanningError: 'Upload Scanning Error',
+      uploadErrorButton: 'Click here to capture or upload coupon picture',
+      submit: 'Submit',
+      description: 'Description/Remarks',
+      uniqueHistory: 'Go to Unique Code History',
     }
   }
 };

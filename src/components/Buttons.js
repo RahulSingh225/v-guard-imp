@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import colors from '../../colors';
+import { responsiveFontSize } from 'react-native-responsive-dimensions';
 
 const Buttons = ({ label, onPress, disabled, variant, width, icon, iconWidth, iconHeight, iconGap }) => {
     const getButtonStyle = () => {
@@ -24,7 +25,7 @@ const Buttons = ({ label, onPress, disabled, variant, width, icon, iconWidth, ic
             disabled={variant === 'disabled' || disabled}
         >
             <View style={[styles.buttonContent, { gap: iconGap }]}>
-                <Text style={[styles.buttonText, variant === 'blackButton' && styles.whiteText]}>
+                <Text style={[styles.buttonText, variant === 'blackButton' && styles.yellowText]}>
                     {label}
                 </Text>
                 <Image
@@ -50,12 +51,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     buttonText: {
-        fontSize: 16,
-        color: colors.grey,
+        fontSize: responsiveFontSize(1.8),
+        color: colors.black,
         fontWeight: 'bold',
     },
     whiteText: {
         color: 'white',
+    },
+    yellowText: {
+        color: colors.yellow
     },
     outlinedButton: {
         backgroundColor: 'transparent',

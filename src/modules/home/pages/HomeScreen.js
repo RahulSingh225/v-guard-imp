@@ -8,6 +8,7 @@ import {
   responsiveFontSize,
   responsiveWidth
 } from "react-native-responsive-dimensions";
+import NeedHelp from '../../../components/NeedHelp';
 
 
 const HomeScreen = ({ navigation }) => {
@@ -116,38 +117,7 @@ const HomeScreen = ({ navigation }) => {
             />
           </View>
         </View>
-        <View style={styles.contact}>
-          <Text style={styles.textHeader}>
-            {t('dashboard:help:header')}
-          </Text>
-          <View style={styles.helpContainer}>
-            <Image
-              source={require('../../../assets/images/ic_phone_call_2.png')}
-              style={styles.icon}
-            />
-            <Text style={styles.textHelp}>
-              9717500011
-            </Text>
-          </View>
-          <View style={styles.helpContainer}>
-            <Image
-              source={require('../../../assets/images/ic_email.png')}
-              style={styles.icon}
-            />
-            <Text style={styles.textHelp}>
-            info@vguardrishta.com
-            </Text>
-          </View>
-          <View style={styles.helpContainer}>
-            <Image
-              source={require('../../../assets/images/ic_whatsapp.webp')}
-              style={styles.icon}
-            />
-            <Text style={styles.textHelp}>
-            9818900011
-            </Text>
-          </View>
-        </View>
+        <NeedHelp />
       </View>
     </ScrollView>
   );
@@ -239,27 +209,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 20,
     justifyContent: 'space-around'
-  },
-  textHeader: {
-    fontWeight: 'bold',
-    color: colors.black,
-    fontSize: responsiveFontSize(2.5)
-  },
-  helpContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    marginTop: 10,
-    alignItems: 'center',
-    gap: 10
-  },
-  icon: {
-    height: 20,
-    width: 20,
-  },
-  textHelp: {
-    fontSize: responsiveFontSize(1.7),
-    fontWeight: 'bold',
-    color: colors.black
   }
 })
 
