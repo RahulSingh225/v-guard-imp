@@ -50,6 +50,15 @@ export default {
       redeemed: 'Redeemed Points',
       scans: 'Number of Scans'
     },
+    redeem: {
+      instantTransfer: 'Instant Bank Transfer',
+      paytmTransfer: 'Paytm Transfer',
+      redeemProducts: 'Redeem Products',
+      electronicGift: 'Electronic Gift Voucher',
+      trackRedemption: 'Track Your Redemption',
+      redemptionHistory: 'Redemption History'
+
+    },
     options: {
       scan: 'Scan Code',
       redeem: 'Redeem Points',

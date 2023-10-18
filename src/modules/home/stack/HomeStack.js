@@ -10,7 +10,7 @@ import Info from '../pages/options/info/Info';
 import Welfare from '../pages/options/welfare/Welfare';
 import New from '../pages/options/new/New';
 import Ticket from '../pages/options/ticket/Ticket';
-import Bank from '../pages/options/bank/bank';
+import Bank from '../pages/options/bank/Bank';
 import TDS from '../pages/options/TDS/TDS';
 import Engagement from '../pages/options/engagement/Engagement';
 import Manual from '../pages/options/manual/Manual';
