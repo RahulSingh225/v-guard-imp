@@ -67,6 +67,13 @@ export default {
         inputBankName: 'Bank Name',
         inputIfscCode: 'IFSC Code',
         uploadCheque: 'Upload Passbook/Cancelled Cheque Copy'
+      },
+      paytmTransferOption: {
+        enterMobile: 'Enter Paytm Mobile No. below',
+        enterMobileInput: 'Mobile Number',
+        enterPoints: 'Enter Points to be redeemed below',
+        enterPointsInput: 'Enter Points',
+        chooseWallet: 'Choose Wallet'
       }
     },
     options: {
