@@ -1,6 +1,6 @@
-import {View, Text} from 'react-native';
+import { View, Text } from 'react-native';
 import React from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '../pages/LoginScreen';
 import HomeScreen from '../../home/pages/HomeScreen';
 import SplashScreen from '../pages/SplashScreen';
@@ -8,6 +8,7 @@ import RegisterUser from '../pages/RegisterUser';
 import CategorySelection from '../pages/CategorySelection';
 import LoginWithOtp from '../pages/LoginWithOtp';
 import NewUser from '../pages/NewUser';
+import NewUserKyc from '../pages/NewUserKyc';
 
 const AuthNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -26,6 +27,7 @@ const AuthNavigator = () => {
       <Stack.Screen name="register" component={RegisterUser} />
       <Stack.Screen name="loginwithotp" component={LoginWithOtp} />
       <Stack.Screen name="newUser" component={NewUser} />
+      <Stack.Screen name="NewuserKyc" component={NewUserKyc} />
 
     </Stack.Navigator>
   );
