@@ -56,8 +56,18 @@ export default {
       redeemProducts: 'Redeem Products',
       electronicGift: 'Electronic Gift Voucher',
       trackRedemption: 'Track Your Redemption',
-      redemptionHistory: 'Redemption History'
-
+      redemptionHistory: 'Redemption History',
+      banktransfer: {
+        header: 'Bank Details',
+        subHeader: '(for account transfer only)',
+        inputPoints: 'Enter points to be redeemed',
+        inputAccountNumber: 'Account Number',
+        inputAccountHolder: 'Account Holder Name',
+        inputAccountType: 'Account Type',
+        inputBankName: 'Bank Name',
+        inputIfscCode: 'IFSC Code',
+        uploadCheque: 'Upload Passbook/Cancelled Cheque Copy'
+      }
     },
     options: {
       scan: 'Scan Code',
