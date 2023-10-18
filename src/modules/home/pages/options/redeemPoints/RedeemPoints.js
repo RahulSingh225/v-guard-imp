@@ -35,35 +35,35 @@ const RedeemPoints = ({ navigation }) => {
           <View style={styles.row}>
             <CustomTouchableOption
               text="dashboard:redeem:instantTransfer"
-              iconSource={require('../../../../../assets/images/ic_scan_code.png')}
-              screenName="scanscreen"
+              iconSource={require('../../../../../assets/images/ic_bank_transfer.webp')}
+              screenName="banktransfer"
             />
             <CustomTouchableOption
               text="dashboard:redeem:paytmTransfer"
-              iconSource={require('../../../../../assets/images/ic_redeem_points.webp')}
-              screenName="redeemscreen"
+              iconSource={require('../../../../../assets/images/ic_paytm_transfer.webp')}
+              screenName="paytmtransfer"
             />
             <CustomTouchableOption
               text="dashboard:redeem:redeemProducts"
-              iconSource={require('../../../../../assets/images/ic_dashboard.webp')}
-              screenName="dashboard"
+              iconSource={require('../../../../../assets/images/ic_redeem_products.webp')}
+              screenName="redeemproducts"
             />
           </View>
           <View style={styles.row}>
             <CustomTouchableOption
               text="dashboard:redeem:electronicGift"
-              iconSource={require('../../../../../assets/images/ic_update_kyc.webp')}
-              screenName="updateKyc"
+              iconSource={require('../../../../../assets/images/ic_egift_cards.webp')}
+              screenName="giftvoucher"
             />
             <CustomTouchableOption
               text="dashboard:redeem:trackRedemption"
-              iconSource={require('../../../../../assets/images/ic_scheme_offers.png')}
-              screenName="schemes"
+              iconSource={require('../../../../../assets/images/ic_track_your_redemption.webp')}
+              screenName="trackredemption"
             />
             <CustomTouchableOption
               text="dashboard:redeem:redemptionHistory"
-              iconSource={require('../../../../../assets/images/ic_vguard_info.webp')}
-              screenName="info"
+              iconSource={require('../../../../../assets/images/ic_redemption_history.webp')}
+              screenName="redemptionhistory"
             />
           </View>
         </View>

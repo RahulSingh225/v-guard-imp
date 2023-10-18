@@ -52,7 +52,8 @@ const styles = StyleSheet.create({
   nav: {
     color: colors.black,
     fontSize: responsiveFontSize(1.5),
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    textAlign: 'center'
   },
 });
 

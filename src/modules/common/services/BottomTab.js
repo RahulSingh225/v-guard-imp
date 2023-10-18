@@ -1,99 +1,50 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
-import { View, Dimensions, Text, Button, } from 'react-native';
-import { RFPercentage } from 'react-native-responsive-fontsize';
-import colors from '../../../../colors';
-import { height, width } from '../../../utils/dimensions';
 import Notification from '../../notifications/pages/Notification';
 import Profile from '../../profile/pages/Profile';
 import BottomTabBar from '../../../components/BottomTabBar';
-import HomePage from '../../home/pages/HomePage';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import HomeStack from '../../home/stack/HomeStack';
 import ContactPage from '../../contact/pages/ContactPage';
-
-
+import colors from '../../../../colors';
 
 const BottomTab = () => {
   const Tab = createBottomTabNavigator();
   return (
     <Tab.Navigator
       initialRouteName="HomeStack"
-      tabBar={props => <BottomTabBar {...props} />}>
-      {/* // screenOptions={{
-      //   tabBarShowLabel: false,
-      //   tabBarHideOnKeyboard: true,
-      //   tabBarStyle: [
-      //     {
-      //       // #353935
-      //       backgroundColor: '#ffffff',
-      //       borderRadius: 0,
-      //       // height:height*0.10,
-      //       width: width,
-      //       height: height * 0.05,
-      //       alignContent: 'center',
-      //       alignItems: 'center',
-      //       alignSelf: 'center',
+      tabBar={props => <BottomTabBar {...props} />}
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: colors.yellow,
+        },
+        headerTitleStyle: {
+          color: colors.black,
+        },
+      }}>
 
-      //       position: 'relative',
-      //       margin: 0,
-      //     },
-      //     null,
-      //   ],
-      //   headerShown: false,
-      // }}> */}
       <Tab.Screen
         name="Home"
         component={HomeStack}
-
       />
       <Tab.Screen
         name="Notification"
         component={Notification}
-      // options={{
-      //   tabBarIcon: ({ color, size }) => (
-      //     <Icon name="bell" size={size} color={colors.yellow} />
-      //   ),
-      // }}
-
       />
 
-      {/* <Tab.Screen
-        name="Home"
-        component={HomePage}
-      // options={{
-      //   tabBarIcon: ({ color, size }) => (
-      //     <Icon name="home" size={size} color={color} />
-      //   ),
-      // }}
-
-      /> */}
       <Tab.Screen
         name="Profile"
         component={Profile}
-      // options={{
-      //   tabBarIcon: ({ color, size }) => (
-      //     <Icon name="user" size={size} color={color} />
-      //   ),
-      // }}
-
       />
       <Tab.Screen
         name="Support"
         component={ContactPage}
-
       />
 
       <Tab.Screen
         name="Logout"
         component={Profile}
-      // options={{
-      //   tabBarIcon: ({ color, size }) => (
-      //     <Icon name="sign-out" size={size} color={color} />
-      //   ),
-      // }}
-
       />
+
     </Tab.Navigator>
   );
 };
