@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
         width: 20,
     },
     textHelp: {
-        fontSize: responsiveFontSize(1.7),
+        fontSize: 15,
         fontWeight: 'bold',
         color: colors.black
     },

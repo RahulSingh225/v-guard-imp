@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     borderColor: colors.lightGrey,
     borderWidth: 2,
     borderRadius: 10,
-    height: 100,
+    height: responsiveHeight(10),
     display: 'flex',
     flexDirection: 'column'
   },
@@ -125,12 +125,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderColor: colors.lightGrey,
     padding: 10,
-    height: 50,
+    height: responsiveHeight(5),
     flexGrow: 1
   },
   bottomContainer: {
     flexGrow: 1,
-    height: 50,
+    height: responsiveHeight(5),
   },
   input: {
     padding: 10,

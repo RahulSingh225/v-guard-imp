@@ -6,6 +6,7 @@ import AuthNavigator from '../../auth/stack/AuthNavigator';
 import CustomTouchableOption from '../../../components/CustomTouchableOption';
 import {
   responsiveFontSize,
+  responsiveHeight,
   responsiveWidth
 } from "react-native-responsive-dimensions";
 import NeedHelp from '../../../components/NeedHelp';
@@ -151,7 +152,8 @@ const styles = StyleSheet.create({
   },
   textDetail: {
     color: colors.black,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontSize: responsiveFontSize(1.7)
   },
   points: {
     width: '100%',
@@ -162,7 +164,7 @@ const styles = StyleSheet.create({
   },
   leftPoint: {
     width: responsiveWidth(30),
-    height: 100,
+    height: responsiveHeight(15),
     backgroundColor: colors.lightYellow,
     borderTopLeftRadius: 50,
     borderBottomLeftRadius: 50,
@@ -171,14 +173,14 @@ const styles = StyleSheet.create({
   },
   middlePoint: {
     width: responsiveWidth(30),
-    height: 100,
+    height: responsiveHeight(15),
     backgroundColor: colors.lightYellow,
     alignItems: 'center',
     justifyContent: 'center',
   },
   rightPoint: {
     width: responsiveWidth(30),
-    height: 100,
+    height: responsiveHeight(15),
     backgroundColor: colors.lightYellow,
     borderTopRightRadius: 50,
     borderBottomRightRadius: 50,

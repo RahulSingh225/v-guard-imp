@@ -74,6 +74,17 @@ export default {
         enterPoints: 'Enter Points to be redeemed below',
         enterPointsInput: 'Enter Points',
         chooseWallet: 'Choose Wallet'
+      },
+      track: {
+        header: 'Delivery Status',
+      },
+      redeemProduct: {
+        header: 'Redeem Products',
+        selectCategory: 'Select Category',
+        sortPoints: 'Sort Points',
+        lowToHigh: 'Low to High',
+        highToLow: 'Hih to Low',
+        close: 'Close'
       }
     },
     options: {
