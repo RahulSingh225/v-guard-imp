@@ -89,7 +89,7 @@ export default {
       eGiftCards: {
         header: 'E-Gift Vouchers'
       },
-      redemptionHistory: {
+      redemptionHistoryOption: {
         header: 'Redemption History'
       }
     },

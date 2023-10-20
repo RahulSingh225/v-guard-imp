@@ -35,7 +35,7 @@ const RedemptionHistory = () => {
   return (
     <View style={styles.mainWrapper}>
       <View style={styles.headerWrapper}>
-        <Text style={styles.header}>{t('dashboard:redeem:redemptionHistory:header')}</Text>
+        <Text style={styles.header}>{t('dashboard:redeem:redemptionHistoryOption:header')}</Text>
       </View>
       <FlatList
         data={redemptionHistoryData}
