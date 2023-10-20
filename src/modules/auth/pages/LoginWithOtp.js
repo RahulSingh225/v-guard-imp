@@ -37,7 +37,7 @@ const LoginWithOtp = ({ navigation }) => {
                                 style={styles.button}
                                 label={t('auth:loginWIthOtp:submit')}
                                 variant="filled"
-                                onPress={() => navigation.navigate('newUser')}
+                                onPress={() => navigation.navigate('Kyc')}
                                 width="100%"
                                 iconHeight={10}
                                 iconWidth={30}

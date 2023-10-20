@@ -1,7 +1,7 @@
 import React from 'react';
 import HomePage from '../pages/HomePage';
 import HomeScreen from '../pages/HomeScreen';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Dashboard from '../pages/options/dashboard/Dashboard';
 import UpdateKYC from '../pages/options/updateKyc/UpdateKYC';
 import Schemes from '../pages/options/schemes/Schemes';
@@ -9,7 +9,7 @@ import Info from '../pages/options/info/Info';
 import Welfare from '../pages/options/welfare/Welfare';
 import New from '../pages/options/new/New';
 import Ticket from '../pages/options/ticket/Ticket';
-import Bank from '../pages/options/bank/Bank';
+import Bank from '../../home/pages/options/bank/Bank';
 import TDS from '../pages/options/TDS/TDS';
 import Engagement from '../pages/options/engagement/Engagement';
 import Manual from '../pages/options/manual/Manual';
