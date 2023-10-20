@@ -60,15 +60,17 @@ const NewUser = ({ navigation }) => {
 
   }, [selectedState, selectedDistrict, selectedCity])
 
-  const [selectedLanguage, setSelectedLanguage] = useState();
-  const [gender, setgender] = useState();
-  const [email, setemail] = useState();
-  const [Number, setNumber] = useState();
-  const [whatapp, setwhatapp] = useState()
-  const [address, setaddress] = useState();
-  const [street, setstreet] = useState();
-  const [landmark, setlandmark] = useState();
-  const [pincode, setpincode] = useState();
+  const [selectedLanguage, setSelectedLanguage] = useState('');
+  const [gender, setgender] = useState('');
+  const [email, setemail] = useState('');
+  const [Number, setNumber] = useState('');
+  const [whatapp, setwhatapp] = useState('')
+  const [address, setaddress] = useState('');
+  const [street, setstreet] = useState('');
+  const [landmark, setlandmark] = useState('');
+  const [name, setname] = useState('')
+
+  const [pincode, setpincode] = useState('');
   const [selectedState, setSelectedState] = useState('');
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
@@ -105,6 +107,18 @@ const NewUser = ({ navigation }) => {
           </Picker>
 
         </View>
+        <TextInput
+          style={styles.input}
+          placeholder="Name"
+          value={name} // Set the value of the input to the 'text' state
+          onChangeText={(text) => setname(text)}
+          keyboardType='number-pad'
+          // Customize the border width and color for both normal and active states
+          borderWidth={1}
+          borderColor="black"
+          placeholderTextColor="grey"// Default border color
+          activeBorderColor="black" // Border color when the input is focused (active)
+        />
         <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Gender</Text>
 
         <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
@@ -128,7 +142,7 @@ const NewUser = ({ navigation }) => {
           style={styles.input}
           placeholder="Contact Number"
           value={Number} // Set the value of the input to the 'text' state
-          onChangeText={text => setNumber(Number)}
+          onChangeText={(text) => setNumber(text)}
           keyboardType='number-pad'
           // Customize the border width and color for both normal and active states
           borderWidth={1}
@@ -154,7 +168,7 @@ const NewUser = ({ navigation }) => {
           style={styles.input}
           placeholder="WhatsApp Number"
           value={Number} // Set the value of the input to the 'text' state
-          onChangeText={text => setNumber(Number)}
+          onChangeText={(text) => setNumber(text)}
           keyboardType='number-pad'
           // Customize the border width and color for both normal and active states
           borderWidth={1}
@@ -169,7 +183,7 @@ const NewUser = ({ navigation }) => {
           borderWidth={1.8}
           keyboardType='email-address'
           value={email} // Set the value of the input to the 'text' state
-          onChangeText={text => setemail(email)}
+          onChangeText={(text) => setemail(text)}
           borderColor="gray"
           placeholderTextColor="grey"// Default border color
           activeBorderColor="blue" // Border color when the input is focused (active)
@@ -181,19 +195,31 @@ const NewUser = ({ navigation }) => {
           borderWidth={1.8}
           keyboardType='default'
           value={address} // Set the value of the input to the 'text' state
-          onChangeText={text => setaddress(address)}
+          onChangeText={(text) => setaddress(text)}
           borderColor="gray"
           placeholderTextColor="grey"// Default border color
           activeBorderColor="blue" // Border color when the input is focused (active)
         />
         <TextInput
           style={styles.input}
-          placeholder="Street Colony"
+          placeholder="Street/ Colony/Locality Name *"
+          // Customize the border width and color for both normal and active states
+          borderWidth={1.8}
+          keyboardType='default'
+          value={street} // Set the value of the input to the 'text' state
+          onChangeText={(text) => setstreet(text)}
+          borderColor="gray"
+          placeholderTextColor="grey"// Default border color
+          activeBorderColor="blue" // Border color when the input is focused (active)
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Landmark"
           // Customize the border width and color for both normal and active states
           borderWidth={1.8}
           keyboardType='default'
           value={landmark} // Set the value of the input to the 'text' state
-          onChangeText={text => setlandmark(landmark)}
+          onChangeText={(text) => setlandmark(text)}
           borderColor="gray"
           placeholderTextColor="grey"// Default border color
           activeBorderColor="blue" // Border color when the input is focused (active)
@@ -206,11 +232,12 @@ const NewUser = ({ navigation }) => {
           borderWidth={1.8}
           keyboardType='number-pad'
           value={pincode} // Set the value of the input to the 'text' state
-          onChangeText={text => setpincode(pincode)}
+          onChangeText={(text) => setpincode(text)}
           borderColor="gray"
           placeholderTextColor="grey"// Default border color
           activeBorderColor="blue" // Border color when the input is focused (active)
         />
+        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>State</Text>
         <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
           <Picker
             style={{ color: 'black' }}
@@ -221,10 +248,13 @@ const NewUser = ({ navigation }) => {
               <Picker.Item key={index} label={state} value={state} />
             ))}
           </Picker>
-          <Text style={{ color: 'black' }}>Selected state: {selectedState}</Text>
+
         </View>
 
+        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}> District</Text>
+
         <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+
           <Picker
             style={{ color: 'black' }}
             selectedValue={selectedDistrict}
@@ -234,8 +264,10 @@ const NewUser = ({ navigation }) => {
               <Picker.Item key={index} label={district} value={district} />
             ))}
           </Picker>
-          <Text style={{ color: 'black' }}>Selected district: {selectedDistrict}</Text>
+
         </View>
+
+        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}> City</Text>
 
         <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
           <Picker
@@ -247,13 +279,14 @@ const NewUser = ({ navigation }) => {
               <Picker.Item key={index} label={city} value={city} />
             ))}
           </Picker>
-          <Text style={{ color: 'black' }}>Selected city: {selectedCity}</Text>
+
         </View>
+
 
         <View style={{ display: 'flex', width: "100%", alignItems: 'center', marginVertical: 20 }}>
           <Buttons
             label="Next"
-            onPress={() => navigation.navigate('NewuserKyc')}
+            onPress={() => navigation.navigate('NewUserKyc')}
             variant="filled" // or any other variant you want to use
             width={350} // specify the width
             icon={require('../../../assets/images/arrow.png')} // provide the path to your icon

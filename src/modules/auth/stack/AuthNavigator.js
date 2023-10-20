@@ -7,30 +7,57 @@ import SplashScreen from '../pages/SplashScreen';
 import RegisterUser from '../pages/RegisterUser';
 import CategorySelection from '../pages/CategorySelection';
 import LoginWithOtp from '../pages/LoginWithOtp';
-import NewUser from '../pages/NewUser';
-import NewUserKyc from '../pages/NewUserKyc';
+import NewUser from '../../../modules/auth/pages/NewUser';
+import NewUserKyc from '../../../modules/auth/pages/NewUserKyc';
+import NomineePage from '../pages/NomineePage';
 
 const AuthNavigator = () => {
   const Stack = createNativeStackNavigator();
 
+
+
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
+        headerShown: false
+
       }}>
       <Stack.Screen name="category" component={CategorySelection} />
 
       {/* <Stack.Screen name="splash" component={SplashScreen} /> */}
 
-      <Stack.Screen name="login" component={LoginScreen} />
+      <Stack.Screen name="login" component={LoginScreen} screenOptions={{ headerShown: false }} />
       <Stack.Screen name="home" component={HomeScreen} />
       <Stack.Screen name="register" component={RegisterUser} />
       <Stack.Screen name="loginwithotp" component={LoginWithOtp} />
-      <Stack.Screen name="newUser" component={NewUser} />
-      <Stack.Screen name="NewuserKyc" component={NewUserKyc} />
+      {/* {/* <Stack.Screen name="newUser" component={NewUser} screenOptions={{ headerShown: true }} /> */}
+      <Stack.Screen name="Kyc" component={Kyc} />
 
     </Stack.Navigator>
+
+
   );
+
+
+};
+
+
+const Kyc = () => {
+  const kycStack = createNativeStackNavigator();
+  return (
+    <kycStack.Navigator
+      screenOptions={{
+        headerShown: true,
+      }}>
+
+      <kycStack.Screen name="NewUser" component={NewUser} />
+      <kycStack.Screen name="NewUserKyc" component={NewUserKyc} />
+      < kycStack.Screen name='NomineePage' component={NomineePage} />
+
+    </kycStack.Navigator>
+
+  );
+
 };
 
 export default AuthNavigator;
