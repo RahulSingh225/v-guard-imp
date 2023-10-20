@@ -83,7 +83,7 @@ const Tab = createBottomTabNavigator();
 // }
 
 const AppNavigator = () => {
-    const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
+    const [isUserAuthenticated, setIsUserAuthenticated] = useState(true);
     useEffect(() => {
         // In a real app, check the user's authentication status
         // and update isUserAuthenticated accordingly

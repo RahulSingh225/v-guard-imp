@@ -85,6 +85,12 @@ export default {
         lowToHigh: 'Low to High',
         highToLow: 'Hih to Low',
         close: 'Close'
+      },
+      eGiftCards: {
+        header: 'E-Gift Vouchers'
+      },
+      redemptionHistory: {
+        header: 'Redemption History'
       }
     },
     options: {
