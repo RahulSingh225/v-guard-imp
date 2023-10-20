@@ -8,7 +8,7 @@ import ProductCard from '../../../../../components/ProductCard';
 import { useTranslation } from 'react-i18next';
 
 
-const RedeemProducts = () => {
+const RedeemProducts = ({ navigation }) => {
   const { t } = useTranslation();
 
   const [categoryDialogVisible, setCategoryDialogVisible] = useState(false);
@@ -57,12 +57,14 @@ const RedeemProducts = () => {
     <ProductCard product={item} onPress={() => handleProductPress(item.id)} />
   );
 
-
+  const handleViewCart = () => {
+    navigation.navigate("viewcart");
+  };
 
   return (
     <PaperProvider>
       <ScrollView style={styles.mainWrapper}>
-      <Text style={styles.header}>{t('dashboard:redeem:redeemProduct:header')}</Text>
+        <Text style={styles.header}>{t('dashboard:redeem:redeemProduct:header')}</Text>
         <View style={styles.topHeader}>
           <TouchableOpacity style={styles.touchableButton} onPress={showCategoryDialog}>
             <Text style={styles.buttonText}>{t('dashboard:redeem:redeemProduct:selectCategory')}</Text>
@@ -80,7 +82,7 @@ const RedeemProducts = () => {
               resizeMode="contain"
             />
           </TouchableOpacity>
-          <View style={styles.container}>
+          <TouchableOpacity style={styles.container} onPress={handleViewCart}>
             <Image
               source={require('../../../../../assets/images/shopping_cart.png')}
               style={styles.image}
@@ -88,7 +90,7 @@ const RedeemProducts = () => {
             <Badge size={15} style={styles.badge}>
               5
             </Badge>
-          </View>
+          </TouchableOpacity>
         </View>
 
         <FlatList

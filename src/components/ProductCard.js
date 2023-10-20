@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
         elevation: 5,
         margin: 10,
-        width: 150, // Adjust as needed
+        width: 150,
         alignItems: 'center',
     },
     image: {
