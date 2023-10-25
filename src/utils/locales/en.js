@@ -51,6 +51,11 @@ export default {
     officeAddress: '42/962. Vennala Highschool Road Vennala. Kochi-682028'
   },
   dashboard: {
+    dashboard: {
+      productWise: 'Product Wise Earning',
+      schemeWise: 'Scheme Wise Earning',
+      yourRewards: 'Your Rewards'
+    },
     points: {
       balance: 'Points Balance',
       redeemed: 'Redeemed Points',
