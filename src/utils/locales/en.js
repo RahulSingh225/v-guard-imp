@@ -51,6 +51,11 @@ export default {
     officeAddress: '42/962. Vennala Highschool Road Vennala. Kochi-682028'
   },
   dashboard: {
+    info: {
+      vguardInfo: 'V-Guard Info',
+      downloads: 'Downloads',
+      catalogue: 'V-Guard Product Catalogue'
+    },
     schemes: {
       productWise: 'Product Wise Offers',
       active: 'Active Scheme / Offers',
