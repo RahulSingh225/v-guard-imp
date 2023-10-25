@@ -14,6 +14,12 @@ export default {
       registration: 'New User Registration',
       withotp: 'Login with OTP'
     },
+    forgot: {
+      heading: "Forgot Password?",
+      subHeading: "Please Enter your Registered Mobile Number/Rishta ID",
+      input: 'Registered Mobile No./ Rishta ID',
+      submit: 'Submit'
+    },
     register: {
       heading: 'New User Registration',
       selectProfession: '1. Please select your "Job Profession"',

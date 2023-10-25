@@ -42,7 +42,9 @@ const styles = StyleSheet.create({
     padding: 30,
     backgroundColor: colors.yellow,
     borderRadius: 10,
-    borderBottomRightRadius: 50
+    borderBottomRightRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   closeButton: {
     position: 'absolute',
@@ -57,7 +59,10 @@ const styles = StyleSheet.create({
   popupText: {
     color: colors.black,
     fontSize: responsiveFontSize(2.2),
-    textAlign: 'center'
+    textAlign: 'center',
+    fontWeight: 'bold',
+    lineHeight: responsiveHeight(3),
+    width: '70%'
   }
 });
 

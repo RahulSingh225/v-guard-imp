@@ -51,7 +51,9 @@ const LoginScreen = ({ navigation }) => {
               <TouchableOpacity style={styles.button}>
                 <Text style={styles.buttonText}>Update KYC</Text>
               </TouchableOpacity>
-              <Text style={styles.forgotPassword}>{t('auth:login:forgotPassword')}</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('forgotPassword')}>
+                <Text style={styles.forgotPassword}>{t('auth:login:forgotPassword')}</Text>
+              </TouchableOpacity>
             </View>
             <Text style={styles.or}>{t('auth:login:or')}</Text>
             <TextInput
