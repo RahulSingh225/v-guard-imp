@@ -51,6 +51,11 @@ export default {
     officeAddress: '42/962. Vennala Highschool Road Vennala. Kochi-682028'
   },
   dashboard: {
+    schemes: {
+      productWise: 'Product Wise Offers',
+      active: 'Active Scheme / Offers',
+      special: 'Special Combo Offers'
+    },
     updateKYC:{
       header: 'Update KYC'
     },

@@ -9,22 +9,38 @@ import {
   responsiveFontSize
 } from "react-native-responsive-dimensions";
 
-const CustomTouchableOption = ({ text, iconSource, screenName }) => {
+const CustomTouchableOption = ({ text, iconSource, screenName, disabled = false }) => {
   const { t } = useTranslation();
   const navigation = useNavigation();
 
   return (
     <TouchableOpacity
-      style={styles.oval}
-      onPress={() => navigation.navigate(screenName)}>
-      <View style={styles.optionIcon}>
+      style={[
+        styles.oval,
+        disabled && styles.disabledOval // Apply disabled style if disabled is true
+      ]}
+      onPress={() => navigation.navigate(screenName)}
+      disabled={disabled}
+    >
+      <View style={[
+        styles.optionIcon,
+        disabled && styles.disabledOptionIcon // Apply disabled style if disabled is true
+      ]}>
         <Image
           source={iconSource}
-          style={{ flex: 1, width: undefined, height: undefined }}
+          style={[
+            { flex: 1, width: undefined, height: undefined },
+            disabled && styles.disabledImage
+          ]}
           resizeMode="contain"
         />
       </View>
-      <Text style={styles.nav}>{t(text)}</Text>
+      <Text style={[
+        styles.nav,
+        disabled && styles.disabledText
+      ]}>
+        {t(text)}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -47,13 +63,22 @@ const styles = StyleSheet.create({
   optionIcon: {
     width: responsiveHeight(5),
     height: responsiveHeight(5),
-    marginBottom: 20
+    marginBottom: 20,
   },
   nav: {
     color: colors.black,
     fontSize: responsiveFontSize(1.5),
     fontWeight: 'bold',
-    textAlign: 'center'
+    textAlign: 'center',
+  },
+  disabledOval: {
+    opacity: 0.9,
+  },
+  disabledImage: {
+    filter: 'grayscale(100%)',
+  },
+  disabledText: {
+    color: colors.grey,
   },
 });
 

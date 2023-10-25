@@ -16,6 +16,7 @@ import ScanStack from '../pages/options/scanQR/stack/ScanStack';
 import RedeemStack from '../pages/options/redeemPoints/stack/RedeemStack';
 import DashboardStack from '../pages/options/dashboard/stack/DashboardStack';
 import TicketStack from '../pages/options/ticket/stack/TicketStack';
+import SchemesStack from '../pages/options/schemes/stack/SchemesStack';
 
 const HomeStack = () => {
   const Stack = createNativeStackNavigator();
@@ -30,7 +31,7 @@ const HomeStack = () => {
       <Stack.Screen name="dashboard" component={DashboardStack} />      
       <Stack.Screen name="redeemscreen" component={RedeemStack} />      
       <Stack.Screen name="updateKyc" component={UpdateKYC} />      
-      <Stack.Screen name="schemes" component={Schemes} />      
+      <Stack.Screen name="schemes" component={SchemesStack} />      
       <Stack.Screen name="info" component={Info} />      
       <Stack.Screen name="welfare" component={Welfare} />      
       <Stack.Screen name="new" component={New} />      
