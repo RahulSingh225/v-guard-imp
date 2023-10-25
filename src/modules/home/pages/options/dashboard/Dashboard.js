@@ -31,59 +31,59 @@ const Dashboard = () => {
 
   return (
     <View style={styles.mainWrapper}>
-    <View style={styles.profileDetails}>
-          <View style={styles.ImageProfile}></View>
-          <View style={styles.profileText}>
-            <Text style={styles.textDetail}>Test User</Text>
-            <Text style={styles.textDetail}>XXXXX</Text>
-          </View>
+      <View style={styles.profileDetails}>
+        <View style={styles.ImageProfile}></View>
+        <View style={styles.profileText}>
+          <Text style={styles.textDetail}>Test User</Text>
+          <Text style={styles.textDetail}>XXXXX</Text>
         </View>
-        <TouchableOpacity onPress={() => showPicker(true)}>
+      </View>
+      <TouchableOpacity onPress={() => showPicker(true)}>
 
-      <SafeAreaView style={styles.datepicker}>
+        <SafeAreaView style={styles.datepicker}>
           <Text style={styles.text}>{moment(date).format('MMMM YYYY')}</Text>
-        {show && (
-          <MonthPicker
-            onChange={onValueChange}
-            value={date}
-            minimumDate={new Date()}
-            maximumDate={new Date(2025, 5)}
-            locale="en"
-          />
-        )}
-      </SafeAreaView>
+          {show && (
+            <MonthPicker
+              onChange={onValueChange}
+              value={date}
+              minimumDate={new Date()}
+              maximumDate={new Date(2025, 5)}
+              locale="en"
+            />
+          )}
+        </SafeAreaView>
       </TouchableOpacity>
 
       <View style={styles.points}>
-          <View style={styles.leftPoint}>
-            <Text style={styles.greyText}>{t('dashboard:points:balance')}</Text>
-            <Text style={styles.point}>{point}</Text>
-          </View>
-          <View style={styles.rightPoint}>
-            <Text style={styles.greyText}>{t('dashboard:points:redeemed')}</Text>
-            <Text style={styles.point}>{point}</Text>
-          </View>
+        <View style={styles.leftPoint}>
+          <Text style={styles.greyText}>{t('dashboard:points:balance')}</Text>
+          <Text style={styles.point}>{point}</Text>
         </View>
-
-        <View style={styles.options}>
-        <CustomTouchableOption
-              text="dashboard:dashboard:productWise"
-              iconSource={require('../../../../../assets/images/ic_bank_transfer.webp')}
-              screenName="productWiseEarning"
-            />
-        <CustomTouchableOption
-              text="dashboard:dashboard:schemeWise"
-              iconSource={require('../../../../../assets/images/ic_paytm_transfer.webp')}
-              screenName="schemeWiseEarning"
-            />
-        <CustomTouchableOption
-              text="dashboard:dashboard:yourRewards"
-              iconSource={require('../../../../../assets/images/ic_egift_cards.webp')}
-              screenName="yourRewards"
-            />
+        <View style={styles.rightPoint}>
+          <Text style={styles.greyText}>{t('dashboard:points:redeemed')}</Text>
+          <Text style={styles.point}>{point}</Text>
         </View>
+      </View>
 
-        <NeedHelp />
+      <View style={styles.options}>
+        <CustomTouchableOption
+          text="dashboard:dashboard:productWise"
+          iconSource={require('../../../../../assets/images/ic_bank_transfer.webp')}
+          screenName="productWiseEarning"
+        />
+        <CustomTouchableOption
+          text="dashboard:dashboard:schemeWise"
+          iconSource={require('../../../../../assets/images/ic_paytm_transfer.webp')}
+          screenName="schemeWiseEarning"
+        />
+        <CustomTouchableOption
+          text="dashboard:dashboard:yourRewards"
+          iconSource={require('../../../../../assets/images/ic_egift_cards.webp')}
+          screenName="yourRewards"
+        />
+      </View>
+
+      <NeedHelp />
 
     </View>
   );
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
     marginVertical: responsiveHeight(5),
-    
+
   }
 });
 

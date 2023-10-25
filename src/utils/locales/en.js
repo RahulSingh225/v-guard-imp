@@ -51,6 +51,12 @@ export default {
     officeAddress: '42/962. Vennala Highschool Road Vennala. Kochi-682028'
   },
   dashboard: {
+    ticket:{
+      selectIssueType: 'Select Issue Type',
+      uploadPicture: 'Upload Picture (optional)',
+      description: 'Provide Description in the box',
+      submit: 'Submit'
+    },
     dashboard: {
       productWise: 'Product Wise Earning',
       schemeWise: 'Scheme Wise Earning',
