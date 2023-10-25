@@ -51,6 +51,9 @@ export default {
     officeAddress: '42/962. Vennala Highschool Road Vennala. Kochi-682028'
   },
   dashboard: {
+    updateKYC:{
+      header: 'Update KYC'
+    },
     ticket:{
       selectIssueType: 'Select Issue Type',
       uploadPicture: 'Upload Picture (optional)',
