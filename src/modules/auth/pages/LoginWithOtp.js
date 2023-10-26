@@ -5,7 +5,11 @@ import colors from '../../../../colors';
 import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
 
-const LoginWithOtp = ({ navigation }) => {
+const LoginWithOtp = ({ navigation, route }) => {
+
+    const { usernumber, jobprofession } = route.params;
+    console.log("====>>>>", usernumber);
+    console.log("====>>>>", jobprofession);
 
     const placeholderColor = colors.grey;
 
@@ -28,8 +32,10 @@ const LoginWithOtp = ({ navigation }) => {
                                 style={styles.input}
                                 placeholder={t('auth:register:enterOtp')}
                                 placeholderTextColor={placeholderColor}
+                                keyboardType='number-pad'
                                 value={otp}
                                 onChangeText={(text) => setOtp(text)}
+                                maxLength={4}
                             />
                         </View>
                         <View style={styles.buttonContainer}>
