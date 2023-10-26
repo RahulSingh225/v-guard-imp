@@ -1,11 +1,35 @@
-import { View, Text, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity } from 'react-native'
+import { View, Text, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import colors from '../../../../colors';
 import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
+import { NewusermobileNumberValidation } from '../../../utils/apiservice';
+import Message from "../../../components/Message";
 
 const RegisterUser = ({ navigation }) => {
+    const [number, setNumber] = useState('');
+    const [preferedLanguage, setpreferedLanguage] = useState(1);
+
+
+
+
+    const handleValidation = async () => {
+        try {
+            // Call the API function with user inputs
+            const validationResponse = await NewusermobileNumberValidation(number, preferedLanguage);
+            console.log('Validation response:', validationResponse.data.message);
+            const successMessage = validationResponse.data.message;
+            navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption, preferedLanguage: preferedLanguage })
+            Alert.alert(successMessage);
+
+
+            // Handle the response as needed
+        } catch (error) {
+            console.error('Error during validation:', error);
+            // Handle the error as needed
+        }
+    };
 
     const placeholderColor = colors.grey;
 
@@ -15,7 +39,8 @@ const RegisterUser = ({ navigation }) => {
     const handleOptionSelect = (option) => {
         setSelectedOption(option);
     };
-    const [ number, setNumber] = useState('');
+
+
 
 
     return (
@@ -45,20 +70,7 @@ const RegisterUser = ({ navigation }) => {
                                     />
                                     <Text style={[styles.textHeader, { color: selectedOption === 'retailer' ? 'black' : 'grey' }]}>{t('auth:register:retailer')}</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={styles.option}
-                                    onPress={() => handleOptionSelect('influencer')}
-                                >
-                                    <Image
-                                        source={
-                                            selectedOption === 'influencer'
-                                                ? require('../../../assets/images/tick_1.png')
-                                                : require('../../../assets/images/tick_1_notSelected.png')
-                                        }
-                                        style={styles.tick}
-                                    />
-                                    <Text style={[styles.textHeader, { color: selectedOption === 'influencer' ? 'black' : 'grey' }]}>{t('auth:register:influencer')}</Text>
-                                </TouchableOpacity>
+
                             </View>
                         </View>
                         <View style={styles.containter}>
@@ -68,7 +80,9 @@ const RegisterUser = ({ navigation }) => {
                                 placeholder={t('auth:register:mobile')}
                                 placeholderTextColor={placeholderColor}
                                 value={number}
+                                keyboardType='number-pad'
                                 onChangeText={(text) => setNumber(text)}
+                                maxLength={10}
                             />
                         </View>
                         <View style={styles.buttonContainer}>
@@ -76,7 +90,8 @@ const RegisterUser = ({ navigation }) => {
                                 style={styles.button}
                                 label={t('auth:register:getOtp')}
                                 variant="filled"
-                                onPress={() => navigation.navigate('loginwithotp')}
+                                //  onPress={() => navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption })}
+                                onPress={() => handleValidation()}
                                 width="100%"
                                 iconHeight={10}
                                 iconWidth={30}

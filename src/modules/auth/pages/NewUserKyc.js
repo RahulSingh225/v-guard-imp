@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, TouchableOpacity, PermissionsAndroid, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, TouchableOpacity, PermissionsAndroid, Image, ActivityIndicator } from 'react-native';
 import { height, width } from '../../../utils/dimensions';
 import { Avatar, } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
@@ -10,71 +10,17 @@ import { RNCamera } from 'react-native-camera';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { IconButton, } from 'react-native-paper';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-// import DocumentCapture from '../../../components/DocumentCapture';
+import { fetchPinCodeData, PincodedetailList, GetProfession } from '../../../utils/apiservice';
+import { useTranslation } from 'react-i18next';
+
+import DropDownPicker from 'react-native-dropdown-picker';
 
 
 
-const NewUserKyc = ({ navigation }) => {
-    useEffect(() => {
-        requestCameraPermission();
 
-    }, [])
-
-    const IndianStates = [
-        'Select State',
-        'Andhra Pradesh',
-        'Arunachal Pradesh',
-        'Assam',
-        'Bihar',
-        'Chhattisgarh',
-        'Goa',
-        'Gujarat',
-        'Haryana',
-        'Himachal Pradesh',
-        'Jharkhand',
-        'Karnataka',
-        'Kerala',
-        'Madhya Pradesh',
-        'Maharashtra',
-        'Manipur',
-        'Meghalaya',
-        'Mizoram',
-        'Nagaland',
-        'Odisha',
-        'Punjab',
-        'Rajasthan',
-        'Sikkim',
-        'Tamil Nadu',
-        'Telangana',
-        'Tripura',
-        'Uttar Pradesh',
-        'Uttarakhand',
-        'West Bengal',
-        'Andaman and Nicobar Islands',
-        'Chandigarh',
-        'Dadra and Nagar Haveli and Daman and Diu',
-        'Lakshadweep',
-        'Delhi',
-        'Puducherry',
-    ];
-
-    const DistrictsData = {
-        'Select District': [],
-        'Andhra Pradesh': ['District 1', 'District 2', 'District 3'],
-        'Arunachal Pradesh': ['District A', 'District B'],
-        'Assam': ['District X', 'District Y', 'District Z'],
-        // Add more districts for other states
-    };
-
-    const CitiesData = {
-        'Select Citi': [],
-        'District 1': ['City A', 'City B'],
-        'District 2': ['City X', 'City Y'],
-        // Add more cities for other districts
-    };
-
-
-    const [currentaddres, setcurrentaddres] = useState('Select');
+const NewUserKyc = ({ navigation, route }) => {
+    const { t } = useTranslation();
+    const [currentaddres, setcurrentaddres] = useState();
     const [profession, setprofession] = useState();
     const [maritialStatus, setmaritialStatus] = useState();
     const [loyalty, setloyalty] = useState();
@@ -85,20 +31,37 @@ const NewUserKyc = ({ navigation }) => {
     const [panData, setPanData] = useState(null);
     const [pancardno, setpancardno] = useState('');
     const [aadharcardno, setaadharcardno] = useState('');
-
     const [annualincome, setannualincome] = useState()
     const [address, setaddress] = useState('');
     const [street, setstreet] = useState('');
     const [landmark, setlandmark] = useState('');
     const [pincode, setpincode] = useState('');
-    const [selectedState, setSelectedState] = useState('');
-    const [selectedDistrict, setSelectedDistrict] = useState('');
-    const [selectedCity, setSelectedCity] = useState('');
+    const [currentselectedState, setCurrentselectedState] = useState('');
+    const [currentselectedDistrict, setCurrentselectedDistrict] = useState('');
+    const [currentselectedCity, setCurrentselectedCity] = useState('');
+    const [professiondata, setprofessiondata] = useState([]);
+    const [suggestions, setSuggestions] = useState([]);
+    const [schmename, setschmename] = useState('');
+    const [resonforlikingschme, setresonforlikingschme] = useState('');
+
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState();
+    const [items, setItems] = useState([
+        { label: 'Apple', value: 'apple' },
+        { label: 'Banana', value: 'banana' }
+    ]);
+    const [loading, setLoading] = useState(false);
+    const { userData } = route.params;
+    //  console.log('====================================', userData);
+    console.log('====================================', pincode);
+    console.log('================insde current value city function====================', currentselectedCity);
+    console.log('================insde current value district function====================', currentselectedDistrict);
+    console.log('================insde current value state  function====================', currentselectedState);
+
+
 
     const requestCameraPermission = async () => {
-        useEffect(() => {
 
-        }, [selfieData, currentaddres, selectedState])
 
         const status = await Permissions.request(Permissions.CAMERA);
         if (status === 'granted') {
@@ -107,6 +70,139 @@ const NewUserKyc = ({ navigation }) => {
             console.log('Camera permission denied.');
         }
     };
+
+
+
+    async function Gettingprofession(params) {
+
+        try {
+            const professionfromapi = await GetProfession();
+            setprofessiondata([professionfromapi[0], professionfromapi[1], professionfromapi[2], professionfromapi[3]]);
+            console.log("==%%%%===", professiondata);
+        }
+        catch (error) {
+            console.error('Error fetching suggestions:', error);
+        }
+        finally {
+            // After the API call (whether it succeeds or fails), hide the loader
+            setLoading(false);
+        }
+
+    }
+
+    async function fetchDataForPinCode1(pincode) {
+        setLoading(true);
+        try {
+            const data = await fetchPinCodeData(pincode);
+            // console.log('Fetching data for pincode API CALL:', typeof pincode);
+            const pincodeid = data[0].pinCodeId; // Declare the variable using 'const'
+            console.log('Pin Code Data:', pincodeid);
+
+            const secondData = await PincodedetailList(pincodeid);
+            console.log('====================================');
+            console.log(secondData.distName);
+            console.log('====================================');
+            setCurrentselectedState(secondData.stateName);
+            setCurrentselectedCity(secondData.cityName);
+            setCurrentselectedDistrict(secondData.distName);
+
+            console.log('Second API call:', secondData);
+
+
+        } catch (error) {
+            console.error('Error in Page 1:', error);
+        } finally {
+            // After the API call (whether it succeeds or fails), hide the loader
+            setLoading(false);
+        }
+    }
+
+    const fetchPincodeSuggestions = async (pincode) => {
+        setLoading(true);
+        try {
+            const suggestionData = await fetchPinCodeData(pincode);
+
+            if (Array.isArray(suggestionData) && suggestionData.length > 0) {
+                // Filter out suggestions with null values
+                const filteredSuggestions = suggestionData.filter((item) => (
+                    item.pinCode !== null
+                ));
+                setSuggestions(filteredSuggestions);
+                // console.log('====================================');
+                // console.log(suggestions);
+                // console.log('====================================');
+                // console.log('================VALUE====================');
+                // console.log(pincode);
+                // console.log('====================================');
+
+                fetchDataForPinCode1(pincode);
+
+
+
+            } else {
+                setSuggestions([]);
+            }
+        } catch (error) {
+            console.error('Error fetching suggestions:', error);
+        }
+        finally {
+            // After the API call (whether it succeeds or fails), hide the loader
+            setLoading(false);
+        }
+    };
+
+
+    useEffect(() => {
+        requestCameraPermission();
+        Gettingprofession();
+
+
+        if (pincode.length >= 2) {
+            // Make the API call here
+            fetchPincodeSuggestions(pincode);
+        }
+
+
+
+        const timeout = setTimeout(() => {
+            setLoading(false);
+        }, 5000);
+
+        // Clear the timeout if the component unmounts before the timeout is reached
+        return () => clearTimeout(timeout);
+
+    }, [pincode, currentselectedCity, currentselectedDistrict, currentselectedState, selfieData, currentaddres, loyalty])
+
+
+
+
+
+
+    // const formData = {
+    //     currentaddres,
+    //     profession,
+    //     maritialStatus,
+    //     loyalty,
+    //     annualincome,
+    //     aadharcardno,
+    //     pancardno,
+    //     selfieData,
+    //     idProofFrontData,
+    //     idProofBackData,
+    //     panData,
+    //     address,
+    //     street,
+    //     landmark,
+    //     pincode,
+    //     currentselectedState,
+    //     currentselectedDistrict,
+    //     currentselectedCity,
+    // };
+
+
+
+
+
 
 
     let options = {
@@ -161,6 +257,33 @@ const NewUserKyc = ({ navigation }) => {
             }
         }
     };
+
+    // const NewUserKyc = {
+    //     currentaddres,
+    //     profession,
+    //     maritialStatus,
+    //     loyalty,
+    //     annualincome,
+    //     aadharcardno,
+    //     pancardno,
+    //     selfieData,
+    //     idProofFrontData,
+    //     idProofBackData,
+    //     panData,
+    //     address,
+    //     street,
+    //     landmark,
+    //     pincode,
+    //     currentselectedState,
+    //     currentselectedDistrict,
+    //     currentselectedCity,
+    // };
+
+    // Combine user data and form data into one object
+    // const fullData = {
+    //     userData,
+    //     formData,
+    // };
 
 
 
@@ -238,7 +361,7 @@ const NewUserKyc = ({ navigation }) => {
 
 
 
-                    <Text style={{ color: 'black', marginLeft: 20, }}>Current address same as Permanent address</Text>
+                    <Text style={{ color: 'black', marginLeft: 20, }}>{t('auth:newuser:CurrentAddresselctionHeader')}</Text>
                     <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 3 }}>
 
 
@@ -254,10 +377,25 @@ const NewUserKyc = ({ navigation }) => {
                                     setstreet('');
                                     setlandmark('');
                                     setpincode('');
-                                    setSelectedState('');
-                                    setSelectedCity('');
-                                    setSelectedDistrict('');
+                                    setCurrentselectedState('');
+                                    setCurrentselectedDistrict('');
+                                    setCurrentselectedState('');
 
+
+                                }
+                                else if (itemValue === 'yes') {
+                                    // Set the values for pre-filling
+                                    setaddress(userData.address); // Set your pre-filled address value
+                                    setstreet(userData.street); // Set your pre-filled street value
+                                    setlandmark(userData.landmark);
+                                    console.log('====================================');
+                                    console.log(userData.pincode);
+                                    console.log(pincode);
+                                    console.log('====================================');// Set your pre-filled landmark value
+                                    setpincode(userData.pincode); // Set your pre-filled pincode value
+                                    setCurrentselectedState(userData.selectedState); // Set your pre-filled state value
+                                    setCurrentselectedDistrict(userData.DistrictsData); // Set your pre-filled district value
+                                    setCurrentselectedState(userData.selectedCity); // Set your pre-filled city value
                                 }
                             }}>
                             <Picker.Item label="Select" value="Select" />
@@ -309,66 +447,121 @@ const NewUserKyc = ({ navigation }) => {
                             placeholderTextColor="grey" // Default border color
                             activeBorderColor="blue" // Border color when the input is focused (active)
                         />
-                        <Text style={{ color: 'black', marginLeft: 23, }}>Pincode</Text><TextInput
-                            style={styles.input}
-                            editable={currentaddres == 'no'}
-                            placeholder="Pincode"
-                            // Customize the border width and color for both normal and active states
-                            borderWidth={1.8}
-                            keyboardType='number-pad'
-                            value={pincode} // Set the value of the input to the 'text' state
-                            onChangeText={(text) => setpincode(text)}
-                            borderColor="gray"
-                            placeholderTextColor="grey" // Default border color
-                            activeBorderColor="blue" // Border color when the input is focused (active)
-                        />
-                        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>State</Text>
+                        <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:Secondpagepincode')}</Text>
+                        {currentaddres === 'yes' ? <Text style={styles.input}>{userData.pincode}</Text>
+
+
+                            :
+
+                            <>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Enter Pincode"
+                                    placeholderTextColor={"black"}
+                                    keyboardType="number-pad"
+                                    value={pincode}
+                                    onChangeText={(text) => [setpincode(text),
+                                    setOpen(true)]}
+                                    maxLength={6}
+                                />
+
+                                <DropDownPicker
+                                    mode="BADGE"
+                                    showBadgeDot={true}
+
+                                    placeholder="Pincode List"
+                                    badgeStyle={(item, index) => ({
+                                        padding: 5,
+                                        backgroundColor: item.value ? 'red' : 'grey',
+                                    })}
+                                    badgeSeparatorStyle={{
+                                        width: 30,
+                                    }}
+                                    badgeColors={["red",]}
+                                    badgeDotColors={["red", "blue", "orange"]}
+                                    listMode="SCROLLVIEW"
+                                    scrollViewProps={{ nestedScrollEnabled: true, decelerationRate: "fast" }}
+                                    open={open}
+
+                                    items={suggestions.map((item) => ({
+                                        label: item.pinCode,
+                                        value: item.pinCode,
+                                    }))}
+
+
+                                    setOpen={setOpen}
+                                    value={pincode}
+                                    onChangeText={(text) => {
+                                        [setpincode(text), setOpen(false)]
+                                        if (loading) {
+                                            return (
+                                                <View style={styles.loaderContainer}>
+                                                    <ActivityIndicator size="large" color="blue" />
+                                                </View>
+                                            );
+                                        }
+                                        // Call your filtering function with the user's input
+                                        //fetchPincodeSuggestions(text);
+                                    }}
+                                    dropDownContainerStyle={{
+
+                                        width: width / 1.1, height: height / 8, padding: 10, left: 18, top: 50, borderWidth: 0, elevation: 0
+
+                                    }}
+
+                                    setValue={(value) => {
+                                        setpincode(value);
+                                        if (loading) {
+                                            return (
+                                                <View style={styles.loaderContainer}>
+                                                    <ActivityIndicator size="large" color="blue" />
+                                                </View>
+                                            );
+                                        }
+
+                                    }}
+                                    style={{ backgroundColor: 'white', elevation: 50, opacity: 0.9, borderWidth: 0, width: width / 1.1, height: height / 15, alignSelf: 'center', bottom: 10, elevation: 0 }}
+                                /></>}
+                        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('auth:newuser:CurrentState')}</Text>
                         <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
-                            <Picker
+                            {/* <Picker
                                 style={{ color: 'black' }}
-                                selectedValue={selectedState}
+                                selectedValue={currentselectedState}
                                 enabled={currentaddres === 'no'}
-                                onValueChange={(itemValue, itemIndex) => setSelectedState(itemValue)}
+                                onValueChange={(itemValue, itemIndex) => setCurrentselectedState(itemValue)}
                             >
                                 {IndianStates.map((state, index) => (
                                     <Picker.Item key={index} label={state} value={state} />
                                 ))}
 
-                            </Picker>
+
+                                
+                            </Picker> */}
+
+                            {currentaddres === 'yes' ? <Text style={{ color: 'black', margin: 15 }}>{userData.selectedState}</Text> :
+                                <Text style={{ color: 'black', margin: 15 }}>{currentselectedState}</Text>}
 
                         </View>
-                        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}> District</Text>
+                        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}> {t('auth:newuser:CurrentDistrict')}</Text>
                         <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
-                            <Picker
-                                style={{ color: 'black' }}
-                                selectedValue={selectedDistrict}
-                                enabled={currentaddres === 'no'}
-                                onValueChange={(itemValue, itemIndex) => setSelectedDistrict(itemValue)}
-                            >
-                                {DistrictsData[selectedState] && DistrictsData[selectedState].map((district, index) => (
-                                    <Picker.Item key={index} label={district} value={district} />
-                                ))}
-                            </Picker>
+
+
+                            {currentaddres === 'yes' ? <Text style={{ color: 'black', margin: 15 }}>{userData.selectedDistrict}</Text> :
+                                <Text style={{ color: 'black', margin: 15 }}>{currentselectedDistrict}</Text>}
 
                         </View>
 
-                        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}> City</Text>
+                        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('auth:newuser:CurrentCity')}</Text>
                         <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
-                            <Picker
-                                style={{ color: 'black' }}
-                                selectedValue={selectedCity}
-                                enabled={currentaddres === 'no'}
-                                onValueChange={(itemValue, itemIndex) => setSelectedCity(itemValue)}
-                            >
-                                {CitiesData[selectedDistrict] && CitiesData[selectedDistrict].map((city, index) => (
-                                    <Picker.Item key={index} label={city} value={city} />
-                                ))}
-                            </Picker>
+
+
+                            {currentaddres === 'yes' ? <Text style={{ color: 'black', margin: 15 }}>{userData.selectedCity}</Text> :
+                                <Text style={{ color: 'black', margin: 15 }}>{currentselectedCity}</Text>}
 
                         </View></>}
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Profession*</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Currentprofession')}</Text>
 
                     <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
@@ -380,14 +573,14 @@ const NewUserKyc = ({ navigation }) => {
                             onValueChange={(itemValue, itemIndex) =>
                                 setprofession(itemValue)
                             }>
-                            <Picker.Item label="Electrical Expert" value="Electrical Expert" />
-                            <Picker.Item label="Plumbing Expert" value="Plumbing Expert" />
-                            <Picker.Item label="Electrical and Plumbing Expert" value="Electrical and Plumbing Expert" />
+                            {professiondata.map(item => (
+                                <Picker.Item key={item.professionId} label={item.professionName} value={item.professionId} />
+                            ))}
 
                         </Picker>
 
                     </View>
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Maritial Status*</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:MartialStatus')}</Text>
 
                     <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
@@ -408,7 +601,7 @@ const NewUserKyc = ({ navigation }) => {
                     </View>
 
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}> Already enrolled into loyalty scheme ?</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Alreadyenroled')}</Text>
 
                     <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
@@ -419,12 +612,51 @@ const NewUserKyc = ({ navigation }) => {
                             selectedValue={loyalty}
                             onValueChange={(itemValue, itemIndex) =>
                                 setloyalty(itemValue)}>
-                            <Picker.Item label="Yes" value="yes" />
-                            <Picker.Item label="No" value="No" />
+
+                            <Picker.Item label="Yes" value="Yes" />
+                            <Picker.Item label=" No" value="No" />
+
+
 
                         </Picker>
 
                     </View>
+
+                    {loyalty == 'Yes' ?
+                        <TextInput
+                            style={styles.input}
+                            placeholder="If yes please mention Scheme and brand name "
+                            value={schmename} // Set the value of the input to the 'text' state
+                            onChangeText={(text) => setschmename(text)}
+                            keyboardType='default'
+                            // Customize the border width and color for both normal and active states
+                            borderWidth={1}
+                            borderColor="black"
+                            placeholderTextColor="grey"// Default border color
+                            activeBorderColor="black" // Border color when the input is focused (active)
+                        />
+
+
+                        : null
+                    }
+
+                    {loyalty == 'Yes' ?
+                        <TextInput
+                            style={styles.input}
+                            placeholder="If yes what you liked about the program *"
+                            value={resonforlikingschme} // Set the value of the input to the 'text' state
+                            onChangeText={(text) => setresonforlikingschme(text)}
+                            keyboardType='default'
+                            // Customize the border width and color for both normal and active states
+                            borderWidth={1}
+                            borderColor="black"
+                            placeholderTextColor="grey"// Default border color
+                            activeBorderColor="black" // Border color when the input is focused (active)
+                        />
+
+
+                        : null
+                    }
 
                     <TextInput
                         style={styles.input}
@@ -438,7 +670,7 @@ const NewUserKyc = ({ navigation }) => {
                         placeholderTextColor="grey"// Default border color
                         activeBorderColor="black" // Border color when the input is focused (active)
                     />
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Selfiee*</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Selfie')}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginTop: 0, }}>
 
                         <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.25 }}>
@@ -467,7 +699,7 @@ const NewUserKyc = ({ navigation }) => {
                         />
 
                     </View>
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Aadhar Card</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:AadharCard')}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginTop: 0, }}>
 
                         <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.25 }}>
@@ -538,7 +770,7 @@ const NewUserKyc = ({ navigation }) => {
                         placeholderTextColor="grey"// Default border color
                         activeBorderColor="black" // Border color when the input is focused (active)
                     />
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Pan Card (Front)*</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:PanCardFront')}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginTop: 0, }}>
 
                         <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.25 }}>
@@ -590,7 +822,7 @@ const NewUserKyc = ({ navigation }) => {
                     <View style={{ display: 'flex', width: "100%", alignItems: 'center', marginVertical: 20 }}>
                         <Buttons
                             label="Next"
-                            onPress={() => navigation.navigate('NomineePage')}
+                            onPress={() => navigation.navigate('NomineePage',)}
                             variant="filled" // or any other variant you want to use
                             width={350} // specify the width
                             icon={require('../../../assets/images/arrow.png')} // provide the path to your icon

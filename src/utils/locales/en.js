@@ -5,14 +5,55 @@ export default {
       label: 'Login or Register to Continue',
       forgotPassword: 'Forgot Password?',
       or: 'Or',
-      login:'Registered Mobile No./ Rishta ID',
+      login: 'Registered Mobile No./ Rishta ID',
       password: 'Password',
       otp: 'Login via OTP',
       poweredBy: 'Powered By',
       approval: 'By signing up you indicate that you have read and agreed to the Terms of Service.',
       loginButton: 'Log In',
       registration: 'New User Registration',
-      withotp: 'Login with OTP'
+      withotp: 'Login with OTP',
+
+
+    },
+
+    newuser: {
+
+      Preferedlanguage: 'Prefered Language',
+      Gender: 'Gender',
+      Whatappconatctsame: 'Is whatapp contact same as aboave',
+      pincode: 'Pincode',
+      State: 'State',
+      District: 'District',
+      City: 'City',
+      CurrentAddresselctionHeader: 'Current address same as Permanant address',
+      Secondpagepincode: 'Pincode',
+      CurrentState: ' State',
+      CurrentDistrict: 'CurrentDistrict',
+      CurrentCity: 'CurrentCity',
+      Currentprofession: 'Profession',
+      MartialStatus: 'Martial Status *',
+      Alreadyenroled: 'Alredy enrolled into scheme',
+      Selfie: 'Selfiee',
+      AadharCard: 'Aadhar Card',
+      PanCardFront: 'Pan Card(Front)',
+
+      BankDetailsForAccount: 'Bank Details(for A/c transfer only )',
+      Accountholdername: 'Account Holder Name',
+      SelectAccountype: 'Select Account Type',
+      Bank: 'Bank',
+      UploadepassbookFront: 'Upload Passbook/Cancelled Cheque Copy*',
+      NomineeDetails: 'Nominee Details(for insurance purpose)',
+      NomineeMobile: 'Mobile',
+      NomineeEmailAddress: 'Email Address',
+      NomineeAddress: 'address*',
+      Iagreetotermsandcondition: 'I agree to the Term and Conditions',
+
+
+
+
+
+
     },
     forgot: {
       heading: "Forgot Password?",
@@ -129,7 +170,7 @@ export default {
       dashboard: 'Dashboard',
       updateKyc: 'Update KYC',
       schemes: 'Schemes/Offers',
-      info: 'Info Desk', 
+      info: 'Info Desk',
       welfare: 'Welfare',
       new: "What's New",
       ticket: 'Raise Ticket',
