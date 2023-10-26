@@ -142,6 +142,7 @@ export default {
       header: 'Need Help?',
     },
     scan: {
+      UniqueCodeHeader: 'Unique Code History',
       buttonText: 'Click here to scan a unique code',
       enterCode: 'Enter coupon code manually below',
       enterInput: 'Enter Code',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ScrollView } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import colors from '../../../../../../colors';
@@ -33,7 +33,7 @@ const RedemptionHistory = () => {
   );
 
   return (
-    <View style={styles.mainWrapper}>
+    <ScrollView style={styles.mainWrapper}>
       <View style={styles.headerWrapper}>
         <Text style={styles.header}>{t('dashboard:redeem:redemptionHistoryOption:header')}</Text>
       </View>
@@ -43,7 +43,7 @@ const RedemptionHistory = () => {
         keyExtractor={(item, index) => index.toString()}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
       />
-    </View>
+    </ScrollView>
   );
 }
 

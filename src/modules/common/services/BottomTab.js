@@ -6,6 +6,7 @@ import BottomTabBar from '../../../components/BottomTabBar';
 import HomeStack from '../../home/stack/HomeStack';
 import ContactPage from '../../contact/pages/ContactPage';
 import colors from '../../../../colors';
+import ProfileStack from '../../profile/stack/ProfileStack';
 
 const BottomTab = () => {
   const Tab = createBottomTabNavigator();
@@ -33,7 +34,7 @@ const BottomTab = () => {
 
       <Tab.Screen
         name="Profile"
-        component={Profile}
+        component={ProfileStack}
       />
       <Tab.Screen
         name="Support"
