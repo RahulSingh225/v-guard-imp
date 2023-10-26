@@ -8,6 +8,7 @@ import ElectronicGiftVoucher from '../ElectronicGiftVoucher';
 import TrackRedemption from '../TrackRedemption';
 import RedemptionHistory from '../RedemptionHistory';
 import ViewCart from '../ViewCart';
+import AddAddress from '../AddAddress';
 
 const RedeemStack = () => {
   const Stack = createNativeStackNavigator();
@@ -25,6 +26,7 @@ const RedeemStack = () => {
       <Stack.Screen name="trackredemption" component={TrackRedemption} />                
       <Stack.Screen name="redemptionhistory" component={RedemptionHistory} />                
       <Stack.Screen name="viewcart" component={ViewCart} />                
+      <Stack.Screen name="addAddress" component={AddAddress} />                
     </Stack.Navigator>
   );
 };

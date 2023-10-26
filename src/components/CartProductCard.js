@@ -18,7 +18,6 @@ const CartProductCard = ({ product }) => {
 const styles = StyleSheet.create({
     productCard: {
         backgroundColor: colors.white,
-        margin: 10,
         padding: 10,
         borderRadius: 8,
         shadowColor: '#000',
