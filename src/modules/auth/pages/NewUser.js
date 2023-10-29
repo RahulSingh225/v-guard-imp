@@ -6,24 +6,34 @@ import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Buttons from "../../../components/Buttons";
 import { fetchPinCodeData, PincodedetailList, Citylist } from '../../../utils/apiservice';
-import FlashMessage from "react-native-flash-message";
+import DatePicker from '../../../components/DatePicker';
+import { FloatingLabelInput } from 'react-native-floating-label-input';
+
 
 
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useTranslation } from 'react-i18next';
 import NewUserKyc from './NewUserKyc';
+import Loader from '../../../components/Loader';
 
 
-const NewUser = ({ navigation }) => {
+const NewUser = ({ navigation, route }) => {
+  console.log('====================================');
+  console.log(route.params);
+  console.log('====================================');
+  const { passedNo, jobprofession } = route.params;
+  console.log("====>>>>", passedNo);
+  console.log("====>>>>", jobprofession);
   const { t } = useTranslation();
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('English');
   const [citylistpicker, setcitylistpicker] = useState(null);
   const [districtid, setdistrictid] = useState('');
-  const [gender, setGender] = useState('Male');
+  const [gender, setGender] = useState('Select Gender*');
   const [email, setemail] = useState('');
-  const [number, setNumber] = useState('');
+  const [number, setNumber] = useState(passedNo);
   const [whatapp, setwhatapp] = useState();
-  const [whatappyes, setwhatappyes] = useState('No')
+  const [whatappyes, setwhatappyes] = useState('Select WhatApp contact same as above ?')
   const [address, setaddress] = useState('');
   const [street, setstreet] = useState('');
   const [landmark, setlandmark] = useState('');
@@ -41,11 +51,28 @@ const NewUser = ({ navigation }) => {
     { label: 'Banana', value: 'banana' }
   ]);
   const [loading, setLoading] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const handleDateChange = (event, selectedDate) => {
+    if (event.type === 'set') {
+      setSelectedDate(selectedDate);
+      //setShowDatePicker(false);
+    }
+    setShowDatePicker(false);
+  };
+
+  const handleShowDatePicker = () => {
+    setShowDatePicker(true);
+  };
+
+
 
   //=============== FUNCTION FOR GETTING THE  DISTRIC ID STATE ID UPIN SELECTING THE ID AND DETAILED PINCODE DATA  
   async function fetchDataForPinCode1(pincode) {
     setLoading(true);
     try {
+      setLoading(true);
       const data = await fetchPinCodeData(pincode);
       const pincodeid = data[0].pinCodeId;
       console.log('Pin Code Data:', pincodeid);
@@ -53,18 +80,17 @@ const NewUser = ({ navigation }) => {
       const secondData = await PincodedetailList(pincodeid);
       setdistrictid(secondData.distId);
 
-      // Use the getCityDataForDistrict function to fetch city data
+
       const cityData = await getCityDataForDistrict(secondData.distId);
-      console.log('City Data:', cityData);
+
       setcitylistpicker(cityData);
-      console.log('====================================');
-      console.log(citylistpicker);
-      console.log('====================================');
+
 
       console.log('Second API call:', secondData);
       console.log('District ID:', secondData.distId);
       setSelectedState(secondData.stateName);
       setSelectedDistrict(secondData.distName);
+      setIsLoading(false);
     } catch (error) {
       console.error('Error in Page 1:', error);
     } finally {
@@ -78,11 +104,15 @@ const NewUser = ({ navigation }) => {
 
   async function getCityDataForDistrict(districtId) {
     try {
+
       const cityData = await Citylist(districtId);
+      setIsLoading(false)
       return cityData;
     } catch (error) {
       console.error('Error fetching city data for district:', error);
       throw error;
+    } finally {
+      setIsLoading(false);
     }
   }
   //=========== ***********************END OF THE ABOVE FUNCTION =================================//
@@ -92,7 +122,7 @@ const NewUser = ({ navigation }) => {
   useEffect(() => {
 
 
-    if (pincode.length >= 2) {
+    if (pincode.length >= 3) {
 
       fetchPincodeSuggestions(pincode);
 
@@ -106,7 +136,7 @@ const NewUser = ({ navigation }) => {
     return () => clearTimeout(timeout);
 
 
-  }, [pincode, gender, whatappyes, whatapp, citylistpicker])
+  }, [pincode, gender, whatappyes, whatapp, citylistpicker, name, address])
 
   const fetchPincodeSuggestions = async (pincode) => {
     setLoading(true);
@@ -120,7 +150,7 @@ const NewUser = ({ navigation }) => {
         ));
         setSuggestions(filteredSuggestions);
 
-        console.log(pincode);
+        console.log("*********************", pincode);
 
         fetchDataForPinCode1(pincode);
 
@@ -138,18 +168,10 @@ const NewUser = ({ navigation }) => {
     }
   };
 
-
-
-
-
-
-
-
-
-
   const userData = {
     selectedLanguage,
     gender,
+    selectedDate,
     email,
     number,
     whatapp,
@@ -162,15 +184,73 @@ const NewUser = ({ navigation }) => {
     selectedDistrict,
     selectedCity,
   };
+
+
+  function validateFields() {
+
+    if (!name) {
+      Alert.alert('Name field is empty. Please fill it.');
+      return false;
+    }
+
+    if (!gender || gender === 'Select Gender*') {
+      Alert.alert('Gender field is empty. Please fill it.');
+      return false;
+    }
+
+    if (!number) {
+      Alert.alert('Number field is empty. Please fill it.');
+      return false;
+    }
+    if (!whatappyes || whatappyes === "Select WhatApp contact same as above ?") {
+      Alert.alert('Please specify your WhatsApp no same or not. ');
+      return false;
+    }
+    if (!address) {
+      Alert.alert('Address field is empty. Please fill it.');
+      return false;
+    }
+    if (!street) {
+      Alert.alert('Street field is empty. Please fill it.');
+      return false;
+    }
+
+    if (!pincode) {
+      Alert.alert('Please enter a pincode and select a pincode to get state and district.');
+      return false;
+    }
+    if (!selectedState) {
+      Alert.alert('State field is empty. Please fill it.');
+      return false;
+    }
+    if (!selectedDistrict) {
+      Alert.alert('District field is empty. Please fill it.');
+      return false;
+    }
+    if (!selectedCity) {
+      Alert.alert('City field is empty. Please fill it.');
+      return false;
+    } else {
+      setIsLoading(true)
+      navigation.navigate('NewUserKyc', { userData });
+      setIsLoading(false)
+
+    }
+    return true;
+  }
   return (
     <ScrollView >
       <View >
         <View style={{ backgroundColor: 'transparent', height: height / 8, margin: 20, flexDirection: 'row', width: width / 2.1, justifyContent: 'space-evenly', alignItems: 'center', padding: 20 }}>
+          <View style={{ flex: 1 }}>
+
+            <Loader isLoading={isLoading} />
+          </View>
           <Avatar.Image size={84} source={require('../../../assets/images/ac_icon.png')} />
           <View style={{ margin: 20, flexDirection: 'column' }}>
             <Text style={{ color: 'grey' }}>New User</Text>
-            <Text style={{ color: 'grey' }}>564851</Text>
-            <Text style={{ color: 'grey' }}>Active</Text>
+            <Text style={{ color: 'grey' }}>Rishta ID</Text>
+            <Text style={{ color: 'grey' }}>Mobile No.</Text>
 
 
 
@@ -185,6 +265,7 @@ const NewUser = ({ navigation }) => {
             mode='dropdown'
             style={{ color: 'black' }}
             selectedValue={selectedLanguage}
+            editable={false}
             onValueChange={(itemValue, itemIndex) => {
               console.log("Selected Value: ", itemValue)
               setSelectedLanguage(itemValue)
@@ -208,8 +289,10 @@ const NewUser = ({ navigation }) => {
           borderWidth={1}
           borderColor="black"
           placeholderTextColor="grey"// Default border color
-          activeBorderColor="black" // Border color when the input is focused (active)
+        // Border color when the input is focused (active)
         />
+
+
         <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Gender')}</Text>
 
         <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
@@ -223,6 +306,7 @@ const NewUser = ({ navigation }) => {
               console.log("Selected Value: ", itemValue)
               setGender(itemValue)
             }}>
+            <Picker.Item label="Select Gender*" value="Select Gender*" />
             <Picker.Item label="Male" value="Male" />
             <Picker.Item label="Female" value="Female" />
             <Picker.Item label="Other" value="Other" />
@@ -230,18 +314,33 @@ const NewUser = ({ navigation }) => {
 
         </View>
 
+        <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Date')}</Text>
+
+        <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+
+
+          <DatePicker
+            date={selectedDate}
+            onDateChange={handleDateChange}
+            showDatePicker={showDatePicker}
+            onShowDatePicker={handleShowDatePicker}
+          />
+
+        </View>
+
         <TextInput
           style={styles.input}
           placeholder="Contact Number"
           value={number} // Set the value of the input to the 'text' state
-          onChangeText={(text) => setNumber(text)}
+          // onChangeText={(text) => setNumber(text)}
           keyboardType='number-pad'
+          editable={false}
           // Customize the border width and color for both normal and active states
           borderWidth={1}
           maxLength={10}
           borderColor="black"
           placeholderTextColor="grey"// Default border color
-          activeBorderColor="black" // Border color when the input is focused (active)
+        // Border color when the input is focused (active)
         />
         <Text style={{ color: 'black', marginLeft: 20, }}>{t('auth:newuser:Whatappconatctsame')}</Text>
         <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
@@ -258,16 +357,19 @@ const NewUser = ({ navigation }) => {
                 setwhatapp(number)
 
               } else if (itemValue === 'No') {
-                console.log('====================================');
-                console.log(number);
-                console.log(whatappyes);
-                console.log('====================================');
+
+                setwhatapp('');
+                setwhatappyes(itemValue);
+
+              } else if (itemValue === 'Select WhatApp contact same as above ?') {
+
                 setwhatapp('');
                 setwhatappyes(itemValue);
 
               }
 
             }}>
+            <Picker.Item label="Select WhatApp contact same as above ?" value="Select WhatApp contact same as above ?" />
             <Picker.Item label="yes" value="yes" />
             <Picker.Item label="No" value="No" />
           </Picker>
@@ -292,7 +394,7 @@ const NewUser = ({ navigation }) => {
           borderWidth={1}
           borderColor="black"
           placeholderTextColor="grey"// Default border color
-          activeBorderColor="black" // Border color when the input is focused (active)
+        // Border color when the input is focused (active)
         />
         <TextInput
           style={styles.input}
@@ -447,7 +549,7 @@ const NewUser = ({ navigation }) => {
                 <Picker.Item
                   key={item.id}
                   label={item.cityName}
-                  value={item.id}
+                  value={item.cityName}
                 />
               ))
             ) : (
@@ -463,8 +565,10 @@ const NewUser = ({ navigation }) => {
             label="Next"
             onPress={() => {
               // Check if the data is valid before navigating
-              navigation.navigate('NewUserKyc', { userData: userData })
+              //  navigation.navigate('NewUserKyc', { userData: userData })
               // validateAndNavigate('male', email, number, address, street, pincode, selectedState, selectedDistrict, selectedCity,);
+              //validateAndNavigate()
+              validateFields();
             }}
             variant="filled" // or any other variant you want to use
             width={350} // specify the width
@@ -515,44 +619,6 @@ const styles = StyleSheet.create({
 
 export default NewUser;
 
-function validateAndNavigate(
-  gender,
-  email,
-  number,
-  address,
-  street,
-  pincode,
-  selectedState,
-  selectedDistrict,
-  selectedCity,
-
-) {
-  if (gender !== null) {
-    Alert("Gender field is empty. Please fill it.");
-  } else if (!email) {
-    Alert("Email field is empty. Please fill it.");
-  } else if (!number) {
-    Alert("Number field is empty. Please fill it.");
-  } else if (!address) {
-    Alert("Address field is empty. Please fill it.");
-  } else if (!street) {
-    Alert("Street field is empty. Please fill it.");
-  } else if (!pincode) {
-    Alert("Pincode field is empty. Please fill it.");
-  } else if (!selectedState) {
-    Alert("State field is empty. Please fill it.");
-  } else if (!selectedDistrict) {
-    Alert("District field is empty. Please fill it.");
-  } else if (!selectedCity) {
-    Alert("City field is empty. Please fill it.");
-  } else {
-    // All fields are filled, navigate to the new page
-    // Add your navigation logic here
-    navigation.navigate('NewUserKyc', { userData });
-    // For example, you can use React Navigation:
-    // navigation.navigate('NewPage');
-  }
-}
 
 // Usage example:
 // validateAndNavigate(gender, email, number, address, street, pincode, selectedState, selectedDistrict, selectedCity, navigation);

@@ -7,7 +7,7 @@ const DatePicker = ({ date, onDateChange, showDatePicker, onShowDatePicker }) =>
     return (
         <View>
             <TextInput
-            style={styles.input}
+                style={styles.input}
                 placeholder="Select date"
                 value={date.toLocaleDateString()}
                 onFocus={onShowDatePicker}
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
         color: colors.black,
-        marginBottom: 10,
+        // marginBottom: 10,
     },
 })
 

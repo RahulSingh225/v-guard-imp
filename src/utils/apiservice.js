@@ -92,7 +92,21 @@ export const NewusermobileNumberValidation = async (mobileNo, preferredLanguageP
             preferredLanguagePos: preferredLanguagePos
         };
 
-        const response = await api.post('/vguard/api/user/validateNewMobileNo', { params: requestBody });
+        const response = await api.post('/vguard/api/user/validateNewMobileNo', { mobileNo: mobileNo, preferredLanguagePos: preferredLanguagePos });
+        return response;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+    }
+};
+export const Newuserotpvalidation = async (mobileNo, otp) => {
+    try {
+        const requestBody = {
+            mobileNo: mobileNo,
+            otp: otp,
+        };
+        console.log({ mobileNo, otp });
+        const response = await api.post('/vguard/api/user/validateNewUserOtp', { mobileNo: mobileNo, otp: otp });
         return response;
     } catch (error) {
         console.error('Error fetching data:', error);

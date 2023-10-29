@@ -6,8 +6,10 @@ import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
 import { NewusermobileNumberValidation } from '../../../utils/apiservice';
 import Message from "../../../components/Message";
+import Loader from '../../../components/Loader';
 
 const RegisterUser = ({ navigation }) => {
+    const [isLoading, setIsLoading] = useState(false);
     const [number, setNumber] = useState('');
     const [preferedLanguage, setpreferedLanguage] = useState(1);
 
@@ -16,18 +18,29 @@ const RegisterUser = ({ navigation }) => {
 
     const handleValidation = async () => {
         try {
+            if (!number) {
+                Alert.alert('Please enter Phone number to proceed ')
+
+            }
             // Call the API function with user inputs
-            const validationResponse = await NewusermobileNumberValidation(number, preferedLanguage);
-            console.log('Validation response:', validationResponse.data.message);
-            const successMessage = validationResponse.data.message;
-            navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption, preferedLanguage: preferedLanguage })
-            Alert.alert(successMessage);
+            else {
+                setIsLoading(true);
+                console.log('Validation response:', number);
+                const validationResponse = await NewusermobileNumberValidation(number, preferedLanguage);
+                console.log('Validation response:', validationResponse.data.message);
+                const successMessage = validationResponse.data.message;
+                navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption, preferedLanguage: preferedLanguage })
+                Alert.alert(successMessage);
+
+            }
 
 
             // Handle the response as needed
         } catch (error) {
             console.error('Error during validation:', error);
             // Handle the error as needed
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -52,6 +65,10 @@ const RegisterUser = ({ navigation }) => {
                         style={styles.imageSaathi}
                     />
                     <Text style={styles.mainHeader}>{t('auth:register:heading')}</Text>
+                    <View style={{ flex: 1 }}>
+
+                        <Loader isLoading={isLoading} />
+                    </View>
                     <View style={styles.formContainer}>
                         <View style={styles.containter}>
                             <Text style={styles.textHeader}>{t('auth:register:selectProfession')}</Text>

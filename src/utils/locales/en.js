@@ -21,6 +21,7 @@ export default {
 
       Preferedlanguage: 'Prefered Language',
       Gender: 'Gender',
+      Date: 'Pick Date',
       Whatappconatctsame: 'Is whatapp contact same as aboave',
       pincode: 'Pincode',
       State: 'State',
@@ -35,7 +36,8 @@ export default {
       MartialStatus: 'Martial Status *',
       Alreadyenroled: 'Alredy enrolled into scheme',
       Selfie: 'Selfiee',
-      AadharCard: 'Aadhar Card',
+      AadharCardFront: 'Aadhar Card(front)',
+      AadharCardBack: 'Aadhar Card(Back)',
       PanCardFront: 'Pan Card(Front)',
 
       BankDetailsForAccount: 'Bank Details(for A/c transfer only )',
@@ -46,7 +48,7 @@ export default {
       NomineeDetails: 'Nominee Details(for insurance purpose)',
       NomineeMobile: 'Mobile',
       NomineeEmailAddress: 'Email Address',
-      NomineeAddress: 'address*',
+      NomineeAddress: 'Address*',
       Iagreetotermsandcondition: 'I agree to the Term and Conditions',
 
 
@@ -87,7 +89,7 @@ export default {
     BSNL: 'BSNL',
     chargesApply: 'Charges Apply',
     officeHeading: 'V-Guard corporate office',
-    officeSubheading: 'V-Guard Industries Ltd.',
+    officeSubheading: 'Need Help',
     officeName: 'Regd. Office:',
     officeAddress: '42/962. Vennala Highschool Road Vennala. Kochi-682028'
   },
@@ -102,10 +104,10 @@ export default {
       active: 'Active Scheme / Offers',
       special: 'Special Combo Offers'
     },
-    updateKYC:{
+    updateKYC: {
       header: 'Update KYC'
     },
-    ticket:{
+    ticket: {
       selectIssueType: 'Select Issue Type',
       uploadPicture: 'Upload Picture (optional)',
       description: 'Provide Description in the box',

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, TouchableOpacity, PermissionsAndroid, Image, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, TouchableOpacity, PermissionsAndroid, Image, ActivityIndicator, Alert } from 'react-native';
 import { height, width } from '../../../utils/dimensions';
 import { Avatar, } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
@@ -10,20 +10,25 @@ import { RNCamera } from 'react-native-camera';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { IconButton, } from 'react-native-paper';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { fetchPinCodeData, PincodedetailList, GetProfession } from '../../../utils/apiservice';
+import { fetchPinCodeData, PincodedetailList, GetProfession, Citylist } from '../../../utils/apiservice';
 import { useTranslation } from 'react-i18next';
 
 import DropDownPicker from 'react-native-dropdown-picker';
+import { CurrentRenderContext } from '@react-navigation/native';
 
 
 
 
 const NewUserKyc = ({ navigation, route }) => {
+    const { userData } = route.params;
+    console.log('==================%%%==================', userData.selectedCity);
+    console.log('==================%%%==================', userData.selectedDistrict);
+    console.log('==================%%%==================', userData.selectedState);
     const { t } = useTranslation();
-    const [currentaddres, setcurrentaddres] = useState();
+    const [currentaddres, setcurrentaddres] = useState('Select');
     const [profession, setprofession] = useState();
-    const [maritialStatus, setmaritialStatus] = useState();
-    const [loyalty, setloyalty] = useState();
+    const [maritialStatus, setmaritialStatus] = useState('Select');
+    const [loyalty, setloyalty] = useState('Select');
     const [Number, setNumber] = useState();
     const [selfieData, setSelfieData] = useState(null);
     const [idProofFrontData, setIdProofFrontData] = useState(null);
@@ -43,6 +48,7 @@ const NewUserKyc = ({ navigation, route }) => {
     const [suggestions, setSuggestions] = useState([]);
     const [schmename, setschmename] = useState('');
     const [resonforlikingschme, setresonforlikingschme] = useState('');
+    const [citylistpicker, setcitylistpicker] = useState(null);
 
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState();
@@ -51,12 +57,11 @@ const NewUserKyc = ({ navigation, route }) => {
         { label: 'Banana', value: 'banana' }
     ]);
     const [loading, setLoading] = useState(false);
-    const { userData } = route.params;
-    //  console.log('====================================', userData);
-    console.log('====================================', pincode);
-    console.log('================insde current value city function====================', currentselectedCity);
-    console.log('================insde current value district function====================', currentselectedDistrict);
-    console.log('================insde current value state  function====================', currentselectedState);
+
+    // console.log('====================================', pincode);
+    // console.log('================insde current value city function====================', currentselectedCity);
+    // console.log('================insde current value district function====================', currentselectedDistrict);
+    // console.log('================insde current value state  function====================', currentselectedState);
 
 
 
@@ -77,7 +82,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
         try {
             const professionfromapi = await GetProfession();
-            setprofessiondata([professionfromapi[0], professionfromapi[1], professionfromapi[2], professionfromapi[3]]);
+            setprofessiondata([professionfromapi[0], professionfromapi[1], professionfromapi[2],]);
             console.log("==%%%%===", professiondata);
         }
         catch (error) {
@@ -99,11 +104,12 @@ const NewUserKyc = ({ navigation, route }) => {
             console.log('Pin Code Data:', pincodeid);
 
             const secondData = await PincodedetailList(pincodeid);
-            console.log('====================================');
-            console.log(secondData.distName);
-            console.log('====================================');
+
+            const cityData = await getCityDataForDistrict(secondData.distId);
+            // console.log('City Data:', cityData);
+            setcitylistpicker(cityData);
             setCurrentselectedState(secondData.stateName);
-            setCurrentselectedCity(secondData.cityName);
+
             setCurrentselectedDistrict(secondData.distName);
 
             console.log('Second API call:', secondData);
@@ -166,43 +172,12 @@ const NewUserKyc = ({ navigation, route }) => {
 
         const timeout = setTimeout(() => {
             setLoading(false);
-        }, 5000);
+        }, 50000);
 
         // Clear the timeout if the component unmounts before the timeout is reached
         return () => clearTimeout(timeout);
 
-    }, [pincode, currentselectedCity, currentselectedDistrict, currentselectedState, selfieData, currentaddres, loyalty])
-
-
-
-
-
-
-    // const formData = {
-    //     currentaddres,
-    //     profession,
-    //     maritialStatus,
-    //     loyalty,
-    //     annualincome,
-    //     aadharcardno,
-    //     pancardno,
-    //     selfieData,
-    //     idProofFrontData,
-    //     idProofBackData,
-    //     panData,
-    //     address,
-    //     street,
-    //     landmark,
-    //     pincode,
-    //     currentselectedState,
-    //     currentselectedDistrict,
-    //     currentselectedCity,
-    // };
-
-
-
-
-
+    }, [pincode, currentselectedCity, citylistpicker, currentselectedDistrict, currentselectedState, selfieData, currentaddres, loyalty, landmark, street, address])
 
 
     let options = {
@@ -258,32 +233,138 @@ const NewUserKyc = ({ navigation, route }) => {
         }
     };
 
-    // const NewUserKyc = {
-    //     currentaddres,
-    //     profession,
-    //     maritialStatus,
-    //     loyalty,
-    //     annualincome,
-    //     aadharcardno,
-    //     pancardno,
-    //     selfieData,
-    //     idProofFrontData,
-    //     idProofBackData,
-    //     panData,
-    //     address,
-    //     street,
-    //     landmark,
-    //     pincode,
-    //     currentselectedState,
-    //     currentselectedDistrict,
-    //     currentselectedCity,
-    // };
+    const NewUserKycData = {
+        currentaddres,
+        profession,
+        maritialStatus,
+        loyalty,
+        annualincome,
+        aadharcardno,
+        pancardno,
+        selfieData,
+        idProofFrontData,
+        idProofBackData,
+        panData,
+        address,
+        street,
+        landmark,
+        pincode,
+        currentselectedState,
+        currentselectedDistrict,
+        currentselectedCity,
+    };
 
-    // Combine user data and form data into one object
-    // const fullData = {
-    //     userData,
-    //     formData,
-    // };
+    //Combine user data and form data into one object
+    const fullData = {
+        userData,
+        NewUserKycData,
+    };
+
+    const validateFields = () => {
+        if (!currentaddres || currentaddres === "Select") {
+            Alert.alert('Select current address same as Permanent address or not.');
+            return false;
+        }
+        if (!address) {
+            Alert.alert('Please enter your current address.');
+            return false;
+        }
+        if (!street) {
+            Alert.alert('Please enter street colony or locality name.');
+            return false;
+        }
+        if (!pincode) {
+            console.log("))))))", pincode);
+            Alert.alert('Please enter a pincode and select a pincode to get state and district');
+            return false;
+        }
+        if (!profession || profession === "Select your pofession") {
+            Alert.alert('Profession field is empty. Please fill it.');
+            return false;
+        }
+        if (!maritialStatus || maritialStatus === 'Select') {
+            Alert.alert('Marital Status field is empty. Please fill it.');
+            return false;
+        }
+        if (!loyalty || loyalty === 'Select') {
+            Alert.alert('Loyalty field is empty. Please fill it.');
+            return false;
+        }
+        if (!annualincome) {
+            Alert.alert('Annual Business potenial field is empty. Please fill it.');
+            return false;
+        }
+        if (!selfieData) {
+            Alert.alert('Please upload your selfie');
+            return false;
+        }
+        if (!aadharcardno) {
+            Alert.alert('Aadhar Card Number field is empty. Please fill it.');
+            return false;
+        }
+
+
+        if (!idProofFrontData) {
+            Alert.alert('Aadhar Front Image not taken.');
+            return false;
+        }
+        if (!idProofBackData) {
+            Alert.alert('Aadhar Back Image not taken.');
+            return false;
+        }
+        // if (!panData) {
+        //     Alert.alert('PAN Card Photo field is empty. Please fill it.');
+        //     return false;
+        // }
+        // if (!pancardno) {
+        //     Alert.alert('PAN Card Number field is empty. Please fill it.');
+        //     return false;
+        // }
+
+        //  if (!landmark) {
+        //     Alert.alert('landmark field is empty. Please fill it.');
+        //     return false;
+        // }
+
+        if (!currentselectedCity) {
+            console.log(")))))))))))))", currentselectedCity);
+            Alert.alert(' Current City field is empty. Please fill it.');
+            return false;
+        }
+        if (!currentselectedDistrict) {
+            console.log(")))))))))))))", currentselectedDistrict);
+            Alert.alert('Current District field is empty. Please fill it.');
+            return false;
+        }
+        if (!currentselectedState) {
+            console.log(")))))))))))))", currentselectedState);
+            Alert.alert('Current State field is empty. Please fill it.');
+            return false;
+        }
+        else {
+            navigation.navigate('NomineePage', { fullData })
+        }
+        // Add validation checks for other fields
+
+        return true;
+    };
+
+    //=========== FUNCTION FOR GETTING THE  CITY LIST ON USING THE DISTRICT ID =================================//
+
+
+    async function getCityDataForDistrict(districtId) {
+        try {
+            const cityData = await Citylist(districtId);
+            return cityData;
+        } catch (error) {
+            console.error('Error fetching city data for district:', error);
+            throw error;
+        }
+    }
+    //=========== ***********************END OF THE ABOVE FUNCTION =================================//
+
+
+
 
 
 
@@ -353,8 +434,8 @@ const NewUserKyc = ({ navigation, route }) => {
                         <Avatar.Image size={84} source={require('../../../assets/images/ac_icon.png')} />
                         <View style={{ margin: 20, flexDirection: 'column' }}>
                             <Text style={{ color: 'grey' }}>New User</Text>
-                            <Text style={{ color: 'grey' }}>564851</Text>
-                            <Text style={{ color: 'grey' }}>Active</Text>
+                            <Text style={{ color: 'grey' }}>Rishta ID</Text>
+                            <Text style={{ color: 'grey' }}>Mobile No.</Text>
                         </View>
 
                     </View>
@@ -379,11 +460,11 @@ const NewUserKyc = ({ navigation, route }) => {
                                     setpincode('');
                                     setCurrentselectedState('');
                                     setCurrentselectedDistrict('');
-                                    setCurrentselectedState('');
+                                    setCurrentselectedCity('');
 
 
                                 }
-                                else if (itemValue === 'yes') {
+                                if (itemValue === 'yes') {
                                     // Set the values for pre-filling
                                     setaddress(userData.address); // Set your pre-filled address value
                                     setstreet(userData.street); // Set your pre-filled street value
@@ -391,11 +472,16 @@ const NewUserKyc = ({ navigation, route }) => {
                                     console.log('====================================');
                                     console.log(userData.pincode);
                                     console.log(pincode);
-                                    console.log('====================================');// Set your pre-filled landmark value
-                                    setpincode(userData.pincode); // Set your pre-filled pincode value
+                                    // Set your pre-filled landmark value
+                                    setpincode(userData.pincode);
+                                    setCurrentselectedCity(userData.selectedCity);
+                                    setCurrentselectedDistrict(userData.selectedDistrict);// Set your pre-filled pincode value
                                     setCurrentselectedState(userData.selectedState); // Set your pre-filled state value
-                                    setCurrentselectedDistrict(userData.DistrictsData); // Set your pre-filled district value
-                                    setCurrentselectedState(userData.selectedCity); // Set your pre-filled city value
+                                    // Set your pre-filled district value
+
+                                    console.log('====================####================', currentselectedCity);
+                                    console.log('====================####================', currentselectedDistrict);
+                                    console.log('====================####================', currentselectedState);  // Set your pre-filled city value
                                 }
                             }}>
                             <Picker.Item label="Select" value="Select" />
@@ -409,7 +495,7 @@ const NewUserKyc = ({ navigation, route }) => {
                         <TextInput
                             style={styles.input}
 
-                            placeholder="Permanent House Flat/block no"
+                            placeholder="Current House Flat/block no"
                             // Customize the border width and color for both normal and active states
                             borderWidth={1.8}
                             editable={currentaddres === 'no'}
@@ -419,12 +505,13 @@ const NewUserKyc = ({ navigation, route }) => {
                             borderColor="gray"
                             placeholderTextColor="grey" // Default border color
                             activeBorderColor="blue"
+
                         // Border color when the input is focused (active)
                         />
                         <TextInput
                             style={styles.input}
                             editable={currentaddres == 'no'}
-                            placeholder="Street/ Colony/Locality Name *"
+                            placeholder="Current Street/ Colony/Locality Name *"
                             // Customize the border width and color for both normal and active states
                             borderWidth={1.8}
                             keyboardType='default'
@@ -553,13 +640,39 @@ const NewUserKyc = ({ navigation, route }) => {
                         </View>
 
                         <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('auth:newuser:CurrentCity')}</Text>
-                        <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                        {currentaddres === 'no' ? <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                            <Picker
+                                mode='model'
+                                style={{ color: 'black' }}
+                                selectedValue={currentselectedCity}
+                                onValueChange={(itemValue, itemIndex) =>
+                                    setCurrentselectedCity(itemValue)
+                                }>
+                                {Array.isArray(citylistpicker) && citylistpicker.length >= 0 ? (
+                                    citylistpicker.map(item => (
+                                        <Picker.Item
+                                            key={item.id}
+                                            label={item.cityName}
+                                            value={item.cityName}
+                                        />
+                                    ))
+                                ) : (
+
+                                    <Picker.Item label="Select City" value="" />
+
+
+                                )}
+                            </Picker>
+
+                        </View> : <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+
 
 
                             {currentaddres === 'yes' ? <Text style={{ color: 'black', margin: 15 }}>{userData.selectedCity}</Text> :
                                 <Text style={{ color: 'black', margin: 15 }}>{currentselectedCity}</Text>}
 
-                        </View></>}
+                        </View>}
+                    </>}
 
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Currentprofession')}</Text>
 
@@ -574,7 +687,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                 setprofession(itemValue)
                             }>
                             {professiondata.map(item => (
-                                <Picker.Item key={item.professionId} label={item.professionName} value={item.professionId} />
+                                <Picker.Item key={item.professionId} label={item.professionName} value={item.professionName} />
                             ))}
 
                         </Picker>
@@ -592,6 +705,7 @@ const NewUserKyc = ({ navigation, route }) => {
                             onValueChange={(itemValue, itemIndex) =>
                                 setmaritialStatus(itemValue)
                             }>
+                            <Picker.Item label="Select" value="Select" />
                             <Picker.Item label="Married" value="Married" />
                             <Picker.Item label=" Unmarried" value="Unmarried" />
 
@@ -612,7 +726,7 @@ const NewUserKyc = ({ navigation, route }) => {
                             selectedValue={loyalty}
                             onValueChange={(itemValue, itemIndex) =>
                                 setloyalty(itemValue)}>
-
+                            <Picker.Item label="Select" value="Select" />
                             <Picker.Item label="Yes" value="Yes" />
                             <Picker.Item label=" No" value="No" />
 
@@ -633,7 +747,7 @@ const NewUserKyc = ({ navigation, route }) => {
                             borderWidth={1}
                             borderColor="black"
                             placeholderTextColor="grey"// Default border color
-                            activeBorderColor="black" // Border color when the input is focused (active)
+                        // Border color when the input is focused (active)
                         />
 
 
@@ -651,7 +765,7 @@ const NewUserKyc = ({ navigation, route }) => {
                             borderWidth={1}
                             borderColor="black"
                             placeholderTextColor="grey"// Default border color
-                            activeBorderColor="black" // Border color when the input is focused (active)
+                        // Border color when the input is focused (active)
                         />
 
 
@@ -668,13 +782,13 @@ const NewUserKyc = ({ navigation, route }) => {
                         borderWidth={1}
                         borderColor="black"
                         placeholderTextColor="grey"// Default border color
-                        activeBorderColor="black" // Border color when the input is focused (active)
+                    // Border color when the input is focused (active)
                     />
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Selfie')}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginTop: 0, }}>
 
                         <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.25 }}>
-                            {selfieData != null ? <Text style={{ color: 'black', }}>{selfieData.name}</Text> : null}
+                            {selfieData != null ? <Text style={{ color: 'black', }}>{selfieData.name.substring(0, 30)}</Text> : null}
                             {selfieData != null ? <TouchableOpacity onPress={() => openCamera('Selfie', (documentType, data) => {
                                 // Handle the captured data for the 'Selfie' document type here
                             })} >
@@ -699,11 +813,12 @@ const NewUserKyc = ({ navigation, route }) => {
                         />
 
                     </View>
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:AadharCard')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:AadharCardFront')}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginTop: 0, }}>
 
                         <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.25 }}>
-                            {idProofFrontData != null ? <Text style={{ color: 'black', }}>{idProofFrontData.name}</Text> : null}
+
+                            {idProofFrontData != null ? <Text style={{ color: 'black', }}>{idProofFrontData.name.substring(0, 30)}</Text> : null}
                             {idProofFrontData != null ? <TouchableOpacity onPress={() => openCamera('IdProofFront', (documentType, data) => {
                                 // Handle the captured data for the 'Selfie' document type here
                             })} >
@@ -730,23 +845,27 @@ const NewUserKyc = ({ navigation, route }) => {
 
                     </View>
 
+                    <Text style={{ color: 'black', marginLeft: 24, marginTop: 5 }}>{t('auth:newuser:AadharCardBack')}</Text>
+
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginTop: 10, }}>
 
                         <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.25 }}>
-                            {idProofBackData != null ? <Text style={{ color: 'black', }}>{idProofBackData.name}</Text> : null}
-                            {idProofBackData != null ? <TouchableOpacity onPress={() => openCamera('IdProofBack', (documentType, data) => {
-                                // Handle the captured data for the 'Selfie' document type here
-                            })} >
-                                <Image resizeMode="cover" source={{ uri: idProofBackData.uri }} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />
-                            </TouchableOpacity> : <IconButton
-                                icon="camera"
-                                animated='true'
-
-                                size={20}
-                                onPress={() => openCamera('IdProofBack', (documentType, data) => {
+                            {idProofBackData != null ? <Text style={{ color: 'black', }}>{idProofBackData.name.substring(0, 30)}</Text> : null}
+                            {idProofBackData != null ?
+                                <TouchableOpacity onPress={() => openCamera('IdProofBack', (documentType, data) => {
                                     // Handle the captured data for the 'Selfie' document type here
-                                })}
-                            />}
+                                })} >
+                                    <Image resizeMode="cover" source={{ uri: idProofBackData.uri }} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />
+                                </TouchableOpacity> :
+                                <IconButton
+                                    icon="camera"
+                                    animated='true'
+
+                                    size={20}
+                                    onPress={() => openCamera('IdProofBack', (documentType, data) => {
+                                        // Handle the captured data for the 'Selfie' document type here
+                                    })}
+                                />}
                         </View>
                         <IconButton
                             icon="link"
@@ -768,13 +887,14 @@ const NewUserKyc = ({ navigation, route }) => {
                         borderWidth={1}
                         borderColor="black"
                         placeholderTextColor="grey"// Default border color
-                        activeBorderColor="black" // Border color when the input is focused (active)
+
+                        maxLength={12}// Border color when the input is focused (active)
                     />
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:PanCardFront')}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginTop: 0, }}>
 
                         <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.25 }}>
-                            {panData != null ? <Text style={{ color: 'black', }}>{panData.name}</Text> : null}
+                            {panData != null ? <Text style={{ color: 'black', }}>{panData.name.substring(0, 30)}</Text> : null}
                             {panData != null ? <TouchableOpacity onPress={() => openCamera('Pan', (documentType, data) => {
                                 // Handle the captured data for the 'Selfie' document type here
                             })} >
@@ -809,7 +929,8 @@ const NewUserKyc = ({ navigation, route }) => {
                         borderWidth={1}
                         borderColor="black"
                         placeholderTextColor="grey"// Default border color
-                        activeBorderColor="black" // Border color when the input is focused (active)
+
+                        maxLength={10} // Border color when the input is focused (active)
                     />
 
 
@@ -822,7 +943,7 @@ const NewUserKyc = ({ navigation, route }) => {
                     <View style={{ display: 'flex', width: "100%", alignItems: 'center', marginVertical: 20 }}>
                         <Buttons
                             label="Next"
-                            onPress={() => navigation.navigate('NomineePage',)}
+                            onPress={() => validateFields()}
                             variant="filled" // or any other variant you want to use
                             width={350} // specify the width
                             icon={require('../../../assets/images/arrow.png')} // provide the path to your icon

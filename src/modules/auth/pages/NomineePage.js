@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, TouchableOpacity, PermissionsAndroid, Image, } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, TouchableOpacity, PermissionsAndroid, Image, Alert, Linking } from 'react-native';
 import { height, width } from '../../../utils/dimensions';
 import { Avatar, Checkbox } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
@@ -11,6 +11,9 @@ import { Getallbanks } from '../../../utils/apiservice';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { IconButton, } from 'react-native-paper';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import NeedHelp from "../../../components/NeedHelp";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 import colors from '../../../../colors';
@@ -20,33 +23,169 @@ import {
     responsiveWidth,
     responsiveFontSize
 } from "react-native-responsive-dimensions";
+import { useDataContext } from '../../../utils/appcontext';
 
 
-const openImagePicker = async (documentType, onCapture) => {
-    const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-    );
-    const granted1 = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-    );
-    const granted2 = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-    );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        const options = {
-            mediaType: 'photo',
-            quality: 0.5,
-            cameraType: 'back',
-            saveToPhotos: true,
-        };
 
-        const result = await launchImageLibrary(options);
+const NomineePage = ({ navigation, route }) => {
+    const { fullData } = route.params;
+    const { data, setData } = useDataContext();
+    console.log('==================%%%==================', fullData);
 
-        if (result.didCancel) {
-            console.log('User cancelled image picker');
-        } else if (result.error) {
-            console.log('ImagePicker Error: ', result.error);
-        } else {
+
+    const { t } = useTranslation();
+    // const [currentaddres, setcurrentaddres] = useState('Select');
+    const [checked, setChecked] = useState(false);
+    const [accountnumber, setaccountnumber] = useState('');
+    const [accountholdername, setaccountholdername] = useState('');
+    const [chequeImage, setchequeImage] = useState();
+    const [IFSC, setIFSC] = useState('');
+    const [accounttype, setaccounttype] = useState('')
+
+    const [selectedbank, setselectedbank] = useState('');
+    const [allbankslist, setallbankslist] = useState(null);
+    const [validateallfieldforbank, setvalidateallfieldforbank] = useState(false);
+
+
+    const [nomineename, setnomineename] = useState('');
+    const [nomineemobileno, setnomineemobileno] = useState('');
+    const [nomineeemail, setnomineeemail] = useState('');
+    const [nomineeaddress, setnomineeaddress] = useState('');
+
+    const BankDetailsAndNominee = {
+        accountnumber,
+        accountholdername,
+        chequeImage,
+        IFSC,
+        accounttype,
+        selectedbank,
+        nomineename,
+        nomineemobileno,
+        nomineeemail,
+        nomineeaddress,
+    };
+
+    const PreviewSummaryData = {
+        BankDetailsAndNominee,
+        fullData,
+    }
+
+    const validateFields = async () => {
+        setvalidateallfieldforbank(false)
+
+        // Check for at least one field being entered
+        if (accountnumber || accountholdername || IFSC || chequeImage || accounttype) {
+            setvalidateallfieldforbank(true)
+        }
+
+        if (validateallfieldforbank) {
+            if (!accountnumber || !accountholdername || !IFSC || !chequeImage || !accounttype) {
+                Alert.alert('Please fill bank complete details.');
+                return false;
+            }
+
+
+        }
+
+        if (checked === false) {
+            Alert.alert('Please Agree to terms and conditions.');
+        }
+        else {
+            // setData({ ...data, BankDetailsAndNominee, fullData });
+            const dataToStore = JSON.stringify(PreviewSummaryData);
+            // console.log("+++++++++++++++++++++", dataToStore);
+
+            // Store the data in AsyncStorage
+            await AsyncStorage.setItem('previewSummaryData', dataToStore);
+            // console.log("+++++++++++++++++++++", dataToStore);
+            navigation.navigate('PreviewSummary',)
+        }
+
+
+        return true;
+    };
+    const openTermsAndConditions = () => {
+        // Add the URL of your terms and conditions page
+        const termsAndConditionsURL = "https://vguardrishta.com/tnc_retailer.html";
+
+        // Open the URL in the device's default web browser
+        Linking.openURL(termsAndConditionsURL);
+    };
+
+    const openImagePicker = async (documentType, onCapture) => {
+        const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.CAMERA,
+        );
+        const granted1 = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        );
+        const granted2 = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            const options = {
+                mediaType: 'photo',
+                quality: 0.5,
+                cameraType: 'back',
+                saveToPhotos: true,
+            };
+
+            const result = await launchImageLibrary(options);
+
+            if (result.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (result.error) {
+                console.log('ImagePicker Error: ', result.error);
+            } else {
+                const photo = result.assets[0];
+                const newPhoto = { uri: photo.uri, type: photo.type, name: photo.fileName };
+
+                // Handle the captured data based on the document type
+                switch (documentType) {
+                    case 'cheque':
+                        setchequeImage(newPhoto);
+                        console.log('====================================');
+                        console.log(chequeImage);
+                        console.log('====================================');
+                        break;
+
+                    default:
+                        console.log('Unknown document type');
+                }
+
+                // Call the provided callback function to further process the data
+                if (typeof onCapture === 'function') {
+                    onCapture(documentType, newPhoto);
+                }
+            }
+        }
+    };
+
+    let options = {
+        saveToPhotoes: true,
+        mediaType: 'photo',
+        saveToPhotos: true,
+        selectionLimit: 1,
+        quality: 0.5,
+        includeBase64: true,
+        storageOption: {
+            skipbackup: true,
+            path: 'images',
+        }
+    };
+
+    const openCamera = async (documentType, onCapture) => {
+        const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.CAMERA,
+        );
+        const granted1 = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        );
+        const granted2 = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            const result = await launchCamera(options);
             const photo = result.assets[0];
             const newPhoto = { uri: photo.uri, type: photo.type, name: photo.fileName };
 
@@ -54,9 +193,7 @@ const openImagePicker = async (documentType, onCapture) => {
             switch (documentType) {
                 case 'cheque':
                     setchequeImage(newPhoto);
-                    console.log('====================================');
                     console.log(chequeImage);
-                    console.log('====================================');
                     break;
 
                 default:
@@ -68,85 +205,15 @@ const openImagePicker = async (documentType, onCapture) => {
                 onCapture(documentType, newPhoto);
             }
         }
-    }
-};
-
-let options = {
-    saveToPhotoes: true,
-    mediaType: 'photo',
-    saveToPhotos: true,
-    selectionLimit: 1,
-    quality: 0.5,
-    includeBase64: true,
-    storageOption: {
-        skipbackup: true,
-        path: 'images',
-    }
-};
-
-const openCamera = async (documentType, onCapture) => {
-    const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-    );
-    const granted1 = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-    );
-    const granted2 = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-    );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        const result = await launchCamera(options);
-        const photo = result.assets[0];
-        const newPhoto = { uri: photo.uri, type: photo.type, name: photo.fileName };
-
-        // Handle the captured data based on the document type
-        switch (documentType) {
-            case 'cheque':
-                setchequeImage(newPhoto);
-                console.log(chequeImage);
-                break;
-
-            default:
-                console.log('Unknown document type');
-        }
-
-        // Call the provided callback function to further process the data
-        if (typeof onCapture === 'function') {
-            onCapture(documentType, newPhoto);
-        }
-    }
-};
-
-
-
-
-
-
-
-
-
-
-
-const NomineePage = () => {
-    const { t } = useTranslation();
-    const [currentaddres, setcurrentaddres] = useState('Select');
-    const [checked, setChecked] = useState(false);
-    const [accountnumber, setaccountnumber] = useState('');
-    const [accountholdername, setaccountholdername] = useState('');
-    const [chequeImage, setchequeImage] = useState();
-    const [IFSC, setIFSC] = useState('');
-    const [allbankslist, setallbankslist] = useState();
-    const [selectedbank, setselectedbank] = useState('')
-
-
-    const [nomineename, setnomineename] = useState('');
-    const [nomineemobileno, setnomineemobileno] = useState('');
-    const [nomineeemail, setnomineeemail] = useState('');
-
+    };
 
 
     useEffect(() => {
-        getallbanks();
+        if (allbankslist == null) {
+            getallbanks();
+
+        }
+
 
 
     }, [allbankslist])
@@ -178,8 +245,8 @@ const NomineePage = () => {
                         <Avatar.Image size={84} source={require('../../../assets/images/ac_icon.png')} />
                         <View style={{ margin: 20, flexDirection: 'column' }}>
                             <Text style={{ color: 'grey' }}>New User</Text>
-                            <Text style={{ color: 'grey' }}>564851</Text>
-                            <Text style={{ color: 'grey' }}>Active</Text>
+                            <Text style={{ color: 'grey' }}>Rishta ID</Text>
+                            <Text style={{ color: 'grey' }}>Mobile No.</Text>
                         </View>
 
                     </View>
@@ -191,13 +258,13 @@ const NomineePage = () => {
                         placeholder="Account Number"
                         // Customize the border width and color for both normal and active states
                         borderWidth={1.8}
-                        keyboardType='default'
+                        keyboardType='number-pad'
                         value={accountnumber} // Set the value of the input to the 'text' state
                         onChangeText={(text) => setaccountnumber(text)}
                         borderColor="gray"
                         placeholderTextColor="grey" // Default border color
                         activeBorderColor="blue"
-                        maxLength={16}// Border color when the input is focused (active)
+                    // Border color when the input is focused (active)
                     />
 
 
@@ -219,19 +286,25 @@ const NomineePage = () => {
 
 
                     <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:SelectAccountype')}</Text>
-                    <TextInput
-                        style={styles.input}
+                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
-                        placeholder="Select Account type "
-                        // Customize the border width and color for both normal and active states
-                        borderWidth={1.8}
-                        keyboardType='email-address'
-                        // value={pincode} // Set the value of the input to the 'text' state
-                        //  onChangeText={(text) => setpincode(text)}
-                        borderColor="gray"
-                        placeholderTextColor="grey" // Default border color
-                        activeBorderColor="blue" // Border color when the input is focused (active)
-                    />
+
+                        <Picker
+                            mode='dropdown'
+                            style={{ color: 'black' }}
+                            selectedValue={accounttype}
+                            onValueChange={(itemValue, itemIndex) =>
+                                setaccounttype(itemValue)
+                            }>
+                            <Picker.Item label="Select Account Type" value="Select Account Type" />
+                            <Picker.Item label=" Current" value="Current" />
+                            <Picker.Item label=" Saving" value="Saving" />
+
+
+
+                        </Picker>
+
+                    </View>
 
 
 
@@ -253,7 +326,7 @@ const NomineePage = () => {
                                     <Picker.Item
                                         key={item.bankId}
                                         label={item.bankNameAndBranch}
-                                        value={item.bankId}
+                                        value={item.bankNameAndBranch}
                                     />
                                 ))
                             ) : (
@@ -368,8 +441,8 @@ const NomineePage = () => {
                             // Customize the border width and color for both normal and active states
                             borderWidth={1.8}
                             keyboardType='email-address'
-                            value={nomineeemail} // Set the value of the input to the 'text' state
-                            onChangeText={(text) => setnomineeemail(text)}
+                            value={nomineeaddress} // Set the value of the input to the 'text' state
+                            onChangeText={(text) => setnomineeaddress(text)}
                             borderColor="gray"
                             placeholderTextColor="grey" // Default border color
                             activeBorderColor="blue" // Border color when the input is focused (active)
@@ -380,12 +453,24 @@ const NomineePage = () => {
                             status={checked ? 'checked' : 'unchecked'}
                             onPress={() => setChecked(!checked)}
                         />
-                        <Text style={{ color: 'black' }}>{t('auth:newuser: Iagreetotermsandcondition')}</Text>
+                        <Text style={{ color: 'black' }}>{t(' I agree to terms and condition')}</Text>
+                    </View>
+
+                    <View style={{ margin: 20 }}>
+                        <Text style={{ color: 'blue', }}>
+                            I have read & fully understood the{' '}
+                            <TouchableOpacity style={{ top: 5 }} onPress={openTermsAndConditions}>
+                                <Text style={{ color: 'blue', textDecorationLine: 'underline', top: 5 }}>
+                                    terms and conditions
+                                </Text>
+                            </TouchableOpacity>{' '}
+                            of V-guard Rishta Loyalty Program and abide to follow them.
+                        </Text>
                     </View>
                     <View style={{ display: 'flex', width: "100%", alignItems: 'center', marginVertical: 20 }}>
                         <Buttons
-                            label="Next"
-                            onPress={() => getallbanks()}
+                            label="Preview"
+                            onPress={() => validateFields()}
                             variant="filled" // or any other variant you want to use
                             width={350} // specify the width
                             icon={require('../../../assets/images/arrow.png')} // provide the path to your icon
@@ -395,30 +480,8 @@ const NomineePage = () => {
                         // specify the gap between the label and the icon
                         />
                     </View>
-                    <View style={styles.container}>
-                        <Text style={styles.text}>
-                            {t('contact:officeHeading')}
-                        </Text>
-                        <View style={styles.smallContainer}>
-                            <Text style={styles.blackDetail}>
-                                {t('contact:officeSubheading')}
-                            </Text>
-                            <Text style={styles.smallDetail}>
-                                {t('contact:officeName')}
-                            </Text>
-                            <Text style={styles.smallDetail}>
-                                {t('contact:officeAddress')}
-                            </Text>
-                            <Text style={styles.smallDetail}>
-                                Ph: +91 484 433 5000
-                            </Text>
-                            <Text style={styles.smallDetail}>
-                                Fax: +91 484 300 5100
-                            </Text>
-                            <Text style={styles.smallDetail}>
-                                Email: mail@vguard.in
-                            </Text>
-                        </View>
+                    <View style={{ margin: 20 }}>
+                        <NeedHelp />
                     </View>
                 </View>
 
@@ -447,7 +510,7 @@ const styles = StyleSheet.create({
         borderRadius: 5// Border color when focused
     },
     smallContainer: {
-        backgroundColor: colors.lightYellow,
+        backgroundColor: colors.white,
         padding: 10,
         borderRadius: 10,
         marginTop: 10,
