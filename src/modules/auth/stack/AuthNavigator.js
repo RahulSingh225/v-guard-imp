@@ -11,6 +11,7 @@ import NewUser from '../../../modules/auth/pages/NewUser';
 import NewUserKyc from '../../../modules/auth/pages/NewUserKyc';
 import NomineePage from '../pages/NomineePage';
 import ForgotPassword from '../pages/ForgotPassword';
+import LoginWithNumber from '../pages/LoginWithNumber';
 
 const AuthNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -34,6 +35,7 @@ const AuthNavigator = () => {
       {/* {/* <Stack.Screen name="newUser" component={NewUser} screenOptions={{ headerShown: true }} /> */}
       <Stack.Screen name="Kyc" component={Kyc} />
       <Stack.Screen name="forgotPassword" component={ForgotPassword} />
+      <Stack.Screen name="loginWithNumber" component={LoginWithNumber} />
 
     </Stack.Navigator>
 

@@ -4,6 +4,9 @@ import { useTranslation } from 'react-i18next';
 import colors from '../../../../colors';
 import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
+import { setAuthToken } from '../../../utils/apiservice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const LoginScreen = ({ navigation }) => {
   const yellow = colors.yellow;
@@ -11,16 +14,30 @@ const LoginScreen = ({ navigation }) => {
   const placeholderColor = colors.grey;
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [otp, setOtp] = useState('');
 
 
   const handleLogin = () => {
-    if (username === 'user' && password === 'password') {
-      navigation.navigate('Home');
-    } else {
-      alert('Invalid credentials. Please try again.');
+    const enteredUsername = username;
+    const enteredPassword = password;
+  
+    if (!enteredUsername || !enteredPassword) {
+      alert('Please enter both username and password.');
+      return;
     }
+  
+    setAuthToken(enteredUsername, enteredPassword);
+  
+    AsyncStorage.getItem('authToken', (error, authToken) => {
+      if (error) {
+        console.error('Error retrieving authToken:', error);
+      } else {
+        console.log('Retrieved Auth Token:', authToken);
+      }
+    });
+  
+    navigation.navigate('Home');
   };
+  
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.loginScreen}>
@@ -55,14 +72,14 @@ const LoginScreen = ({ navigation }) => {
                 <Text style={styles.forgotPassword}>{t('auth:login:forgotPassword')}</Text>
               </TouchableOpacity>
             </View>
-            <Text style={styles.or}>{t('auth:login:or')}</Text>
+            {/* <Text style={styles.or}>{t('auth:login:or')}</Text>
             <TextInput
               style={styles.input}
               placeholder={t('auth:login:otp')}
               placeholderTextColor={placeholderColor}
               value={otp}
               onChangeText={(text) => setOtp(text)}
-            />
+            /> */}
             <View style={styles.buttonContainer}>
               <Buttons
                 style={styles.button}
@@ -79,7 +96,7 @@ const LoginScreen = ({ navigation }) => {
                 style={styles.button}
                 label={t('auth:login:withotp')}
                 variant="filled"
-                onPress={handleLogin}
+                onPress={() => navigation.navigate('loginWithNumber')}
                 width="100%"
               />
               <Buttons

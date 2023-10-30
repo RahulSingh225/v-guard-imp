@@ -48,6 +48,8 @@ const CategorySelection = ({ navigation }) => {
                         style={[
                             styles.categoryIcon,
                         ]}
+                        resizeMode="contain"
+
                     />
                     <Text style={styles.categoryText}>
                         Electrical & Plumbing Experts
@@ -67,11 +69,11 @@ const CategorySelection = ({ navigation }) => {
                         source={require('../../../assets/images/ic_retailer_1.png')}
                         style={[
                             styles.categoryIcon,
-
                         ]}
+                        resizeMode="contain"
                     />
                     <Text style={styles.categoryText}>
-                        Electrical & Plumbing Experts
+                        AC Service Engineer
                     </Text>
                     <View style={styles.radioButtons}>
                         <Image
@@ -153,18 +155,21 @@ const styles = StyleSheet.create({
     },
     categoryIcon: {
         height: 50,
-        width: 50
+        width: 50,
+        flex: 1
     },
     categoryText: {
         color: colors.black,
         fontSize: 15,
+        flex: 1,
         fontWeight: 'bold'
     },
     option: {
         display: 'flex',
         flexDirection: 'row',
         gap: 5,
-        alignItems: 'center'
+        alignItems: 'center',
+        flex: 1
     },
     tick: {
         height: 15,
