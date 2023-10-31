@@ -1,40 +1,35 @@
-import React from 'react';
+import {React, useState, useEffect} from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Linking, StyleSheet } from 'react-native';
 import colors from '../../../../../../colors';
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
+import { getWhatsNew } from '../../HomeApiService';
 
 const New = () => {
-  const data = [
-    {
-      message: 'Link 1',
-      link: 'https://www.youtube.com/',
-    },
-    {
-      message: 'Link 2',
-      link: 'https://www.youtube.com/',
-    },
-    {
-      message: 'Link 3',
-      link: 'https://www.youtube.com/',
-    },
-    {
-      message: 'Link 4',
-      link: 'https://www.youtube.com/',
-    },
-  ];
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    getWhatsNew('7395035003', 'A2F0CEE0')
+      .then(response => response.json())
+      .then(responseData => {
+        setData(responseData);
+        console.log("<><<><<><>><", responseData, "<><<<><><><><><><<><");
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);  
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>What's New?</Text>
       <ScrollView>
-        {data.map((item, index) => (
+        {data && data.map && data.map((item, index) => (
           <TouchableOpacity
             key={index}
             style={styles.listItem}
-            onPress={() => Linking.openURL(item.link)}
+            onPress={() => Linking.openURL(item.imagePath)}
           >
             <View style={styles.messageContainer}>
-              <Text style={styles.messageText}>{item.message}</Text>
+              <Text style={styles.messageText}>{item.fileName}</Text>
             </View>
             <Text style={styles.openLinkText}>View</Text>
           </TouchableOpacity>

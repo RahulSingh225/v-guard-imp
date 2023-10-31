@@ -12,6 +12,7 @@ import NewUserKyc from '../../../modules/auth/pages/NewUserKyc';
 import NomineePage from '../pages/NomineePage';
 import ForgotPassword from '../pages/ForgotPassword';
 import LoginWithNumber from '../pages/LoginWithNumber';
+import HomeStack from '../../home/stack/HomeStack';
 
 const AuthNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -29,7 +30,7 @@ const AuthNavigator = () => {
       {/* <Stack.Screen name="splash" component={SplashScreen} /> */}
 
       <Stack.Screen name="login" component={LoginScreen} screenOptions={{ headerShown: false }} />
-      <Stack.Screen name="home" component={HomeScreen} />
+      <Stack.Screen name="Home" component={HomeStack} />
       <Stack.Screen name="register" component={RegisterUser} />
       <Stack.Screen name="loginwithotp" component={LoginWithOtp} />
       {/* {/* <Stack.Screen name="newUser" component={NewUser} screenOptions={{ headerShown: true }} /> */}

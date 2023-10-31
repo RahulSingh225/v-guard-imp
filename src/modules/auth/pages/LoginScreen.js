@@ -4,7 +4,9 @@ import { useTranslation } from 'react-i18next';
 import colors from '../../../../colors';
 import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
-import { setAuthToken } from '../../../utils/apiservice';
+import { loginWithPassword } from '../AuthApiService';
+import { useAuth } from '../../../components/AuthContext';
+import Popup from '../../../components/Popup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -14,30 +16,33 @@ const LoginScreen = ({ navigation }) => {
   const placeholderColor = colors.grey;
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const { login } = useAuth();
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
 
-
-  const handleLogin = () => {
-    const enteredUsername = username;
-    const enteredPassword = password;
-  
-    if (!enteredUsername || !enteredPassword) {
-      alert('Please enter both username and password.');
-      return;
-    }
-  
-    setAuthToken(enteredUsername, enteredPassword);
-  
-    AsyncStorage.getItem('authToken', (error, authToken) => {
-      if (error) {
-        console.error('Error retrieving authToken:', error);
-      } else {
-        console.log('Retrieved Auth Token:', authToken);
-      }
-    });
-  
-    navigation.navigate('Home');
+  const togglePopup = () => {
+    setIsPopupVisible(!isPopupVisible);
   };
+
   
+const handleLogin = async () => {
+  try {
+    const response = await loginWithPassword(username, password);
+    console.log("response=====", response)
+    if (response.status === 200) {
+      console.log(response.mobileNo);
+      // Set AsyncStorage for username and password when the user logs in
+      await AsyncStorage.setItem('username', username);
+      await AsyncStorage.setItem('password', password);
+      login();
+    } else {
+      togglePopup();
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+  }
+};
+
+
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.loginScreen}>
@@ -125,6 +130,11 @@ const LoginScreen = ({ navigation }) => {
             />
           </View>
         </View>
+        {isPopupVisible && (
+          <Popup isVisible={isPopupVisible} onClose={togglePopup}>
+            <Text style={{ fontWeight: 'bold' }}>Incorrect Username or Password</Text>
+          </Popup>
+        )}
       </View>
     </ScrollView>
 
