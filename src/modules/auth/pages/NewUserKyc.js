@@ -182,14 +182,15 @@ const NewUserKyc = ({ navigation, route }) => {
 
                     // Set the state variables with the retrieved data
                     console.log('====================================');
-                    console.log(retrievedData);
+                    console.log(retrievedData.fullData.NewUserKycData.currentaddres);
                     console.log('====================================');
                     if (retrievedData.fullData.NewUserKycData.currentaddres === null) {
                         setcurrentaddres('Select');
                     }
 
-                    else if (retrievedData.fullData.NewUserKycData.currentaddres === "no") {
-                        setcurrentaddres(retrievedData.fullData.NewUserKyc.currentaddres);
+                    else if (retrievedData.fullData.NewUserKycData.currentaddres === 'no') {
+                        setcurrentaddres(retrievedData.fullData.NewUserKycData.currentaddres);
+                        setpincode(retrievedData.fullData.NewUserKycData.pinCode)
                         setaddress(retrievedData.NewUserKycData.userData.address);
                         setstreet(retrievedData.NewUserKycData.userData.street);
                         setlandmark(retrievedData.NewUserKycData.userData.landmark);
@@ -200,7 +201,8 @@ const NewUserKyc = ({ navigation, route }) => {
                     }
                     else if (retrievedData.fullData.NewUserKycData.currentaddres == 'yes') {
                         console.log("===>>ON FOIRST", currentaddres);
-                        setcurrentaddres(retrievedData.fullData.NewUserKyc.currentaddres)
+                        setcurrentaddres(retrievedData.fullData.NewUserKycData.currentaddres)
+                        setpincode(retrievedData.fullData.NewUserKycData.pincode.toString())
                         setaddress(retrievedData.fullData.userData.address);
                         setstreet(retrievedData.fullData.userData.street);
                         setlandmark(retrievedData.fullData.userData.landmark);
@@ -208,6 +210,24 @@ const NewUserKyc = ({ navigation, route }) => {
                         setCurrentselectedDistrict(retrievedData.fullData.NewUserKycData.currentselectedDistrict);
                         setCurrentselectedState(retrievedData.fullData.NewUserKycData.currentselectedState);
                         setpincode(retrievedData.fullData.userData.pinCode)
+                        setaddress(retrievedData.fullData.NewUserKycData.address);
+                        setstreet(retrievedData.fullData.NewUserKycData.street);
+                        setlandmark(retrievedData.fullData.NewUserKycData.landmark);
+
+                        setprofession(retrievedData.fullData.NewUserKycData.profession);
+                        setmaritialStatus(retrievedData.fullData.NewUserKycData.maritialStatus);
+                        setloyalty(retrievedData.fullData.NewUserKycData.loyalty);
+                        setNumber(retrievedData.fullData.NewUserKycData.Number);
+                        setSelfieData(retrievedData.fullData.NewUserKycData.selfieData);
+                        setIdProofFrontData(retrievedData.fullData.NewUserKycData.idProofFrontData);
+                        setIdProofBackData(retrievedData.fullData.NewUserKycData.idProofBackData);
+                        setPanData(retrievedData.fullData.NewUserKycData.panData);
+                        setpancardno(retrievedData.fullData.NewUserKycData.pancardno);
+                        setaadharcardno(retrievedData.fullData.NewUserKycData.aadharcardno);
+                        setannualincome(retrievedData.fullData.NewUserKycData.annualincome);
+                        setCurrentselectedCity(retrievedData.fullData.NewUserKycData.currentselectedCity);
+                        setCurrentselectedDistrict(retrievedData.fullData.NewUserKycData.currentselectedDistrict);
+                        setCurrentselectedState(retrievedData.fullData.NewUserKycData.currentselectedState);
 
 
                     }
@@ -223,7 +243,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
                     // }
                     else {
-                        setcurrentaddres(retrievedData.fullData.NewUserKycData.currentaddres);
+                        // setcurrentaddres(retrievedData.fullData.NewUserKycData.currentaddres);
                         setaddress(retrievedData.fullData.NewUserKycData.address);
                         setstreet(retrievedData.fullData.NewUserKycData.street);
                         setlandmark(retrievedData.fullData.NewUserKycData.landmark);
@@ -258,9 +278,12 @@ const NewUserKyc = ({ navigation, route }) => {
         Gettingprofession();
 
 
-        if (pincode.length >= 2) {
+        if (pincode != null) {
+            if (pincode.length >= 2) {
 
-            fetchPincodeSuggestions(pincode);
+                fetchPincodeSuggestions(pincode);
+
+            }
 
         }
 
@@ -271,7 +294,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
 
 
-    }, [pincode])
+    }, [])
 
 
     let options = {

@@ -24,10 +24,10 @@ const LoginWithOtp = ({ navigation, route }) => {
 
             if (!otp) {
                 Alert.alert("Please Enter the otp to proceed ")
-                navigation.navigate('newUser', {
-                    passedNo: number, // Pass the usernumber prop
-                    jobprofession: jobprofession, // Pass the jobprofession prop
-                })
+                // navigation.navigate('newUser', {
+                //     passedNo: number, // Pass the usernumber prop
+                //     jobprofession: jobprofession, // Pass the jobprofession prop
+                // })
             }
             // console.log("=======++++++++===========", { otp, number });
             else {

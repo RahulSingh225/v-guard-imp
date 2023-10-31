@@ -37,7 +37,7 @@ const NomineePage = ({ navigation, route }) => {
     const { t } = useTranslation();
     // const [currentaddres, setcurrentaddres] = useState('Select');
     const [checked, setChecked] = useState(false);
-    const [accountnumber, setaccountnumber] = useState(null);
+    const [accountnumber, setaccountnumber] = useState('');
     const [accountholdername, setaccountholdername] = useState(null);
     const [chequeImage, setchequeImage] = useState(null);
     const [IFSC, setIFSC] = useState(null);
@@ -78,38 +78,112 @@ const NomineePage = ({ navigation, route }) => {
         }
         setvalidateallfieldforbank(false)
 
-        // // Check for at least one field being entered
+        // // Check for at least one field being entere
+        // if (
+        //     (accountnumber !== null ||
+        //         accountholdername !== null ||
+        //         chequeImage !== null ||
+        //         IFSC !== null ||
+        //         accounttype !== "null" ||
+        //         selectedbank !== "null") &&
+        //     (accountnumber === null || accountholdername === null || chequeImage === null || IFSC === null || accounttype === "null" || selectedbank === "null")
 
-        //   navigation.navigate('PreviewSummary',)
+        // ) 
+        // if (
+        //     accountnumber !== '' ||
+        //     accountholdername !== null ||
+        //     chequeImage !== null ||
+        //     IFSC !== null ||
+        //     accounttype !== "null" ||
+        //     selectedbank !== "null"
+        // ) {
+
+        //     console.log(">>>>>>>>>>>>>>>>>", accountnumber);
+        //     Alert.alert("Please fill all bank details.");
+        // } else if (checked === false) {
+        //     Alert.alert("Please agree to terms and conditions.");
+        // } else {
+        //     // All fields are filled, proceed with data storage and navigation
+        //     console.log(">>>>>>>>>>>>>>>>>", accountnumber);
+        //     const dataToStore = JSON.stringify(PreviewSummaryData);
+        //     await AsyncStorage.setItem("previewSummaryData", dataToStore);
+        //     navigation.navigate("PreviewSummary");
         // }
-        if (
-            (accountnumber !== null ||
-                accountholdername !== null ||
-                chequeImage !== null ||
-                IFSC !== null ||
-                accounttype !== "null" ||
-                selectedbank !== "null") &&
-            (accountnumber === null ||
-                accountholdername === null ||
-                chequeImage === null ||
-                IFSC === null ||
-                accounttype === "null" ||
-                selectedbank === "null")
-        ) {
 
-            console.log(">>>>>>>>>>>>>>>>>", accountnumber);
-            Alert.alert("Please fill all bank details.");
-        } else if (checked === false) {
-            Alert.alert("Please agree to terms and conditions.");
+        //     if (
+        //         accountnumber === '' &&
+        //         accountholdername === null &&
+        //         chequeImage === null &&
+        //         IFSC === null &&
+        //         accounttype === 'null' &&
+        //         selectedbank === 'null'
+        //     ) {
+        //         // All fields are empty, allow navigation
+        //         const dataToStore = JSON.stringify(PreviewSummaryData);
+        //         await AsyncStorage.setItem("previewSummaryData", dataToStore);
+        //         navigation.navigate("PreviewSummary");
+        //     }
+
+        //     else if (
+        //         accountnumber !== '' &&
+        //         accountholdername !== null &&
+        //         chequeImage !== null &&
+        //         IFSC !== null &&
+        //         accounttype !== 'null' &&
+        //         selectedbank !== 'null'
+        //     ) {
+        //         // All fields are filled, allow navigation
+        //         const dataToStore = JSON.stringify(PreviewSummaryData);
+        //         await AsyncStorage.setItem("previewSummaryData", dataToStore);
+        //         navigation.navigate("PreviewSummary");
+
+        //     }
+        //     else if (checked === false) {
+        //         Alert.alert("Please agree to terms and conditions.");
+        //     }
+        //     else {
+        //         // At least one field is filled, block navigation and show an alert
+        //         Alert.alert('Please fill in all the fields or leave them all empty.');
+        //     }
+
+
+
+        // };
+
+        if (checked) {
+            // Terms and conditions are accepted
+            if (
+                accountnumber === '' &&
+                accountholdername === null &&
+                chequeImage === null &&
+                IFSC === null &&
+                accounttype === 'null' &&
+                selectedbank === 'null'
+            ) {
+                // All fields are empty, allow navigation
+                const dataToStore = JSON.stringify(PreviewSummaryData);
+                await AsyncStorage.setItem("previewSummaryData", dataToStore);
+                navigation.navigate("PreviewSummary");
+            } else if (
+                accountnumber !== '' &&
+                accountholdername !== null &&
+                chequeImage !== null &&
+                IFSC !== null &&
+                accounttype !== 'null' &&
+                selectedbank !== 'null'
+            ) {
+                // All fields are filled, allow navigation
+                const dataToStore = JSON.stringify(PreviewSummaryData);
+                await AsyncStorage.setItem("previewSummaryData", dataToStore);
+                navigation.navigate("PreviewSummary");
+            } else {
+                // At least one field is filled, block navigation and show an alert
+                Alert.alert('Please fill in all the fields or leave them all empty.');
+            }
         } else {
-            // All fields are filled, proceed with data storage and navigation
-            const dataToStore = JSON.stringify(PreviewSummaryData);
-            await AsyncStorage.setItem("previewSummaryData", dataToStore);
-            navigation.navigate("PreviewSummary");
+            // Terms and conditions are not accepted, show an alert
+            Alert.alert("Please agree to terms and conditions.");
         }
-
-
-
     };
     const openTermsAndConditions = () => {
         // Add the URL of your terms and conditions page
@@ -266,7 +340,7 @@ const NomineePage = ({ navigation, route }) => {
 
 
 
-    }, [allbankslist, accountholdername, accountnumber, accounttype, chequeImage, IFSC])
+    }, [allbankslist, checked])
 
 
     async function getallbanks() {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, FlatList, ActivityIndicator, Alert, KeyboardAvoidingView, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, Modal, FlatList, ActivityIndicator, Alert, KeyboardAvoidingView, Image } from 'react-native';
 import { height, width } from '../../../utils/dimensions';
 import { Avatar, IconButton } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
@@ -14,6 +14,7 @@ import {
     responsiveFontSize
 } from "react-native-responsive-dimensions";
 import { useDataContext } from '../../../utils/appcontext';
+import ImageWithModal from '../../../components/ImageWithModal';
 
 
 
@@ -516,9 +517,12 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
 
                         {selfieData != null ? <Text style={{ color: 'black', }}>{selfieData.name.substring(0, 30)}</Text> : null}
-                        {selfieData != null ? <Image resizeMode="cover"
-                            source={{ uri: selfieData.uri }}
-                            style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} /> : null}
+                        {selfieData != null ?
+                            <ImageWithModal imageUri={selfieData.uri} name={selfieData.name} /> : null}
+                        {/* <Image resizeMode="cover"
+                                    source={{ uri: selfieData.uri }}
+                                    style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} /></> */}
+
 
 
                     </View>
@@ -549,7 +553,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
                         {idProofFrontData != null ? <Text style={{ color: 'black', }}>{idProofFrontData.name.substring(0, 30)}</Text> : null}
-                        {idProofFrontData != null ? <Image resizeMode="cover" source={{ uri: idProofFrontData.uri }} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} /> : <Image resizeMode="cover" source={"../../../assets/images/ic_alert_.png"} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
+                        {idProofFrontData != null ? <ImageWithModal imageUri={idProofFrontData.uri} /> : <Image resizeMode="cover" source={"../../../assets/images/ic_alert_.png"} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
 
 
                     </View>
@@ -559,7 +563,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
                         {idProofBackData != null ? <Text style={{ color: 'black', }}>{idProofBackData.name.substring(0, 30)}</Text> : null}
-                        {idProofBackData != null ? <Image resizeMode="cover" source={{ uri: idProofBackData.uri }} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} /> : <Image resizeMode="cover" source={"../../../assets/images/ic_alert_.png"} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
+                        {idProofBackData != null ? <ImageWithModal imageUri={idProofBackData.uri} /> : <Image resizeMode="cover" source={"../../../assets/images/ic_alert_.png"} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
 
 
                     </View>
@@ -585,7 +589,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
                         {panData != null ? <Text style={{ color: 'black', }}>{panData.name.substring(0, 30)}</Text> : null}
-                        {panData != null ? <Image resizeMode="cover" source={{ uri: panData.uri }} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} /> : <Image resizeMode="cover" source={"../../../assets/images/ic_alert_.png"} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
+                        {panData != null ? <ImageWithModal imageUri={panData.uri} /> : <Image resizeMode="cover" source={"../../../assets/images/ic_alert_.png"} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
 
 
                     </View>

@@ -35,11 +35,11 @@ const NewUser = ({ navigation, }) => {
   const [email, setemail] = useState('');
   const [number, setNumber] = useState();
   const [whatapp, setwhatapp] = useState();
-  const [whatappyes, setwhatappyes] = useState('Select WhatApp contact same as above ?')
+  const [whatappyes, setwhatappyes] = useState('Select WhatApp contact same as above ?');
   const [address, setaddress] = useState('');
   const [street, setstreet] = useState('');
   const [landmark, setlandmark] = useState('');
-  const [name, setname] = useState('')
+  const [name, setname] = useState('');
   const [pincode, setPincode] = useState('');
   const [selectedState, setSelectedState] = useState();
   const [selectedDistrict, setSelectedDistrict] = useState('');
@@ -286,71 +286,71 @@ const NewUser = ({ navigation, }) => {
 
   async function validateFields() {
 
-    // if (!name) {
-    //   Alert.alert('Name field is empty. Please fill it.');
-    //   return false;
-    // }
+    if (!name) {
+      Alert.alert('Name field is empty. Please fill it.');
+      return false;
+    }
 
-    // if (!gender || gender === 'Select Gender*') {
-    //   Alert.alert('Gender field is empty. Please fill it.');
-    //   return false;
-    // }
-    // if (!selectedDate) {
-    //   Alert.alert('Select birth date is empty. Please fill it.');
-    //   return false;
-    // }
+    if (!gender || gender === 'Select Gender*') {
+      Alert.alert('Gender field is empty. Please fill it.');
+      return false;
+    }
+    if (!selectedDate) {
+      Alert.alert('Select birth date is empty. Please fill it.');
+      return false;
+    }
 
-    // if (!number) {
-    //   Alert.alert('Number field is empty. Please fill it.');
-    //   return false;
-    // }
-    // if (!whatappyes || whatappyes === "Select WhatApp contact same as above ?") {
-    //   Alert.alert('Please specify your WhatsApp no same or not. ');
-    //   return false;
-    // }
-    // if (!address) {
-    //   Alert.alert('Address field is empty. Please fill it.');
-    //   return false;
-    // }
-    // if (!street) {
-    //   Alert.alert('Street field is empty. Please fill it.');
-    //   return false;
-    // }
+    if (!number) {
+      Alert.alert('Number field is empty. Please fill it.');
+      return false;
+    }
+    if (!whatappyes || whatappyes === "Select WhatApp contact same as above ?") {
+      Alert.alert('Please specify your WhatsApp no same or not. ');
+      return false;
+    }
+    if (!address) {
+      Alert.alert('Address field is empty. Please fill it.');
+      return false;
+    }
+    if (!street) {
+      Alert.alert('Street field is empty. Please fill it.');
+      return false;
+    }
 
-    // if (!pincode) {
-    //   Alert.alert('Please enter a pincode and select a pincode to get state and district.');
-    //   return false;
-    // }
-    // if (!selectedState) {
-    //   Alert.alert('State field is empty. Please fill it.');
-    //   return false;
-    // }
-    // if (!selectedDistrict) {
-    //   Alert.alert('District field is empty. Please fill it.');
-    //   return false;
-    // }
-    // if (!selectedCity) {
-    //   Alert.alert('City field is empty. Please fill it.');
-    //   return false;
-    // } else {
-    setIsLoading(false)
-    const userDataString = JSON.stringify(userData);
-    await updateUserDataInPreviewSummary(userData);
+    if (!pincode) {
+      Alert.alert('Please enter a pincode and select a pincode to get state and district.');
+      return false;
+    }
+    if (!selectedState) {
+      Alert.alert('State field is empty. Please fill it.');
+      return false;
+    }
+    if (!selectedDistrict) {
+      Alert.alert('District field is empty. Please fill it.');
+      return false;
+    }
+    if (!selectedCity) {
+      Alert.alert('City field is empty. Please fill it.');
+      return false;
+    } else {
+      setIsLoading(false)
+      const userDataString = JSON.stringify(userData);
+      await updateUserDataInPreviewSummary(userData);
 
-    // await AsyncStorage.setItem("userdata", userData);
-    // await AsyncStorage.setItem('previewSummaryData', userDataString);
-    // console.log('==============new use page data ======================');
-    // console.log('prviewSummaryData');
-    const updatedValue = await AsyncStorage.getItem('previewSummaryData');
-    console.log('Updated Value in AsyncStorage (previewSummaryData +++++++++++++++++):', updatedValue);
-
-
-    navigation.navigate('NewUserKyc', { userData });
+      // await AsyncStorage.setItem("userdata", userData);
+      // await AsyncStorage.setItem('previewSummaryData', userDataString);
+      // console.log('==============new use page data ======================');
+      // console.log('prviewSummaryData');
+      const updatedValue = await AsyncStorage.getItem('previewSummaryData');
+      console.log('Updated Value in AsyncStorage (previewSummaryData +++++++++++++++++):', updatedValue);
 
 
-    setIsLoading(false)
+      navigation.navigate('NewUserKyc', { userData });
 
-    //}
+
+      setIsLoading(false)
+
+    }
     return true;
   }
   return (

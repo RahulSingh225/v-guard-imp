@@ -22,14 +22,14 @@ const RegisterUser = ({ navigation }) => {
         try {
             if (!number) {
                 Alert.alert('Please enter Phone number to proceed ')
-                navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption, preferedLanguage: preferedLanguage })
+                // navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption, preferedLanguage: preferedLanguage })
 
             }
             // Call the API function with user inputs
             else {
                 setIsLoading(true);
                 console.log('Validation response:', number);
-                //  const validationResponse = await NewusermobileNumberValidation(number, preferedLanguage);
+                const validationResponse = await NewusermobileNumberValidation(number, preferedLanguage);
                 console.log('Validation response:', validationResponse.data.message);
                 const successMessage = validationResponse.data.message;
                 await AsyncStorage.setItem("userno", number);
