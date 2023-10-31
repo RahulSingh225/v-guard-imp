@@ -1,11 +1,11 @@
-import {View, Text, StyleSheet, Image} from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 import React from 'react';
 import Buttons from '../../../components/Buttons';
 import colors from '../../../../colors';
 import language from '../../../assets/images/language.png';
 import arrowIcon from '../../../assets/images/arrow.png';
 
-const SplashScreen = ({navigation}) => {
+const SplashScreen = ({ navigation }) => {
   return (
     <View style={styles.mainWrapper}>
       <View style={styles.buttonContainer}>
@@ -35,7 +35,7 @@ const SplashScreen = ({navigation}) => {
           style={styles.startButton}
           label="Start"
           variant="filledButton"
-          onPress={() => navigation.navigate('login')}
+          onPress={() => navigation.navigate('category')}
           iconHeight={10}
           iconWidth={30}
           iconGap={30}

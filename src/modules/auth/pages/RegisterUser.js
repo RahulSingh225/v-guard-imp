@@ -1,5 +1,5 @@
 import { View, Text, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity, Alert } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next';
 import colors from '../../../../colors';
 import Buttons from '../../../components/Buttons';
@@ -7,11 +7,13 @@ import arrowIcon from '../../../assets/images/arrow.png';
 import { NewusermobileNumberValidation } from '../../../utils/apiservice';
 import Message from "../../../components/Message";
 import Loader from '../../../components/Loader';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const RegisterUser = ({ navigation }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [number, setNumber] = useState('');
     const [preferedLanguage, setpreferedLanguage] = useState(1);
+    const { t } = useTranslation();
+    const [selectedOption, setSelectedOption] = useState('Retailer');
 
 
 
@@ -20,15 +22,19 @@ const RegisterUser = ({ navigation }) => {
         try {
             if (!number) {
                 Alert.alert('Please enter Phone number to proceed ')
+                navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption, preferedLanguage: preferedLanguage })
 
             }
             // Call the API function with user inputs
             else {
                 setIsLoading(true);
                 console.log('Validation response:', number);
-                const validationResponse = await NewusermobileNumberValidation(number, preferedLanguage);
+                //  const validationResponse = await NewusermobileNumberValidation(number, preferedLanguage);
                 console.log('Validation response:', validationResponse.data.message);
                 const successMessage = validationResponse.data.message;
+                await AsyncStorage.setItem("userno", number);
+                await AsyncStorage.setItem("preferedLanguage", preferedLanguage.toString());
+                console.log(number, preferedLanguage);
                 navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption, preferedLanguage: preferedLanguage })
                 Alert.alert(successMessage);
 
@@ -46,12 +52,29 @@ const RegisterUser = ({ navigation }) => {
 
     const placeholderColor = colors.grey;
 
-    const { t } = useTranslation();
-    const [selectedOption, setSelectedOption] = useState('retailer');
+
 
     const handleOptionSelect = (option) => {
-        setSelectedOption(option);
+        if (selectedOption == 'Retailer') {
+            console.log('====================================');
+
+
+            setSelectedOption(option);
+            console.log('====================================');
+            // setSelectedOption('Retailer');
+        }
+        else {
+            setSelectedOption("Retailer");
+        }
+
     };
+
+    useEffect(() => {
+
+
+
+    }, [selectedOption])
+
 
 
 
@@ -75,17 +98,17 @@ const RegisterUser = ({ navigation }) => {
                             <View style={styles.radioButtons}>
                                 <TouchableOpacity
                                     style={styles.option}
-                                    onPress={() => handleOptionSelect('retailer')}
+                                    onPress={() => handleOptionSelect('Influencer')}
                                 >
                                     <Image
                                         source={
-                                            selectedOption === 'retailer'
+                                            selectedOption === 'Influencer'
                                                 ? require('../../../assets/images/tick_1.png')
                                                 : require('../../../assets/images/tick_1_notSelected.png')
                                         }
                                         style={styles.tick}
                                     />
-                                    <Text style={[styles.textHeader, { color: selectedOption === 'retailer' ? 'black' : 'grey' }]}>{t('auth:register:retailer')}</Text>
+                                    <Text style={[styles.textHeader, { color: selectedOption === 'Retailer' ? 'black' : 'grey' }]}>{t('auth:register:influencer')}</Text>
                                 </TouchableOpacity>
 
                             </View>

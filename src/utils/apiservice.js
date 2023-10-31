@@ -150,6 +150,21 @@ export const Citylist = async (disctrictId) => {
     }
 };
 
+export const RegisterNewUser = async (userbody) => {
+    console.log("Fetching data for pincode");
+    try {
+        const requestBody = {
+            userbody
+        };
+        const response = await api.post(``, { userbody });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching pin code data:', error);
+        throw error;
+
+    }
+}
+
 
 
 

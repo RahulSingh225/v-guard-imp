@@ -8,6 +8,7 @@ import Buttons from "../../../components/Buttons";
 import { fetchPinCodeData, PincodedetailList, Citylist } from '../../../utils/apiservice';
 import DatePicker from '../../../components/DatePicker';
 import { FloatingLabelInput } from 'react-native-floating-label-input';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -17,21 +18,22 @@ import NewUserKyc from './NewUserKyc';
 import Loader from '../../../components/Loader';
 
 
-const NewUser = ({ navigation, route }) => {
-  console.log('====================================');
-  console.log(route.params);
-  console.log('====================================');
-  const { passedNo, jobprofession } = route.params;
-  console.log("====>>>>", passedNo);
-  console.log("====>>>>", jobprofession);
+const NewUser = ({ navigation, }) => {
+
+  // console.log('====================================');
+  // console.log(route.params);
+  // console.log('====================================');
+  // const { passedNo, jobprofession } = route.params;
+  // console.log("====>>>>", passedNo);
+  // console.log("====>>>>", jobprofession);
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState('English');
+  const [selectedLanguage, setSelectedLanguage] = useState();
   const [citylistpicker, setcitylistpicker] = useState(null);
   const [districtid, setdistrictid] = useState('');
   const [gender, setGender] = useState('Select Gender*');
   const [email, setemail] = useState('');
-  const [number, setNumber] = useState(passedNo);
+  const [number, setNumber] = useState();
   const [whatapp, setwhatapp] = useState();
   const [whatappyes, setwhatappyes] = useState('Select WhatApp contact same as above ?')
   const [address, setaddress] = useState('');
@@ -121,8 +123,58 @@ const NewUser = ({ navigation, route }) => {
 
   useEffect(() => {
 
+    AsyncStorage.getItem("userno").then(userno => {
+      if (userno) {
+        // Update the state with the retrieved value
+        setNumber(userno);
 
-    if (pincode.length >= 3) {
+      }
+    });
+
+    AsyncStorage.getItem("preferedLanguage").then(language => {
+      if (language) {
+        // Update the state with the retrieved value
+        setSelectedLanguage(language);
+        console.log('====================================');
+        console.log(selectedLanguage);
+        console.log('====================================');
+      }
+    });
+    const retrieveData = async () => {
+      try {
+        const data = await AsyncStorage.getItem('previewSummaryData');
+        if (data) {
+          const retrievedData = JSON.parse(data);
+
+          // Set the state variables with the retrieved data
+          setSelectedLanguage(retrievedData.fulldata.userData.selectedLanguage);
+          setGender(retrievedData.fulldata.userData.gender);
+          setemail(retrievedData.fulldata.userData.email);
+          setNumber(retrievedData.fulldata.userData.number);
+          setwhatapp(retrievedData.fulldata.userData.whatapp);
+          setaddress(retrievedData.fulldata.userData.address);
+          setstreet(retrievedData.fulldata.userDat.street);
+          setlandmark(retrievedData.fulldata.userData.landmark);
+          setname(retrievedData.fulldata.userData.name);
+          setPincode(retrievedData.fulldata.userData.pincode.toString());
+          setSelectedState(retrievedData.fulldata.userData.selectedState);
+          setSelectedDistrict(retrievedData.fulldata.userData.selectedDistrict);
+          setSelectedCity(retrievedData.fulldata.userData.selectedCity);
+          console.log('====================================');
+          console.log(retrievedData);
+          console.log('====================================');
+
+          // Set other state variables for additional fields.
+        }
+      } catch (error) {
+        console.error('Error retrieving data: ', error);
+      }
+    };
+
+    retrieveData()
+
+
+    if (pincode.length >= 2) {
 
       fetchPincodeSuggestions(pincode);
 
@@ -136,8 +188,9 @@ const NewUser = ({ navigation, route }) => {
     return () => clearTimeout(timeout);
 
 
-  }, [pincode, gender, whatappyes, whatapp, citylistpicker, name, address])
+  }, [pincode, address, street, landmark])
 
+  // ===============================================GETTING SUGGESTION=====/// FOR PINCODE======================//
   const fetchPincodeSuggestions = async (pincode) => {
     setLoading(true);
     try {
@@ -168,6 +221,8 @@ const NewUser = ({ navigation, route }) => {
     }
   };
 
+  // ===END OF ====================GETTING SUGGESTION=======================================/// FOR PINCODE===//
+
   const userData = {
     selectedLanguage,
     gender,
@@ -185,57 +240,117 @@ const NewUser = ({ navigation, route }) => {
     selectedCity,
   };
 
+  async function updateUserDataInPreviewSummary(userData) {
+    try {
+      // Retrieve the existing 'previewSummaryData' from AsyncStorage
+      const previewSummaryDataString = await AsyncStorage.getItem('previewSummaryData');
 
-  function validateFields() {
+      if (previewSummaryDataString) {
+        // Parse the JSON string to an object
+        const previewSummaryData = JSON.parse(previewSummaryDataString);
 
-    if (!name) {
-      Alert.alert('Name field is empty. Please fill it.');
-      return false;
-    }
+        // Ensure that the object structure is properly initialized
+        if (!previewSummaryData.fullData) {
+          previewSummaryData.fullData = {};
+        }
 
-    if (!gender || gender === 'Select Gender*') {
-      Alert.alert('Gender field is empty. Please fill it.');
-      return false;
-    }
+        // Update the 'userData' property directly with the provided 'userData'
+        previewSummaryData.fullData.userData = userData;
+        // if (Object.keys(previewSummaryData.fullData.NewuserKycData).length === 0) {
+        //   delete previewSummaryData.fullData.NewuserKycData;
+        // }
+        // Convert the updated object back to a JSON string
+        const updatedPreviewSummaryDataString = JSON.stringify(previewSummaryData);
 
-    if (!number) {
-      Alert.alert('Number field is empty. Please fill it.');
-      return false;
-    }
-    if (!whatappyes || whatappyes === "Select WhatApp contact same as above ?") {
-      Alert.alert('Please specify your WhatsApp no same or not. ');
-      return false;
-    }
-    if (!address) {
-      Alert.alert('Address field is empty. Please fill it.');
-      return false;
-    }
-    if (!street) {
-      Alert.alert('Street field is empty. Please fill it.');
-      return false;
-    }
+        // Save the updated 'previewSummaryData' back to AsyncStorage
+        console.log("+++++++++++++++++++++++", updatedPreviewSummaryDataString);
+        await AsyncStorage.setItem('previewSummaryData', updatedPreviewSummaryDataString);
 
-    if (!pincode) {
-      Alert.alert('Please enter a pincode and select a pincode to get state and district.');
-      return false;
+        console.log('Updated User Data in previewSummaryData:', userData);
+      } else {
+        console.log('No previewSummaryData found in AsyncStorage');
+      }
+    } catch (error) {
+      console.error('Error updating User Data in previewSummaryData:', error);
     }
-    if (!selectedState) {
-      Alert.alert('State field is empty. Please fill it.');
-      return false;
-    }
-    if (!selectedDistrict) {
-      Alert.alert('District field is empty. Please fill it.');
-      return false;
-    }
-    if (!selectedCity) {
-      Alert.alert('City field is empty. Please fill it.');
-      return false;
-    } else {
-      setIsLoading(true)
-      navigation.navigate('NewUserKyc', { userData });
-      setIsLoading(false)
+  }
 
-    }
+
+
+
+
+
+
+
+
+
+  async function validateFields() {
+
+    // if (!name) {
+    //   Alert.alert('Name field is empty. Please fill it.');
+    //   return false;
+    // }
+
+    // if (!gender || gender === 'Select Gender*') {
+    //   Alert.alert('Gender field is empty. Please fill it.');
+    //   return false;
+    // }
+    // if (!selectedDate) {
+    //   Alert.alert('Select birth date is empty. Please fill it.');
+    //   return false;
+    // }
+
+    // if (!number) {
+    //   Alert.alert('Number field is empty. Please fill it.');
+    //   return false;
+    // }
+    // if (!whatappyes || whatappyes === "Select WhatApp contact same as above ?") {
+    //   Alert.alert('Please specify your WhatsApp no same or not. ');
+    //   return false;
+    // }
+    // if (!address) {
+    //   Alert.alert('Address field is empty. Please fill it.');
+    //   return false;
+    // }
+    // if (!street) {
+    //   Alert.alert('Street field is empty. Please fill it.');
+    //   return false;
+    // }
+
+    // if (!pincode) {
+    //   Alert.alert('Please enter a pincode and select a pincode to get state and district.');
+    //   return false;
+    // }
+    // if (!selectedState) {
+    //   Alert.alert('State field is empty. Please fill it.');
+    //   return false;
+    // }
+    // if (!selectedDistrict) {
+    //   Alert.alert('District field is empty. Please fill it.');
+    //   return false;
+    // }
+    // if (!selectedCity) {
+    //   Alert.alert('City field is empty. Please fill it.');
+    //   return false;
+    // } else {
+    setIsLoading(false)
+    const userDataString = JSON.stringify(userData);
+    await updateUserDataInPreviewSummary(userData);
+
+    // await AsyncStorage.setItem("userdata", userData);
+    // await AsyncStorage.setItem('previewSummaryData', userDataString);
+    // console.log('==============new use page data ======================');
+    // console.log('prviewSummaryData');
+    const updatedValue = await AsyncStorage.getItem('previewSummaryData');
+    console.log('Updated Value in AsyncStorage (previewSummaryData +++++++++++++++++):', updatedValue);
+
+
+    navigation.navigate('NewUserKyc', { userData });
+
+
+    setIsLoading(false)
+
+    //}
     return true;
   }
   return (
@@ -258,24 +373,22 @@ const NewUser = ({ navigation, route }) => {
 
         </View>
         <Text style={{ color: 'black', marginLeft: 20, }}>{t('auth:newuser:Preferedlanguage')}</Text>
-        <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 3 }}>
-
-
-          <Picker
-            mode='dropdown'
-            style={{ color: 'black' }}
-            selectedValue={selectedLanguage}
-            editable={false}
-            onValueChange={(itemValue, itemIndex) => {
-              console.log("Selected Value: ", itemValue)
-              setSelectedLanguage(itemValue)
-              console.log("Selected Value: ", selectedLanguage)
-            }}>
-            <Picker.Item label="English" value="English" />
-            <Picker.Item label="Hindi" value="Hindi" />
-          </Picker>
-
-        </View>
+        <TextInput
+          style={styles.input}
+          mode='outlined'
+          label="Selected Language"
+          placeholder="Selected Language"
+          maxLength={30}
+          editable={false}
+          value={selectedLanguage} // Set the value of the input to the 'text' state
+          onChangeText={(text) => setSelectedLanguage(text)}
+          keyboardType='default'
+          // Customize the border width and color for both normal and active states
+          borderWidth={1}
+          borderColor="black"
+          placeholderTextColor="grey"// Default border color
+        // Border color when the input is focused (active)
+        />
         <TextInput
           style={styles.input}
           mode='outlined'
@@ -487,7 +600,7 @@ const NewUser = ({ navigation, route }) => {
 
 
           setOpen={setOpen}
-          value={pincode}
+          value={pincode.toString()}
           onChangeText={(text) => {
             [setPincode(text), setOpen(false)]
             if (loading) {

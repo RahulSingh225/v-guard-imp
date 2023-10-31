@@ -55,22 +55,22 @@ const AuthNavigator = () => {
 };
 
 
-// const Kyc = () => {
-//   const kycStack = createNativeStackNavigator();
-//   return (
-//     <kycStack.Navigator
-//       screenOptions={{
-//         headerShown: true,
-//       }}>
+const Kyc = () => {
+  const kycStack = createNativeStackNavigator();
+  return (
+    <kycStack.Navigator
+      screenOptions={{
+        headerShown: true,
+      }}>
 
-//       <kycStack.Screen name="NewUser" component={NewUser} />
-//       <kycStack.Screen name="NewUserKyc" component={NewUserKyc} />
-//       < kycStack.Screen name='NomineePage' component={NomineePage} />
+      <kycStack.Screen name="NewUser" component={NewUser} />
+      <kycStack.Screen name="NewUserKyc" component={NewUserKyc} />
+      < kycStack.Screen name='NomineePage' component={NomineePage} />
 
-//     </kycStack.Navigator>
+    </kycStack.Navigator>
 
-//   );
+  );
 
-// };
+};
 
 export default AuthNavigator;

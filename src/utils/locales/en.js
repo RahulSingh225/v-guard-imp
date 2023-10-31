@@ -25,7 +25,7 @@ export default {
 
       Preferedlanguage: 'Prefered Language',
       Gender: 'Gender',
-      Date: 'Pick Date',
+      Date: 'Select Date of Birth',
       Whatappconatctsame: 'Is whatapp contact same as aboave',
       pincode: 'Pincode',
       State: 'State',

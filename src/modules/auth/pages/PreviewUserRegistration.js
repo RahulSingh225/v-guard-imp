@@ -103,10 +103,13 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     setlandmark(retrievedData.fullData.userData.landmark);
                     setSelectedDate(retrievedData.fullData.userData.selectedDate);
                     setname(retrievedData.fullData.userData.name);
-                    setPincode(retrievedData.fullData.userData.pincode);
+                    setPincode(retrievedData.fullData.userData.pincode.toString());
                     setSelectedState(retrievedData.fullData.userData.selectedState);
                     setSelectedDistrict(retrievedData.fullData.userData.selectedDistrict);
                     setSelectedCity(retrievedData.fullData.userData.selectedCity);
+                    console.log('====================================');
+                    console.log(typeof (pincode));
+                    console.log('====================================');
                     //KYC DATA
 
                     setprofession(retrievedData.fullData.NewUserKycData.profession);
@@ -143,36 +146,38 @@ const PreviewUserRegistration = ({ navigation, route }) => {
     }, [previewData]);
 
     const updateDataInAsyncStorage = async () => {
-        setLoading(true);
-        try {
-            const data = await AsyncStorage.getItem('previewSummaryData');
-            if (data) {
-                // Parse the JSON string back into an object
-                const retrievedData = JSON.parse(data);
+        // setLoading(true);
+        // try {
+        //     const data = await AsyncStorage.getItem('previewSummaryData');
+        //     if (data) {
+        //         // Parse the JSON string back into an object
+        //         const retrievedData = JSON.parse(data);
 
-                // Update the fields with the new values
-                retrievedData.fullData.NewUserKycData.profession = profession;
-                retrievedData.fullData.NewUserKycData.subprofession = subprofession; // Add this line
-                retrievedData.fullData.NewUserKycData.maritialStatus = maritialStatus;
-                retrievedData.fullData.NewUserKycData.loyalty = loyalty;
-                retrievedData.fullData.NewUserKycData.annualincome = annualincome;
-                retrievedData.fullData.NewUserKycData.aadharcardno = aadharcardno;
-                retrievedData.fullData.NewUserKycData.pancardno = pancardno;
-                retrievedData.fullData.NewUserKycData.Idprooftype = Idprooftype; // Add this line
+        //         // Update the fields with the new values
+        //         retrievedData.fullData.NewUserKycData.profession = profession;
+        //         retrievedData.fullData.NewUserKycData.subprofession = subprofession; // Add this line
+        //         retrievedData.fullData.NewUserKycData.maritialStatus = maritialStatus;
+        //         retrievedData.fullData.NewUserKycData.loyalty = loyalty;
+        //         retrievedData.fullData.NewUserKycData.annualincome = annualincome;
+        //         retrievedData.fullData.NewUserKycData.aadharcardno = aadharcardno;
+        //         retrievedData.fullData.NewUserKycData.pancardno = pancardno;
+        //         retrievedData.fullData.NewUserKycData.Idprooftype = Idprooftype; // Add this line
 
-                // Update the data in AsyncStorage
-                await AsyncStorage.setItem('previewSummaryData', JSON.stringify(retrievedData));
-                console.log('Updated data:', retrievedData.fullData.NewUserKycData);
+        //         // Update the data in AsyncStorage
+        //         await AsyncStorage.setItem('previewSummaryData', JSON.stringify(retrievedData));
+        //         console.log('Updated data:', retrievedData.fullData.NewUserKycData);
 
-                // Optionally, you can also change the button state to "Edit" after updating.
-                // For example, set a state variable to control the button text:
-                setUpdateButtonText('Edit');
-            }
-        } catch (error) {
-            console.error('Error updating data in AsyncStorage: ', error);
-        } finally {
-            setLoading(false); // Stop showing the loader
-        }
+        //         // Optionally, you can also change the button state to "Edit" after updating.
+        //         // For example, set a state variable to control the button text:
+        //         setUpdateButtonText('Edit');
+        //     }
+        // } catch (error) {
+        //     console.error('Error updating data in AsyncStorage: ', error);
+        // } finally {
+        //     setLoading(false); // Stop showing the loader
+        // }
+
+        navigation.navigate("newUser");
     };
 
 
@@ -490,7 +495,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         </Picker>
 
                     </View>
-                    <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>Annual Income</Text>
+                    <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>Annual Business Potential</Text>
                     <TextInput
                         style={styles.input}
                         placeholder="Annual business potential *"
@@ -531,7 +536,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                                 setIdprooftype(itemValue)}>
                             <Picker.Item label="Select" value="Select" />
                             <Picker.Item label="Addhar Card" value="Aadhar Card" />
-                            <Picker.Item label=" Pan Card" value="Pan Card" />
+
 
 
 
@@ -575,7 +580,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         maxLength={12}// Border color when the input is focused (active)
                     />
 
-                    <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>{t('auth:newuser:Selfie')}</Text>
+                    <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>{t('auth:newuser:Pan')}</Text>
 
 
                     <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
@@ -608,6 +613,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         placeholder="Account Number"
                         // Customize the border width and color for both normal and active states
                         borderWidth={1.8}
+                        editable={false}
                         keyboardType='number-pad'
                         value={accountnumber} // Set the value of the input to the 'text' state
                         onChangeText={(text) => setaccountnumber(text)}
@@ -623,6 +629,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         style={styles.input}
 
                         placeholder="Account Holder Name"
+                        editable={false}
                         // Customize the border width and color for both normal and active states
                         borderWidth={1.8}
                         keyboardType='default'
@@ -644,9 +651,9 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                             onValueChange={(itemValue, itemIndex) =>
                                 setaccounttype(itemValue)
                             }>
-                            <Picker.Item label="Select Account Type" value="Select Account Type" />
+                            {/* <Picker.Item label="Select Account Type" value="Select Account Type" />
                             <Picker.Item label=" Current" value="Current" />
-                            <Picker.Item label=" Saving" value="Saving" />
+                            <Picker.Item label=" Saving" value="Saving" /> */}
 
 
 
@@ -658,11 +665,12 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     <TextInput
                         style={styles.input}
+                        editable={false}
                         placeholder="Selected Bank"
                         label="Selected Bank"                        // Customize the border width and color for both normal and active states
                         borderWidth={1.8}
                         keyboardType='default'
-                        editable={false}
+
                         value={selectedbank} // Set the value of the input to the 'text' state
                         onChangeText={(text) => setselectedbank(text)}
                         borderColor="gray"
@@ -675,6 +683,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     <TextInput
                         style={styles.input}
                         placeholder="IFSC Code"
+                        editable={false}
                         label="Ifsc code"                        // Customize the border width and color for both normal and active states
                         borderWidth={1.8}
                         keyboardType='default'
@@ -694,7 +703,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         {chequeImage != null ?
 
                             <Image resizeMode="cover" source={{ uri: chequeImage.uri }} style={{ width: width / 8, height: height / 18, backgroundColor: 'transparent', borderRadius: 5, margin: 5 }} />
-                            : <Image resizeMode="cover" source={"../../../assets/images/ic_alert_.png"} style={{ width: width / 8, height: height / 18, backgroundColor: 'transparent', borderRadius: 5, margin: 5 }} />
+                            : null
 
                         }
                     </View>
@@ -709,6 +718,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         placeholder="Name of Nominee"
                         // Customize the border width and color for both normal and active states
                         borderWidth={1.8}
+                        editable={false}
                         keyboardType='default'
                         value={nomineename} // Set the value of the input to the 'text' state
                         onChangeText={(text) => setnomineename(text)}
@@ -724,6 +734,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         placeholder="Mobile No"
                         // Customize the border width and color for both normal and active states
                         borderWidth={1.8}
+                        editable={false}
                         keyboardType='number-pad'
                         value={nomineemobileno} // Set the value of the input to the 'text' state
                         onChangeText={(text) => setnomineemobileno(text)}
@@ -739,6 +750,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         style={styles.input}
 
                         placeholder="Email"
+                        editable={false}
                         // Customize the border width and color for both normal and active states
                         borderWidth={1.8}
                         keyboardType='email-address'
@@ -755,6 +767,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         style={styles.input}
 
                         placeholder="Address"
+                        editable={false}
                         // Customize the border width and color for both normal and active states
                         borderWidth={1.8}
                         keyboardType='email-address'

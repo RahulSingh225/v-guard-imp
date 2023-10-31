@@ -12,6 +12,7 @@ import { IconButton, } from 'react-native-paper';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { fetchPinCodeData, PincodedetailList, GetProfession, Citylist } from '../../../utils/apiservice';
 import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import DropDownPicker from 'react-native-dropdown-picker';
 import { CurrentRenderContext } from '@react-navigation/native';
@@ -21,12 +22,12 @@ import { CurrentRenderContext } from '@react-navigation/native';
 
 const NewUserKyc = ({ navigation, route }) => {
     const { userData } = route.params;
-    console.log('==================%%%==================', userData.selectedCity);
-    console.log('==================%%%==================', userData.selectedDistrict);
-    console.log('==================%%%==================', userData.selectedState);
+    // console.log('==================%%%==================', userData.selectedCity);
+    // console.log('==================%%%==================', userData.selectedDistrict);
+    // console.log('==================%%%==================', userData.selectedState);
     const { t } = useTranslation();
     const [currentaddres, setcurrentaddres] = useState('Select');
-    const [profession, setprofession] = useState();
+    const [profession, setprofession] = useState("Select");
     const [maritialStatus, setmaritialStatus] = useState('Select');
     const [loyalty, setloyalty] = useState('Select');
     const [Number, setNumber] = useState();
@@ -49,6 +50,7 @@ const NewUserKyc = ({ navigation, route }) => {
     const [schmename, setschmename] = useState('');
     const [resonforlikingschme, setresonforlikingschme] = useState('');
     const [citylistpicker, setcitylistpicker] = useState(null);
+    const [redendering, setredendering] = useState(0);
 
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState();
@@ -83,7 +85,7 @@ const NewUserKyc = ({ navigation, route }) => {
         try {
             const professionfromapi = await GetProfession();
             setprofessiondata([professionfromapi[0], professionfromapi[1], professionfromapi[2],]);
-            console.log("==%%%%===", professiondata);
+            // console.log("==%%%%===", professiondata);
         }
         catch (error) {
             console.error('Error fetching suggestions:', error);
@@ -95,11 +97,13 @@ const NewUserKyc = ({ navigation, route }) => {
 
     }
 
+    //================================GETTTING DISTRICT AND STATE NAME WITH PINCODEID ========================//
+
     async function fetchDataForPinCode1(pincode) {
         setLoading(true);
         try {
             const data = await fetchPinCodeData(pincode);
-            // console.log('Fetching data for pincode API CALL:', typeof pincode);
+            console.log('Fetching data for pincode API CALL:', typeof pincode);
             const pincodeid = data[0].pinCodeId; // Declare the variable using 'const'
             console.log('Pin Code Data:', pincodeid);
 
@@ -122,7 +126,9 @@ const NewUserKyc = ({ navigation, route }) => {
             setLoading(false);
         }
     }
+    //========================eND OF FUNCTION========GETTTING DISTRICT AND STATE NAME WITH PINCODEID ========================//
 
+    // ===============================================GETTING SUGGESTION=====/// FOR PINCODE======================//
     const fetchPincodeSuggestions = async (pincode) => {
         setLoading(true);
         try {
@@ -134,16 +140,7 @@ const NewUserKyc = ({ navigation, route }) => {
                     item.pinCode !== null
                 ));
                 setSuggestions(filteredSuggestions);
-                // console.log('====================================');
-                // console.log(suggestions);
-                // console.log('====================================');
-                // console.log('================VALUE====================');
-                // console.log(pincode);
-                // console.log('====================================');
-
                 fetchDataForPinCode1(pincode);
-
-
 
             } else {
                 setSuggestions([]);
@@ -157,27 +154,124 @@ const NewUserKyc = ({ navigation, route }) => {
         }
     };
 
+    // ===END OF ====================GETTING SUGGESTION=======================================/// FOR PINCODE===//
 
+    async function getCityDataForDistrict(districtId) {
+        try {
+
+            const cityData = await Citylist(districtId);
+            // setIsLoading(false)
+            return cityData;
+        } catch (error) {
+            console.error('Error fetching city data for district:', error);
+            throw error;
+        } finally {
+            // setIsLoading(false);
+        }
+    }
+    //=========== ***********************END OF THE ABOVE FUNCTION =================================//
     useEffect(() => {
-        requestCameraPermission();
+        // requestCameraPermission();
+
+        console.log("===>>ON FOIRST", currentaddres);
+        const retrieveData = async () => {
+            try {
+                const data = await AsyncStorage.getItem('previewSummaryData');
+                if (data) {
+                    const retrievedData = JSON.parse(data);
+
+                    // Set the state variables with the retrieved data
+                    console.log('====================================');
+                    console.log(retrievedData);
+                    console.log('====================================');
+                    if (retrievedData.fullData.NewUserKycData.currentaddres === null) {
+                        setcurrentaddres('Select');
+                    }
+
+                    else if (retrievedData.fullData.NewUserKycData.currentaddres === "no") {
+                        setcurrentaddres(retrievedData.fullData.NewUserKyc.currentaddres);
+                        setaddress(retrievedData.NewUserKycData.userData.address);
+                        setstreet(retrievedData.NewUserKycData.userData.street);
+                        setlandmark(retrievedData.NewUserKycData.userData.landmark);
+                        setCurrentselectedCity(retrievedData.fullData.NewUserKycData.currentselectedCity);
+                        setCurrentselectedDistrict(retrievedData.fullData.NewUserKycData.currentselectedDistrict);
+                        setCurrentselectedState(retrievedData.fullData.NewUserKycData.currentselectedState);
+                        setpincode(retrievedData.fullData.NewUserKycData.pinCode)
+                    }
+                    else if (retrievedData.fullData.NewUserKycData.currentaddres == 'yes') {
+                        console.log("===>>ON FOIRST", currentaddres);
+                        setcurrentaddres(retrievedData.fullData.NewUserKyc.currentaddres)
+                        setaddress(retrievedData.fullData.userData.address);
+                        setstreet(retrievedData.fullData.userData.street);
+                        setlandmark(retrievedData.fullData.userData.landmark);
+                        setCurrentselectedCity(retrievedData.fullData.NewUserKycData.currentselectedCity);
+                        setCurrentselectedDistrict(retrievedData.fullData.NewUserKycData.currentselectedDistrict);
+                        setCurrentselectedState(retrievedData.fullData.NewUserKycData.currentselectedState);
+                        setpincode(retrievedData.fullData.userData.pinCode)
+
+
+                    }
+                    // if (retrievedData.fullData.NewUserKycData.currentaddres === 'no') {
+                    //     setaddress(retrievedData.fullData.NewUserKycData.address);
+                    //     setstreet(retrievedData.fullData.NewUserKycData.street);
+                    //     setlandmark(retrievedData.fullData.NewUserKycData.landmark);
+                    //     setCurrentselectedCity(retrievedData.fullData.NewUserKycData.currentselectedCity);
+                    //     setCurrentselectedDistrict(retrievedData.fullData.NewUserKycData.currentselectedDistrict);
+                    //     setCurrentselectedState(retrievedData.fullData.NewUserKycData.currentselectedState);
+                    //     setpincode(retrievedData.fullData.NewUserKycData.pinCode.toString())
+
+
+                    // }
+                    else {
+                        setcurrentaddres(retrievedData.fullData.NewUserKycData.currentaddres);
+                        setaddress(retrievedData.fullData.NewUserKycData.address);
+                        setstreet(retrievedData.fullData.NewUserKycData.street);
+                        setlandmark(retrievedData.fullData.NewUserKycData.landmark);
+                        setpincode(retrievedData.fullData.NewUserKycData.pincode.toString())
+                        setprofession(retrievedData.fullData.NewUserKycData.profession);
+                        setmaritialStatus(retrievedData.fullData.NewUserKycData.maritialStatus);
+                        setloyalty(retrievedData.fullData.NewUserKycData.loyalty);
+                        setNumber(retrievedData.fullData.NewUserKycData.Number);
+                        setSelfieData(retrievedData.fullData.NewUserKycData.selfieData);
+                        setIdProofFrontData(retrievedData.fullData.NewUserKycData.idProofFrontData);
+                        setIdProofBackData(retrievedData.fullData.NewUserKycData.idProofBackData);
+                        setPanData(retrievedData.fullData.NewUserKycData.panData);
+                        setpancardno(retrievedData.fullData.NewUserKycData.pancardno);
+                        setaadharcardno(retrievedData.fullData.NewUserKycData.aadharcardno);
+                        setannualincome(retrievedData.fullData.NewUserKycData.annualincome);
+                        setCurrentselectedCity(retrievedData.fullData.NewUserKycData.currentselectedCity);
+                        setCurrentselectedDistrict(retrievedData.fullData.NewUserKycData.currentselectedDistrict);
+                        setCurrentselectedState(retrievedData.fullData.NewUserKycData.currentselectedState);
+                    }
+
+                    console.log('================ON USE EFFECT====================');
+                    console.log(pincode);
+                    console.log('====================================');
+
+                    // Set other state variables for additional fields.
+                }
+            } catch (error) {
+                console.error('Error retrieving data: ', error);
+            }
+        };
+        retrieveData()
         Gettingprofession();
 
 
         if (pincode.length >= 2) {
-            // Make the API call here
+
             fetchPincodeSuggestions(pincode);
+
         }
 
 
 
-        const timeout = setTimeout(() => {
-            setLoading(false);
-        }, 50000);
 
-        // Clear the timeout if the component unmounts before the timeout is reached
-        return () => clearTimeout(timeout);
 
-    }, [pincode, currentselectedCity, citylistpicker, currentselectedDistrict, currentselectedState, selfieData, currentaddres, loyalty, landmark, street, address])
+
+
+
+    }, [pincode])
 
 
     let options = {
@@ -259,8 +353,8 @@ const NewUserKyc = ({ navigation, route }) => {
         userData,
         NewUserKycData,
     };
-
-    const validateFields = () => {
+    //================================VALIDATION FUNCTION AND NAVIAGTION ON NEXT PAGE ==============================================//
+    const validateFields = async () => {
         if (!currentaddres || currentaddres === "Select") {
             Alert.alert('Select current address same as Permanent address or not.');
             return false;
@@ -273,12 +367,12 @@ const NewUserKyc = ({ navigation, route }) => {
             Alert.alert('Please enter street colony or locality name.');
             return false;
         }
-        if (!pincode) {
+        if (!pincode && pincode != null) {
             console.log("))))))", pincode);
             Alert.alert('Please enter a pincode and select a pincode to get state and district');
             return false;
         }
-        if (!profession || profession === "Select your pofession") {
+        if (!profession || profession === "Select") {
             Alert.alert('Profession field is empty. Please fill it.');
             return false;
         }
@@ -342,12 +436,20 @@ const NewUserKyc = ({ navigation, route }) => {
             return false;
         }
         else {
-            navigation.navigate('NomineePage', { fullData })
+            // console.log('====================================');
+            // console.log(fullData);
+            // console.log('====================================');
+            // const fullData = JSON.stringify(fullData);
+            // console.log("+++++++++++++++++++", fullData);
+            // await AsyncStorage.setItem("previewSummaryData", fullData);
+            // log
+            navigation.navigate('NomineePage', { fullData });
         }
         // Add validation checks for other fields
 
         return true;
     };
+    //===============================VALIDATION FUNCTION ENDS =================================================================//
 
     //=========== FUNCTION FOR GETTING THE  CITY LIST ON USING THE DISTRICT ID =================================//
 
@@ -362,13 +464,6 @@ const NewUserKyc = ({ navigation, route }) => {
         }
     }
     //=========== ***********************END OF THE ABOVE FUNCTION =================================//
-
-
-
-
-
-
-
     const openImagePicker = async (documentType, onCapture) => {
         const granted = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -423,9 +518,6 @@ const NewUserKyc = ({ navigation, route }) => {
         }
     };
 
-
-
-
     return (
         <SafeAreaView>
             <ScrollView >
@@ -465,6 +557,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
                                 }
                                 if (itemValue === 'yes') {
+
                                     // Set the values for pre-filling
                                     setaddress(userData.address); // Set your pre-filled address value
                                     setstreet(userData.street); // Set your pre-filled street value
@@ -478,6 +571,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                     setCurrentselectedDistrict(userData.selectedDistrict);// Set your pre-filled pincode value
                                     setCurrentselectedState(userData.selectedState); // Set your pre-filled state value
                                     // Set your pre-filled district value
+
 
                                     console.log('====================####================', currentselectedCity);
                                     console.log('====================####================', currentselectedDistrict);
@@ -686,6 +780,7 @@ const NewUserKyc = ({ navigation, route }) => {
                             onValueChange={(itemValue, itemIndex) =>
                                 setprofession(itemValue)
                             }>
+                            <Picker.Item label="Select" value="" />
                             {professiondata.map(item => (
                                 <Picker.Item key={item.professionId} label={item.professionName} value={item.professionName} />
                             ))}

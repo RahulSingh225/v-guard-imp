@@ -28,23 +28,25 @@ import { useDataContext } from '../../../utils/appcontext';
 
 
 const NomineePage = ({ navigation, route }) => {
+
+    // const { data, setData } = useDataContext();
     const { fullData } = route.params;
-    const { data, setData } = useDataContext();
     console.log('==================%%%==================', fullData);
 
 
     const { t } = useTranslation();
     // const [currentaddres, setcurrentaddres] = useState('Select');
     const [checked, setChecked] = useState(false);
-    const [accountnumber, setaccountnumber] = useState('');
-    const [accountholdername, setaccountholdername] = useState('');
-    const [chequeImage, setchequeImage] = useState();
-    const [IFSC, setIFSC] = useState('');
-    const [accounttype, setaccounttype] = useState('')
+    const [accountnumber, setaccountnumber] = useState(null);
+    const [accountholdername, setaccountholdername] = useState(null);
+    const [chequeImage, setchequeImage] = useState(null);
+    const [IFSC, setIFSC] = useState(null);
+    const [accounttype, setaccounttype] = useState("null");
 
-    const [selectedbank, setselectedbank] = useState('');
+    const [selectedbank, setselectedbank] = useState("null");
     const [allbankslist, setallbankslist] = useState(null);
     const [validateallfieldforbank, setvalidateallfieldforbank] = useState(false);
+    const [relationship, setrelationship] = useState(null)
 
 
     const [nomineename, setnomineename] = useState('');
@@ -52,57 +54,62 @@ const NomineePage = ({ navigation, route }) => {
     const [nomineeemail, setnomineeemail] = useState('');
     const [nomineeaddress, setnomineeaddress] = useState('');
 
-    const BankDetailsAndNominee = {
-        accountnumber,
-        accountholdername,
-        chequeImage,
-        IFSC,
-        accounttype,
-        selectedbank,
-        nomineename,
-        nomineemobileno,
-        nomineeemail,
-        nomineeaddress,
-    };
 
-    const PreviewSummaryData = {
-        BankDetailsAndNominee,
-        fullData,
-    }
+
+
 
     const validateFields = async () => {
+        const BankDetailsAndNominee = {
+            accountnumber,
+            accountholdername,
+            chequeImage,
+            IFSC,
+            accounttype,
+            selectedbank,
+            nomineename,
+            nomineemobileno,
+            nomineeemail,
+            nomineeaddress,
+        }
+        const PreviewSummaryData = {
+            BankDetailsAndNominee,
+            fullData,
+
+        }
         setvalidateallfieldforbank(false)
 
-        // Check for at least one field being entered
-        if (accountnumber || accountholdername || IFSC || chequeImage || accounttype) {
-            setvalidateallfieldforbank(true)
-        }
+        // // Check for at least one field being entered
 
-        if (validateallfieldforbank) {
-            if (!accountnumber || !accountholdername || !IFSC || !chequeImage || !accounttype) {
-                Alert.alert('Please fill bank complete details.');
-                return false;
-            }
+        //   navigation.navigate('PreviewSummary',)
+        // }
+        if (
+            (accountnumber !== null ||
+                accountholdername !== null ||
+                chequeImage !== null ||
+                IFSC !== null ||
+                accounttype !== "null" ||
+                selectedbank !== "null") &&
+            (accountnumber === null ||
+                accountholdername === null ||
+                chequeImage === null ||
+                IFSC === null ||
+                accounttype === "null" ||
+                selectedbank === "null")
+        ) {
 
-
-        }
-
-        if (checked === false) {
-            Alert.alert('Please Agree to terms and conditions.');
-        }
-        else {
-            // setData({ ...data, BankDetailsAndNominee, fullData });
+            console.log(">>>>>>>>>>>>>>>>>", accountnumber);
+            Alert.alert("Please fill all bank details.");
+        } else if (checked === false) {
+            Alert.alert("Please agree to terms and conditions.");
+        } else {
+            // All fields are filled, proceed with data storage and navigation
             const dataToStore = JSON.stringify(PreviewSummaryData);
-            // console.log("+++++++++++++++++++++", dataToStore);
-
-            // Store the data in AsyncStorage
-            await AsyncStorage.setItem('previewSummaryData', dataToStore);
-            // console.log("+++++++++++++++++++++", dataToStore);
-            navigation.navigate('PreviewSummary',)
+            await AsyncStorage.setItem("previewSummaryData", dataToStore);
+            navigation.navigate("PreviewSummary");
         }
 
 
-        return true;
+
     };
     const openTermsAndConditions = () => {
         // Add the URL of your terms and conditions page
@@ -209,6 +216,47 @@ const NomineePage = ({ navigation, route }) => {
 
 
     useEffect(() => {
+
+        const retrieveData = async () => {
+            try {
+                const data = await AsyncStorage.getItem('previewSummaryData');
+                if (data) {
+                    const retrievedData = JSON.parse(data);
+
+                    // Set the state variables with the retrieved data
+                    console.log('====================================');
+                    console.log(retrievedData);
+                    console.log('====================================');
+                    setaccountnumber(retrievedData.BankDetailsAndNominee.accountnumber);
+                    setaccountholdername(retrievedData.BankDetailsAndNominee.accountholdername);
+                    setchequeImage(retrievedData.BankDetailsAndNominee.chequeImage);
+                    setIFSC(retrievedData.BankDetailsAndNominee.IFSC);
+                    setaccounttype(retrievedData.BankDetailsAndNominee.accounttype);
+                    setselectedbank(retrievedData.BankDetailsAndNominee.selectedbank);
+
+                    setnomineename(retrievedData.BankDetailsAndNominee.nomineename);
+                    setnomineemobileno(retrievedData.BankDetailsAndNominee.nomineemobileno);
+                    setnomineeemail(retrievedData.BankDetailsAndNominee.nomineeemail);
+                    setnomineeaddress(retrievedData.BankDetailsAndNominee.nomineeaddress);
+
+
+
+
+                    console.log('====================================');
+                    console.log(accountholdername);
+                    console.log('====================================');
+
+                    // Set other state variables for additional fields.
+                }
+            } catch (error) {
+                console.error('Error retrieving data: ', error);
+            }
+        };
+
+        if (retrieveData == null) {
+            retrieveData();
+
+        }
         if (allbankslist == null) {
             getallbanks();
 
@@ -216,7 +264,9 @@ const NomineePage = ({ navigation, route }) => {
 
 
 
-    }, [allbankslist])
+
+
+    }, [allbankslist, accountholdername, accountnumber, accounttype, chequeImage, IFSC])
 
 
     async function getallbanks() {
@@ -296,7 +346,7 @@ const NomineePage = ({ navigation, route }) => {
                             onValueChange={(itemValue, itemIndex) =>
                                 setaccounttype(itemValue)
                             }>
-                            <Picker.Item label="Select Account Type" value="Select Account Type" />
+                            <Picker.Item label="Select Account Type" value="null" />
                             <Picker.Item label=" Current" value="Current" />
                             <Picker.Item label=" Saving" value="Saving" />
 
@@ -320,7 +370,7 @@ const NomineePage = ({ navigation, route }) => {
                             onValueChange={(itemValue, itemIndex) =>
                                 setselectedbank(itemValue)
                             }>
-
+                            <Picker.Item label="Select" value="null" />
                             {Array.isArray(allbankslist) && allbankslist.length > 0 ? (
                                 allbankslist.map(item => (
                                     <Picker.Item
@@ -411,8 +461,9 @@ const NomineePage = ({ navigation, route }) => {
                             value={nomineemobileno} // Set the value of the input to the 'text' state
                             onChangeText={(text) => setnomineemobileno(text)}
                             borderColor="gray"
-                            placeholderTextColor="grey" // Default border color
-                            activeBorderColor="blue" // Border color when the input is focused (active)
+                            placeholderTextColor="grey"
+                            maxLength={10}// Default border color
+                        // Border color when the input is focused (active)
                         />
 
 
@@ -429,7 +480,7 @@ const NomineePage = ({ navigation, route }) => {
                             onChangeText={(text) => setnomineeemail(text)}
                             borderColor="gray"
                             placeholderTextColor="grey" // Default border color
-                            activeBorderColor="blue" // Border color when the input is focused (active)
+                        // Border color when the input is focused (active)
                         />
 
 
@@ -445,7 +496,20 @@ const NomineePage = ({ navigation, route }) => {
                             onChangeText={(text) => setnomineeaddress(text)}
                             borderColor="gray"
                             placeholderTextColor="grey" // Default border color
-                            activeBorderColor="blue" // Border color when the input is focused (active)
+                        // Border color when the input is focused (active)
+                        />
+                        <TextInput
+                            style={styles.input}
+
+                            placeholder="Relatioship with you"
+                            // Customize the border width and color for both normal and active states
+                            borderWidth={1.8}
+                            keyboardType='default'
+                            value={relationship} // Set the value of the input to the 'text' state
+                            onChangeText={(text) => setrelationship(text)}
+                            borderColor="gray"
+                            placeholderTextColor="grey" // Default border color
+                        // Border color when the input is focused (active)
                         />
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', left: 20 }}>
