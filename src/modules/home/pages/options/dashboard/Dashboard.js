@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity, Image } from 'react-native';
 import MonthPicker from 'react-native-month-year-picker';
 import moment from 'moment';
 import colors from '../../../../../../colors';
@@ -42,6 +42,10 @@ const Dashboard = () => {
 
         <SafeAreaView style={styles.datepicker}>
           <Text style={styles.text}>{moment(date).format('MMMM YYYY')}</Text>
+          <Image style={[
+            { width: '6%', height: '100%', }
+          ]}
+          resizeMode="contain" source={require('../../../../../assets/images/unfold_arrow.png')} />
           {show && (
             <MonthPicker
               onChange={onValueChange}
@@ -102,7 +106,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     padding: 5,
-    marginTop: responsiveHeight(2)
+    marginTop: responsiveHeight(2),
+    backgroundColor: colors.white
   },
   text: {
     color: colors.black,

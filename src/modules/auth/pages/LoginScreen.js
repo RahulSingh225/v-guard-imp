@@ -4,6 +4,11 @@ import { useTranslation } from 'react-i18next';
 import colors from '../../../../colors';
 import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
+import { loginWithPassword } from '../AuthApiService';
+import { useAuth } from '../../../components/AuthContext';
+import Popup from '../../../components/Popup';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const LoginScreen = ({ navigation }) => {
   const yellow = colors.yellow;
@@ -11,16 +16,33 @@ const LoginScreen = ({ navigation }) => {
   const placeholderColor = colors.grey;
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [otp, setOtp] = useState('');
+  const { login } = useAuth();
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
 
-
-  const handleLogin = () => {
-    if (username === 'user' && password === 'password') {
-      navigation.navigate('Home');
-    } else {
-      alert('Invalid credentials. Please try again.');
-    }
+  const togglePopup = () => {
+    setIsPopupVisible(!isPopupVisible);
   };
+
+  
+const handleLogin = async () => {
+  try {
+    const response = await loginWithPassword(username, password);
+    console.log("response=====", response)
+    if (response.status === 200) {
+      console.log(response.mobileNo);
+      // Set AsyncStorage for username and password when the user logs in
+      await AsyncStorage.setItem('username', username);
+      await AsyncStorage.setItem('password', password);
+      login();
+    } else {
+      togglePopup();
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+  }
+};
+
+
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.loginScreen}>
@@ -55,14 +77,14 @@ const LoginScreen = ({ navigation }) => {
                 <Text style={styles.forgotPassword}>{t('auth:login:forgotPassword')}</Text>
               </TouchableOpacity>
             </View>
-            <Text style={styles.or}>{t('auth:login:or')}</Text>
+            {/* <Text style={styles.or}>{t('auth:login:or')}</Text>
             <TextInput
               style={styles.input}
               placeholder={t('auth:login:otp')}
               placeholderTextColor={placeholderColor}
               value={otp}
               onChangeText={(text) => setOtp(text)}
-            />
+            /> */}
             <View style={styles.buttonContainer}>
               <Buttons
                 style={styles.button}
@@ -79,7 +101,7 @@ const LoginScreen = ({ navigation }) => {
                 style={styles.button}
                 label={t('auth:login:withotp')}
                 variant="filled"
-                onPress={handleLogin}
+                onPress={() => navigation.navigate('loginWithNumber')}
                 width="100%"
               />
               <Buttons
@@ -108,6 +130,11 @@ const LoginScreen = ({ navigation }) => {
             />
           </View>
         </View>
+        {isPopupVisible && (
+          <Popup isVisible={isPopupVisible} onClose={togglePopup}>
+            <Text style={{ fontWeight: 'bold' }}>Incorrect Username or Password</Text>
+          </Popup>
+        )}
       </View>
     </ScrollView>
 

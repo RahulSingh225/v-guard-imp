@@ -1,27 +1,52 @@
 import axios from 'axios';
+import digestFetch from 'react-native-digest-fetch';
+
 
 const API_LINK = 'http://34.100.133.239:18092'; // Replace with your API base URL
 
-// Create an instance of Axios with default configuration
+
+const BASE_URL = 'http://34.100.133.239:18092/vguard/api/';
+
+export const createDigestGetRequest = async (relativeUrl = {}, username, password) => {
+    try {
+        const url = BASE_URL + relativeUrl;
+        const headers = {
+            'Content-Type': 'application/json',
+        };
+
+        const response = await digestFetch(url, {
+            method: 'GET',
+            headers,
+            username,
+            password,
+        });
+
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
 const api = axios.create({
     baseURL: API_LINK,
     headers: {
         'Content-Type': 'application/json',
+
     },
 });
 
-// Function to set the authentication token
-export const setAuthToken = (token) => {
-    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-};
-
-// Function to clear the authentication token
-export const clearAuthToken = () => {
-    delete api.defaults.headers.common['Authorization'];
-};
-
 // Example API functions
 
+export const forgotPassword = async (mobileNumber) => {
+    try {
+        const response = await api.post('/vguard/api/user/forgotPassword', mobileNumber);
+        return response.data;
+    }
+    catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
 
 export const postUserData = async (userData) => {
     try {
@@ -124,6 +149,8 @@ export const Citylist = async (disctrictId) => {
         throw error;
     }
 };
+
+
 
 
 

@@ -34,6 +34,7 @@ async function requestCameraAndStoragePermissions() {
     console.error('Permission request error:', error);
   }
 }
+import { AuthProvider } from './src/components/AuthContext';
 
 const App = () => {
 
@@ -45,9 +46,9 @@ const App = () => {
   }, [])
 
   return (
-    <DataProvider>
+    <AuthProvider>
       <AppNavigator />
-    </DataProvider>
+    </AuthProvider>
     // <NavigationContainer>
     //   <View style={styles.fullscreen}>
     //     <BottomTab/>

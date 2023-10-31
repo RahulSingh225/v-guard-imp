@@ -1,5 +1,9 @@
 export default {
   auth: {
+    loginWithNumber: {
+      heading: 'Welcome!',
+      enterMobile: 'Enter registered mobile number to continue'
+    },
     login: {
       heading: 'Welcome!',
       label: 'Login or Register to Continue',
@@ -50,12 +54,6 @@ export default {
       NomineeEmailAddress: 'Email Address',
       NomineeAddress: 'Address*',
       Iagreetotermsandcondition: 'I agree to the Term and Conditions',
-
-
-
-
-
-
     },
     forgot: {
       heading: "Forgot Password?",

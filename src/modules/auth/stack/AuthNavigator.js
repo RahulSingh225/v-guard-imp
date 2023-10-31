@@ -11,6 +11,8 @@ import NewUser from '../../../modules/auth/pages/NewUser';
 import NewUserKyc from '../../../modules/auth/pages/NewUserKyc';
 import NomineePage from '../pages/NomineePage';
 import ForgotPassword from '../pages/ForgotPassword';
+import LoginWithNumber from '../pages/LoginWithNumber';
+import HomeStack from '../../home/stack/HomeStack';
 import PreviewUserRegistration from '../pages/PreviewUserRegistration';
 
 const AuthNavigator = () => {
@@ -31,9 +33,13 @@ const AuthNavigator = () => {
 
 
       <Stack.Screen name="login" component={LoginScreen} screenOptions={{ headerShown: false }} />
-      <Stack.Screen name="home" component={HomeScreen} />
+      <Stack.Screen name="Home" component={HomeStack} />
       <Stack.Screen name="register" component={RegisterUser} />
       <Stack.Screen name="loginwithotp" component={LoginWithOtp} />
+      {/* {/* <Stack.Screen name="newUser" component={NewUser} screenOptions={{ headerShown: true }} /> */}
+      <Stack.Screen name="Kyc" component={Kyc} />
+      <Stack.Screen name="forgotPassword" component={ForgotPassword} />
+      <Stack.Screen name="loginWithNumber" component={LoginWithNumber} />
       <Stack.Screen name="newUser" component={NewUser} screenOptions={{ headerShown: true }} />
       <Stack.Screen name="NewUserKyc" component={NewUserKyc} />
       <Stack.Screen name='NomineePage' component={NomineePage} />
