@@ -1,46 +1,55 @@
-import { Text, StyleSheet, View, Image } from 'react-native';
+import { Text, StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
 import colors from '../../../../colors';
 import { useTranslation } from 'react-i18next';
+import { Linking } from 'react-native';
+
 import {
     responsiveHeight,
     responsiveWidth,
     responsiveFontSize
-  } from "react-native-responsive-dimensions";
+} from "react-native-responsive-dimensions";
 
 
 const ContactPage = ({ navigation }) => {
     const { t } = useTranslation();
+    const handlePhoneCall = () => {
+        Linking.openURL('tel:+91 9717500011');
+      };
+    
+      const handleEmail = () => {
+        Linking.openURL('mailto:info@vguardrishta.com');
+      };
+    
+      const handleWhatsApp = () => {
+        Linking.openURL('https://wa.me/919818900011');
+      };
     return (
         <View style={styles.mainWrapper}>
             <Text style={styles.mainHeader}>{t('contact:heading')}</Text>
             <Text style={styles.text}>{t('contact:subHeading')}</Text>
-            <View style={styles.helpContainer}>
-                <Image
-                    source={require('../../../assets/images/ic_phone_call_2.png')}
-                    style={styles.icon}
-                />
-                <Text style={styles.textHelp}>
-                    9717500011
-                </Text>
-            </View>
-            <View style={styles.helpContainer}>
-                <Image
-                    source={require('../../../assets/images/ic_email.png')}
-                    style={styles.icon}
-                />
-                <Text style={styles.textHelp}>
-                    info@vguardrishta.com
-                </Text>
-            </View>
-            <View style={styles.helpContainer}>
-                <Image
-                    source={require('../../../assets/images/ic_whatsapp.webp')}
-                    style={styles.icon}
-                />
-                <Text style={styles.textHelp}>
-                    9818900011
-                </Text>
+            <View style={styles.contact}>
+                <TouchableOpacity style={styles.helpContainer} onPress={handlePhoneCall}>
+                    <Image
+                        source={require('../../../assets/images/ic_phone_call_2.png')}
+                        style={styles.icon}
+                    />
+                    <Text style={styles.textHelp}>9717500011</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.helpContainer} onPress={handleEmail}>
+                    <Image
+                        source={require('../../../assets/images/ic_email.png')}
+                        style={styles.icon}
+                    />
+                    <Text style={styles.textHelp}>info@vguardrishta.com</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.helpContainer} onPress={handleWhatsApp}>
+                    <Image
+                        source={require('../../../assets/images/ic_whatsapp.webp')}
+                        style={styles.icon}
+                    />
+                    <Text style={styles.textHelp}>9818900011</Text>
+                </TouchableOpacity>
             </View>
             <View style={styles.container}>
                 <Text style={styles.text}>
