@@ -75,39 +75,55 @@ export const loginPasswordDigest = async (relativeUrl, username, password) => {
             username,
             password,
         });
+        const userDetailsData = await response.json();
 
-        if (response.status === 200) {
-            const userDetailsResponse = await fetchUserDetails(username, password);
+        const { name, userCode, username, password } = userDetailsData;
+        const pointsBalance = userDetailsData.pointsSummary.pointsBalance;
+        const redeemedPoints = userDetailsData.pointsSummary.redeemedPoints;
+        const numberOfScan = userDetailsData.pointsSummary.numberOfScan;
 
-            if (userDetailsResponse.status === 200) {
-                const userDetailsData = await userDetailsResponse.json();
-              
-                const { name, userCode } = userDetailsData;
-                const pointsBalance = userDetailsData.pointsSummary.pointsBalance;
-                const redeemedPoints = userDetailsData.pointsSummary.redeemedPoints;
-                const numberOfScan = userDetailsData.pointsSummary.numberOfScan;
-              
-                const safePointsBalance = pointsBalance || 0;
-                const safeRedeemedPoints = redeemedPoints || 0;
-                const safeNumberOfScan = numberOfScan || 0;
-              
-                await AsyncStorage.setItem('name', name);
-                await AsyncStorage.setItem('userCode', userCode);
-                await AsyncStorage.setItem('pointsBalance', safePointsBalance.toString());
-                await AsyncStorage.setItem('redeemedPoints', safeRedeemedPoints.toString());
-                await AsyncStorage.setItem('numberOfScan', safeNumberOfScan.toString());
-              }
-              
-            else {
-                throw new Error('Error fetching user details');
-            }
-        }
+        const safePointsBalance = pointsBalance || 0;
+        const safeRedeemedPoints = redeemedPoints || 0;
+        const safeNumberOfScan = numberOfScan || 0;
 
+        await AsyncStorage.setItem('name', name);
+        await AsyncStorage.setItem('userCode', userCode);
+        await AsyncStorage.setItem('pointsBalance', safePointsBalance.toString());
+        await AsyncStorage.setItem('redeemedPoints', safeRedeemedPoints.toString());
+        await AsyncStorage.setItem('numberOfScan', safeNumberOfScan.toString());
         return response;
     } catch (error) {
         throw error;
     }
 };
+
+// export const setUserDetails = async() => {
+//         const userDetailsResponse = await fetchUserDetails(username, password);
+//         console.log(userDetailsResponse, "<><><<<><>><<")
+
+//         if (userDetailsResponse.status === 200) {
+//             const userDetailsData = await userDetailsResponse.json();
+
+//             const { name, userCode } = userDetailsData;
+//             const pointsBalance = userDetailsData.pointsSummary.pointsBalance;
+//             const redeemedPoints = userDetailsData.pointsSummary.redeemedPoints;
+//             const numberOfScan = userDetailsData.pointsSummary.numberOfScan;
+
+//             const safePointsBalance = pointsBalance || 0;
+//             const safeRedeemedPoints = redeemedPoints || 0;
+//             const safeNumberOfScan = numberOfScan || 0;
+
+//             await AsyncStorage.setItem('name', name);
+//             await AsyncStorage.setItem('userCode', userCode);
+//             await AsyncStorage.setItem('pointsBalance', safePointsBalance.toString());
+//             await AsyncStorage.setItem('redeemedPoints', safeRedeemedPoints.toString());
+//             await AsyncStorage.setItem('numberOfScan', safeNumberOfScan.toString());
+//           }
+
+//         else {
+//             throw new Error('Error fetching user details');
+//         }
+// }
 
 
 const fetchUserDetails = () => {

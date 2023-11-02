@@ -8,9 +8,18 @@ import { loginWithPassword } from '../AuthApiService';
 import { useAuth } from '../../../components/AuthContext';
 import Popup from '../../../components/Popup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { setUserDetails } from '../../../utils/apiservice';
+import Snackbar from 'react-native-snackbar';
 
 
 const LoginScreen = ({ navigation }) => {
+  const showSnackbar = (message) => {
+    Snackbar.show({
+      text: message,
+      duration: Snackbar.LENGTH_SHORT,
+    });
+  };
+  
   const yellow = colors.yellow;
   const { t } = useTranslation();
   const placeholderColor = colors.grey;
@@ -24,22 +33,30 @@ const LoginScreen = ({ navigation }) => {
   };
 
   
-const handleLogin = async () => {
-  try {
-    const response = await loginWithPassword(username, password);
-    console.log("response=====", response)
-    if (response.status === 200) {
-      console.log(response.mobileNo);
-      await AsyncStorage.setItem('username', username);
-      await AsyncStorage.setItem('password', password);
-      login();
-    } else {
-      togglePopup();
+  const handleLogin = async () => {
+    if (username === '' || password === '') {
+      showSnackbar('Please enter a username and password.');
+      return; // Do not proceed with login if fields are empty
     }
-  } catch (error) {
-    console.error('Login error:', error);
-  }
-};
+  
+    try {
+      const response = await loginWithPassword(username, password);
+      console.log('response=====', response);
+      if (response.status === 200) {
+        console.log('<><><<><><><><><<><<><<><<');
+        console.log(response.mobileNo);
+        // await AsyncStorage.setItem('username', username);
+        // await AsyncStorage.setItem('password', password);
+        login();
+        setUserDetails();
+      } else {
+        togglePopup();
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+    }
+  };
+  
 
 
   return (
