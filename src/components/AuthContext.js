@@ -8,9 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
 
   const login = async () => {
-    await AsyncStorage.clear();
     setIsUserAuthenticated(true);
-    await AsyncStorage.setItem('isUserAuthenticated', 'true');
   };
 
   const logout = async () => {

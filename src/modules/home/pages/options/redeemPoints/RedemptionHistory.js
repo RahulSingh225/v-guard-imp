@@ -1,34 +1,47 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { View, Text, FlatList, StyleSheet, ScrollView } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import colors from '../../../../../../colors';
+import { getRedemptionHistory } from '../../HomeApiService';
 
 const RedemptionHistory = () => {
   const { t } = useTranslation();
-  const redemptionHistoryData = [
-    {
-      date: '2023-10-15',
-      product: 'Product A',
-      status: 'Active',
-    },
-    {
-      date: '2023-10-10',
-      product: 'Product B',
-      status: 'Delivered',
-    },
-    {
-      date: '2023-10-05',
-      product: 'Product C',
-      status: 'Credited',
-    },
-  ];
+  const [redemptionHistoryData, setRedemptionHistoryData] = useState([]);
+  useEffect(() => {
+    getRedemptionHistory()
+      .then(response => response.json())
+      .then(responseData => {
+        setRedemptionHistoryData(responseData);
+        console.log("<><<><<><>><", responseData, "<><<<><><><><><><<><");
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []); 
+  // const redemptionHistoryData = [
+  //   {
+  //     date: '2023-10-15',
+  //     product: 'Product A',
+  //     status: 'Active',
+  //   },
+  //   {
+  //     date: '2023-10-10',
+  //     product: 'Product B',
+  //     status: 'Delivered',
+  //   },
+  //   {
+  //     date: '2023-10-05',
+  //     product: 'Product C',
+  //     status: 'Credited',
+  //   },
+  // ];
 
   const renderItem = ({ item }) => (
     <View style={[styles.item]}>
-      <Text style={[styles.text, item.status === 'Active' ? styles.activeText : styles.inactiveText]}>{item.date}</Text>
-      <Text style={[styles.text, item.status === 'Active' ? styles.activeText : styles.inactiveText]}>{item.product}</Text>
-      <Text style={[styles.status, item.status === 'Active' ? styles.activeItem : styles.inactiveItem]}>{item.status}</Text>
+      <Text style={[styles.text, item.orderStatus === 'In Process' ? styles.activeText : styles.inactiveText]}>{item.transactDate}</Text>
+      <Text style={[styles.text, item.orderStatus === 'In Process' ? styles.activeText : styles.inactiveText]}>{item.productName}</Text>
+      <Text style={[styles.status, item.orderStatus === 'In Process' ? styles.activeItem : styles.inactiveItem]}>{item.orderStatus}</Text>
     </View>
   );
 
