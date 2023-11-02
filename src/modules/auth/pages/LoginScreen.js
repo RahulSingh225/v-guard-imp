@@ -30,7 +30,6 @@ const handleLogin = async () => {
     console.log("response=====", response)
     if (response.status === 200) {
       console.log(response.mobileNo);
-      // Set AsyncStorage for username and password when the user logs in
       await AsyncStorage.setItem('username', username);
       await AsyncStorage.setItem('password', password);
       login();

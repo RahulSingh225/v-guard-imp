@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import colors from '../../../../colors';
 import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
-import { NewusermobileNumberValidation } from '../../../utils/apiservice';
 import Message from "../../../components/Message";
+import { sendloginWithOtp } from '../AuthApiService';
 
 const LoginWithNumber = ({ navigation }) => {
     const [number, setNumber] = useState('');
@@ -13,20 +13,22 @@ const LoginWithNumber = ({ navigation }) => {
 
     const handleValidation = async () => {
         try {
-            // Call the API function with user inputs
-            const validationResponse = await NewusermobileNumberValidation(number, preferedLanguage);
-            console.log('Validation response:', validationResponse.data.message);
-            const successMessage = validationResponse.data.message;
-            navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption, preferedLanguage: preferedLanguage })
-            Alert.alert(successMessage);
-
-
-            // Handle the response as needed
+            let validationResponse = await sendloginWithOtp(number);
+            validationResponse = await validationResponse.json();
+            console.log(validationResponse.code, "<><><><><")
+            if (validationResponse.code === 200) {
+                const successMessage = validationResponse.message;
+                navigation.navigate('loginwithotp', { usernumber: number });
+                Alert.alert(successMessage);
+            } else {
+                const errorMessage = validationResponse.message;
+                Alert.alert(errorMessage);
+            }
         } catch (error) {
             console.error('Error during validation:', error);
-            // Handle the error as needed
         }
     };
+    
 
     const placeholderColor = colors.grey;
 

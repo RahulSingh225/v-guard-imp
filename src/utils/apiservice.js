@@ -1,5 +1,6 @@
 import axios from 'axios';
 import digestFetch from 'react-native-digest-fetch';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const API_LINK = 'http://34.100.133.239:18092'; // Replace with your API base URL
@@ -7,13 +8,67 @@ const API_LINK = 'http://34.100.133.239:18092'; // Replace with your API base UR
 
 const BASE_URL = 'http://34.100.133.239:18092/vguard/api/';
 
-export const createDigestGetRequest = async (relativeUrl = {}, username, password) => {
+export const createDigestPostRequest = async (relativeUrl = {}, data) => {
     try {
         const url = BASE_URL + relativeUrl;
         const headers = {
             'Content-Type': 'application/json',
         };
 
+        // Retrieve the username and password from AsyncStorage
+        const username = await AsyncStorage.getItem('username');
+        const password = await AsyncStorage.getItem('password');
+
+        if (username && password) {
+            const response = await digestFetch(url, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(data), // Include the data to be sent in the request
+                username,
+                password,
+            });
+
+            return response;
+        } else {
+            throw new Error('Username and/or password not found in AsyncStorage.');
+        }
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const createDigestGetRequest = async (relativeUrl = {}) => {
+    try {
+        const url = BASE_URL + relativeUrl;
+        const headers = {
+            'Content-Type': 'application/json',
+        };
+
+        const username = await AsyncStorage.getItem('username');
+        const password = await AsyncStorage.getItem('password');
+
+        if (username && password) {
+            const response = await digestFetch(url, {
+                method: 'GET',
+                headers,
+                username,
+                password,
+            });
+
+            return response;
+        } else {
+            throw new Error('Username and/or password not found in AsyncStorage.');
+        }
+    } catch (error) {
+        throw error;
+    }
+};
+export const loginPasswordDigest = async (relativeUrl, username, password) => {
+    try {
+        const url = BASE_URL + relativeUrl;
+        const headers = {
+            'Content-Type': 'application/json',
+        };
         const response = await digestFetch(url, {
             method: 'GET',
             headers,
@@ -21,11 +76,44 @@ export const createDigestGetRequest = async (relativeUrl = {}, username, passwor
             password,
         });
 
+        if (response.status === 200) {
+            const userDetailsResponse = await fetchUserDetails(username, password);
+
+            if (userDetailsResponse.status === 200) {
+                const userDetailsData = await userDetailsResponse.json();
+              
+                const { name, userCode } = userDetailsData;
+                const pointsBalance = userDetailsData.pointsSummary.pointsBalance;
+                const redeemedPoints = userDetailsData.pointsSummary.redeemedPoints;
+                const numberOfScan = userDetailsData.pointsSummary.numberOfScan;
+              
+                const safePointsBalance = pointsBalance || 0;
+                const safeRedeemedPoints = redeemedPoints || 0;
+                const safeNumberOfScan = numberOfScan || 0;
+              
+                await AsyncStorage.setItem('name', name);
+                await AsyncStorage.setItem('userCode', userCode);
+                await AsyncStorage.setItem('pointsBalance', safePointsBalance.toString());
+                await AsyncStorage.setItem('redeemedPoints', safeRedeemedPoints.toString());
+                await AsyncStorage.setItem('numberOfScan', safeNumberOfScan.toString());
+              }
+              
+            else {
+                throw new Error('Error fetching user details');
+            }
+        }
+
         return response;
     } catch (error) {
         throw error;
     }
 };
+
+
+const fetchUserDetails = () => {
+    const path = "user/userDetails"
+    return createDigestGetRequest(path);
+}
 
 const api = axios.create({
     baseURL: API_LINK,
@@ -116,8 +204,8 @@ export const NewusermobileNumberValidation = async (mobileNo, preferredLanguageP
             mobileNo: mobileNo,
             preferredLanguagePos: preferredLanguagePos
         };
-
         const response = await api.post('/vguard/api/user/validateNewMobileNo', { params: requestBody });
+        console.log(response)
         return response;
     } catch (error) {
         console.error('Error fetching data:', error);

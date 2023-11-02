@@ -1,44 +1,21 @@
-import { View, Text, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import colors from '../../../../colors';
 import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
-import { NewusermobileNumberValidation } from '../../../utils/apiservice';
-import Message from "../../../components/Message";
 
-const RegisterUser = ({ navigation }) => {
-    const [number, setNumber] = useState('');
-    const [preferedLanguage, setpreferedLanguage] = useState(1);
+const RegisterWithOtp = ({ navigation, route }) => {
 
-
-
-
-    const handleValidation = async () => {
-        try {
-            // Call the API function with user inputs
-            const validationResponse = await NewusermobileNumberValidation(number, preferedLanguage);
-            console.log('Validation response:', validationResponse.data.message);
-            const successMessage = validationResponse.data.message;
-            navigation.navigate('registerwithotp', { usernumber: number, jobprofession: selectedOption, preferedLanguage: preferedLanguage })
-            Alert.alert(successMessage);
-        } catch (error) {
-            console.error('Error during validation:', error);
-        }
-    };
+    const { usernumber, jobprofession } = route.params;
+    console.log("====>>>>", usernumber);
+    console.log("====>>>>", jobprofession);
 
     const placeholderColor = colors.grey;
 
     const { t } = useTranslation();
-    const [selectedOption, setSelectedOption] = useState('retailer');
 
-    const handleOptionSelect = (option) => {
-        setSelectedOption(option);
-    };
-
-
-
-
+    const [otp, setOtp] = useState('');
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.registerUser}>
@@ -47,47 +24,26 @@ const RegisterUser = ({ navigation }) => {
                         source={require('../../../assets/images/group_907.png')}
                         style={styles.imageSaathi}
                     />
-                    <Text style={styles.mainHeader}>{t('auth:register:heading')}</Text>
+                    <Text style={styles.mainHeader}>{t('auth:loginWIthOtp:heading')}</Text>
                     <View style={styles.formContainer}>
                         <View style={styles.containter}>
-                            <Text style={styles.textHeader}>{t('auth:register:selectProfession')}</Text>
-                            <View style={styles.radioButtons}>
-                                <TouchableOpacity
-                                    style={styles.option}
-                                    onPress={() => handleOptionSelect('retailer')}
-                                >
-                                    <Image
-                                        source={
-                                            selectedOption === 'retailer'
-                                                ? require('../../../assets/images/tick_1.png')
-                                                : require('../../../assets/images/tick_1_notSelected.png')
-                                        }
-                                        style={styles.tick}
-                                    />
-                                    <Text style={[styles.textHeader, { color: selectedOption === 'retailer' ? 'black' : 'grey' }]}>{t('auth:register:retailer')}</Text>
-                                </TouchableOpacity>
-
-                            </View>
-                        </View>
-                        <View style={styles.containter}>
-                            <Text style={styles.textHeader}>{t('auth:register:enterMobile')}</Text>
+                            <Text style={styles.textHeader}>{t('auth:register:enterOtpHeading')}</Text>
                             <TextInput
                                 style={styles.input}
-                                placeholder={t('auth:register:mobile')}
+                                placeholder={t('auth:register:enterOtp')}
                                 placeholderTextColor={placeholderColor}
-                                value={number}
                                 keyboardType='number-pad'
-                                onChangeText={(text) => setNumber(text)}
-                                maxLength={10}
+                                value={otp}
+                                onChangeText={(text) => setOtp(text)}
+                                maxLength={4}
                             />
                         </View>
                         <View style={styles.buttonContainer}>
                             <Buttons
                                 style={styles.button}
-                                label={t('auth:register:getOtp')}
+                                label={t('auth:loginWIthOtp:submit')}
                                 variant="filled"
-                                //  onPress={() => navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption })}
-                                onPress={() => handleValidation()}
+                                onPress={() => navigation.navigate('Kyc')}
                                 width="100%"
                                 iconHeight={10}
                                 iconWidth={30}
@@ -135,6 +91,8 @@ const styles = StyleSheet.create({
         flexGrow: 1
     },
     textHeader: {
+        textAlign: 'center',
+        width: '80%',
         color: colors.grey,
         fontSize: 14,
         fontWeight: 'bold'
@@ -143,7 +101,7 @@ const styles = StyleSheet.create({
         color: colors.black,
         fontSize: 20,
         fontWeight: 'bold',
-        marginBottom: 10
+        // marginBottom: 10
     },
     imageSaathi: {
         width: 100,
@@ -156,12 +114,12 @@ const styles = StyleSheet.create({
     },
     formContainer: {
         width: '100%',
-        justifyContent: 'center',
         padding: 16,
         flex: 2,
     },
     input: {
         height: 40,
+        width: '100%',
         padding: 10,
         borderRadius: 5,
         color: colors.black,
@@ -213,6 +171,7 @@ const styles = StyleSheet.create({
     containter: {
         display: 'flex',
         flexDirection: 'column',
+        alignItems: 'center',
         gap: 20,
         marginBottom: 50
     },
@@ -232,4 +191,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default RegisterUser
+export default RegisterWithOtp

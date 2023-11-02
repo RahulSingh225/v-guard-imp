@@ -7,7 +7,7 @@ import { getWhatsNew } from '../../HomeApiService';
 const New = () => {
   const [data, setData] = useState([]);
   useEffect(() => {
-    getWhatsNew('7395035003', 'A2F0CEE0')
+    getWhatsNew()
       .then(response => response.json())
       .then(responseData => {
         setData(responseData);

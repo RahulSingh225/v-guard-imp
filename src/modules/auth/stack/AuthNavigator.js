@@ -13,6 +13,7 @@ import NomineePage from '../pages/NomineePage';
 import ForgotPassword from '../pages/ForgotPassword';
 import LoginWithNumber from '../pages/LoginWithNumber';
 import HomeStack from '../../home/stack/HomeStack';
+import RegisterWithOtp from '../pages/RegisterWithOtp';
 
 const AuthNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -33,6 +34,7 @@ const AuthNavigator = () => {
       <Stack.Screen name="Home" component={HomeStack} />
       <Stack.Screen name="register" component={RegisterUser} />
       <Stack.Screen name="loginwithotp" component={LoginWithOtp} />
+      <Stack.Screen name="registerwithotp" component={RegisterWithOtp} />
       {/* {/* <Stack.Screen name="newUser" component={NewUser} screenOptions={{ headerShown: true }} /> */}
       <Stack.Screen name="Kyc" component={Kyc} />
       <Stack.Screen name="forgotPassword" component={ForgotPassword} />

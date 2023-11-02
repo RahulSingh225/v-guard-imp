@@ -7,10 +7,8 @@ import arrowIcon from '../../../assets/images/arrow.png';
 
 const LoginWithOtp = ({ navigation, route }) => {
 
-    const { usernumber, jobprofession } = route.params;
+    const { usernumber } = route.params;
     console.log("====>>>>", usernumber);
-    console.log("====>>>>", jobprofession);
-
     const placeholderColor = colors.grey;
 
     const { t } = useTranslation();

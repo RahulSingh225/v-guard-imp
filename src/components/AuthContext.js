@@ -8,19 +8,15 @@ export const AuthProvider = ({ children }) => {
 
   const login = async () => {
     setIsUserAuthenticated(true);
-    // Set AsyncStorage when the user logs in
     await AsyncStorage.setItem('isUserAuthenticated', 'true');
   };
 
   const logout = async () => {
     setIsUserAuthenticated(false);
-    // Clear AsyncStorage when the user logs out
     await AsyncStorage.removeItem('isUserAuthenticated');
   };
 
-  // Check the authentication status when the app starts
   useEffect(() => {
-    // Check AsyncStorage to determine the authentication status
     AsyncStorage.getItem('isUserAuthenticated')
       .then((value) => {
         const isAuthenticated = value === 'true';
