@@ -1,5 +1,5 @@
-import { ScrollView, Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import { ScrollView, Image, StyleSheet, Text, View, TouchableOpacity, Linking } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import colors from '../../../../colors';
 import { useTranslation } from 'react-i18next';
@@ -133,12 +133,35 @@ const HomeScreen = ({ navigation }) => {
               screenName="engagement"
             />
           </View>
-          <View style={styles.row}>
-            <CustomTouchableOption
+          <View style={styles.lastrow}>
+            <TouchableOpacity
+              style={[
+                styles.oval,
+              ]}
+              onPress={() => Linking.openURL('https://www.vguardrishta.com/img/appImages/Instructionmanual.pdf')}
+            >
+              <View style={[
+                styles.optionIcon,
+              ]}>
+                <Image
+                  source={require('../../../assets/images/ic_instruction_manual.jpeg')}
+                  style={[
+                    { flex: 1, width: '100%', height: '100%' },
+                  ]}
+                  resizeMode="contain"
+                />
+              </View>
+              <Text style={[
+                styles.nav,
+              ]}>
+                {t("dashboard:options:manual")}
+              </Text>
+            </TouchableOpacity>
+            {/* <CustomTouchableOption
               text="dashboard:options:manual"
               iconSource={require('../../../assets/images/ic_instruction_manual.jpeg')}
               screenName="manual"
-            />
+            /> */}
           </View>
         </View>
         <NeedHelp />
@@ -234,7 +257,35 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 20,
     justifyContent: 'space-around'
-  }
+  },
+  lastrow: {
+    marginLeft: 5
+  },
+  oval: {
+    padding: 10,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: responsiveHeight(18),
+    width: responsiveWidth(25),
+    maxWidth: responsiveWidth(25),
+    flexGrow: 1,
+    backgroundColor: colors.white,
+    shadowColor: 'rgba(0, 0, 0, 0.8)',
+    elevation: 5,
+    borderRadius: 100,
+  },
+  optionIcon: {
+    width: responsiveHeight(5),
+    height: responsiveHeight(5),
+    marginBottom: 20,
+  },
+  nav: {
+    color: colors.black,
+    fontSize: responsiveFontSize(1.5),
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
 })
 
 export default HomeScreen;

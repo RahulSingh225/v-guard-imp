@@ -33,7 +33,13 @@ const BottomTab = () => {
 
   const CustomTabHeader = ({ route }) => (
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+      <View style={{flexDirection: 'row', gap: 10}}>
       <Text style={{color: colors.black, fontSize: responsiveFontSize(2.5), fontWeight: 'bold'}}>{route.name}</Text>
+      <View style = {styles.languageContainer}>
+        <Text style = {{color: colors.black}}>English</Text>
+        <Image style={{ width: 15, height: 15, marginLeft: 5}} source={require('../../../assets/images/down_yellow_arrow.png')} />
+      </View>
+      </View>
       <Image
         source={require('../../../assets/images/group_910.png')} // Replace with the path to your image
         style={{ width: 83, height: 30, marginLeft: 10 }}
@@ -79,5 +85,17 @@ const BottomTab = () => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  languageContainer: {
+    borderWidth: 1,
+    borderColor: colors.black,
+    paddingVertical: 2,
+    paddingHorizontal: 5,
+    borderRadius: 5,
+    flexDirection: 'row',
+    alignItems: 'center'
+  }
+})
 
 export default BottomTab;
