@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { View, Text, FlatList, StyleSheet, ScrollView } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { responsiveFontSize } from 'react-native-responsive-dimensions';
+import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions';
 import colors from '../../../../../../colors';
 import { getRedemptionHistory } from '../../HomeApiService';
 
@@ -46,21 +46,34 @@ const RedemptionHistory = () => {
   );
 
   return (
+    
     <ScrollView style={styles.mainWrapper}>
+    
       <View style={styles.headerWrapper}>
         <Text style={styles.header}>{t('dashboard:redeem:redemptionHistoryOption:header')}</Text>
       </View>
+      {redemptionHistoryData.length === 0 ? (
+        <View style={styles.middleText}>
+        <Text style={styles.greyText}>No Data</Text>
+        </View>
+      ) : (
       <FlatList
         data={redemptionHistoryData}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
       />
+      )}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  
+  greyText: {
+    color: colors.grey,
+    fontWeight: 'bold',
+  },
   header: {
     fontSize: responsiveFontSize(2.5),
     fontWeight: 'bold',
@@ -72,6 +85,12 @@ const styles = StyleSheet.create({
   mainWrapper: {
     flex: 1,
     backgroundColor: colors.white,
+  },
+  middleText: {
+    marginTop: responsiveHeight(40),
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center',
   },
   item: {
     padding: 10,
