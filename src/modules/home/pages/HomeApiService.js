@@ -37,3 +37,8 @@ export function fetchTicketHistory(){
     return createDigestGetRequest(path);
 }
 
+export function fetchTicketOptions(){
+    const path = "ticket/types";
+    return createDigestGetRequest(path);
+}
+
