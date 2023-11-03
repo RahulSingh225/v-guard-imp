@@ -1,31 +1,44 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Linking, StyleSheet, Image } from 'react-native';
 import colors from '../../../../../../colors';
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
+import { fetchTicketHistory } from '../../HomeApiService';
 
 const TicketHistory = () => {
-    const data = [
-        {
-            date: '23-03-2023',
-            message: 'Link 1',
-            status: 'In-Progress'
-        },
-        {
-            date: '23-03-2023',
-            message: 'Link 2',
-            status: 'In-Progress'
-        },
-        {
-            date: '23-03-2023',
-            message: 'Link 3',
-            status: 'In-Progress'
-        },
-        {
-            date: '23-03-2023',
-            message: 'Link 4',
-            status: 'In-Progress'
-        },
-    ];
+    const [data, setData] = useState([]);
+  useEffect(() => {
+    fetchTicketHistory()
+      .then(response => response.json())
+      .then(responseData => {
+        setData(responseData);
+        console.log("<><<><<><>><", responseData, "<><<<><><><><><><<><");
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []); 
+    // const data = [
+    //     {
+    //         date: '23-03-2023',
+    //         message: 'Link 1',
+    //         status: 'In-Progress'
+    //     },
+    //     {
+    //         date: '23-03-2023',
+    //         message: 'Link 2',
+    //         status: 'In-Progress'
+    //     },
+    //     {
+    //         date: '23-03-2023',
+    //         message: 'Link 3',
+    //         status: 'In-Progress'
+    //     },
+    //     {
+    //         date: '23-03-2023',
+    //         message: 'Link 4',
+    //         status: 'In-Progress'
+    //     },
+    // ];
 
     return (
         <ScrollView style={styles.container}>
@@ -43,10 +56,10 @@ const TicketHistory = () => {
                     style={styles.listItem}
                 >
                     <View style={styles.messageContainer}>
-                        <Text style={styles.messageText}>{item.date}</Text>
-                        <Text style={styles.messageText}>{item.message}</Text>
+                        <Text style={styles.messageText}>{item.createdDate}</Text>
+                        <Text style={styles.messageText}>{item.name}</Text>
                         <View style={styles.statusContainer}>
-                        <Image style={styles.downImage} source={require('../../../../../assets/images/ic_ticket_drop_donw1.png')} />
+                        {/* <Image style={styles.downImage} source={require('../../../../../assets/images/ic_ticket_drop_donw1.png')} /> */}
                         <Text style={styles.status}>{item.status}</Text>
                         </View>
                     </View>
@@ -81,17 +94,19 @@ const styles = StyleSheet.create({
         flex: 1,
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        alignItems: 'center'
     },
     messageText: {
-        fontSize: responsiveFontSize(2),
+        fontSize: responsiveFontSize(1.6),
+        textAlign: 'left',
         color: colors.black
     },
     status: {
         backgroundColor: colors.yellow,
         color: colors.black,
         padding: 5,
-        fontSize: 12,
+        fontSize: responsiveFontSize(1.5),
         fontWeight: 'bold',
         borderRadius: 5
     },

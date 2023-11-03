@@ -32,3 +32,8 @@ export function fetchProductCatalogue(){
     return createDigestGetRequest(path);
 }
 
+export function fetchTicketHistory(){
+    const path = "ticket/history";
+    return createDigestGetRequest(path);
+}
+
