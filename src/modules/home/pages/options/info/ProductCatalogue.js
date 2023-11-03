@@ -1,27 +1,44 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Linking, StyleSheet } from 'react-native';
 import colors from '../../../../../../colors';
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
+import { fetchProductCatalogue } from '../../HomeApiService';
 
 const ProductCatalogue = () => {
-  const data = [
-    {
-      message: 'Link 1',
-      link: 'https://www.youtube.com/',
-    },
-    {
-      message: 'Link 2',
-      link: 'https://www.youtube.com/',
-    },
-    {
-      message: 'Link 3',
-      link: 'https://www.youtube.com/',
-    },
-    {
-      message: 'Link 4',
-      link: 'https://www.youtube.com/',
-    },
-  ];
+  const [data, setData] = useState([]);
+  const baseURL = "https://vguardrishta.com/";
+  useEffect(() => {
+    fetchProductCatalogue()
+      .then(response => response.json())
+      .then(responseData => {
+        const updatedData = responseData.map(item => ({
+          ...item,
+          fullURL: baseURL + item.fileName
+        }));
+        setData(updatedData);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []); 
+  // const data = [
+  //   {
+  //     message: 'Link 1',
+  //     link: 'https://www.youtube.com/',
+  //   },
+  //   {
+  //     message: 'Link 2',
+  //     link: 'https://www.youtube.com/',
+  //   },
+  //   {
+  //     message: 'Link 3',
+  //     link: 'https://www.youtube.com/',
+  //   },
+  //   {
+  //     message: 'Link 4',
+  //     link: 'https://www.youtube.com/',
+  //   },
+  // ];
 
   return (
     <View style={styles.container}>
@@ -31,10 +48,10 @@ const ProductCatalogue = () => {
           <TouchableOpacity
             key={index}
             style={styles.listItem}
-            onPress={() => Linking.openURL(item.link)}
+            onPress={() => Linking.openURL(item.fullURL)}
           >
             <View style={styles.messageContainer}>
-              <Text style={styles.messageText}>{item.message}</Text>
+              <Text style={styles.messageText}>{item.description}</Text>
             </View>
             <Text style={styles.openLinkText}>View</Text>
           </TouchableOpacity>

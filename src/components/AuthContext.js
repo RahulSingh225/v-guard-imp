@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createDigestPostRequest } from '../utils/apiservice';
 
 const AuthContext = createContext();
 
@@ -8,13 +9,21 @@ export const AuthProvider = ({ children }) => {
 
   const login = async () => {
     setIsUserAuthenticated(true);
-    await AsyncStorage.setItem('isUserAuthenticated', 'true');
   };
 
   const logout = async () => {
-    setIsUserAuthenticated(false);
-    await AsyncStorage.removeItem('isUserAuthenticated');
+    try {
+      const path = 'user/logoutUser';
+      createDigestPostRequest(path, "");
+      await AsyncStorage.clear();
+      setIsUserAuthenticated(false);
+    } catch (error) {
+      console.error('Error while logging out:', error);
+    }
   };
+  // Call this function after logging out to check AsyncStorage contents
+  // e.g., onPress={() => logAsyncStorageContents()}
+  
 
   useEffect(() => {
     AsyncStorage.getItem('isUserAuthenticated')
