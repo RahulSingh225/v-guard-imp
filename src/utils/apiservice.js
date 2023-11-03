@@ -6,6 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const API_LINK = 'http://34.100.133.239:18092'; // Replace with your API base URL
 
 
+const imageURL = "https://vguardrishta.com/";
+
 const BASE_URL = 'http://34.100.133.239:18092/vguard/api/';
 
 export const createDigestPostRequest = async (relativeUrl = {}, data) => {
@@ -112,39 +114,6 @@ export const loginPasswordDigest = async (relativeUrl, username, password) => {
     }
 };
 
-// export const setUserDetails = async() => {
-//         const userDetailsResponse = await fetchUserDetails(username, password);
-//         console.log(userDetailsResponse, "<><><<<><>><<")
-
-//         if (userDetailsResponse.status === 200) {
-//             const userDetailsData = await userDetailsResponse.json();
-
-//             const { name, userCode } = userDetailsData;
-//             const pointsBalance = userDetailsData.pointsSummary.pointsBalance;
-//             const redeemedPoints = userDetailsData.pointsSummary.redeemedPoints;
-//             const numberOfScan = userDetailsData.pointsSummary.numberOfScan;
-
-//             const safePointsBalance = pointsBalance || 0;
-//             const safeRedeemedPoints = redeemedPoints || 0;
-//             const safeNumberOfScan = numberOfScan || 0;
-
-//             await AsyncStorage.setItem('name', name);
-//             await AsyncStorage.setItem('userCode', userCode);
-//             await AsyncStorage.setItem('pointsBalance', safePointsBalance.toString());
-//             await AsyncStorage.setItem('redeemedPoints', safeRedeemedPoints.toString());
-//             await AsyncStorage.setItem('numberOfScan', safeNumberOfScan.toString());
-//           }
-
-//         else {
-//             throw new Error('Error fetching user details');
-//         }
-// }
-
-
-const fetchUserDetails = () => {
-    const path = "user/userDetails"
-    return createDigestGetRequest(path);
-}
 
 const api = axios.create({
     baseURL: API_LINK,
@@ -153,8 +122,14 @@ const api = axios.create({
 
     },
 });
+const imageApi = axios.create({
+    baseURL: imageURL,
+});
+
 
 // Example API functions
+
+
 
 export const forgotPassword = async (mobileNumber) => {
     try {
@@ -162,6 +137,17 @@ export const forgotPassword = async (mobileNumber) => {
         return response.data;
     }
     catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const fetchImage = async (relativeUrl) => {
+    try{
+        const response = await imageApi.get(relativeUrl);
+        return response;
+    }
+    catch(error){
         console.error(error);
         throw error;
     }
