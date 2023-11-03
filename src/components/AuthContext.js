@@ -1,10 +1,10 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import {createContext, useContext, useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createDigestPostRequest } from '../utils/apiservice';
+import {createDigestPostRequest} from '../utils/apiservice';
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({children}) => {
   const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
 
   const login = async () => {
@@ -14,8 +14,17 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       const path = 'user/logoutUser';
-      createDigestPostRequest(path, "");
-      await AsyncStorage.clear();
+      createDigestPostRequest(path, '');
+      await AsyncStorage.multiRemove([
+        'numberOfScan',
+        'redeemedPoints',
+        'pointsBalance',
+        'userCode',
+        'name',
+        'password',
+        'username',
+        'isUserAuthenticated'
+      ]);
       setIsUserAuthenticated(false);
     } catch (error) {
       console.error('Error while logging out:', error);
@@ -23,11 +32,10 @@ export const AuthProvider = ({ children }) => {
   };
   // Call this function after logging out to check AsyncStorage contents
   // e.g., onPress={() => logAsyncStorageContents()}
-  
 
   useEffect(() => {
     AsyncStorage.getItem('isUserAuthenticated')
-      .then((value) => {
+      .then(value => {
         const isAuthenticated = value === 'true';
 
         if (isAuthenticated) {
@@ -36,13 +44,13 @@ export const AuthProvider = ({ children }) => {
           logout();
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.error('AsyncStorage error:', error);
       });
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isUserAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{isUserAuthenticated, login, logout}}>
       {children}
     </AuthContext.Provider>
   );

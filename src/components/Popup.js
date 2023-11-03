@@ -1,10 +1,20 @@
 import React from 'react';
-import { View, Text, Modal, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import closeIcon from '../assets/images/ic_close.png'
+import {
+  View,
+  Text,
+  Modal,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+} from 'react-native';
+import closeIcon from '../assets/images/ic_close.png';
 import colors from '../../colors';
-import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions';
+import {
+  responsiveFontSize,
+  responsiveHeight,
+} from 'react-native-responsive-dimensions';
 
-const Popup = ({ isVisible, onClose, children }) => {
+const Popup = ({isVisible, onClose, children}) => {
   if (!isVisible) {
     return null;
   }
@@ -14,14 +24,16 @@ const Popup = ({ isVisible, onClose, children }) => {
       animationType="slide"
       transparent={true}
       visible={isVisible}
-      onRequestClose={onClose}
-    >
+      onRequestClose={onClose}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-        <Text style={styles.popupText}>{children}</Text>
+          <Text style={styles.popupText}>{children}</Text>
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <Image source={closeIcon} style={{ flex: 1, width: "100%", height: "100%" }}
-          resizeMode="contain" />
+            <Image
+              source={closeIcon}
+              style={{flex: 1, width: '100%', height: '100%'}}
+              resizeMode="contain"
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -44,7 +56,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderBottomRightRadius: 50,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   closeButton: {
     position: 'absolute',
@@ -62,8 +74,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     lineHeight: responsiveHeight(3),
-    width: '70%'
-  }
+    width: '70%',
+  },
 });
 
 export default Popup;
