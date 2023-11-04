@@ -26,8 +26,9 @@ const DatePicker = ({ date, onDateChange, showDatePicker, onShowDatePicker }) =>
 
 const styles = StyleSheet.create({
     input: {
-        borderColor: colors.lightGrey,
-        borderWidth: 2,
+        borderColor: "transaparent",
+        backgroundColor: "#fff",
+        // borderWidth: 2,
         borderRadius: 5,
         padding: 10,
         color: colors.black,

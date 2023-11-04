@@ -7,6 +7,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Buttons from "../../../components/Buttons";
 import Permissions from 'react-native-permissions';
 import { Getallbanks } from '../../../utils/apiservice';
+import DatePicker from '../../../components/DatePicker';
+import { FloatingLabelInput } from 'react-native-floating-label-input';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import { IconButton, } from 'react-native-paper';
@@ -31,7 +33,7 @@ const NomineePage = ({ navigation, route }) => {
 
     // const { data, setData } = useDataContext();
     const { fullData } = route.params;
-    console.log('==================%%%==================', fullData);
+    //  console.log('==================%%%===INCOMING TO NOMINEE PAGE ===============', fullData);
 
 
     const { t } = useTranslation();
@@ -45,14 +47,30 @@ const NomineePage = ({ navigation, route }) => {
 
     const [selectedbank, setselectedbank] = useState("null");
     const [allbankslist, setallbankslist] = useState(null);
+    const [bankid, setbankid] = useState('');
     const [validateallfieldforbank, setvalidateallfieldforbank] = useState(false);
-    const [relationship, setrelationship] = useState(null)
+    const [relationship, setrelationship] = useState('')
 
 
     const [nomineename, setnomineename] = useState('');
     const [nomineemobileno, setnomineemobileno] = useState('');
     const [nomineeemail, setnomineeemail] = useState('');
     const [nomineeaddress, setnomineeaddress] = useState('');
+    const [nomineeselectedDate, setnomineeSelectedDate] = useState(new Date());
+    const [showDatePicker, setShowDatePicker] = useState(false);
+
+
+    const handleDateChange = (event, selectedDate) => {
+        if (event.type === 'set') {
+            setnomineeSelectedDate(selectedDate);
+
+        }
+        setShowDatePicker(false);
+    };
+
+    const handleShowDatePicker = () => {
+        setShowDatePicker(true);
+    };
 
 
 
@@ -70,6 +88,9 @@ const NomineePage = ({ navigation, route }) => {
             nomineemobileno,
             nomineeemail,
             nomineeaddress,
+            relationship,
+            nomineeselectedDate,
+            bankid,
         }
         const PreviewSummaryData = {
             BankDetailsAndNominee,
@@ -79,79 +100,10 @@ const NomineePage = ({ navigation, route }) => {
         setvalidateallfieldforbank(false)
 
         // // Check for at least one field being entere
-        // if (
-        //     (accountnumber !== null ||
-        //         accountholdername !== null ||
-        //         chequeImage !== null ||
-        //         IFSC !== null ||
-        //         accounttype !== "null" ||
-        //         selectedbank !== "null") &&
-        //     (accountnumber === null || accountholdername === null || chequeImage === null || IFSC === null || accounttype === "null" || selectedbank === "null")
 
-        // ) 
-        // if (
-        //     accountnumber !== '' ||
-        //     accountholdername !== null ||
-        //     chequeImage !== null ||
-        //     IFSC !== null ||
-        //     accounttype !== "null" ||
-        //     selectedbank !== "null"
-        // ) {
-
-        //     console.log(">>>>>>>>>>>>>>>>>", accountnumber);
-        //     Alert.alert("Please fill all bank details.");
-        // } else if (checked === false) {
-        //     Alert.alert("Please agree to terms and conditions.");
-        // } else {
-        //     // All fields are filled, proceed with data storage and navigation
-        //     console.log(">>>>>>>>>>>>>>>>>", accountnumber);
-        //     const dataToStore = JSON.stringify(PreviewSummaryData);
-        //     await AsyncStorage.setItem("previewSummaryData", dataToStore);
-        //     navigation.navigate("PreviewSummary");
-        // }
-
-        //     if (
-        //         accountnumber === '' &&
-        //         accountholdername === null &&
-        //         chequeImage === null &&
-        //         IFSC === null &&
-        //         accounttype === 'null' &&
-        //         selectedbank === 'null'
-        //     ) {
-        //         // All fields are empty, allow navigation
-        //         const dataToStore = JSON.stringify(PreviewSummaryData);
-        //         await AsyncStorage.setItem("previewSummaryData", dataToStore);
-        //         navigation.navigate("PreviewSummary");
-        //     }
-
-        //     else if (
-        //         accountnumber !== '' &&
-        //         accountholdername !== null &&
-        //         chequeImage !== null &&
-        //         IFSC !== null &&
-        //         accounttype !== 'null' &&
-        //         selectedbank !== 'null'
-        //     ) {
-        //         // All fields are filled, allow navigation
-        //         const dataToStore = JSON.stringify(PreviewSummaryData);
-        //         await AsyncStorage.setItem("previewSummaryData", dataToStore);
-        //         navigation.navigate("PreviewSummary");
-
-        //     }
-        //     else if (checked === false) {
-        //         Alert.alert("Please agree to terms and conditions.");
-        //     }
-        //     else {
-        //         // At least one field is filled, block navigation and show an alert
-        //         Alert.alert('Please fill in all the fields or leave them all empty.');
-        //     }
-
-
-
-        // };
 
         if (checked) {
-            // Terms and conditions are accepted
+
             if (
                 accountnumber === '' &&
                 accountholdername === null &&
@@ -160,7 +112,7 @@ const NomineePage = ({ navigation, route }) => {
                 accounttype === 'null' &&
                 selectedbank === 'null'
             ) {
-                // All fields are empty, allow navigation
+
                 const dataToStore = JSON.stringify(PreviewSummaryData);
                 await AsyncStorage.setItem("previewSummaryData", dataToStore);
                 navigation.navigate("PreviewSummary");
@@ -172,16 +124,17 @@ const NomineePage = ({ navigation, route }) => {
                 accounttype !== 'null' &&
                 selectedbank !== 'null'
             ) {
-                // All fields are filled, allow navigation
+
                 const dataToStore = JSON.stringify(PreviewSummaryData);
                 await AsyncStorage.setItem("previewSummaryData", dataToStore);
+                //  console.log("++++++++INSDENOMINEE PAGE CONSLE BEFORE NAVIGATION++++++++$$$$$$", dataToStore);
                 navigation.navigate("PreviewSummary");
             } else {
-                // At least one field is filled, block navigation and show an alert
+
                 Alert.alert('Please fill in all the fields or leave them all empty.');
             }
         } else {
-            // Terms and conditions are not accepted, show an alert
+
             Alert.alert("Please agree to terms and conditions.");
         }
     };
@@ -297,8 +250,8 @@ const NomineePage = ({ navigation, route }) => {
                 if (data) {
                     const retrievedData = JSON.parse(data);
 
-                    // Set the state variables with the retrieved data
-                    console.log('====================================');
+
+                    console.log('=============in nominee page=======================');
                     console.log(retrievedData);
                     console.log('====================================');
                     setaccountnumber(retrievedData.BankDetailsAndNominee.accountnumber);
@@ -312,25 +265,26 @@ const NomineePage = ({ navigation, route }) => {
                     setnomineemobileno(retrievedData.BankDetailsAndNominee.nomineemobileno);
                     setnomineeemail(retrievedData.BankDetailsAndNominee.nomineeemail);
                     setnomineeaddress(retrievedData.BankDetailsAndNominee.nomineeaddress);
+                    setrelationship(retrievedData.BankDetailsAndNominee.relationship);
 
 
 
 
-                    console.log('====================================');
+                    console.log('==============in nominee page======================');
                     console.log(accountholdername);
                     console.log('====================================');
 
-                    // Set other state variables for additional fields.
+
                 }
             } catch (error) {
                 console.error('Error retrieving data: ', error);
             }
         };
 
-        if (retrieveData == null) {
-            retrieveData();
 
-        }
+        retrieveData();
+
+
         if (allbankslist == null) {
             getallbanks();
 
@@ -350,14 +304,13 @@ const NomineePage = ({ navigation, route }) => {
 
 
 
-            // console.log("==%%%%===", getallbanks);
+
         }
         catch (error) {
             console.error('Error fetching suggestions:', error);
         }
         finally {
-            // After the API call (whether it succeeds or fails), hide the loader
-            // setLoading(false);
+
         }
     }
 
@@ -376,41 +329,47 @@ const NomineePage = ({ navigation, route }) => {
                     </View>
 
                     <Text style={{ color: 'black', marginLeft: 20, }}> {t('auth:newuser:BankDetailsForAccount')}</Text>
-                    <TextInput
-                        style={styles.input}
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
 
-                        placeholder="Account Number"
-                        // Customize the border width and color for both normal and active states
-                        borderWidth={1.8}
+                        label="Account Number"
+
+
                         keyboardType='number-pad'
-                        value={accountnumber} // Set the value of the input to the 'text' state
+                        value={accountnumber}
                         onChangeText={(text) => setaccountnumber(text)}
-                        borderColor="gray"
-                        placeholderTextColor="grey" // Default border color
-                        activeBorderColor="blue"
-                    // Border color when the input is focused (active)
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+
                     />
 
 
-                    <TextInput
-                        style={styles.input}
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
 
-                        placeholder="Account Holder Name"
-                        // Customize the border width and color for both normal and active states
-                        borderWidth={1.8}
+                        label="Account Holder Name"
+
+
                         keyboardType='default'
-                        value={accountholdername} // Set the value of the input to the 'text' state
+                        value={accountholdername}
                         onChangeText={(text) => setaccountholdername(text)}
-                        borderColor="gray"
-                        placeholderTextColor="grey" // Default border color
-                        activeBorderColor="blue"
-                        maxLength={50} // Border color when the input is focused (active)
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+                        maxLength={50}
                     />
 
 
 
                     <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:SelectAccountype')}</Text>
-                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
 
                         <Picker
@@ -434,16 +393,16 @@ const NomineePage = ({ navigation, route }) => {
 
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Bank')}</Text>
 
-                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
-
-
+                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
                         <Picker
                             mode='model'
                             style={{ color: 'black' }}
                             selectedValue={selectedbank}
-                            onValueChange={(itemValue, itemIndex) =>
-                                setselectedbank(itemValue)
-                            }>
+                            onValueChange={(itemValue, itemIndex) => {
+                                const selectedItem = allbankslist[itemIndex];
+                                setselectedbank(itemValue);
+                                setbankid(selectedItem.key);
+                            }}>
                             <Picker.Item label="Select" value="null" />
                             {Array.isArray(allbankslist) && allbankslist.length > 0 ? (
                                 allbankslist.map(item => (
@@ -456,32 +415,33 @@ const NomineePage = ({ navigation, route }) => {
                             ) : (
                                 <Picker.Item label="Loading..." value="" />
                             )}
-
-
                         </Picker>
-
                     </View>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="IFSC Code"
-                        // Customize the border width and color for both normal and active states
-                        borderWidth={1.8}
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
+                        label="IFSC Code"
+
+
                         keyboardType='default'
-                        value={IFSC} // Set the value of the input to the 'text' state
+                        value={IFSC}
                         onChangeText={(text) => setIFSC(text)}
                         borderColor="gray"
-                        placeholderTextColor="grey" // Default border color
-                        activeBorderColor="blue"
-                        maxLength={20}// Border color when the input is focused (active)
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+                        maxLength={20}
                     />
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:UploadepassbookFront')}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginTop: 0, }}>
 
-                        <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.25 }}>
-                            {chequeImage != null ? <Text style={{ color: 'black', }}>{chequeImage.name}</Text> : null}
+                        <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.25 }}>
+                            {chequeImage != null ? <Text style={{ color: 'black', }}>{chequeImage.name.substring(0, 30)}</Text> : null}
                             {chequeImage != null ?
                                 <TouchableOpacity onPress={() => openCamera('cheque', (documentType, data) => {
-                                    // Handle the captured data for the 'Selfie' document type here
+
                                 })} >
                                     <Image resizeMode="cover" source={{ uri: chequeImage.uri }} style={{ width: width / 8, height: height / 18, backgroundColor: 'transparent', borderRadius: 5, margin: 5 }} />
                                 </TouchableOpacity> :
@@ -491,7 +451,7 @@ const NomineePage = ({ navigation, route }) => {
 
                                     size={20}
                                     onPress={() => openCamera('cheque', (documentType, data) => {
-                                        // Handle the captured data for the 'Selfie' document type here
+
                                     })}
                                 />}
                         </View>
@@ -500,7 +460,7 @@ const NomineePage = ({ navigation, route }) => {
 
                             size={20}
                             onPress={() => openImagePicker('cheque', (documentType, data) => {
-                                // Handle the captured data for the 'Selfie' document type here
+
                             })}
                         />
 
@@ -510,80 +470,109 @@ const NomineePage = ({ navigation, route }) => {
 
                     <View style={{ marginTop: 30 }}>
                         <Text style={{ color: 'black', marginLeft: 20, fontSize: responsiveFontSize(2) }}>{t('auth:newuser:NomineeDetails')}</Text>
-                        <TextInput
-                            style={styles.input}
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
 
-                            placeholder="Name of Nominee"
-                            // Customize the border width and color for both normal and active states
-                            borderWidth={1.8}
+                            label="Name of Nominee"
+
+
                             keyboardType='default'
-                            value={nomineename} // Set the value of the input to the 'text' state
+                            value={nomineename}
                             onChangeText={(text) => setnomineename(text)}
-                            borderColor="gray"
-                            placeholderTextColor="grey" // Default border color
-                            activeBorderColor="blue" // Border color when the input is focused (active)
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+
                         />
 
-                        <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:NomineeMobile')}</Text>
-                        <TextInput
-                            style={styles.input}
+                        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
-                            placeholder="Mobile No"
-                            // Customize the border width and color for both normal and active states
-                            borderWidth={1.8}
+
+                            <DatePicker
+                                date={nomineeselectedDate}
+                                onDateChange={handleDateChange}
+                                showDatePicker={showDatePicker}
+                                onShowDatePicker={handleShowDatePicker}
+                            />
+
+                        </View>
+
+                        <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:NomineeMobile')}</Text>
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label="Mobile No"
+
+
                             keyboardType='number-pad'
-                            value={nomineemobileno} // Set the value of the input to the 'text' state
+                            value={nomineemobileno}
                             onChangeText={(text) => setnomineemobileno(text)}
-                            borderColor="gray"
-                            placeholderTextColor="grey"
-                            maxLength={10}// Default border color
-                        // Border color when the input is focused (active)
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+                            maxLength={10}
                         />
 
 
 
                         <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:NomineeEmailAddress')}</Text>
-                        <TextInput
-                            style={styles.input}
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
 
-                            placeholder="Email"
-                            // Customize the border width and color for both normal and active states
-                            borderWidth={1.8}
+                            label="Email"
+
                             keyboardType='email-address'
-                            value={nomineeemail} // Set the value of the input to the 'text' state
+                            value={nomineeemail}
                             onChangeText={(text) => setnomineeemail(text)}
-                            borderColor="gray"
-                            placeholderTextColor="grey" // Default border color
-                        // Border color when the input is focused (active)
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
                         />
 
 
                         <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:NomineeAddress')}</Text>
-                        <TextInput
-                            style={styles.input}
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
 
-                            placeholder="Address"
-                            // Customize the border width and color for both normal and active states
-                            borderWidth={1.8}
+                            label="Address"
+
+
                             keyboardType='email-address'
-                            value={nomineeaddress} // Set the value of the input to the 'text' state
+                            value={nomineeaddress}
                             onChangeText={(text) => setnomineeaddress(text)}
-                            borderColor="gray"
-                            placeholderTextColor="grey" // Default border color
-                        // Border color when the input is focused (active)
-                        />
-                        <TextInput
-                            style={styles.input}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
 
-                            placeholder="Relatioship with you"
-                            // Customize the border width and color for both normal and active states
-                            borderWidth={1.8}
+                        />
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label="Relatioship with you"
                             keyboardType='default'
-                            value={relationship} // Set the value of the input to the 'text' state
+                            value={relationship}
                             onChangeText={(text) => setrelationship(text)}
-                            borderColor="gray"
-                            placeholderTextColor="grey" // Default border color
-                        // Border color when the input is focused (active)
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+
                         />
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', left: 20 }}>
@@ -638,14 +627,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     input: {
-        borderWidth: 1,
-        padding: 10,
-        borderColor: 'black', // Default border color
-        activeBorderColor: 'blue',
+
+        padding: 5,
+        height: height / 14,
+
         margin: 20,
-        marginTop: 0,
-        color: 'grey',
-        borderRadius: 5// Border color when focused
+        marginTop: 5,
+        color: 'black',
+        borderRadius: 5,
+        backgroundColor: '#fff',
     },
     smallContainer: {
         backgroundColor: colors.white,
@@ -653,6 +643,10 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginTop: 10,
         gap: 10
+    },
+    labelStyles: {
+        backgroundColor: 'transparent',
+        margin: 15,
     },
     textContainer: {
         display: 'flex',

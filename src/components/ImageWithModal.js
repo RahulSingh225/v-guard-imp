@@ -8,6 +8,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import { height, width } from '../utils/dimensions';
+import { black } from 'react-native-paper/lib/typescript/styles/colors';
 
 const ImageWithModal = ({ imageUri }) => {
     const [modalVisible, setModalVisible] = useState(false);
@@ -42,16 +43,20 @@ const ImageWithModal = ({ imageUri }) => {
             <Modal animationType="slide" transparent={false} visible={modalVisible}>
                 <TouchableWithoutFeedback onPress={toggleModal}>
                     <Image
-                        resizeMode="contain"
+                        resizeMode='contain'
                         source={{ uri: imageUri }}
-                        style={{ width: '100%', height: '100%' }}
+                        style={{ width: '100%', height: '100%', }}
+
                     />
                 </TouchableWithoutFeedback>
-                <TouchableOpacity onPress={toggleModal}>
-                    <Text>Close</Text>
+                <TouchableOpacity onPress={toggleModal} style={{ top: 10, }}>
+                    <Text style={{ color: 'black', alignSelf: 'center', margin: 10, }}>Close</Text>
                 </TouchableOpacity>
             </Modal>
-        </View>
+
+
+
+        </View >
     );
 };
 

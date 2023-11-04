@@ -10,36 +10,45 @@ import AppNavigator from './src/components/AppNavigator';
 import { DataProvider } from "../v-guard-imp/src/utils/appcontext";
 
 
-async function requestCameraAndStoragePermissions() {
+
+
+async function requestAllPermissions() {
   try {
     const cameraPermission = PermissionsAndroid.PERMISSIONS.CAMERA;
+    const contactPermission = PermissionsAndroid.PERMISSIONS.READ_CONTACTS;
+    const locationPermission = PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION;
 
 
     const granted = await PermissionsAndroid.requestMultiple([
       cameraPermission,
-
+      contactPermission,
+      locationPermission,
     ]);
 
     if (
-      granted[cameraPermission] === PermissionsAndroid.RESULTS.GRANTED
-      // &&
-      // granted[storagePermission] === PermissionsAndroid.RESULTS.GRANTED
+      granted[cameraPermission] === PermissionsAndroid.RESULTS.GRANTED &&
+      granted[contactPermission] === PermissionsAndroid.RESULTS.GRANTED &&
+      granted[locationPermission] === PermissionsAndroid.RESULTS.GRANTED
     ) {
-      console.log('Camera and storage permissions granted.');
-      // You can now use the camera and access storage.
+      console.log('Camera, contact, and location permissions granted.');
+      // You can now use the camera, access contacts, and access the device's location.
     } else {
-      Alert.alert('Permission denied', 'You must grant camera and storage permissions to use this feature.');
+      Alert.alert(
+        'Permission denied',
+        'You must grant camera, contact, and location permissions to use this feature.'
+      );
     }
   } catch (error) {
     console.error('Permission request error:', error);
   }
 }
+
 import { AuthProvider } from './src/components/AuthContext';
 
 const App = () => {
 
   useEffect(() => {
-    requestCameraAndStoragePermissions();
+    requestAllPermissions();
 
 
 

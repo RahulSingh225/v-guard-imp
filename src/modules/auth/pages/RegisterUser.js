@@ -20,10 +20,11 @@ const RegisterUser = ({ navigation }) => {
 
     const handleValidation = async () => {
         try {
-            if (!number) {
-                Alert.alert('Please enter Phone number to proceed ')
-                // navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption, preferedLanguage: preferedLanguage })
-
+            if (!number || number === null || number.trim() === '') {
+                Alert.alert('Please enter a Phone number to proceed');
+            }
+            else if (selectedOption === 'Retailer') {
+                Alert.alert('Please select a Job Profession');
             }
             // Call the API function with user inputs
             else {

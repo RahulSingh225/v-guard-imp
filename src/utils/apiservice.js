@@ -5,34 +5,31 @@ import digestFetch from 'react-native-digest-fetch';
 const API_LINK = 'http://34.100.133.239:18092'; // Replace with your API base URL
 
 
-const BASE_URL = 'http://34.100.133.239:18092/vguard/api/';
+// const BASE_URL = 'http://34.100.133.239:18092';
 
-export const createDigestGetRequest = async (relativeUrl = {}, username, password) => {
-    try {
-        const url = BASE_URL + relativeUrl;
-        const headers = {
-            'Content-Type': 'application/json',
-        };
+// export const createDigestGetRequest = async (relativeUrl = {}, username, password) => {
+//     try {
+//         const url = BASE_URL + relativeUrl;
+//         const headers = {
+//             'Content-Type': 'application/json',
+//         };
 
-        const response = await digestFetch(url, {
-            method: 'GET',
-            headers,
-            username,
-            password,
-        });
+//         const response = await digestFetch(url, {
+//             method: 'GET',
+//             headers,
+//             username,
+//             password,
+//         });
 
-        return response;
-    } catch (error) {
-        throw error;
-    }
-};
+//         return response;
+//     } catch (error) {
+//         throw error;
+//     }
+// };
 
 const api = axios.create({
     baseURL: API_LINK,
-    headers: {
-        'Content-Type': 'application/json',
 
-    },
 });
 
 // Example API functions
@@ -99,6 +96,17 @@ export const GetProfession = async () => {
     }
 };
 
+export const Getsubprofession = async () => {
+    console.log('Fetching data for subprofession:===%%%%',);
+    try {
+        const response = await api.get(`/vguard/api/user/getSubProfession/${0}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching pin code data:', error);
+        throw error;
+    }
+};
+
 
 export const Getallbanks = async () => {
     console.log('Fetching data for banks:===%%%%',);
@@ -151,19 +159,43 @@ export const Citylist = async (disctrictId) => {
 };
 
 export const RegisterNewUser = async (userbody) => {
-    console.log("Fetching data for pincode");
+
     try {
-        const requestBody = {
-            userbody
-        };
-        const response = await api.post(``, { userbody });
+        console.log('==============INSIDE aPI SERVIE ======================');
+        console.log(userbody);
+        console.log('====================================');
+        const response = await api.post(`/vguard/api/user/registerUser`, userbody);
         return response.data;
     } catch (error) {
-        console.error('Error fetching pin code data:', error);
+        console.error('Error ', error);
         throw error;
 
     }
 }
+
+
+
+export const sendFile = async (formData) => {
+    try {
+
+        const response = await api.post(`/vguard/api/file`, formData);
+        return response;
+    } catch (error) {
+        console.error('Error sending file:', error);
+        throw error;
+    }
+};
+
+export const Appversion = async () => {
+    try {
+        const response = await api.get(`/vguard/api/user/version`);
+        return response;
+    } catch (error) {
+        throw error;
+
+    }
+}
+
 
 
 

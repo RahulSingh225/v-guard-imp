@@ -9,17 +9,13 @@ import { fetchPinCodeData, PincodedetailList, Citylist } from '../../../utils/ap
 import DatePicker from '../../../components/DatePicker';
 import { FloatingLabelInput } from 'react-native-floating-label-input';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
+import Loader from '../../../components/Loader';
 
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useTranslation } from 'react-i18next';
 import NewUserKyc from './NewUserKyc';
-import Loader from '../../../components/Loader';
-
 
 const NewUser = ({ navigation, }) => {
-
   // console.log('====================================');
   // console.log(route.params);
   // console.log('====================================');
@@ -45,6 +41,14 @@ const NewUser = ({ navigation, }) => {
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+  const [pincodeid, setpincodeid] = useState('');
+  const [permananetsateid, setpermananetsatedid] = useState('');
+  const [permananetdistrictId, setpermananetdistrictId] = useState('');
+  const [permananetcityid, setpermananetcityid] = useState('');
+
+  const [birthday, setBirthday] = useState('');
+  const [phone, setPhone] = useState('');
+  const [price, setPrice] = useState('');
 
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState();
@@ -68,8 +72,6 @@ const NewUser = ({ navigation, }) => {
     setShowDatePicker(true);
   };
 
-
-
   //=============== FUNCTION FOR GETTING THE  DISTRIC ID STATE ID UPIN SELECTING THE ID AND DETAILED PINCODE DATA  
   async function fetchDataForPinCode1(pincode) {
     setLoading(true);
@@ -81,17 +83,22 @@ const NewUser = ({ navigation, }) => {
 
       const secondData = await PincodedetailList(pincodeid);
       setdistrictid(secondData.distId);
+      setSelectedState(secondData.stateName);
+      setSelectedDistrict(secondData.distName);
+      setpermananetdistrictId(secondData.distId);
+      setpermananetsatedid(secondData.stateId);
+      setpermananetcityid(secondData.cityId);
 
 
       const cityData = await getCityDataForDistrict(secondData.distId);
+
 
       setcitylistpicker(cityData);
 
 
       console.log('Second API call:', secondData);
       console.log('District ID:', secondData.distId);
-      setSelectedState(secondData.stateName);
-      setSelectedDistrict(secondData.distName);
+
       setIsLoading(false);
     } catch (error) {
       console.error('Error in Page 1:', error);
@@ -106,7 +113,7 @@ const NewUser = ({ navigation, }) => {
 
   async function getCityDataForDistrict(districtId) {
     try {
-
+      setIsLoading(true);
       const cityData = await Citylist(districtId);
       setIsLoading(false)
       return cityData;
@@ -192,19 +199,19 @@ const NewUser = ({ navigation, }) => {
 
   // ===============================================GETTING SUGGESTION=====/// FOR PINCODE======================//
   const fetchPincodeSuggestions = async (pincode) => {
-    setLoading(true);
+
     try {
       const suggestionData = await fetchPinCodeData(pincode);
 
       if (Array.isArray(suggestionData) && suggestionData.length > 0) {
-        // Filter out suggestions with null values
+
         const filteredSuggestions = suggestionData.filter((item) => (
           item.pinCode !== null
         ));
         setSuggestions(filteredSuggestions);
 
         console.log("*********************", pincode);
-
+        setIsLoading(true);
         fetchDataForPinCode1(pincode);
 
 
@@ -216,7 +223,7 @@ const NewUser = ({ navigation, }) => {
       console.error('Error fetching suggestions:', error);
     }
     finally {
-      // After the API call (whether it succeeds or fails), hide the loader
+
       setLoading(false);
     }
   };
@@ -238,10 +245,14 @@ const NewUser = ({ navigation, }) => {
     selectedState,
     selectedDistrict,
     selectedCity,
+    permananetdistrictId,
+    permananetsateid,
+    permananetcityid,
   };
 
   async function updateUserDataInPreviewSummary(userData) {
     try {
+      setIsLoading(true);
       // Retrieve the existing 'previewSummaryData' from AsyncStorage
       const previewSummaryDataString = await AsyncStorage.getItem('previewSummaryData');
 
@@ -272,18 +283,10 @@ const NewUser = ({ navigation, }) => {
       }
     } catch (error) {
       console.error('Error updating User Data in previewSummaryData:', error);
+    } finally {
+      setIsLoading(true);
     }
   }
-
-
-
-
-
-
-
-
-
-
   async function validateFields() {
 
     if (!name) {
@@ -337,10 +340,7 @@ const NewUser = ({ navigation, }) => {
       const userDataString = JSON.stringify(userData);
       await updateUserDataInPreviewSummary(userData);
 
-      // await AsyncStorage.setItem("userdata", userData);
-      // await AsyncStorage.setItem('previewSummaryData', userDataString);
-      // console.log('==============new use page data ======================');
-      // console.log('prviewSummaryData');
+
       const updatedValue = await AsyncStorage.getItem('previewSummaryData');
       console.log('Updated Value in AsyncStorage (previewSummaryData +++++++++++++++++):', updatedValue);
 
@@ -372,43 +372,49 @@ const NewUser = ({ navigation, }) => {
           </View>
 
         </View>
+
+
         <Text style={{ color: 'black', marginLeft: 20, }}>{t('auth:newuser:Preferedlanguage')}</Text>
-        <TextInput
-          style={styles.input}
-          mode='outlined'
+        <FloatingLabelInput
           label="Selected Language"
-          placeholder="Selected Language"
+
+          staticLabel
           maxLength={30}
           editable={false}
-          value={selectedLanguage} // Set the value of the input to the 'text' state
+          value={selectedLanguage}
           onChangeText={(text) => setSelectedLanguage(text)}
           keyboardType='default'
-          // Customize the border width and color for both normal and active states
-          borderWidth={1}
-          borderColor="black"
-          placeholderTextColor="grey"// Default border color
-        // Border color when the input is focused (active)
+          containerStyles={styles.input}
+          labelStyles={styles.labelStyles}
+          inputStyles={{
+            color: 'black',
+            paddingHorizontal: 10,
+          }}
         />
-        <TextInput
-          style={styles.input}
-          mode='outlined'
+
+        <FloatingLabelInput
           label="Name"
-          placeholder="Name"
-          maxLength={30}
-          value={name} // Set the value of the input to the 'text' state
-          onChangeText={(text) => setname(text)}
-          keyboardType='default'
-          // Customize the border width and color for both normal and active states
-          borderWidth={1}
-          borderColor="black"
-          placeholderTextColor="grey"// Default border color
-        // Border color when the input is focused (active)
+          value={name}
+
+
+          keyboardType="default"
+          onChangeText={value => setname(value)}
+          staticLabel
+          containerStyles={styles.input}
+          labelStyles={styles.labelStyles}
+          inputStyles={{
+            color: 'black',
+            paddingHorizontal: 10,
+            paddingVertical: 10,
+          }}
         />
+
+
 
 
         <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Gender')}</Text>
 
-        <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
 
           <Picker
@@ -429,7 +435,7 @@ const NewUser = ({ navigation, }) => {
 
         <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Date')}</Text>
 
-        <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+        <View style={{ backgroundColor: 'fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
 
           <DatePicker
@@ -441,22 +447,27 @@ const NewUser = ({ navigation, }) => {
 
         </View>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Contact Number"
-          value={number} // Set the value of the input to the 'text' state
-          // onChangeText={(text) => setNumber(text)}
+        <FloatingLabelInput
+
+          label="Contact Number"
+          value={number}
+
           keyboardType='number-pad'
           editable={false}
-          // Customize the border width and color for both normal and active states
-          borderWidth={1}
+
+
           maxLength={10}
-          borderColor="black"
-          placeholderTextColor="grey"// Default border color
-        // Border color when the input is focused (active)
+          staticLabel
+          containerStyles={styles.input}
+          labelStyles={styles.labelStyles}
+          inputStyles={{
+            color: 'black',
+            paddingHorizontal: 10,
+          }}
+
         />
-        <Text style={{ color: 'black', marginLeft: 20, }}>{t('auth:newuser:Whatappconatctsame')}</Text>
-        <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+        <Text style={{ color: 'black', marginLeft: 20, bottom: 5 }}>{t('auth:newuser:Whatappconatctsame')}</Text>
+        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
           <Picker
 
             mode='dropdown'
@@ -488,11 +499,11 @@ const NewUser = ({ navigation, }) => {
           </Picker>
 
         </View>
-        <TextInput
-          style={styles.input}
-          placeholder="WhatsApp Number"
+        <FloatingLabelInput
+          label="WhatsApp Number"
+
           maxLength={10}
-          value={whatapp} // Set the value of the input to the 'text' state
+          value={whatapp}
           onChangeText={(text) => {
 
             if (whatappyes === 'No') {
@@ -503,83 +514,109 @@ const NewUser = ({ navigation, }) => {
 
           }}
           keyboardType='number-pad'
-          // Customize the border width and color for both normal and active states
-          borderWidth={1}
-          borderColor="black"
-          placeholderTextColor="grey"// Default border color
-        // Border color when the input is focused (active)
+          staticLabel
+          containerStyles={styles.input}
+          labelStyles={styles.labelStyles}
+          inputStyles={{
+            color: 'black',
+            paddingHorizontal: 10,
+          }}
+
+
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          // Customize the border width and color for both normal and active states
-          borderWidth={1.8}
+        <FloatingLabelInput
+
+          label="Email"
+
+
           keyboardType='email-address'
-          value={email} // Set the value of the input to the 'text' state
+          value={email}
           onChangeText={(text) => setemail(text)}
-          borderColor="gray"
-          placeholderTextColor="grey"// Default border color
-          activeBorderColor="blue" // Border color when the input is focused (active)
+          staticLabel
+          containerStyles={styles.input}
+          labelStyles={styles.labelStyles}
+          inputStyles={{
+            color: 'black',
+            paddingHorizontal: 10,
+          }}
+
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Permanent House Flat/block no"
-          // Customize the border width and color for both normal and active states
-          borderWidth={1.8}
+        <FloatingLabelInput
+
+          label="Permanent House Flat/block no"
+
+
           keyboardType='default'
           maxLength={128}
-          value={address} // Set the value of the input to the 'text' state
+          value={address}
+          staticLabel
           onChangeText={(text) => setaddress(text)}
-          borderColor="gray"
-          placeholderTextColor="grey"// Default border color
-          activeBorderColor="blue" // Border color when the input is focused (active)
+          containerStyles={styles.input}
+          labelStyles={styles.labelStyles}
+          inputStyles={{
+            color: 'black',
+            paddingHorizontal: 10,
+          }}
+
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Street/ Colony/Locality Name *"
-          // Customize the border width and color for both normal and active states
-          borderWidth={1.8}
+        <FloatingLabelInput
+
+          label="Street/ Colony/Locality Name *"
+
+
           maxLength={128}
           keyboardType='default'
-          value={street} // Set the value of the input to the 'text' state
+          value={street}
           onChangeText={(text) => setstreet(text)}
-          borderColor="gray"
-          placeholderTextColor="grey"// Default border color
-          activeBorderColor="blue" // Border color when the input is focused (active)
+          containerStyles={styles.input}
+          staticLabel
+          labelStyles={styles.labelStyles}
+          inputStyles={{
+            color: 'black',
+            paddingHorizontal: 10,
+          }}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Landmark"
-          // Customize the border width and color for both normal and active states
-          borderWidth={1.8}
+        <FloatingLabelInput
+
+          label="Landmark"
+
+          staticLabel
           maxLength={60}
           keyboardType='default'
           value={landmark} // Set the value of the input to the 'text' state
           onChangeText={(text) => setlandmark(text)}
-          borderColor="gray"
-          placeholderTextColor="grey"// Default border color
-          activeBorderColor="blue" // Border color when the input is focused (active)
+
+          containerStyles={styles.input}
+          labelStyles={styles.labelStyles}
+          inputStyles={{
+            color: 'black',
+            paddingHorizontal: 10,
+          }}
         />
 
 
         <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:pincode')}</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Pincode"
-          placeholderTextColor={"black"}
+        <FloatingLabelInput
+          containerStyles={styles.input}
+          label="Enter Pincode"
           keyboardType="number-pad"
           value={pincode}
           onChangeText={(text) => [setPincode(text),
           setOpen(true)]}
           maxLength={6}
+          staticLabel
+          labelStyles={styles.labelStyles}
+          inputStyles={{
+            color: 'black',
+            paddingHorizontal: 10,
+          }}
         />
 
         <DropDownPicker
-          mode="BADGE"
-          showBadgeDot={true}
 
-          placeholder="Pincode List"
+
+          label={value}
           badgeStyle={(item, index) => ({
             padding: 5,
             backgroundColor: item.value ? 'red' : 'grey',
@@ -596,13 +633,14 @@ const NewUser = ({ navigation, }) => {
           items={suggestions.map((item) => ({
             label: item.pinCode,
             value: item.pinCode,
+            key: item.pinCodeId,
           }))}
 
 
           setOpen={setOpen}
           value={pincode.toString()}
           onChangeText={(text) => {
-            [setPincode(text), setOpen(false)]
+            [setPincode(text), setOpen(false),]
             if (loading) {
               return (
                 <View style={styles.loaderContainer}>
@@ -610,8 +648,7 @@ const NewUser = ({ navigation, }) => {
                 </View>
               );
             }
-            // Call your filtering function with the user's input
-            //fetchPincodeSuggestions(text);
+
           }}
           dropDownContainerStyle={{
 
@@ -632,15 +669,47 @@ const NewUser = ({ navigation, }) => {
           }}
           style={{ backgroundColor: 'white', elevation: 50, opacity: 0.9, borderWidth: 0, width: width / 1.1, height: height / 15, alignSelf: 'center', bottom: 10, elevation: 0 }}
         />
-        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('auth:newuser:State')}</Text>
-        <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
-          <Text style={{ color: 'black', margin: 15 }}>{selectedState}</Text>
-        </View>
+        {/* <DropDownPicker
+          open={open}
+          items={suggestions.map((suggestion) => ({
+            label: suggestion.pinCode, // Set the label for each suggestion
+            value: suggestion.pinCode, // Set the value to the PIN code
+          }))}
+
+          label="Enter PIN code"
+          defaultValue={pincode} // Set the default value
+          searchable={true}
+          searchablelabel="Search for PIN code"
+          searchablelabelTextColor="gray"
+          searchableError={() => <Text>Not Found</Text>}
+          onChangeItem={(item) => {
+
+            // When an item is selected, set the selected PIN code and fetch data
+            setPincode(item.value);
+            fetchAndPopulateData(item.value);
+          }}
+        /> */}
+        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('auth:newuser:State')}</Text>
+        <FloatingLabelInput
+          containerStyles={styles.input}
+          label="Selelcted State"
+          keyboardType="default"
+          value={selectedState}
+          onChangeText={(text) => [setSelectedState(text),
+          setOpen(true)]}
+
+          staticLabel
+          labelStyles={styles.labelStyles}
+          inputStyles={{
+            color: 'grey',
+            paddingHorizontal: 10,
+          }}
+        />
 
         <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('auth:newuser:District')}</Text>
 
-        <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
           <Text style={{ color: 'black', margin: 15 }}>{selectedDistrict}</Text>
 
@@ -649,14 +718,20 @@ const NewUser = ({ navigation, }) => {
 
         <Text style={{ color: 'black', left: 20, marginBottom: 2 }}> {t('auth:newuser:City')}</Text>
 
-        <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
           <Picker
             mode='model'
             style={{ color: 'black' }}
             selectedValue={selectedCity}
-            onValueChange={(itemValue, itemIndex) =>
-              setSelectedCity(itemValue)
-            }>
+            onValueChange={(itemValue, itemIndex) => {
+              const selectedItem = citylistpicker[itemIndex];
+              setSelectedCity(itemValue);
+              setpermananetcityid(selectedItem.id);
+              console.log('====================================');
+              console.log(permananetcityid);
+              console.log('====================================');
+
+            }}>
             {Array.isArray(citylistpicker) && citylistpicker.length > 0 ? (
               citylistpicker.map(item => (
                 <Picker.Item
@@ -677,19 +752,16 @@ const NewUser = ({ navigation, }) => {
           <Buttons
             label="Next"
             onPress={() => {
-              // Check if the data is valid before navigating
-              //  navigation.navigate('NewUserKyc', { userData: userData })
-              // validateAndNavigate('male', email, number, address, street, pincode, selectedState, selectedDistrict, selectedCity,);
-              //validateAndNavigate()
+
               validateFields();
             }}
-            variant="filled" // or any other variant you want to use
-            width={350} // specify the width
-            icon={require('../../../assets/images/arrow.png')} // provide the path to your icon
-            iconWidth={50} // specify the icon width
-            iconHeight={20} // specify the icon height
+            variant="filled"
+            width={350}
+            icon={require('../../../assets/images/arrow.png')}
+            iconWidth={50}
+            iconHeight={20}
             iconGap={10}
-          // specify the gap between the label and the icon
+
           />
         </View>
       </View>
@@ -705,15 +777,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    borderWidth: 1,
-    padding: 10,
-    borderColor: 'black', // Default border color
-    activeBorderColor: 'blue',
+
+    padding: 5,
+    height: height / 15,
+
     margin: 20,
-    marginTop: 0,
+    marginTop: 5,
     color: 'black',
-    borderRadius: 5// Border color when focused
+    borderRadius: 5,
+    backgroundColor: '#fff',
+    borderColor: 'grey',
+    borderWidth: 0.8,
   },
+
   dropdownContainer: {
     height: 40,
   },
@@ -728,21 +804,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  labelStyles: {
+    backgroundColor: 'transparent',
+    margin: 15,
+    color: 'grey',
+  },
 });
 
 export default NewUser;
 
 
-// Usage example:
-// validateAndNavigate(gender, email, number, address, street, pincode, selectedState, selectedDistrict, selectedCity, navigation);
 
-// const isDataValid = () => {
-//   // Define an array of mandatory fields
-//   const mandatoryFields = [gender, email, number, address, street, pincode, selectedState, selectedDistrict, selectedCity];
-
-//   // Check if any of the mandatory fields are empty or falsy
-//   return mandatoryFields.every(field => field);
-// };
 
 
 

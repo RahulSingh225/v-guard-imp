@@ -5,9 +5,12 @@ import { Avatar, IconButton } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Buttons from "../../../components/Buttons";
-import { GetProfession } from '../../../utils/apiservice';
+import { GetProfession, sendFile, Appversion, RegisterNewUser } from '../../../utils/apiservice';
+import { FloatingLabelInput } from 'react-native-floating-label-input';
 import DatePicker from '../../../components/DatePicker';
+import Loader from '../../../components/Loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import {
     responsiveHeight,
     responsiveWidth,
@@ -23,6 +26,7 @@ import { useTranslation } from 'react-i18next';
 import NewUserKyc from './NewUserKyc';
 
 const PreviewUserRegistration = ({ navigation, route }) => {
+
     const [selectedLanguage, setSelectedLanguage] = useState('English');
     const [citylistpicker, setcitylistpicker] = useState(null);
     const [districtid, setdistrictid] = useState('');
@@ -39,41 +43,66 @@ const PreviewUserRegistration = ({ navigation, route }) => {
     const [selectedState, setSelectedState] = useState();
     const [selectedDistrict, setSelectedDistrict] = useState('');
     const [selectedCity, setSelectedCity] = useState('');
+    const [currentaddress, setcurrentaddress] = useState('');
+    const [currentstreet, setcurrentstreet] = useState('');
+    const [currentlandmark, setcurrentlandmark] = useState('');
+
+    const [currentpincode, setcurrentPincode] = useState('');
+    const [currentselectedState, setcurrentSelectedState] = useState();
+    const [currentselectedDistrict, setcurrentSelectedDistrict] = useState('');
+    const [currentselectedCity, setcurrentSelectedCity] = useState('');
     const [suggestions, setSuggestions] = useState([]);
-    const [loading, setLoading] = useState(false);
+
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [open, setOpen] = useState(false);
-    const [profession, setprofession] = useState();
+    const [profession, setprofession] = useState('');
     const [professiondata, setprofessiondata] = useState([]);
     const [subprofession, setsubprofession] = useState();
     const [maritialStatus, setmaritialStatus] = useState('Select');
+
     const [loyalty, setloyalty] = useState('Select');
-    const [annualincome, setannualincome] = useState();
-    const [selfieData, setSelfieData] = useState(null);
-    const [idProofFrontData, setIdProofFrontData] = useState(null);
-    const [idProofBackData, setIdProofBackData] = useState(null);
-    const [panData, setPanData] = useState(null);
-    const [Idprooftype, setIdprooftype] = useState();
-    const [aadharcardno, setaadharcardno] = useState();
-    const [pancardno, setpancardno] = useState();
+    const [annualincome, setannualincome] = useState('');
+    const [selfieData, setSelfieData] = useState();
+    const [idProofFrontData, setIdProofFrontData] = useState();
+    const [idProofBackData, setIdProofBackData] = useState();
+    const [panData, setPanData] = useState();
+    const [Idprooftype, setIdprooftype] = useState('');
+    const [aadharcardno, setaadharcardno] = useState('');
+    const [pancardno, setpancardno] = useState('');
     const [checked, setChecked] = useState(false);
     const [accountnumber, setaccountnumber] = useState('');
     const [accountholdername, setaccountholdername] = useState('');
     const [chequeImage, setchequeImage] = useState();
     const [IFSC, setIFSC] = useState('');
     const [accounttype, setaccounttype] = useState('')
+    const [appversion, setAppversion] = useState('');
 
     const [selectedbank, setselectedbank] = useState('');
-    const [allbankslist, setallbankslist] = useState();
+    const [bankid, setbankid] = useState();
     const [validateallfieldforbank, setvalidateallfieldforbank] = useState(false);
+    const [aadharfrontuuid, setaadharfrontuuid] = useState('');
+    const [aadharbackuuid, setaadharbackuuid] = useState('');
+    const [selfieeuuid, setselfieeuuid] = useState('');
+    const [chequeImageuuid, setchequeimageuuid] = useState('');
+    const [pancarduuid, setpancarduuid] = useState('');
+
+
+    const [permanentcityid, setpermanentcityid] = useState('');
+    const [permantdistrictid, setpermantdistrictid] = useState('');
+    const [permananrstateid, setpermananrstateid] = useState('');
+    const [currentcityid, setcurrentcityid] = useState('');
+    const [currentdistrictid, setcurrentdistrictid] = useState('');
+    const [currentstateid, setcurrentstateid] = useState('');
 
 
     const [nomineename, setnomineename] = useState('');
     const [nomineemobileno, setnomineemobileno] = useState('');
     const [nomineeemail, setnomineeemail] = useState('');
     const [nomineeaddress, setnomineeaddress] = useState('');
+    const [nomineedate, setnomineedate] = useState('');
     const [previewData, setPreviewData] = useState(null);
+    const [relationwithyou, setrelationwithyou] = useState('');
     // const { PreviewSummaryData } = route.params;
     // console.log('==================%%%=PREVIEW SUMMARY=================', PreviewSummaryData);
 
@@ -84,16 +113,25 @@ const PreviewUserRegistration = ({ navigation, route }) => {
     const { t } = useTranslation();
 
     useEffect(() => {
+
+
         // Retrieve the data from AsyncStorage
         const retrieveData = async () => {
             try {
+
                 const data = await AsyncStorage.getItem('previewSummaryData');
-                //  console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", data);
+
                 if (data) {
                     // Parse the JSON string back into an object
 
                     const retrievedData = JSON.parse(data);
                     console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData);
+                    console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.userData.permananetsateid);
+                    console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.userData.permananetcityid);
+                    console.log("++++++++++++&&&&&&&&++DISTRACT++^^^^^^^^^^^^++++++++++", retrievedData.fullData.userData.permananetdistrictId);
+                    console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.NewUserKycData.currentcityid);
+                    console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.NewUserKycData.currentdistrictId);
+                    console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.NewUserKycData.currentstateid);
                     setSelectedLanguage(retrievedData.fullData.userData.selectedLanguage);
                     setGender(retrievedData.fullData.userData.gender);
                     setemail(retrievedData.fullData.userData.email);
@@ -108,9 +146,22 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     setSelectedState(retrievedData.fullData.userData.selectedState);
                     setSelectedDistrict(retrievedData.fullData.userData.selectedDistrict);
                     setSelectedCity(retrievedData.fullData.userData.selectedCity);
-                    console.log('====================================');
-                    console.log(typeof (pincode));
-                    console.log('====================================');
+
+                    setcurrentaddress(retrievedData.fullData.NewUserKycData.address);
+                    setcurrentstreet(retrievedData.fullData.NewUserKycData.street);
+                    setcurrentlandmark(retrievedData.fullData.NewUserKycData.landmark);
+                    setcurrentPincode(retrievedData.fullData.NewUserKycData.pincode);
+                    setcurrentSelectedCity(retrievedData.fullData.NewUserKycData.currentselectedCity);
+                    setcurrentSelectedDistrict(retrievedData.fullData.NewUserKycData.currentselectedDistrict);
+                    setcurrentSelectedState(retrievedData.fullData.NewUserKycData.currentselectedState);
+
+                    setpermananrstateid(retrievedData.fullData.userData.permananetsateid);
+                    setpermantdistrictid(retrievedData.fullData.userData.permananetdistrictId);
+                    setpermanentcityid(retrievedData.fullData.userData.permananetcityid);
+                    setcurrentdistrictid(retrievedData.fullData.NewUserKycData.currentdistrictId);
+                    setcurrentcityid(retrievedData.fullData.NewUserKycData.currentcityid);
+                    setcurrentstateid(retrievedData.fullData.NewUserKycData.currentstateid);
+
                     //KYC DATA
 
                     setprofession(retrievedData.fullData.NewUserKycData.profession);
@@ -130,56 +181,253 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     setchequeImage(retrievedData.BankDetailsAndNominee.chequeImage)
                     setaccounttype(retrievedData.BankDetailsAndNominee.accounttype);
                     setselectedbank(retrievedData.BankDetailsAndNominee.selectedbank);
+                    setbankid(retrievedData.BankDetailsAndNominee.bankId);
                     setnomineename(retrievedData.BankDetailsAndNominee.nomineename);
                     setnomineemobileno(retrievedData.BankDetailsAndNominee.nomineemobileno);
                     setnomineeemail(retrievedData.BankDetailsAndNominee.nomineeemail);
                     setnomineeaddress(retrievedData.BankDetailsAndNominee.nomineeaddress);
-
+                    setrelationwithyou(retrievedData.BankDetailsAndNominee.relationship);
+                    setnomineedate(retrievedData.BankDetailsAndNominee.nomineeselectedDate);
+                    //  setnomineedate(retrievedData.BankDetailsAndNominee.nomineeselectedDate);
 
                 }
             } catch (error) {
                 console.error('Error retrieving data: ', error);
+            } finally {
+
             }
         };
 
         retrieveData();
+
+        // GettingAppversion();
         Gettingprofession();
     }, [previewData]);
 
     const updateDataInAsyncStorage = async () => {
-        // setLoading(true);
-        // try {
-        //     const data = await AsyncStorage.getItem('previewSummaryData');
-        //     if (data) {
-        //         // Parse the JSON string back into an object
-        //         const retrievedData = JSON.parse(data);
 
-        //         // Update the fields with the new values
-        //         retrievedData.fullData.NewUserKycData.profession = profession;
-        //         retrievedData.fullData.NewUserKycData.subprofession = subprofession; // Add this line
-        //         retrievedData.fullData.NewUserKycData.maritialStatus = maritialStatus;
-        //         retrievedData.fullData.NewUserKycData.loyalty = loyalty;
-        //         retrievedData.fullData.NewUserKycData.annualincome = annualincome;
-        //         retrievedData.fullData.NewUserKycData.aadharcardno = aadharcardno;
-        //         retrievedData.fullData.NewUserKycData.pancardno = pancardno;
-        //         retrievedData.fullData.NewUserKycData.Idprooftype = Idprooftype; // Add this line
-
-        //         // Update the data in AsyncStorage
-        //         await AsyncStorage.setItem('previewSummaryData', JSON.stringify(retrievedData));
-        //         console.log('Updated data:', retrievedData.fullData.NewUserKycData);
-
-        //         // Optionally, you can also change the button state to "Edit" after updating.
-        //         // For example, set a state variable to control the button text:
-        //         setUpdateButtonText('Edit');
-        //     }
-        // } catch (error) {
-        //     console.error('Error updating data in AsyncStorage: ', error);
-        // } finally {
-        //     setLoading(false); // Stop showing the loader
-        // }
 
         navigation.navigate("newUser");
     };
+
+    const userbody = {
+        "welcomePointsErrorCode": 0,
+        // "userId": number,
+        // "password": number,
+        // "inAllow": 0,
+        "emailId": email,
+        "enrolledOtherScheme": 0,
+        "maritalStatus": maritialStatus,
+        "maritalStatusId": null,
+        "distId": permantdistrictid,
+        "cityId": permanentcityid,
+        "addDiff": 1,
+        // "userProfession": profession,
+        "professionId": 1,
+        //  "subProfessionId": 0,
+        "profession": profession,
+        // "loginOtpUserName": null,
+        "mobileNo": number,
+        "otp": "1111",
+        "preferredLanguage": "English",
+        "preferredLanguagePos": "1",
+        "referralCode": "",
+        "nameOfReferee": "",
+        "name": name,
+        "gender": gender,
+        "genderPos": "1",
+        "dob": selectedDate,
+        "contactNo": number,
+        "whatsappNo": number,
+        "permanentAddress": address,
+        "streetAndLocality": street,
+        "landmark": landmark,
+        "city": selectedCity,
+        "dist": selectedDistrict,
+        "state": selectedState,
+        "stateId": permananrstateid,
+        "pinCode": pincode,
+        "currentAddress": currentaddress,
+        "currStreetAndLocality": currentstreet,
+        "currLandmark": currentlandmark,
+        "currCity": currentselectedCity,
+        "currCityId": currentcityid,
+        "currDistId": currentdistrictid,
+        "currDist": currentselectedDistrict,
+        "currState": currentselectedState,
+        "currStateId": currentstateid,
+        "currPinCode": currentpincode,
+        "currPincodeId": '',
+
+        // "otherCity": null,
+        // "otherCurrCity": null,
+        "otherSchemeBrand": "",
+        "abtOtherSchemeLiked": "",
+        "otherSchemeBrand2": "",
+        "abtOtherSchemeLiked2": "",
+        "otherSchemeBrand3": "",
+        "abtOtherSchemeLiked3": "",
+        "otherSchemeBrand4": "",
+        "abtOtherSchemeLiked4": "",
+        "otherSchemeBrand5": "",
+        "abtOtherSchemeLiked5": "",
+        "annualBusinessPotential": annualincome,
+        "bankDetail": {
+            "bankId": bankid,
+            "bankAccNo": accountnumber,
+            "bankAccHolderName": accountholdername,
+            "bankAccType": accounttype,
+            "bankAccTypePos": 1,
+            "bankNameAndBranch": selectedbank,
+            // "branchAddress": "",
+            "bankIfsc": IFSC,
+            "nomineeName": nomineename,
+            "nomineeDob": nomineedate,
+            "checkPhoto": chequeImageuuid,
+            "nomineeMobileNo": nomineemobileno,
+            "nomineeEmail": nomineeemail,
+            "nomineeAdd": nomineeaddress,
+            "nomineeRelation": relationwithyou,
+
+        },
+
+        "kycDetails": {
+            "kycFlag": "0",
+            // "userId": null,
+            "kycIdName": "",
+            "kycId": 1,
+            "selfie": selfieeuuid,
+            "aadharOrVoterOrDLFront": aadharbackuuid,
+            "aadharOrVoterOrDlBack": aadharbackuuid,
+            "aadharOrVoterOrDlNo": aadharcardno,
+            "panCardFront": pancarduuid,
+            "panCardNo": pancardno,
+
+        },
+
+    }
+
+
+
+
+
+    const uploadFiles = async (fileDataArray) => {
+
+        try {
+
+            const responses = [];
+
+            for (const fileData of fileDataArray) {
+                const { imageRelated, file } = fileData;
+
+                if (file) { // Check if the file is not null
+                    const formData = new FormData();
+                    formData.append('USER_ROLE', '1');
+                    formData.append('image_related', imageRelated);
+                    formData.append('file', {
+                        uri: file.uri,
+                        type: file.type,
+                        name: file.name,
+                    });
+
+                    const response = await sendFile(formData);
+                    responses.push(response.data);
+                }
+            }
+
+            return responses;
+        } catch (error) {
+            console.error('Error sending files:', error);
+            throw error;
+        } finally {
+
+        }
+    };
+
+    const callUploadAndThenAnotherFunction = async () => {
+        try {
+
+            const filesToUpload = [
+                { imageRelated: 'ID_CARD_FRONT', file: idProofFrontData },
+                { imageRelated: 'ID_CARD_BACK', file: idProofBackData },
+                { imageRelated: 'PAN_CARD_FRONT', file: panData },
+                { imageRelated: 'CHEQUE', file: chequeImage },
+                // Add more files as needed
+            ];
+
+            // Filter out files with null data
+            const validFilesToUpload = filesToUpload.filter(fileData => fileData.file !== null);
+
+            if (validFilesToUpload.length > 0) {
+                const responses = await uploadFiles(validFilesToUpload);
+
+                // Extract and store entityUid values in separate state variables
+                responses.forEach((response, index) => {
+                    switch (validFilesToUpload[index].imageRelated) {
+                        case 'ID_CARD_FRONT':
+                            setaadharfrontuuid(response.entityUid);
+                            break;
+                        case 'ID_CARD_BACK':
+                            setaadharbackuuid(response.entityUid);
+                            break;
+                        case 'PAN_CARD_FRONT':
+                            setpancarduuid(response.entityUid);
+                            break;
+                        case 'CHEQUE':
+                            setchequeimageuuid(response.entityUid);
+                            break;
+                        // Add more cases for other files if needed
+                        default:
+                            break;
+                    }
+
+                });
+
+                console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharfrontuuid,);
+                console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharbackuuid);
+                console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", pancarduuid);
+                console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", chequeImageuuid);
+                if (aadharfrontuuid !== null && aadharbackuuid !== null) {
+                    registernewuser(userbody);
+                }
+
+
+                // console.log('API Responses:', responses);
+                // console.log(aadharfrontuuid);
+                // console.log('====================================');
+                // console.log(aadharbackuuid);
+                // console.log('====================================');
+
+
+            } else {
+                console.log('No valid files to upload.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        } finally {
+
+        }
+    };
+
+    async function registernewuser() {
+        try {
+            console.log("+++++++++++++++++++++", userbody)
+            const response = await RegisterNewUser(userbody);
+
+            if (response.message === 'Member registered successfully') {
+                Alert.alert(response.message);
+            } else {
+                Alert.alert(response.message);
+            }
+            console.log(response)
+
+        } catch (error) {
+            throw error;
+            console.error('Error while registering user:', error);
+
+        }
+
+    }
 
 
 
@@ -188,6 +436,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
     async function Gettingprofession(params) {
 
         try {
+
             const professionfromapi = await GetProfession();
             setprofessiondata([professionfromapi[0], professionfromapi[1], professionfromapi[2],]);
             console.log("==%%%%===", professiondata);
@@ -197,7 +446,21 @@ const PreviewUserRegistration = ({ navigation, route }) => {
         }
         finally {
             // After the API call (whether it succeeds or fails), hide the loader
-            setLoading(false);
+
+        }
+
+    }
+
+    async function GettingAppversion() {
+        try {
+            const response = await Appversion();
+            console.log('====================================');
+            console.log(response.data);
+            console.log('====================================');
+            setAppversion(response.data.toString());
+        } catch (error) {
+            throw error
+
         }
 
     }
@@ -208,192 +471,226 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                 <View >
                     <View style={{ backgroundColor: 'transparent', height: height / 8, margin: 20, flexDirection: 'row', width: width / 2.1, justifyContent: 'space-evenly', alignItems: 'center', padding: 20 }}>
                         <Avatar.Image size={84} source={require('../../../assets/images/ac_icon.png')} />
-                        <View style={{ margin: 20, flexDirection: 'column' }}>
+                        <View style={{ marginLeft: 40, flexDirection: 'column' }}>
                             <Text style={{ color: 'grey' }}>previewSummaryData</Text>
                             <Text style={{ color: 'grey' }}>Rishta ID</Text>
                             <Text style={{ color: 'grey' }}>Mobile No.</Text>
-
-
-
                         </View>
 
                     </View>
                     <Text style={{ color: 'black', marginLeft: 20, }}>{t('auth:newuser:Preferedlanguage')}</Text>
-                    <TextInput
-                        style={styles.input}
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
 
                         label="Prefered Language"
-                        placeholder="Prefered Language"
+
                         maxLength={30}
                         editable={false}
-                        value={selectedLanguage} // Set the value of the input to the 'text' state
+                        value={selectedLanguage}
                         onChangeText={(text) => selectedLanguage(text)}
                         keyboardType='default'
-                        // Customize the border width and color for both normal and active states
-                        borderWidth={1}
-                        borderColor="black"
-                        placeholderTextColor="grey"// Default border color
-                    // Border color when the input is focused (active)
+
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+
+
                     />
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Name</Text>
-                    <TextInput
-                        style={styles.input}
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
 
                         label="Name"
-                        placeholder="Name"
+
                         maxLength={30}
                         value={name}
-                        editable={false}// Set the value of the input to the 'text' state
+                        editable={false}
                         onChangeText={(text) => setname(text)}
                         keyboardType='default'
-                        // Customize the border width and color for both normal and active states
-                        borderWidth={1}
-                        borderColor="black"
-                        placeholderTextColor="grey"// Default border color
-                    // Border color when the input is focused (active)
+
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+
+
                     />
 
 
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Gender')}</Text>
-                    <TextInput
-                        style={styles.input}
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
 
                         label="Gender"
-                        placeholder="Gender"
+
                         maxLength={30}
                         value={gender}
-                        editable={false} // Set the value of the input to the 'text' state
+                        editable={false}
                         onChangeText={(text) => setGender(text)}
                         keyboardType='default'
-                        // Customize the border width and color for both normal and active states
-                        borderWidth={1}
-                        borderColor="black"
-                        placeholderTextColor="grey"// Default border color
-                    // Border color when the input is focused (active)
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+
                     />
-
-
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Date')}</Text>
 
-                    <TextInput
-                        style={styles.input}
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
 
                         label="Date"
-                        placeholder="Date"
+
                         maxLength={30}
                         value={selectedDate}
                         editable={false}
                         onChangeText={(text) => setSelectedDate(text)}
                         keyboardType='default'
-                        // Customize the border width and color for both normal and active states
-                        borderWidth={1}
-                        borderColor="black"
-                        placeholderTextColor="grey"// Default border color
-                    // Border color when the input is focused (active)
+
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+
                     />
-                    {/* <Text style={styles.input}>{data.fullData.userData.selectedDate}</Text> */}
+                    {/* <TextcontainerStyles={styles.input}>{data.fullData.userData.selectedDate}</Text> */}
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Contact Number</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Contact Number"
-                        value={number} // Set the value of the input to the 'text' state
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
+                        label="Contact Number"
+                        value={number}
                         // onChangeText={(text) => setNumber(text)}
                         keyboardType='number-pad'
                         editable={false}
-                        // Customize the border width and color for both normal and active states
-                        borderWidth={1}
+
                         maxLength={10}
-                        borderColor="black"
-                        placeholderTextColor="grey"// Default border color
-                    // Border color when the input is focused (active)
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+
+
                     />
                     <Text style={{ color: 'black', marginLeft: 20, }}>{t('auth:newuser:Whatappconatctsame')}</Text>
 
-                    <TextInput
-                        style={styles.input}
-                        placeholder="WhatsApp Number"
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
+                        label="WhatsApp Number"
                         maxLength={10}
                         editable={false}
-                        value={whatapp} // Set the value of the input to the 'text' state
+                        value={whatapp}
                         onChangeText={(text) => setwhatapp(text)}
                         keyboardType='number-pad'
-                        borderWidth={1}
-                        borderColor="black"
-                        placeholderTextColor="grey"
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+
 
                     />
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Email Address</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Email"
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
+                        label="Email"
 
-                        borderWidth={1.8}
+
                         keyboardType='email-address'
                         value={email}
-                        editable={false} // Set the value of the input to the 'text' state
+                        editable={false}
                         onChangeText={(text) => setemail(text)}
-                        borderColor="gray"
-                        placeholderTextColor="grey"// Default border color
-                        activeBorderColor="blue" // Border color when the input is focused (active)
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
                     />
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Permanent House Flat/block no</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Permanent House Flat/block no"
-                        // Customize the border width and color for both normal and active states
-                        borderWidth={1.8}
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
+                        label="Permanent House Flat/block no"
+
+
                         editable={false}
                         keyboardType='default'
                         maxLength={128}
-                        value={address} // Set the value of the input to the 'text' state
+                        value={address}
                         onChangeText={(text) => setaddress(text)}
-                        borderColor="gray"
-                        placeholderTextColor="grey"// Default border color
-                        activeBorderColor="blue" // Border color when the input is focused (active)
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
                     />
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Street/ Colony/Locality Name *</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Street/ Colony/Locality Name *"
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
+                        label="Street/ Colony/Locality Name *"
                         editable={false}
-                        // Customize the border width and color for both normal and active states
-                        borderWidth={1.8}
+
+
                         maxLength={128}
                         keyboardType='default'
-                        value={street} // Set the value of the input to the 'text' state
+                        value={street}
                         onChangeText={(text) => setstreet(text)}
-                        borderColor="gray"
-                        placeholderTextColor="grey"// Default border color
-                        activeBorderColor="blue" // Border color when the input is focused (active)
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
                     />
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Landmark</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Landmark"
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
+                        label="Landmark"
                         editable={false}
-                        // Customize the border width and color for both normal and active states
-                        borderWidth={1.8}
+
+
                         maxLength={60}
                         keyboardType='default'
-                        value={landmark} // Set the value of the input to the 'text' state
+                        value={landmark}
                         onChangeText={(text) => setlandmark(text)}
-                        borderColor="gray"
-                        placeholderTextColor="grey"// Default border color
-                        activeBorderColor="blue" // Border color when the input is focused (active)
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
                     />
 
 
                     <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:pincode')}</Text>
 
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Enter Pincode"
-                        placeholderTextColor={"black"}
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
+                        label="Enter Pincode"
+                        labelTextColor={"black"}
                         editable={false}
                         keyboardType="number-pad"
                         value={pincode}
                         onChangeText={(text) => setPincode(text)}
                         maxLength={6}
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
                     />
 
 
@@ -440,20 +737,22 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     </View>
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Sub Profession</Text>
-                    <TextInput
-                        style={styles.input}
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
                         label="Sub Profession"
-                        placeholder="Sub Profession"
+
                         maxLength={30}
                         value={subprofession}
-                        // editable={false}// Set the value of the input to the 'text' state
+
                         onChangeText={(text) => setsubprofession(text)}
                         keyboardType='default'
-                        borderWidth={1}
-                        borderColor="black"
-                        placeholderTextColor="grey"
-                    // Default border color
-                    // Border color when the input is focused (active)
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+
                     />
 
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Martial Status</Text>
@@ -497,17 +796,21 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     </View>
                     <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>Annual Business Potential</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Annual business potential *"
-                        value={annualincome} // Set the value of the input to the 'text' state
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
+                        label="Annual business potential *"
+                        value={annualincome}
                         onChangeText={(text) => setannualincome(text)}
                         keyboardType='number-pad'
-                        // Customize the border width and color for both normal and active states
-                        borderWidth={1}
-                        borderColor="black"
-                        placeholderTextColor="grey"// Default border color
-                        activeBorderColor="black" // Border color when the input is focused (active)
+
+
+
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
                     />
 
                     <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>{t('auth:newuser:Selfie')}</Text>
@@ -518,10 +821,8 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                         {selfieData != null ? <Text style={{ color: 'black', }}>{selfieData.name.substring(0, 30)}</Text> : null}
                         {selfieData != null ?
-                            <ImageWithModal imageUri={selfieData.uri} name={selfieData.name} /> : null}
-                        {/* <Image resizeMode="cover"
-                                    source={{ uri: selfieData.uri }}
-                                    style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} /></> */}
+                            <ImageWithModal imageUri={selfieData.uri} name={selfieData.name} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
+
 
 
 
@@ -529,31 +830,29 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>Select Id Proof </Text>
 
-                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
+                        label="Aadhar Card"
+                        value={Idprooftype}
+                        onChangeText={(text) => setIdprooftype(text)}
+                        keyboardType='number-pad'
+
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
 
 
-                        <Picker
-                            mode='dropdown'
-                            style={{ color: 'black' }}
-                            selectedValue={Idprooftype}
-                            onValueChange={(itemValue, itemIndex) =>
-                                setIdprooftype(itemValue)}>
-                            <Picker.Item label="Select" value="Select" />
-                            <Picker.Item label="Addhar Card" value="Aadhar Card" />
-
-
-
-
-                        </Picker>
-
-                    </View>
+                    />
 
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:AadharCardFront')}</Text>
 
 
                     <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
                         {idProofFrontData != null ? <Text style={{ color: 'black', }}>{idProofFrontData.name.substring(0, 30)}</Text> : null}
-                        {idProofFrontData != null ? <ImageWithModal imageUri={idProofFrontData.uri} /> : <Image resizeMode="cover" source={"../../../assets/images/ic_alert_.png"} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
+                        {idProofFrontData != null ? <ImageWithModal imageUri={idProofFrontData.uri} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
 
 
                     </View>
@@ -563,25 +862,27 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
                         {idProofBackData != null ? <Text style={{ color: 'black', }}>{idProofBackData.name.substring(0, 30)}</Text> : null}
-                        {idProofBackData != null ? <ImageWithModal imageUri={idProofBackData.uri} /> : <Image resizeMode="cover" source={"../../../assets/images/ic_alert_.png"} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
+                        {idProofBackData != null ? <ImageWithModal imageUri={idProofBackData.uri} /> : <Image resizeMode="contain" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, borderRadius: 5, margin: 5 }} />}
 
 
                     </View>
 
                     <Text style={{ color: 'black', marginLeft: 24, }}>Aadhar Card No</Text>
 
-                    <TextInput
-                        style={[styles.input, { marginTop: 0 }]}
-                        placeholder="Aadhar Card No*"
-                        value={aadharcardno} // Set the value of the input to the 'text' state
+                    <FloatingLabelInput
+                        containerStyles={[styles.input]}
+                        label="Aadhar Card No*"
+                        value={aadharcardno}
                         onChangeText={(text) => setaadharcardno(text)}
                         keyboardType='number-pad'
-                        // Customize the border width and color for both normal and active states
-                        borderWidth={1}
-                        borderColor="black"
-                        placeholderTextColor="grey"// Default border color
-                        activeBorderColor="black"
-                        maxLength={12}// Border color when the input is focused (active)
+
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+                        maxLength={12}
                     />
 
                     <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>{t('auth:newuser:Pan')}</Text>
@@ -589,125 +890,161 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
                         {panData != null ? <Text style={{ color: 'black', }}>{panData.name.substring(0, 30)}</Text> : null}
-                        {panData != null ? <ImageWithModal imageUri={panData.uri} /> : <Image resizeMode="cover" source={"../../../assets/images/ic_alert_.png"} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
+                        {panData != null ? <ImageWithModal imageUri={panData.uri} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
 
 
                     </View>
 
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Pan Card No</Text>
 
-                    <TextInput
-                        style={[styles.input, { marginTop: 0 }]}
-                        placeholder="Pan Card No*"
-                        value={pancardno} // Set the value of the input to the 'text' state
+                    <FloatingLabelInput
+                        containerStyles={[styles.input]}
+                        label="Pan Card No*"
+                        value={pancardno}
                         onChangeText={(text) => setpancardno(text)}
                         keyboardType='default'
-                        // Customize the border width and color for both normal and active states
-                        borderWidth={1}
-                        borderColor="black"
-                        placeholderTextColor="grey"// Default border color
-                        activeBorderColor="black"
-                        maxLength={10} // Border color when the input is focused (active)
+
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+                        maxLength={10}
                     />
 
                     <Text style={{ color: 'black', marginLeft: 20, }}> {t('auth:newuser:BankDetailsForAccount')}</Text>
-                    <TextInput
-                        style={styles.input}
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
 
-                        placeholder="Account Number"
-                        // Customize the border width and color for both normal and active states
-                        borderWidth={1.8}
+                        label="Account Number"
+
+
                         editable={false}
                         keyboardType='number-pad'
-                        value={accountnumber} // Set the value of the input to the 'text' state
+                        value={accountnumber}
                         onChangeText={(text) => setaccountnumber(text)}
-                        borderColor="gray"
-                        placeholderTextColor="grey" // Default border color
-                        activeBorderColor="blue"
-                    // Border color when the input is focused (active)
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+
+
                     />
 
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Account Holder Name</Text>
 
-                    <TextInput
-                        style={styles.input}
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
 
-                        placeholder="Account Holder Name"
+                        label="Account Holder Name"
                         editable={false}
-                        // Customize the border width and color for both normal and active states
-                        borderWidth={1.8}
+
+
                         keyboardType='default'
-                        value={accountholdername} // Set the value of the input to the 'text' state
+                        value={accountholdername}
                         onChangeText={(text) => setaccountholdername(text)}
-                        borderColor="gray"
-                        placeholderTextColor="grey" // Default border color
-                        activeBorderColor="blue"
-                        maxLength={50} // Border color when the input is focused (active)
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+
+                        maxLength={50}
                     />
                     <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:SelectAccountype')}</Text>
-                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
+
+                        editable={false}
+                        label="Account Type"
+
+                        keyboardType='default'
+                        value={accounttype}
+                        onChangeText={(text) => setaccounttype(text)}
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
 
 
-                        <Picker
-                            mode='dropdown'
-                            style={{ color: 'black' }}
-                            selectedValue={accounttype}
-                            onValueChange={(itemValue, itemIndex) =>
-                                setaccounttype(itemValue)
-                            }>
-                            {/* <Picker.Item label="Select Account Type" value="Select Account Type" />
-                            <Picker.Item label=" Current" value="Current" />
-                            <Picker.Item label=" Saving" value="Saving" /> */}
+                        maxLength={20}
+                    />
 
-
-
-                        </Picker>
-
-                    </View>
 
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Bank')}</Text>
 
-                    <TextInput
-                        style={styles.input}
+                    {selectedbank == '' ? <FloatingLabelInput
+                        containerStyles={styles.input}
                         editable={false}
-                        placeholder="Selected Bank"
-                        label="Selected Bank"                        // Customize the border width and color for both normal and active states
-                        borderWidth={1.8}
+                        label="Selected Bank"
+
+
                         keyboardType='default'
 
-                        value={selectedbank} // Set the value of the input to the 'text' state
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+
+                        maxLength={20}
+                    /> : <FloatingLabelInput
+                        containerStyles={styles.input}
+                        editable={false}
+                        label="Selected Bank"
+
+
+                        keyboardType='default'
+
+                        value={selectedbank}
                         onChangeText={(text) => setselectedbank(text)}
                         borderColor="gray"
-                        placeholderTextColor="grey" // Default border color
-                        activeBorderColor="blue"
-                        maxLength={20}// Border color when the input is focused (active)
-                    />
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+                        maxLength={20}
+                    />}
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>IFSC Code</Text>
 
-                    <TextInput
-                        style={styles.input}
-                        placeholder="IFSC Code"
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
+                        label="IFSC Code"
                         editable={false}
-                        label="Ifsc code"                        // Customize the border width and color for both normal and active states
-                        borderWidth={1.8}
-                        keyboardType='default'
-                        value={IFSC} // Set the value of the input to the 'text' state
-                        onChangeText={(text) => setIFSC(text)}
-                        borderColor="gray"
-                        placeholderTextColor="grey" // Default border color
 
-                        maxLength={20}// Border color when the input is focused (active)
+
+                        keyboardType='default'
+                        value={IFSC}
+                        onChangeText={(text) => setIFSC(text)}
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+
+
+                        maxLength={20}
                     />
 
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:UploadepassbookFront')}</Text>
 
 
-                    <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
+                    <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
                         {chequeImage != null ? <Text style={{ color: 'black', }}>{chequeImage.name.substring(0, 30)}</Text> : null}
                         {chequeImage != null ?
 
                             <Image resizeMode="cover" source={{ uri: chequeImage.uri }} style={{ width: width / 8, height: height / 18, backgroundColor: 'transparent', borderRadius: 5, margin: 5 }} />
-                            : null
+                            : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />
 
                         }
                     </View>
@@ -716,91 +1053,111 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
 
                     <Text style={{ color: 'black', marginLeft: 20, fontSize: responsiveFontSize(2) }}>{t('auth:newuser:NomineeDetails')}</Text>
-                    <TextInput
-                        style={styles.input}
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
 
-                        placeholder="Name of Nominee"
-                        // Customize the border width and color for both normal and active states
-                        borderWidth={1.8}
+                        label="Name of Nominee"
+
+
                         editable={false}
                         keyboardType='default'
-                        value={nomineename} // Set the value of the input to the 'text' state
+                        value={nomineename}
                         onChangeText={(text) => setnomineename(text)}
-                        borderColor="gray"
-                        placeholderTextColor="grey" // Default border color
-                    // Border color when the input is focused (active)
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+
+
                     />
 
                     <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:NomineeMobile')}</Text>
-                    <TextInput
-                        style={styles.input}
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
 
-                        placeholder="Mobile No"
-                        // Customize the border width and color for both normal and active states
-                        borderWidth={1.8}
+                        label="Mobile No"
+
+
                         editable={false}
                         keyboardType='number-pad'
-                        value={nomineemobileno} // Set the value of the input to the 'text' state
+                        value={nomineemobileno}
                         onChangeText={(text) => setnomineemobileno(text)}
-                        borderColor="gray"
-                        placeholderTextColor="grey" // Default border color
-                        activeBorderColor="blue" // Border color when the input is focused (active)
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+
                     />
 
 
 
                     <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:NomineeEmailAddress')}</Text>
-                    <TextInput
-                        style={styles.input}
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
 
-                        placeholder="Email"
+                        label="Email"
                         editable={false}
-                        // Customize the border width and color for both normal and active states
-                        borderWidth={1.8}
+
+
                         keyboardType='email-address'
-                        value={nomineeemail} // Set the value of the input to the 'text' state
+                        value={nomineeemail}
                         onChangeText={(text) => setnomineeemail(text)}
                         borderColor="gray"
-                        placeholderTextColor="grey" // Default border color
-                        activeBorderColor="blue" // Border color when the input is focused (active)
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+
                     />
 
 
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:NomineeAddress')}</Text>
-                    <TextInput
-                        style={styles.input}
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
 
-                        placeholder="Address"
+                        label="Address"
                         editable={false}
-                        // Customize the border width and color for both normal and active states
-                        borderWidth={1.8}
+
+
                         keyboardType='email-address'
-                        value={nomineeaddress} // Set the value of the input to the 'text' state
+                        value={nomineeaddress}
                         onChangeText={(text) => setnomineeaddress(text)}
-                        borderColor="gray"
-                        placeholderTextColor="grey" // Default border color
-                        activeBorderColor="blue" // Border color when the input is focused (active)
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+
+                    />
+
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>RelationShip with You</Text>
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
+
+                        label="Relationship with you"
+                        editable={false}
+
+
+                        keyboardType='default'
+                        value={relationwithyou}
+                        onChangeText={(text) => setrelationwithyou(text)}
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+
                     />
 
                     <View style={{ display: 'flex', width: width / 1, alignItems: 'center', marginVertical: 20, flexDirection: 'row', justifyContent: 'space-evenly', marginHorizontal: 10 }}>
-                        <Buttons
-                            label="Next"
-                            onPress={() => {
-                                // Check if the data is valid before navigating
-                                //  navigation.navigate('NewUserKyc', { userData: userData })
-                                // validateAndNavigate('male', email, number, address, street, pincode, selectedState, selectedDistrict, selectedCity,);
-                                //validateAndNavigate()
-                                validateFields();
-                            }}
-                            variant="filled" // or any other variant you want to use
-                            width={180} // specify the width
-                            icon={require('../../../assets/images/arrow.png')} // provide the path to your icon
-                            iconWidth={50} // specify the icon width
-                            iconHeight={20} // specify the icon height
-                            iconGap={10}
-                        // specify the gap between the label and the icon
-                        />
-
                         <Buttons
                             label="Edit"
                             onPress={() => {
@@ -818,10 +1175,29 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                             iconGap={10}
                         // specify the gap between the label and the icon
                         />
+                        <Buttons
+                            label="Submit"
+                            onPress={() => {
+                                // Check if the data is valid before navigating
+                                //  navigation.navigate('NewUserKyc', { userData: userData })
+                                // validateAndNavigate('male', email, number, address, street, pincode, selectedState, selectedDistrict, selectedCity,);
+                                //validateAndNavigate()
+                                callUploadAndThenAnotherFunction();
+                            }}
+                            variant="filled" // or any other variant you want to use
+                            width={180} // specify the width
+                            icon={require('../../../assets/images/arrow.png')} // provide the path to your icon
+                            iconWidth={50} // specify the icon width
+                            iconHeight={20} // specify the icon height
+                            iconGap={10}
+                        // specify the gap between the label and the icon
+                        />
+
+
                     </View>
                 </View>
             </KeyboardAvoidingView>
-        </ScrollView>
+        </ScrollView >
         // <Text>Helo</Text>
     )
 }
@@ -835,14 +1211,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     input: {
-        borderWidth: 1,
-        padding: 10,
-        borderColor: 'black', // Default border color
-        activeBorderColor: 'blue',
+        padding: 5,
+        height: height / 14,
         margin: 20,
-        marginTop: 0,
+        marginTop: 5,
         color: 'black',
-        borderRadius: 5// Border color when focused
+        borderRadius: 5,
+        backgroundColor: '#fff',
     },
     dropdownContainer: {
         height: 40,
@@ -857,5 +1232,9 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    labelStyles: {
+        backgroundColor: 'transparent',
+        margin: 15,
     },
 })
