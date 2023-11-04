@@ -42,3 +42,8 @@ export function fetchTicketOptions(){
     return createDigestGetRequest(path);
 }
 
+export function fetchWelfare(){
+    const path = "welfare/";
+    return createDigestGetRequest(path);
+}
+

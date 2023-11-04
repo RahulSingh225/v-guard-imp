@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import React, { useState } from 'react';
 import Buttons from '../../../components/Buttons';
 import colors from '../../../../colors';
@@ -17,7 +17,7 @@ const CategorySelection = ({ navigation }) => {
         setSelectedOption(option);
     };
     return (
-        <View style={styles.mainWrapper}>
+        <ScrollView style={styles.mainWrapper}>
             <View style={styles.buttonContainer}>
                 <Buttons
                     style={styles.button}
@@ -93,7 +93,7 @@ const CategorySelection = ({ navigation }) => {
                     width="90%"
                 />
             </View>
-        </View>
+        </ScrollView>
     );
 };
 
