@@ -85,11 +85,6 @@ const Ticket = ({ navigation }) => {
               <Picker.Item key={option.issueTypeId} label={option.name} value={option.issueTypeId} />
             ))}
           </Picker>
-          {/* <View style={styles.inputImage}>
-          <Image source={require('../../../../../assets/images/ic_ticket_drop_donw1.png')}
-            style={{ width: '100%', height: '100%' }}
-            resizeMode="contain" />
-          </View> */}
         </View>
       )}
       <View style={styles.inputContainer}>
@@ -126,12 +121,17 @@ const Ticket = ({ navigation }) => {
           <Text style={styles.linkText}>Frequently Asked Questions (FAQs)</Text>
         </TouchableOpacity>
       </View>
+      <View style={styles.footer} >
       <NeedHelp />
+      </View>
     </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
+  footer: {
+    marginBottom: 40
+  },
   picker: {
     color: colors.black,
     // backgroundColor: colors.grey,
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   profileDetails: {
     display: 'flex',
@@ -202,11 +202,11 @@ const styles = StyleSheet.create({
   },
   descriptionInput: {
     width: '100%',
-    height: responsiveHeight(25),
+    height: responsiveHeight(20),
     borderColor: colors.lightGrey,
     borderWidth: 2,
     borderRadius: 10,
-    padding: 10,
+    padding: 5,
     fontSize: responsiveFontSize(1.8),
     color: colors.black,
     fontWeight: 'bold',
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
   blackText: {
     color: colors.black,
     fontWeight: 'bold',
-    marginTop: responsiveHeight(4),
+    marginTop: responsiveHeight(2),
   },
   hyperlinks: {
     display: 'flex',

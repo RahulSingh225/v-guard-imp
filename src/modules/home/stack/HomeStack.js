@@ -15,6 +15,7 @@ import DashboardStack from '../pages/options/dashboard/stack/DashboardStack';
 import TicketStack from '../pages/options/ticket/stack/TicketStack';
 import SchemesStack from '../pages/options/schemes/stack/SchemesStack';
 import InfoStack from '../pages/options/info/stack/InfoStack';
+import NewStack from '../pages/options/new/stack/NewStack';
 
 const HomeStack = () => {
   const Stack = createNativeStackNavigator();
@@ -32,7 +33,7 @@ const HomeStack = () => {
       <Stack.Screen name="schemes" component={SchemesStack} />      
       <Stack.Screen name="info" component={InfoStack} />      
       <Stack.Screen name="welfare" component={Welfare} />      
-      <Stack.Screen name="new" component={New} />      
+      <Stack.Screen name="new" component={NewStack} />      
       <Stack.Screen name="ticket" component={TicketStack} />      
       <Stack.Screen name="bank" component={Bank} />      
       <Stack.Screen name="TDS" component={TDS} />      

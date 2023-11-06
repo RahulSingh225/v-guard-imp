@@ -6,7 +6,7 @@ import language from '../../../assets/images/language.png';
 import { useTranslation } from 'react-i18next';
 import blackTickImage from '../../../assets/images/ic_tick_black.png';
 import whiteTickImage from '../../../assets/images/ic_tick_white.png';
-import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import { height, width } from '../../../utils/dimensions';
 
 
@@ -100,8 +100,8 @@ const CategorySelection = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     mainWrapper: {
-        height:height,
-        width:width,
+        // height:height,
+        // width:width,
         flex: 1,
         // height: '100%',
         padding: 25,
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 30,
         width: '100%',
-        marginBottom: responsiveHeight(10)
+        marginBottom: responsiveHeight(5)
     },
     startButtonContainer: {
         marginTop:50,
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     },
     categoryText: {
         color: colors.black,
-        fontSize: 15,
+        fontSize: responsiveFontSize(1.5),
         flex: 1,
         fontWeight: 'bold'
     },

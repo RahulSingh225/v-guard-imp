@@ -1,4 +1,4 @@
-import { createDigestGetRequest, fetchImage } from "../../../utils/apiservice";
+import { createDigestGetRequest, createDigestPostRequest, fetchImage } from "../../../utils/apiservice";
 
 //home apis
 
@@ -60,6 +60,17 @@ export function fetchSchemeWiseEarning(){
 export function fetchBonusRewards(){
     const path = "user/bonusPoints";
     return createDigestGetRequest(path);
+}
+
+export function getDailyWinnerDates(){
+    const path = "user/getDailyWinnerDates/";
+    return createDigestGetRequest(path);
+}
+
+export function getDailyWinners(date){
+    const path = "user/dailyWinners";
+    const body = {date}
+    return createDigestPostRequest(path, body);
 }
 
 
