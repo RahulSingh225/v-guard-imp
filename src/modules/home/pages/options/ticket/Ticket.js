@@ -1,18 +1,55 @@
-import { View, Text, StyleSheet, TouchableHighlight, Image, TextInput, ScrollView, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { View, Text, StyleSheet, TouchableHighlight, Image, TextInput, ScrollView, TouchableOpacity, Linking } from 'react-native'
+import React, {useState, useEffect} from 'react'
 import { useTranslation } from 'react-i18next';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import colors from '../../../../../../colors';
 import NeedHelp from '../../../../../components/NeedHelp';
 import Buttons from '../../../../../components/Buttons';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
+import { fetchTicketOptions } from '../../HomeApiService';
+import { Picker } from '@react-native-picker/picker';
 
 
 const Ticket = ({ navigation }) => {
+  
   const { t } = useTranslation();
+  const [userName, setUserName] = useState('');
+  const [userCode, setUserCode] = useState('');
+  const [options, setOptions] = useState([]);
 
-  const handlePress = () => {
-    Linking.openURL("https://www.youtube.com/");
+  const [selectedOption, setSelectedOption] = useState('');
+  const [isOptionsLoading, setIsOptionsLoading] = useState(true); // Track if options are loading
+
+
+  useEffect(() => {
+    AsyncStorage.getItem('name').then((name) => {
+      setUserName(name);
+    });
+    AsyncStorage.getItem('userCode').then((code) => {
+      setUserCode(code);
+    });
+    fetchTicketOptions()
+      .then(response => response.json())
+      .then(data => {
+        setOptions(data);
+        setIsOptionsLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching options:', error);
+        setIsOptionsLoading(false);
+      });
+  }, []);
+
+  const handleOptionChange = (value) => {
+    setSelectedOption(value);
   };
+
+  const openTnC = () => {
+    Linking.openURL("https://vguardrishta.com/tnc_retailer.html");
+  };
+  openFaqS = () => {
+    Linking.openURL("https://vguardrishta.com/frequently-questions-retailer.html");
+  }
 
   return (
     <ScrollView style={styles.mainWrapper}>
@@ -21,8 +58,8 @@ const Ticket = ({ navigation }) => {
         <View style={styles.profileDetails}>
           <View style={styles.ImageProfile}></View>
           <View style={styles.profileText}>
-            <Text style={styles.textDetail}>Test User</Text>
-            <Text style={styles.textDetail}>XXXXX</Text>
+            <Text style={styles.textDetail}>{userName}</Text>
+            <Text style={styles.textDetail}>{userCode}</Text>
           </View>
         </View>
         <TouchableHighlight
@@ -33,18 +70,28 @@ const Ticket = ({ navigation }) => {
         </TouchableHighlight>
       </View>
       <Text style={styles.blackText}>Issue Type</Text>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder={t('dashboard:ticket:selectIssueType')}
-          placeholderTextColor={colors.grey}
-        />
-        <View style={styles.inputImage}>
+      {isOptionsLoading ? (
+        <Text style={styles.blackText}>Loading options...</Text>
+      ) : options.length === 0 ? (
+        <Text style={styles.blackText}>No options available.</Text>
+      ) : (
+        <View style={styles.inputContainer}>
+          <Picker
+            selectedValue={selectedOption}
+            onValueChange={handleOptionChange}
+            style={styles.picker}
+          >
+            {options.map(option => (
+              <Picker.Item key={option.issueTypeId} label={option.name} value={option.issueTypeId} />
+            ))}
+          </Picker>
+          {/* <View style={styles.inputImage}>
           <Image source={require('../../../../../assets/images/ic_ticket_drop_donw1.png')}
             style={{ width: '100%', height: '100%' }}
             resizeMode="contain" />
+          </View> */}
         </View>
-      </View>
+      )}
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -72,10 +119,10 @@ const Ticket = ({ navigation }) => {
         width="100%"
       />
       <View style={styles.hyperlinks}>
-        <TouchableOpacity onPress={handlePress}>
+        <TouchableOpacity onPress={openTnC}>
           <Text style={styles.linkText}>Terms & Conditions</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={handlePress}>
+        <TouchableOpacity onPress={openFaqS}>
           <Text style={styles.linkText}>Frequently Asked Questions (FAQs)</Text>
         </TouchableOpacity>
       </View>
@@ -85,6 +132,13 @@ const Ticket = ({ navigation }) => {
 }
 
 const styles = StyleSheet.create({
+  picker: {
+    color: colors.black,
+    // backgroundColor: colors.grey,
+    height: responsiveHeight(5),
+    width: '100%',
+    fontSize: responsiveFontSize(1.5)
+  },
   mainWrapper: {
     padding: 15,
     flexGrow: 1,
