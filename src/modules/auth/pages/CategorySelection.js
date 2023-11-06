@@ -99,6 +99,8 @@ const CategorySelection = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     mainWrapper: {
+        height:height,
+        width:width,
         flex: 1,
         // height: '100%',
         padding: 25,
@@ -152,6 +154,7 @@ const styles = StyleSheet.create({
         marginBottom: responsiveHeight(10)
     },
     startButtonContainer: {
+        marginTop:50,
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
