@@ -6,7 +6,7 @@ import language from '../../../assets/images/language.png';
 import { useTranslation } from 'react-i18next';
 import blackTickImage from '../../../assets/images/ic_tick_black.png';
 import whiteTickImage from '../../../assets/images/ic_tick_white.png';
-import { responsiveHeight } from 'react-native-responsive-dimensions';
+import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 
 
 const CategorySelection = ({ navigation }) => {
@@ -100,9 +100,11 @@ const CategorySelection = ({ navigation }) => {
 const styles = StyleSheet.create({
     mainWrapper: {
         flex: 1,
-        height: '100%',
+        // height: '100%',
         padding: 25,
+        paddingBottom: 40,
         backgroundColor: colors.white,
+
     },
     buttonContainer: {
         width: '100%',
@@ -119,15 +121,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         width: '100%',
-        marginVertical: 80,
+        marginVertical: responsiveHeight(8),
     },
     imageSaathi: {
-        width: 150,
-        height: 146,
+        width: responsiveHeight(20),
+        height: responsiveHeight(19.6),
     },
     oval: {
-        height: 250,
-        width: 100,
+        height: responsiveHeight(30),
+        width: responsiveWidth(25),
         backgroundColor: colors.yellow,
         borderRadius: 50,
         paddingHorizontal: 8,
@@ -153,6 +155,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
+        marginBottom: 50
         // height: '40%',
         // backgroundColor: colors.yellow
     },
