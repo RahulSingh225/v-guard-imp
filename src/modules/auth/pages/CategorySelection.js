@@ -6,6 +6,7 @@ import language from '../../../assets/images/language.png';
 import { useTranslation } from 'react-i18next';
 import blackTickImage from '../../../assets/images/ic_tick_black.png';
 import whiteTickImage from '../../../assets/images/ic_tick_white.png';
+import { height, width } from '../../../utils/dimensions';
 
 
 const CategorySelection = ({ navigation }) => {
@@ -99,6 +100,8 @@ const CategorySelection = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     mainWrapper: {
+        height:height,
+        width:width,
         flex: 1,
         padding: 25,
         backgroundColor: colors.white,
@@ -148,10 +151,12 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     startButtonContainer: {
+        marginTop:50,
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
         height: '20%',
+        
     },
     categoryIcon: {
         height: 50,
