@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import blackTickImage from '../../../assets/images/ic_tick_black.png';
 import whiteTickImage from '../../../assets/images/ic_tick_white.png';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import { height, width } from '../../../utils/dimensions';
 
 
 const CategorySelection = ({ navigation }) => {
