@@ -1,12 +1,15 @@
+
 import { View, Text, StyleSheet, Image, TouchableOpacity, Linking } from 'react-native'
 import React from 'react'
 import { responsiveFontSize } from 'react-native-responsive-dimensions'
 import colors from '../../colors'
-import { useTranslation } from 'react-i18next';
 
+import { useTranslation } from 'react-i18next';
+import { Linking } from 'react-native';
 
 const NeedHelp = () => {
     const { t } = useTranslation();
+
     const phoneNumber = '9717500011';
     const email = 'info@vguardrishta.com';
     const whatsappNumber = '9818900011';
@@ -59,10 +62,12 @@ const NeedHelp = () => {
                         {whatsappNumber}
                     </Text>
                 </View>
+
             </TouchableOpacity>
         </View>
-    )
-}
+    );
+};
+
 const styles = StyleSheet.create({
     contact: {
         width: '100%',
@@ -72,14 +77,14 @@ const styles = StyleSheet.create({
     textHeader: {
         fontWeight: 'bold',
         color: colors.black,
-        fontSize: responsiveFontSize(2.5)
+        fontSize: responsiveFontSize(2.5),
     },
     helpContainer: {
         display: 'flex',
         flexDirection: 'row',
         marginTop: 10,
         alignItems: 'center',
-        gap: 10
+        gap: 10,
     },
     icon: {
         height: 20,
@@ -88,7 +93,8 @@ const styles = StyleSheet.create({
     textHelp: {
         fontSize: responsiveFontSize(1.7),
         fontWeight: 'bold',
-        color: colors.black
-    }
-})
-export default NeedHelp
+        color: colors.black,
+    },
+});
+
+export default NeedHelp;

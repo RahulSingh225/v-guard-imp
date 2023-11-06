@@ -1,21 +1,34 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { View, Text, ScrollView, StyleSheet, Image } from 'react-native';
 import colors from '../../../../../../colors';
 import { responsiveFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
+import { getActiveSchemesOffers } from '../../HomeApiService';
 
 const ActiveScheme = () => {
-    const data = [
-        {
-            heading: 'Heading 1',
-            message:
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-        },
-        {
-            heading: 'Heading 2',
-            message:
-                'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-        },
-    ];
+    const [data, setData] = useState([]);
+  useEffect(() => {
+    getActiveSchemesOffers()
+      .then(response => response.json())
+      .then(responseData => {
+        setData(responseData);
+        console.log("<><<><<><>><", responseData, "<><<<><><><><><><<><");
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []); 
+    // const data = [
+    //     {
+    //         heading: 'Heading 1',
+    //         message:
+    //             'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+    //     },
+    //     {
+    //         heading: 'Heading 2',
+    //         message:
+    //             'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+    //     },
+    // ];
 
     return (
         <ScrollView style={styles.mainWrapper}>
@@ -24,12 +37,12 @@ const ActiveScheme = () => {
                 <View key={index} style={styles.messageItem}>
                     <Image style={styles.image} source={require('../../../../../assets/images/ic_active_offers.webp')} />
                     <View style={styles.messageContainer}>
-                        <Text style={styles.messageHeader}>{item.heading}</Text>
+                        <Text style={styles.messageHeader}>{item.offerHeading}</Text>
                         <ScrollView
                             style={styles.messageTextContainer}
                             horizontal={true}
                         >
-                            <Text style={styles.messageText}>{item.message}</Text>
+                            <Text style={styles.messageText}>{item.description}</Text>
                         </ScrollView>
                     </View>
                 </View>

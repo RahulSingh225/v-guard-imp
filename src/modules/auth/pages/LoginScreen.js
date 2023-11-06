@@ -7,10 +7,17 @@ import arrowIcon from '../../../assets/images/arrow.png';
 import { loginWithPassword } from '../AuthApiService';
 import { useAuth } from '../../../components/AuthContext';
 import Popup from '../../../components/Popup';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Snackbar from 'react-native-snackbar';
 
 
 const LoginScreen = ({ navigation }) => {
+  const showSnackbar = (message) => {
+    Snackbar.show({
+      text: message,
+      duration: Snackbar.LENGTH_SHORT,
+    });
+  };
+
   const yellow = colors.yellow;
   const { t } = useTranslation();
   const placeholderColor = colors.grey;
@@ -23,24 +30,24 @@ const LoginScreen = ({ navigation }) => {
     setIsPopupVisible(!isPopupVisible);
   };
 
-  
-const handleLogin = async () => {
-  try {
-    const response = await loginWithPassword(username, password);
-    console.log("response=====", response)
-    if (response.status === 200) {
-      console.log(response.mobileNo);
-      // Set AsyncStorage for username and password when the user logs in
-      await AsyncStorage.setItem('username', username);
-      await AsyncStorage.setItem('password', password);
-      login();
-    } else {
-      togglePopup();
+
+  const handleLogin = async () => {
+    if (username === '' || password === '') {
+      showSnackbar('Please enter a username and password.');
+      return;
     }
-  } catch (error) {
-    console.error('Login error:', error);
-  }
-};
+    try {
+      const response = await loginWithPassword(username, password);
+      if (response.status === 200) {
+        login();
+      } else {
+        togglePopup();
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+    }
+  };
+
 
 
   return (

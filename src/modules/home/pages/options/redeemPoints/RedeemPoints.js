@@ -1,5 +1,5 @@
 import { ScrollView, Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import colors from '../../../../../../colors';
 import { useTranslation } from 'react-i18next';
 import CustomTouchableOption from '../../../../../components/CustomTouchableOption';
@@ -8,11 +8,26 @@ import {
   responsiveWidth
 } from "react-native-responsive-dimensions";
 import NeedHelp from '../../../../../components/NeedHelp';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 
 
 const RedeemPoints = ({ navigation }) => {
   const { t } = useTranslation();
-  const point = 100;
+  const [pointsBalance, setPointsBalance] = useState('');
+  const [redeemedPoints, setRedeemedPoints] = useState('');
+  const [numberOfScan, setNumberOfScan] = useState('');
+
+  useEffect(() => {
+    AsyncStorage.getItem('pointsBalance').then((pointsBalance) => {
+      setPointsBalance(pointsBalance);
+    });
+    AsyncStorage.getItem('redeemedPoints').then((redeemedPoints) => {
+      setRedeemedPoints(redeemedPoints);
+    });
+    AsyncStorage.getItem('numberOfScan').then((numberOfScan) => {
+      setNumberOfScan(numberOfScan);
+    });
+  }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
@@ -20,15 +35,15 @@ const RedeemPoints = ({ navigation }) => {
         <View style={styles.points}>
           <View style={styles.leftPoint}>
             <Text style={styles.greyText}>{t('dashboard:points:balance')}</Text>
-            <Text style={styles.point}>{point}</Text>
+            <Text style={styles.point}>{pointsBalance}</Text>
           </View>
           <View style={styles.middlePoint}>
             <Text style={styles.greyText}>{t('dashboard:points:redeemed')}</Text>
-            <Text style={styles.point}>{point}</Text>
+            <Text style={styles.point}>{redeemedPoints}</Text>
           </View>
           <View style={styles.rightPoint}>
             <Text style={styles.greyText}>{t('dashboard:points:scans')}</Text>
-            <Text style={styles.point}>{point}</Text>
+            <Text style={styles.point}>{numberOfScan}</Text>
           </View>
         </View>
         <View style={styles.dashboard}>

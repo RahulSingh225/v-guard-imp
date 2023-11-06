@@ -1,28 +1,41 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import {createContext, useContext, useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {createDigestPostRequest} from '../utils/apiservice';
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({children}) => {
   const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
 
   const login = async () => {
     setIsUserAuthenticated(true);
-    // Set AsyncStorage when the user logs in
-    await AsyncStorage.setItem('isUserAuthenticated', 'true');
   };
 
   const logout = async () => {
-    setIsUserAuthenticated(false);
-    // Clear AsyncStorage when the user logs out
-    await AsyncStorage.removeItem('isUserAuthenticated');
+    try {
+      const path = 'user/logoutUser';
+      createDigestPostRequest(path, '');
+      await AsyncStorage.multiRemove([
+        'numberOfScan',
+        'redeemedPoints',
+        'pointsBalance',
+        'userCode',
+        'name',
+        'password',
+        'username',
+        'isUserAuthenticated'
+      ]);
+      setIsUserAuthenticated(false);
+    } catch (error) {
+      console.error('Error while logging out:', error);
+    }
   };
+  // Call this function after logging out to check AsyncStorage contents
+  // e.g., onPress={() => logAsyncStorageContents()}
 
-  // Check the authentication status when the app starts
   useEffect(() => {
-    // Check AsyncStorage to determine the authentication status
     AsyncStorage.getItem('isUserAuthenticated')
-      .then((value) => {
+      .then(value => {
         const isAuthenticated = value === 'true';
 
         if (isAuthenticated) {
@@ -31,13 +44,13 @@ export const AuthProvider = ({ children }) => {
           logout();
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.error('AsyncStorage error:', error);
       });
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isUserAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{isUserAuthenticated, login, logout}}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,28 +1,42 @@
 import { View, Text, StyleSheet, ScrollView, TextInput, Image } from 'react-native'
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import colors from '../../../../../../colors'
 import { useTranslation } from 'react-i18next';
 import { responsiveFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
 import Buttons from '../../../../../components/Buttons';
 import arrowIcon from '../../../../../assets/images/arrow.png';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 
 const PaytmTransfer = () => {
   const { t } = useTranslation();
-  const point = 100;
   const handleProceed = () =>{
     console.log('Pressed')
   }
+  const [pointsBalance, setPointsBalance] = useState('');
+  const [redeemedPoints, setRedeemedPoints] = useState('');
+
+  useEffect(() => {
+    AsyncStorage.getItem('pointsBalance').then((pointsBalance) => {
+      setPointsBalance(pointsBalance);
+    });
+    AsyncStorage.getItem('redeemedPoints').then((redeemedPoints) => {
+      setRedeemedPoints(redeemedPoints);
+    });
+    AsyncStorage.getItem('numberOfScan').then((numberOfScan) => {
+      setNumberOfScan(numberOfScan);
+    });
+  }, []);
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.mainWrapper}>
         <View style={styles.points}>
           <View style={styles.leftPoint}>
             <Text style={styles.greyText}>{t('dashboard:points:balance')}</Text>
-            <Text style={styles.point}>{point}</Text>
+            <Text style={styles.point}>{pointsBalance}</Text>
           </View>
           <View style={styles.rightPoint}>
             <Text style={styles.greyText}>{t('dashboard:points:redeemed')}</Text>
-            <Text style={styles.point}>{point}</Text>
+            <Text style={styles.point}>{redeemedPoints}</Text>
           </View>
         </View>
         <View style={styles.rightTextView}>

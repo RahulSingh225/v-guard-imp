@@ -1,69 +1,21 @@
-import { View, Text, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity, Alert } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import { View, Text, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity } from 'react-native'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import colors from '../../../../colors';
 import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
-import { Newuserotpvalidation } from "../../../utils/apiservice";
 
-const LoginWithOtp = ({ navigation, route }) => {
+const RegisterWithOtp = ({ navigation, route }) => {
 
     const { usernumber, jobprofession } = route.params;
-
     console.log("====>>>>", usernumber);
     console.log("====>>>>", jobprofession);
-    const [otp, setOtp] = useState('');
-    const [number, setnumber] = useState(usernumber);
-
-
-
 
     const placeholderColor = colors.grey;
 
-    async function validateotp() {
-
-        try {
-
-            if (!otp) {
-                Alert.alert("Please Enter the otp to proceed ")
-                // navigation.navigate('newUser', {
-                //     passedNo: number, // Pass the usernumber prop
-                //     jobprofession: jobprofession, // Pass the jobprofession prop
-                // })
-            }
-            // console.log("=======++++++++===========", { otp, number });
-            else {
-                const verification = await Newuserotpvalidation(number, otp);
-                const successMessage = verification.data.message;
-                Alert.alert(successMessage);
-                navigation.navigate('newUser', {
-                    passedNo: number, // Pass the usernumber prop
-                    jobprofession: jobprofession, // Pass the jobprofession prop
-                })
-            }
-
-
-
-
-        } catch (error) {
-
-            console.log("=====+++>>>>", error);
-
-        } finally {
-
-        }
-
-    }
-
-
-    useEffect(() => {
-
-    }, [otp, number])
-
-
     const { t } = useTranslation();
 
-
+    const [otp, setOtp] = useState('');
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.registerUser}>
@@ -91,7 +43,7 @@ const LoginWithOtp = ({ navigation, route }) => {
                                 style={styles.button}
                                 label={t('auth:loginWIthOtp:submit')}
                                 variant="filled"
-                                onPress={() => validateotp()}
+                                onPress={() => navigation.navigate('Kyc')}
                                 width="100%"
                                 iconHeight={10}
                                 iconWidth={30}
@@ -239,4 +191,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default LoginWithOtp
+export default RegisterWithOtp

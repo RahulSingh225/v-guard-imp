@@ -1,5 +1,6 @@
 import { ScrollView, Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import colors from '../../../../colors';
 import { useTranslation } from 'react-i18next';
 import AuthNavigator from '../../auth/stack/AuthNavigator';
@@ -15,30 +16,52 @@ import NeedHelp from '../../../components/NeedHelp';
 const HomeScreen = ({ navigation }) => {
   const { t } = useTranslation();
   const point = 100;
+  const [userName, setUserName] = useState('');
+  const [userCode, setUserCode] = useState('');
+  const [pointsBalance, setPointsBalance] = useState('');
+  const [redeemedPoints, setRedeemedPoints] = useState('');
+  const [numberOfScan, setNumberOfScan] = useState('');
 
+  useEffect(() => {
+    AsyncStorage.getItem('name').then((name) => {
+      setUserName(name);
+    });
+    AsyncStorage.getItem('userCode').then((code) => {
+      setUserCode(code);
+    });
+    AsyncStorage.getItem('pointsBalance').then((pointsBalance) => {
+      setPointsBalance(pointsBalance);
+    });
+    AsyncStorage.getItem('redeemedPoints').then((redeemedPoints) => {
+      setRedeemedPoints(redeemedPoints);
+    });
+    AsyncStorage.getItem('numberOfScan').then((numberOfScan) => {
+      setNumberOfScan(numberOfScan);
+    });
+  }, []);
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       <View style={styles.mainWrapper}>
         <View style={styles.profileDetails}>
           <View style={styles.ImageProfile}></View>
           <View style={styles.profileText}>
-            <Text style={styles.textDetail}>Test User</Text>
-            <Text style={styles.textDetail}>XXXXX</Text>
+            <Text style={styles.textDetail}>{userName}</Text>
+            <Text style={styles.textDetail}>{userCode}</Text>
             <Text style={styles.viewProfile}>View Profile</Text>
           </View>
         </View>
         <View style={styles.points}>
           <View style={styles.leftPoint}>
             <Text style={styles.greyText}>{t('dashboard:points:balance')}</Text>
-            <Text style={styles.point}>{point}</Text>
+            <Text style={styles.point}>{pointsBalance}</Text>
           </View>
           <View style={styles.middlePoint}>
             <Text style={styles.greyText}>{t('dashboard:points:redeemed')}</Text>
-            <Text style={styles.point}>{point}</Text>
+            <Text style={styles.point}>{redeemedPoints}</Text>
           </View>
           <View style={styles.rightPoint}>
             <Text style={styles.greyText}>{t('dashboard:points:scans')}</Text>
-            <Text style={styles.point}>{point}</Text>
+            <Text style={styles.point}>{numberOfScan}</Text>
           </View>
         </View>
         <View style={styles.dashboard}>

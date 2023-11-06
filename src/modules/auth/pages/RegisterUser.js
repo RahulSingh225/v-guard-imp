@@ -27,6 +27,7 @@ const RegisterUser = ({ navigation }) => {
                 Alert.alert('Please select a Job Profession');
             }
             // Call the API function with user inputs
+
             else {
                 setIsLoading(true);
                 console.log('Validation response:', number);
@@ -48,6 +49,7 @@ const RegisterUser = ({ navigation }) => {
             // Handle the error as needed
         } finally {
             setIsLoading(false);
+
         }
     };
 
