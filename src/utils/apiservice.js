@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const API_LINK = 'http://34.100.133.239:18092'; // Replace with your API base URL
 
 
+
 const imageURL = "https://vguardrishta.com/";
 
 const BASE_URL = 'http://34.100.133.239:18092/vguard/api/';
@@ -115,12 +116,10 @@ export const loginPasswordDigest = async (relativeUrl, username, password) => {
 };
 
 
+
 const api = axios.create({
     baseURL: API_LINK,
-    headers: {
-        'Content-Type': 'application/json',
 
-    },
 });
 const imageApi = axios.create({
     baseURL: imageURL,
@@ -204,6 +203,17 @@ export const GetProfession = async () => {
     }
 };
 
+export const Getsubprofession = async () => {
+    console.log('Fetching data for subprofession:===%%%%',);
+    try {
+        const response = await api.get(`/vguard/api/user/getSubProfession/${0}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching pin code data:', error);
+        throw error;
+    }
+};
+
 
 export const Getallbanks = async () => {
     console.log('Fetching data for banks:===%%%%',);
@@ -221,8 +231,24 @@ export const NewusermobileNumberValidation = async (mobileNo, preferredLanguageP
             mobileNo: mobileNo,
             preferredLanguagePos: preferredLanguagePos
         };
-        const response = await api.post('/vguard/api/user/validateNewMobileNo', { params: requestBody });
-        console.log(response)
+
+
+        const response = await api.post('/vguard/api/user/validateNewMobileNo', { mobileNo: mobileNo, preferredLanguagePos: preferredLanguagePos });
+        return response;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+    }
+};
+export const Newuserotpvalidation = async (mobileNo, otp) => {
+    try {
+        const requestBody = {
+            mobileNo: mobileNo,
+            otp: otp,
+        };
+        console.log({ mobileNo, otp });
+        const response = await api.post('/vguard/api/user/validateNewUserOtp', { mobileNo: mobileNo, otp: otp });
+
         return response;
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -240,6 +266,45 @@ export const Citylist = async (disctrictId) => {
         throw error;
     }
 };
+
+export const RegisterNewUser = async (userbody) => {
+
+    try {
+        console.log('==============INSIDE aPI SERVIE ======================');
+        console.log(userbody);
+        console.log('====================================');
+        const response = await api.post(`/vguard/api/user/registerUser`, userbody);
+        return response.data;
+    } catch (error) {
+        console.error('Error ', error);
+        throw error;
+
+    }
+}
+
+
+
+export const sendFile = async (formData) => {
+    try {
+
+        const response = await api.post(`/vguard/api/file`, formData);
+        return response;
+    } catch (error) {
+        console.error('Error sending file:', error);
+        throw error;
+    }
+};
+
+export const Appversion = async () => {
+    try {
+        const response = await api.get(`/vguard/api/user/version`);
+        return response;
+    } catch (error) {
+        throw error;
+
+    }
+}
+
 
 
 

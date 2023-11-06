@@ -13,7 +13,11 @@ import NomineePage from '../pages/NomineePage';
 import ForgotPassword from '../pages/ForgotPassword';
 import LoginWithNumber from '../pages/LoginWithNumber';
 import HomeStack from '../../home/stack/HomeStack';
+
+import PreviewUserRegistration from '../pages/PreviewUserRegistration';
+
 import RegisterWithOtp from '../pages/RegisterWithOtp';
+
 
 const AuthNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -26,9 +30,11 @@ const AuthNavigator = () => {
         headerShown: false
 
       }}>
+
+      <Stack.Screen name="splash" component={SplashScreen} />
       <Stack.Screen name="category" component={CategorySelection} />
 
-      {/* <Stack.Screen name="splash" component={SplashScreen} /> */}
+
 
       <Stack.Screen name="login" component={LoginScreen} screenOptions={{ headerShown: false }} />
       <Stack.Screen name="Home" component={HomeStack} />
@@ -39,6 +45,11 @@ const AuthNavigator = () => {
       <Stack.Screen name="Kyc" component={Kyc} />
       <Stack.Screen name="forgotPassword" component={ForgotPassword} />
       <Stack.Screen name="loginWithNumber" component={LoginWithNumber} />
+      <Stack.Screen name="newUser" component={NewUser} screenOptions={{ headerShown: true }} />
+      <Stack.Screen name="NewUserKyc" component={NewUserKyc} />
+      <Stack.Screen name='NomineePage' component={NomineePage} />
+      <Stack.Screen name='PreviewSummary' component={PreviewUserRegistration} />
+
 
     </Stack.Navigator>
 

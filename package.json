@@ -28,10 +28,12 @@
     "react-native-digest-fetch": "^1.0.5",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-flash-message": "^0.4.2",
+    "react-native-floating-label-input": "^1.4.2",
     "react-native-image-picker": "^7.0.1",
     "react-native-month-year-picker": "^1.9.0",
-    "react-native-paper": "^5.11.0",
+    "react-native-paper": "^4.12.5",
     "react-native-permissions": "^3.10.0",
+    "react-native-reanimated": "^3.5.4",
     "react-native-responsive-dimensions": "^3.1.1",
     "react-native-responsive-fontsize": "^0.5.1",
     "react-native-safe-area-context": "^3.2.0",
@@ -40,7 +42,8 @@
     "react-native-snap-carousel": "^3.9.1",
     "react-native-table-component": "^1.2.2",
     "react-native-vector-icons": "^10.0.0",
-    "rnpm": "^1.9.0"
+    "rnpm": "^1.9.0",
+    "stringfy": "^0.0.12"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
