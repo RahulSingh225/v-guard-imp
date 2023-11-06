@@ -47,3 +47,20 @@ export function fetchWelfare(){
     return createDigestGetRequest(path);
 }
 
+export function fetchProductWiseEarning(){
+    const path = "product/getProductWiseEarning";
+    return createDigestGetRequest(path);
+}
+
+export function fetchSchemeWiseEarning(){
+    const path = "schemes/getSchemeWiseEarning";
+    return createDigestGetRequest(path);
+}
+
+export function fetchBonusRewards(){
+    const path = "user/bonusPoints";
+    return createDigestGetRequest(path);
+}
+
+
+

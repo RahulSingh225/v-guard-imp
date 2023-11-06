@@ -1,46 +1,39 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Table, Row, Rows } from 'react-native-table-component';
 import colors from '../../../../../../colors';
 import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions';
+import { fetchSchemeWiseEarning } from '../../HomeApiService';
 
 const SchemeWiseEarning = () => {
-    const productDetails = {
-        "products": [
-            {
-                "sl_no": 1,
-                "created_date": "23-03-2023",
-                "product_description": "Product A",
-            },
-            {
-                "sl_no": 2,
-                "created_date": "23-03-2023",
-                "product_description": "Product B",
-            },
-            {
-                "sl_no": 3,
-                "created_date": "23-03-2023",
-                "product_description": "Product C",
-            }
-        ]
-    }
+    const [schemeDetails, setSchemeDetails] = useState([]);
+    useEffect(() => {
+        fetchSchemeWiseEarning()
+            .then(response => response.json())
+            .then(responseData => {
+                setSchemeDetails(responseData);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    }, []);
 
-    const data = productDetails.products.map(product => [
-        product.sl_no.toString(),
-        product.created_date,
-        product.product_description,
+    const data = schemeDetails.map(product => [
+        product.slNo.toString(),
+        product.createdDate,
+        product.partDesc,
     ]);
 
-    const tableHead = ["Sl No.","Created Date", "Product Description"];
+    const tableHead = ["Sl No.","Created Date", "Material Description"];
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <Text style={styles.title}>Scheme Wise Earning</Text>
             <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
                 <Row data={tableHead} style={styles.head} textStyle={styles.text} />
                 <Rows data={data} textStyle={styles.text} />
             </Table>
-        </View>
+        </ScrollView>
     );
 }
 

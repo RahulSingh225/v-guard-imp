@@ -15,7 +15,6 @@ import NeedHelp from '../../../components/NeedHelp';
 
 const HomeScreen = ({ navigation }) => {
   const { t } = useTranslation();
-  const point = 100;
   const [userName, setUserName] = useState('');
   const [userCode, setUserCode] = useState('');
   const [pointsBalance, setPointsBalance] = useState('');
