@@ -64,7 +64,7 @@ const CategorySelection = ({ navigation }) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.oval}
-                    onPress={() => handleOptionSelect('influencer')}
+                    onPress={() => handleOptionSelect('login')}
                 >
                     <Image
                         source={require('../../../assets/images/ic_retailer_1.png')}

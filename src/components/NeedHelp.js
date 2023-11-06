@@ -1,48 +1,68 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { responsiveFontSize } from 'react-native-responsive-dimensions';
-import colors from '../../colors';
+
+import { View, Text, StyleSheet, Image, TouchableOpacity, Linking } from 'react-native'
+import React from 'react'
+import { responsiveFontSize } from 'react-native-responsive-dimensions'
+import colors from '../../colors'
+
 import { useTranslation } from 'react-i18next';
 import { Linking } from 'react-native';
 
 const NeedHelp = () => {
     const { t } = useTranslation();
 
-    const handlePhoneCall = () => {
-        Linking.openURL('tel:+91 9717500011');
+    const phoneNumber = '9717500011';
+    const email = 'info@vguardrishta.com';
+    const whatsappNumber = '9818900011';
+
+    const callPhoneNumber = () => {
+        Linking.openURL(`tel:${phoneNumber}`);
     };
 
-    const handleEmail = () => {
-        Linking.openURL('mailto:info@vguardrishta.com');
+    const sendEmail = () => {
+        Linking.openURL(`mailto:${email}`);
     };
 
-    const handleWhatsApp = () => {
-        Linking.openURL('https://wa.me/919818900011');
+    const openWhatsApp = () => {
+        Linking.openURL(`whatsapp://send?phone=${whatsappNumber}`);
     };
-
     return (
         <View style={styles.contact}>
-            <Text style={styles.textHeader}>{t('dashboard:help:header')}</Text>
-            <TouchableOpacity style={styles.helpContainer} onPress={handlePhoneCall}>
-                <Image
-                    source={require('../assets/images/ic_phone_call_2.png')}
-                    style={styles.icon}
-                />
-                <Text style={styles.textHelp}>9717500011</Text>
+            <Text style={styles.textHeader}>
+                {t('dashboard:help:header')}
+            </Text>
+            <TouchableOpacity onPress={callPhoneNumber}>
+                <View style={styles.helpContainer}>
+                    <Image
+                        source={require('../assets/images/ic_phone_call_2.png')}
+                        style={styles.icon}
+                    />
+                    <Text style={styles.textHelp}>
+                        {phoneNumber}
+                    </Text>
+                </View>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.helpContainer} onPress={handleEmail}>
-                <Image
-                    source={require('../assets/images/ic_email.png')}
-                    style={styles.icon}
-                />
-                <Text style={styles.textHelp}>info@vguardrishta.com</Text>
+            <TouchableOpacity onPress={sendEmail}>
+                <View style={styles.helpContainer}>
+                    <Image
+                        source={require('../assets/images/ic_email.png')}
+                        style={styles.icon}
+                    />
+                    <Text style={styles.textHelp}>
+                        {email}
+                    </Text>
+                </View>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.helpContainer} onPress={handleWhatsApp}>
-                <Image
-                    source={require('../assets/images/ic_whatsapp.webp')}
-                    style={styles.icon}
-                />
-                <Text style={styles.textHelp}>9818900011</Text>
+            <TouchableOpacity onPress={openWhatsApp}>
+                <View style={styles.helpContainer}>
+                    <Image
+                        source={require('../assets/images/ic_whatsapp.webp')}
+                        style={styles.icon}
+                    />
+                    <Text style={styles.textHelp}>
+                        {whatsappNumber}
+                    </Text>
+                </View>
+
             </TouchableOpacity>
         </View>
     );
