@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     buttonText: {
         textAlignVertical:'top',
         fontSize: responsiveFontSize(1.8),
-        color: colors.yellow,
+        color: colors.black,
         fontWeight: 'bold',
     },
     whiteText: {
