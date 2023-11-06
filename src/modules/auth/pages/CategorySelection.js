@@ -6,6 +6,7 @@ import language from '../../../assets/images/language.png';
 import { useTranslation } from 'react-i18next';
 import blackTickImage from '../../../assets/images/ic_tick_black.png';
 import whiteTickImage from '../../../assets/images/ic_tick_white.png';
+import { responsiveHeight } from 'react-native-responsive-dimensions';
 
 
 const CategorySelection = ({ navigation }) => {
@@ -86,7 +87,6 @@ const CategorySelection = ({ navigation }) => {
 
             <View style={styles.startButtonContainer}>
                 <Buttons
-                    style={styles.startButton}
                     label="Start"
                     variant="blackButton"
                     onPress={() => navigation.navigate('login')}
@@ -100,6 +100,7 @@ const CategorySelection = ({ navigation }) => {
 const styles = StyleSheet.create({
     mainWrapper: {
         flex: 1,
+        height: '100%',
         padding: 25,
         backgroundColor: colors.white,
     },
@@ -145,13 +146,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         gap: 30,
-        width: '100%'
+        width: '100%',
+        marginBottom: responsiveHeight(10)
     },
     startButtonContainer: {
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
-        height: '20%',
+        // height: '40%',
+        // backgroundColor: colors.yellow
     },
     categoryIcon: {
         height: 50,

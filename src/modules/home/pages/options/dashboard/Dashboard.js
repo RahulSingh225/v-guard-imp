@@ -1,4 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
+
 import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity, Image } from 'react-native';
 import MonthPicker from 'react-native-month-year-picker';
 import moment from 'moment';
@@ -13,6 +15,10 @@ const Dashboard = () => {
 
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
+  const [userName, setUserName] = useState('');
+  const [userCode, setUserCode] = useState('');
+  const [pointsBalance, setPointsBalance] = useState('');
+  const [redeemedPoints, setRedeemedPoints] = useState('');
 
   const showPicker = useCallback((value) => setShow(value), []);
 
@@ -26,7 +32,20 @@ const Dashboard = () => {
     [date, showPicker],
   );
 
-  const point = 100;
+  useEffect(() => {
+    AsyncStorage.getItem('name').then((name) => {
+      setUserName(name);
+    });
+    AsyncStorage.getItem('userCode').then((code) => {
+      setUserCode(code);
+    });
+    AsyncStorage.getItem('pointsBalance').then((pointsBalance) => {
+      setPointsBalance(pointsBalance);
+    });
+    AsyncStorage.getItem('redeemedPoints').then((redeemedPoints) => {
+      setRedeemedPoints(redeemedPoints);
+    });
+  }, []);
 
 
   return (
@@ -34,8 +53,8 @@ const Dashboard = () => {
       <View style={styles.profileDetails}>
         <View style={styles.ImageProfile}></View>
         <View style={styles.profileText}>
-          <Text style={styles.textDetail}>Test User</Text>
-          <Text style={styles.textDetail}>XXXXX</Text>
+          <Text style={styles.textDetail}>{userName}</Text>
+          <Text style={styles.textDetail}>{userCode}</Text>
         </View>
       </View>
       <TouchableOpacity onPress={() => showPicker(true)}>
@@ -61,11 +80,11 @@ const Dashboard = () => {
       <View style={styles.points}>
         <View style={styles.leftPoint}>
           <Text style={styles.greyText}>{t('dashboard:points:balance')}</Text>
-          <Text style={styles.point}>{point}</Text>
+          <Text style={styles.point}>{pointsBalance}</Text>
         </View>
         <View style={styles.rightPoint}>
           <Text style={styles.greyText}>{t('dashboard:points:redeemed')}</Text>
-          <Text style={styles.point}>{point}</Text>
+          <Text style={styles.point}>{redeemedPoints}</Text>
         </View>
       </View>
 
