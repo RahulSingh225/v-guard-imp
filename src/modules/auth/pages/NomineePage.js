@@ -9,15 +9,12 @@ import Permissions from 'react-native-permissions';
 import { Getallbanks } from '../../../utils/apiservice';
 import DatePicker from '../../../components/DatePicker';
 import { FloatingLabelInput } from 'react-native-floating-label-input';
-
 import Icon from 'react-native-vector-icons/Ionicons';
 import { IconButton, } from 'react-native-paper';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import NeedHelp from "../../../components/NeedHelp";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
-
+import Popup from '../../../components/Popup';
 import colors from '../../../../colors';
 import { useTranslation } from 'react-i18next';
 import {
@@ -43,9 +40,9 @@ const NomineePage = ({ navigation, route }) => {
     const [accountholdername, setaccountholdername] = useState(null);
     const [chequeImage, setchequeImage] = useState(null);
     const [IFSC, setIFSC] = useState(null);
-    const [accounttype, setaccounttype] = useState("null");
+    const [accounttype, setaccounttype] = useState('Select');
 
-    const [selectedbank, setselectedbank] = useState("null");
+    const [selectedbank, setselectedbank] = useState('Select');
     const [allbankslist, setallbankslist] = useState(null);
     const [bankid, setbankid] = useState('');
     const [validateallfieldforbank, setvalidateallfieldforbank] = useState(false);
@@ -58,6 +55,8 @@ const NomineePage = ({ navigation, route }) => {
     const [nomineeaddress, setnomineeaddress] = useState('');
     const [nomineeselectedDate, setnomineeSelectedDate] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [popupMessage, setPopupMessage] = useState('');
 
 
     const handleDateChange = (event, selectedDate) => {
@@ -104,38 +103,55 @@ const NomineePage = ({ navigation, route }) => {
 
         if (checked) {
 
+            console.log(accountnumber);
+            console.log(accountholdername);
+            console.log(chequeImage);
+            console.log(IFSC);
+            console.log(accounttype);
+            console.log(selectedbank);
+
             if (
                 accountnumber === '' &&
                 accountholdername === null &&
                 chequeImage === null &&
                 IFSC === null &&
-                accounttype === 'null' &&
-                selectedbank === 'null'
+                accounttype == 'Select' &&
+                selectedbank == 'Select'
             ) {
 
                 const dataToStore = JSON.stringify(PreviewSummaryData);
                 await AsyncStorage.setItem("previewSummaryData", dataToStore);
                 navigation.navigate("PreviewSummary");
-            } else if (
+            }
+            else if (
                 accountnumber !== '' &&
                 accountholdername !== null &&
                 chequeImage !== null &&
                 IFSC !== null &&
-                accounttype !== 'null' &&
-                selectedbank !== 'null'
+                accounttype != 'Select' &&
+                selectedbank != 'Select'
             ) {
 
                 const dataToStore = JSON.stringify(PreviewSummaryData);
                 await AsyncStorage.setItem("previewSummaryData", dataToStore);
                 //  console.log("++++++++INSDENOMINEE PAGE CONSLE BEFORE NAVIGATION++++++++$$$$$$", dataToStore);
                 navigation.navigate("PreviewSummary");
-            } else {
+            }
+            else {
 
-                Alert.alert('Please fill in all the fields or leave them all empty.');
+                console.log(accountnumber);
+                console.log(accountholdername);
+                console.log(chequeImage);
+                console.log(IFSC);
+                console.log(accounttype);
+                console.log(selectedbank);
+                setIsPopupVisible(true);
+                setPopupMessage('Please fill compleate bank details.');
+
             }
         } else {
-
-            Alert.alert("Please agree to terms and conditions.");
+            setIsPopupVisible(true);
+            setPopupMessage("Please agree to terms and conditions.");
         }
     };
     const openTermsAndConditions = () => {
@@ -327,6 +343,11 @@ const NomineePage = ({ navigation, route }) => {
                         </View>
 
                     </View>
+                    {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
+                        <Text>{popupMessage}</Text>
+                        {/* // <Text>ICORRECT OTP</Text> */}
+                    </Popup>
+                    )}
 
                     <Text style={{ color: 'black', marginLeft: 20, }}> {t('auth:newuser:BankDetailsForAccount')}</Text>
                     <FloatingLabelInput
@@ -379,7 +400,7 @@ const NomineePage = ({ navigation, route }) => {
                             onValueChange={(itemValue, itemIndex) =>
                                 setaccounttype(itemValue)
                             }>
-                            <Picker.Item label="Select Account Type" value="null" />
+                            <Picker.Item label="Select Account Type" value="" />
                             <Picker.Item label=" Current" value="Current" />
                             <Picker.Item label=" Saving" value="Saving" />
 
@@ -403,7 +424,7 @@ const NomineePage = ({ navigation, route }) => {
                                 setselectedbank(itemValue);
                                 setbankid(selectedItem.key);
                             }}>
-                            <Picker.Item label="Select" value="null" />
+                            <Picker.Item label="Select" value=" " />
                             {Array.isArray(allbankslist) && allbankslist.length > 0 ? (
                                 allbankslist.map(item => (
                                     <Picker.Item

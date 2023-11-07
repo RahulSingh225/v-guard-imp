@@ -10,6 +10,7 @@ import DatePicker from '../../../components/DatePicker';
 import { FloatingLabelInput } from 'react-native-floating-label-input';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from '../../../components/Loader';
+import Popup from '../../../components/Popup';
 
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useTranslation } from 'react-i18next';
@@ -45,6 +46,8 @@ const NewUser = ({ navigation, }) => {
   const [permananetsateid, setpermananetsatedid] = useState('');
   const [permananetdistrictId, setpermananetdistrictId] = useState('');
   const [permananetcityid, setpermananetcityid] = useState('');
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
 
   const [birthday, setBirthday] = useState('');
   const [phone, setPhone] = useState('');
@@ -52,10 +55,10 @@ const NewUser = ({ navigation, }) => {
 
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState();
-  const [items, setItems] = useState([
-    { label: 'Apple', value: 'apple' },
-    { label: 'Banana', value: 'banana' }
-  ]);
+  // const [items, setItems] = useState([
+  //   { label: 'Apple', value: 'apple' },
+  //   { label: 'Banana', value: 'banana' }
+  // ]);
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -139,9 +142,9 @@ const NewUser = ({ navigation, }) => {
     });
 
     AsyncStorage.getItem("preferedLanguage").then(language => {
-      if (language) {
+      if (language == "1") {
         // Update the state with the retrieved value
-        setSelectedLanguage(language);
+        setSelectedLanguage("English");
         console.log('====================================');
         console.log(selectedLanguage);
         console.log('====================================');
@@ -290,53 +293,63 @@ const NewUser = ({ navigation, }) => {
   async function validateFields() {
 
     if (!name) {
-      Alert.alert('Name field is empty. Please fill it.');
+      setIsPopupVisible(true);
+      setPopupMessage('Name field is empty. Please fill it.');
       return false;
     }
 
     if (!gender || gender === 'Select Gender*') {
-      Alert.alert('Gender field is empty. Please fill it.');
+      setIsPopupVisible(true);
+      setPopupMessage('Gender field is empty. Please fill it.');
       return false;
     }
     if (!selectedDate) {
-      Alert.alert('Select birth date is empty. Please fill it.');
+      setIsPopupVisible(true);
+      setPopupMessage('Select birth date is empty. Please fill it.');
       return false;
     }
 
     if (!number) {
-      Alert.alert('Number field is empty. Please fill it.');
+      setIsPopupVisible(true);
+      setPopupMessage('Number field is empty. Please fill it.');
       return false;
     }
     if (!whatappyes || whatappyes === "Select WhatApp contact same as above ?") {
-      Alert.alert('Please specify your WhatsApp no same or not. ');
+      setPopupMessage('Please specify your WhatsApp no same or not. ');
       return false;
     }
     if (!address) {
-      Alert.alert('Address field is empty. Please fill it.');
+      setIsPopupVisible(true);
+      setPopupMessage('Address field is empty. Please fill it.');
       return false;
     }
     if (!street) {
-      Alert.alert('Street field is empty. Please fill it.');
+      setIsPopupVisible(true);
+      setPopupMessage('Street field is empty. Please fill it.');
       return false;
     }
 
     if (!pincode) {
-      Alert.alert('Please enter a pincode and select a pincode to get state and district.');
+      setIsPopupVisible(true);
+      setPopupMessage('Please enter a pincode and select a pincode to get state and district.');
       return false;
     }
     if (!selectedState) {
-      Alert.alert('State field is empty. Please fill it.');
+      setIsPopupVisible(true);
+      setPopupMessage('State field is empty. Please fill it.');
       return false;
     }
     if (!selectedDistrict) {
-      Alert.alert('District field is empty. Please fill it.');
+      setIsPopupVisible(true);
+      setPopupMessage('District field is empty. Please fill it.');
       return false;
     }
     if (!selectedCity) {
-      Alert.alert('City field is empty. Please fill it.');
+      setIsPopupVisible(true);
+      setPopupMessage('City field is empty. Please fill it.');
       return false;
     } else {
-      setIsLoading(false)
+      setIsLoading(true)
       const userDataString = JSON.stringify(userData);
       await updateUserDataInPreviewSummary(userData);
 
@@ -361,6 +374,11 @@ const NewUser = ({ navigation, }) => {
 
             <Loader isLoading={isLoading} />
           </View>
+          {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
+            <Text>{popupMessage}</Text>
+            {/* // <Text>ICORRECT OTP</Text> */}
+          </Popup>
+          )}
           <Avatar.Image size={84} source={require('../../../assets/images/ac_icon.png')} />
           <View style={{ margin: 20, flexDirection: 'column' }}>
             <Text style={{ color: 'grey' }}>New User</Text>
@@ -374,9 +392,9 @@ const NewUser = ({ navigation, }) => {
         </View>
 
 
-        <Text style={{ color: 'black', marginLeft: 20, }}>{t('auth:newuser:Preferedlanguage')}</Text>
+
         <FloatingLabelInput
-          label="Selected Language"
+          label={t('auth:newuser:Preferedlanguage')}
 
           staticLabel
           maxLength={30}
@@ -393,7 +411,7 @@ const NewUser = ({ navigation, }) => {
         />
 
         <FloatingLabelInput
-          label="Name"
+          label={t('auth:newuser:Name')}
           value={name}
 
 
@@ -449,7 +467,7 @@ const NewUser = ({ navigation, }) => {
 
         <FloatingLabelInput
 
-          label="Contact Number"
+          label={t('auth:newuser:Contact')}
           value={number}
 
           keyboardType='number-pad'
@@ -500,7 +518,8 @@ const NewUser = ({ navigation, }) => {
 
         </View>
         <FloatingLabelInput
-          label="WhatsApp Number"
+          label={t('auth:newuser:Whatapp')}
+
 
           maxLength={10}
           value={whatapp}
@@ -526,7 +545,7 @@ const NewUser = ({ navigation, }) => {
         />
         <FloatingLabelInput
 
-          label="Email"
+          label={t('auth:newuser:Email')}
 
 
           keyboardType='email-address'
@@ -543,7 +562,7 @@ const NewUser = ({ navigation, }) => {
         />
         <FloatingLabelInput
 
-          label="Permanent House Flat/block no"
+          label={t('auth:newuser:Permanentaddress')}
 
 
           keyboardType='default'
@@ -561,7 +580,8 @@ const NewUser = ({ navigation, }) => {
         />
         <FloatingLabelInput
 
-          label="Street/ Colony/Locality Name *"
+
+          label={t('auth:newuser:Street')}
 
 
           maxLength={128}
@@ -578,7 +598,7 @@ const NewUser = ({ navigation, }) => {
         />
         <FloatingLabelInput
 
-          label="Landmark"
+          label={t('auth:newuser:Landmark')}
 
           staticLabel
           maxLength={60}
@@ -595,11 +615,11 @@ const NewUser = ({ navigation, }) => {
         />
 
 
-        <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:pincode')}</Text>
+
 
         <FloatingLabelInput
           containerStyles={styles.input}
-          label="Enter Pincode"
+          label={t('auth:newuser:pincode')}
           keyboardType="number-pad"
           value={pincode}
           onChangeText={(text) => [setPincode(text),
@@ -616,7 +636,7 @@ const NewUser = ({ navigation, }) => {
         <DropDownPicker
 
 
-          label={value}
+          label={item.pinCode}
           badgeStyle={(item, index) => ({
             padding: 5,
             backgroundColor: item.value ? 'red' : 'grey',
@@ -690,10 +710,10 @@ const NewUser = ({ navigation, }) => {
             fetchAndPopulateData(item.value);
           }}
         /> */}
-        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('auth:newuser:State')}</Text>
+
         <FloatingLabelInput
           containerStyles={styles.input}
-          label="Selelcted State"
+          label={t('auth:newuser:State')}
           keyboardType="default"
           value={selectedState}
           onChangeText={(text) => [setSelectedState(text),
@@ -707,14 +727,23 @@ const NewUser = ({ navigation, }) => {
           }}
         />
 
-        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('auth:newuser:District')}</Text>
-
-        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
-
-          <Text style={{ color: 'black', margin: 15 }}>{selectedDistrict}</Text>
 
 
-        </View>
+        <FloatingLabelInput
+          containerStyles={styles.input}
+          label={t('auth:newuser:District')}
+          keyboardType="default"
+          value={selectedDistrict}
+          onChangeText={(text) => [setSelectedState(text),
+          setOpen(true)]}
+
+          staticLabel
+          labelStyles={styles.labelStyles}
+          inputStyles={{
+            color: 'grey',
+            paddingHorizontal: 10,
+          }}
+        />
 
         <Text style={{ color: 'black', left: 20, marginBottom: 2 }}> {t('auth:newuser:City')}</Text>
 
@@ -741,7 +770,7 @@ const NewUser = ({ navigation, }) => {
                 />
               ))
             ) : (
-              <Picker.Item label="Loading..." value="" />
+              <Picker.Item label="Select City" value="" />
             )}
           </Picker>
 
@@ -788,6 +817,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderColor: 'grey',
     borderWidth: 0.8,
+    bottom: -5
   },
 
   dropdownContainer: {
@@ -806,7 +836,7 @@ const styles = StyleSheet.create({
   },
   labelStyles: {
     backgroundColor: 'transparent',
-    margin: 15,
+    margin: 14,
     color: 'grey',
   },
 });

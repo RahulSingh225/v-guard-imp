@@ -24,6 +24,7 @@ import ImageWithModal from '../../../components/ImageWithModal';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useTranslation } from 'react-i18next';
 import NewUserKyc from './NewUserKyc';
+import Popup from '../../../components/Popup';
 
 const PreviewUserRegistration = ({ navigation, route }) => {
 
@@ -103,6 +104,9 @@ const PreviewUserRegistration = ({ navigation, route }) => {
     const [nomineedate, setnomineedate] = useState('');
     const [previewData, setPreviewData] = useState(null);
     const [relationwithyou, setrelationwithyou] = useState('');
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [popupMessage, setPopupMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     // const { PreviewSummaryData } = route.params;
     // console.log('==================%%%=PREVIEW SUMMARY=================', PreviewSummaryData);
 
@@ -140,7 +144,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     setaddress(retrievedData.fullData.userData.address);
                     setstreet(retrievedData.fullData.userData.street);
                     setlandmark(retrievedData.fullData.userData.landmark);
-                    setSelectedDate(retrievedData.fullData.userData.selectedDate);
+                    setSelectedDate(retrievedData.fullData.userData.selectedDate.toDateString());
                     setname(retrievedData.fullData.userData.name);
                     setPincode(retrievedData.fullData.userData.pincode.toString());
                     setSelectedState(retrievedData.fullData.userData.selectedState);
@@ -411,20 +415,27 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
     async function registernewuser() {
         try {
-            console.log("+++++++++++++++++++++", userbody)
+            //   console.log("+++++++++++++++++++++", userbody)
+            setIsLoading(true);
             const response = await RegisterNewUser(userbody);
 
             if (response.message === 'Member registered successfully') {
+                setIsPopupVisible(true);
+                setPopupMessage(response.message);
                 Alert.alert(response.message);
+                navigation.navigate('login');
             } else {
-                Alert.alert(response.message);
+                setIsPopupVisible(true);
+                setPopupMessage(response.message);
             }
-            console.log(response)
+            //  console.log(response)
 
         } catch (error) {
             throw error;
-            console.error('Error while registering user:', error);
+            // console.error('Error while registering user:', error);
 
+        } finally {
+            setIsLoading(false);
         }
 
     }
@@ -451,19 +462,19 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
     }
 
-    async function GettingAppversion() {
-        try {
-            const response = await Appversion();
-            console.log('====================================');
-            console.log(response.data);
-            console.log('====================================');
-            setAppversion(response.data.toString());
-        } catch (error) {
-            throw error
+    // async function GettingAppversion() {
+    //     try {
+    //         const response = await Appversion();
+    //         console.log('====================================');
+    //         console.log(response.data);
+    //         console.log('====================================');
+    //         setAppversion(response.data.toString());
+    //     } catch (error) {
+    //         throw error
 
-        }
+    //     }
 
-    }
+    // }
 
     return (
         <ScrollView>
@@ -472,17 +483,26 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     <View style={{ backgroundColor: 'transparent', height: height / 8, margin: 20, flexDirection: 'row', width: width / 2.1, justifyContent: 'space-evenly', alignItems: 'center', padding: 20 }}>
                         <Avatar.Image size={84} source={require('../../../assets/images/ac_icon.png')} />
                         <View style={{ marginLeft: 40, flexDirection: 'column' }}>
-                            <Text style={{ color: 'grey' }}>previewSummaryData</Text>
+                            <Text style={{ color: 'grey' }}>PreviewSummaryData</Text>
                             <Text style={{ color: 'grey' }}>Rishta ID</Text>
                             <Text style={{ color: 'grey' }}>Mobile No.</Text>
                         </View>
 
                     </View>
-                    <Text style={{ color: 'black', marginLeft: 20, }}>{t('auth:newuser:Preferedlanguage')}</Text>
+                    <View style={{ flex: 1 }}>
+
+                        <Loader isLoading={isLoading} />
+                    </View>
+                    {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
+                        <Text>{popupMessage}</Text>
+
+                    </Popup>
+                    )}
+
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Prefered Language"
+                        label={t('auth:newuser:Preferedlanguage')}
 
                         maxLength={30}
                         editable={false}
@@ -503,7 +523,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Name"
+                        label={t('auth:newuser:Name')}
 
                         maxLength={30}
                         value={name}
@@ -522,11 +542,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     />
 
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Gender')}</Text>
+
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Gender"
+                        label={t('auth:newuser:Gender')}
 
                         maxLength={30}
                         value={gender}
@@ -541,12 +561,12 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         }}
 
                     />
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Date')}</Text>
+
 
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Date"
+                        label={t('auth:newuser:Date')}
 
                         maxLength={30}
                         value={selectedDate}
@@ -566,7 +586,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Contact Number</Text>
                     <FloatingLabelInput
                         containerStyles={styles.input}
-                        label="Contact Number"
+                        label={t('auth:newuser:Contact')}
                         value={number}
                         // onChangeText={(text) => setNumber(text)}
                         keyboardType='number-pad'
@@ -586,7 +606,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     <FloatingLabelInput
                         containerStyles={styles.input}
-                        label="WhatsApp Number"
+                        label={t('auth:newuser:Whatapp')}
                         maxLength={10}
                         editable={false}
                         value={whatapp}
@@ -604,7 +624,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Email Address</Text>
                     <FloatingLabelInput
                         containerStyles={styles.input}
-                        label="Email"
+                        label={t('auth:newuser:Email')}
 
 
                         keyboardType='email-address'
@@ -618,10 +638,10 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                             paddingHorizontal: 10,
                         }}
                     />
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Permanent House Flat/block no</Text>
+
                     <FloatingLabelInput
                         containerStyles={styles.input}
-                        label="Permanent House Flat/block no"
+                        label={t('auth:newuser:Permanentaddress')}
 
 
                         editable={false}
@@ -636,10 +656,10 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                             paddingHorizontal: 10,
                         }}
                     />
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Street/ Colony/Locality Name *</Text>
+
                     <FloatingLabelInput
                         containerStyles={styles.input}
-                        label="Street/ Colony/Locality Name *"
+                        label={t('auth:newuser:Street')}
                         editable={false}
 
 
@@ -654,10 +674,10 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                             paddingHorizontal: 10,
                         }}
                     />
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Landmark</Text>
+
                     <FloatingLabelInput
                         containerStyles={styles.input}
-                        label="Landmark"
+                        label={t('auth:newuser:Landmark')}
                         editable={false}
 
 
@@ -678,7 +698,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     <FloatingLabelInput
                         containerStyles={styles.input}
-                        label="Enter Pincode"
+                        label={t('auth:newuser:pincode')}
                         labelTextColor={"black"}
                         editable={false}
                         keyboardType="number-pad"
@@ -739,7 +759,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Sub Profession</Text>
                     <FloatingLabelInput
                         containerStyles={styles.input}
-                        label="Sub Profession"
+                        label={t('auth:newuser:Subprofession')}
 
                         maxLength={30}
                         value={subprofession}
@@ -755,7 +775,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     />
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Martial Status</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:MartialStatus')}</Text>
 
                     <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
@@ -776,7 +796,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     </View>
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Enrolled In Loyalty  </Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Alreadyenroled')} </Text>
                     <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
 
@@ -795,10 +815,10 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         </Picker>
 
                     </View>
-                    <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>Annual Business Potential</Text>
+
                     <FloatingLabelInput
                         containerStyles={styles.input}
-                        label="Annual business potential *"
+                        label={t('auth:newuser:Anualbusiness')}
                         value={annualincome}
                         onChangeText={(text) => setannualincome(text)}
                         keyboardType='number-pad'
@@ -1218,6 +1238,7 @@ const styles = StyleSheet.create({
         color: 'black',
         borderRadius: 5,
         backgroundColor: '#fff',
+        bottom: -5,
     },
     dropdownContainer: {
         height: 40,
@@ -1235,6 +1256,6 @@ const styles = StyleSheet.create({
     },
     labelStyles: {
         backgroundColor: 'transparent',
-        margin: 15,
+        margin: 14,
     },
 })

@@ -8,12 +8,15 @@ import { NewusermobileNumberValidation } from '../../../utils/apiservice';
 import Message from "../../../components/Message";
 import Loader from '../../../components/Loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Popup from '../../../components/Popup';
 const RegisterUser = ({ navigation }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [number, setNumber] = useState('');
     const [preferedLanguage, setpreferedLanguage] = useState(1);
     const { t } = useTranslation();
     const [selectedOption, setSelectedOption] = useState('Retailer');
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [popupMessage, setPopupMessage] = useState('');
 
 
 
@@ -21,10 +24,12 @@ const RegisterUser = ({ navigation }) => {
     const handleValidation = async () => {
         try {
             if (!number || number === null || number.trim() === '') {
-                Alert.alert('Please enter a Phone number to proceed');
+                setIsPopupVisible(true);
+                setPopupMessage("Please enter your phone no ");
             }
             else if (selectedOption === 'Retailer') {
-                Alert.alert('Please select a Job Profession');
+                setIsPopupVisible(true);
+                setPopupMessage('Please select a Job Profession');
             }
             // Call the API function with user inputs
 
@@ -34,11 +39,24 @@ const RegisterUser = ({ navigation }) => {
                 const validationResponse = await NewusermobileNumberValidation(number, preferedLanguage);
                 console.log('Validation response:', validationResponse.data.message);
                 const successMessage = validationResponse.data.message;
-                await AsyncStorage.setItem("userno", number);
-                await AsyncStorage.setItem("preferedLanguage", preferedLanguage.toString());
-                console.log(number, preferedLanguage);
-                navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption, preferedLanguage: preferedLanguage })
-                Alert.alert(successMessage);
+                setPopupMessage(successMessage);
+                setIsPopupVisible(true);
+                if (successMessage == 'Please enter OTP to proceed with the registration process') {
+                    await AsyncStorage.setItem("userno", number);
+                    // await AsyncStorage.setItem("preferedLanguage", preferedLanguage.toString());
+
+                    navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption, preferedLanguage: preferedLanguage })
+
+                } else {
+                    setIsLoading(false);
+                    // Alert.alert(validationResponse.data.message)
+                    setIsPopupVisible(true);
+                    setPopupMessage(validationResponse.data.message);
+
+
+
+                    //  navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption, preferedLanguage: preferedLanguage })
+                }
 
             }
 
@@ -46,6 +64,8 @@ const RegisterUser = ({ navigation }) => {
             // Handle the response as needed
         } catch (error) {
             console.error('Error during validation:', error);
+            // setIsPopupVisible(true);
+            // setPopupMessage("Somthing went wrong ");
             // Handle the error as needed
         } finally {
             setIsLoading(false);
@@ -76,7 +96,7 @@ const RegisterUser = ({ navigation }) => {
 
 
 
-    }, [selectedOption])
+    }, [selectedOption, preferedLanguage])
 
 
 
@@ -95,6 +115,11 @@ const RegisterUser = ({ navigation }) => {
 
                         <Loader isLoading={isLoading} />
                     </View>
+                    {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
+                        <Text>{popupMessage}</Text>
+                        {/* // <Text>ICORRECT OTP</Text> */}
+                    </Popup>
+                    )}
                     <View style={styles.formContainer}>
                         <View style={styles.containter}>
                             <Text style={styles.textHeader}>{t('auth:register:selectProfession')}</Text>

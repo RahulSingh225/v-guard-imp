@@ -16,6 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FloatingLabelInput } from 'react-native-floating-label-input';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { CurrentRenderContext } from '@react-navigation/native';
+import Popup from '../../../components/Popup';
 const NewUserKyc = ({ navigation, route }) => {
     const { userData } = route.params;
     // console.log('==================%%%==================', userData.selectedCity);
@@ -42,6 +43,8 @@ const NewUserKyc = ({ navigation, route }) => {
     const [currentcityid, securrenttcityid] = useState('');
     const [currentdistrictId, setcurrentdistrictId] = useState('');
     const [currentstateid, setcurrentstateid] = useState('');
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [popupMessage, setPopupMessage] = useState('');
 
 
 
@@ -55,6 +58,8 @@ const NewUserKyc = ({ navigation, route }) => {
     const [citylistpicker, setcitylistpicker] = useState(null);
     const [redendering, setredendering] = useState(0);
     const [subprofessiondata, setsubprofessiondata] = useState([]);
+    const [isAadharValid, setIsAadharValid] = useState(true);
+    const [isPanValid, setIsPanValid] = useState(true);
 
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState();
@@ -80,6 +85,29 @@ const NewUserKyc = ({ navigation, route }) => {
 
     // }
 
+    const validateAadhar = (aadhar) => {
+        // Use a regular expression to check if the Aadhar card number is valid.
+        const aadharPattern = /^\d{12}$/;
+        return aadharPattern.test(aadhar);
+    };
+
+    const handleAadharBlur = () => {
+        const isValid = validateAadhar(aadharcardno);
+        setIsAadharValid(isValid);
+    };
+
+    const validatePan = (pan) => {
+        // Use a regular expression to check if the PAN card number is valid.
+        const panPattern = /^([A-Z]){5}([0-9]){4}([A-Z]){1}?$/;
+        return panPattern.test(pan);
+    };
+
+    const handlePanBlur = () => {
+        const upperCasePan = pancardno.toUpperCase(); // Convert to uppercase
+        const isValid = validatePan(upperCasePan);
+        setIsPanValid(isValid);
+        setpancardno(upperCasePan); // Update the state with uppercase value
+    };
 
     async function Gettingprofession(params) {
 
@@ -285,6 +313,7 @@ const NewUserKyc = ({ navigation, route }) => {
                     setCurrentselectedCity(retrievedData.fullData.NewUserKycData.currentselectedCity);
                     setCurrentselectedDistrict(retrievedData.fullData.NewUserKycData.currentselectedDistrict);
                     setCurrentselectedState(retrievedData.fullData.NewUserKycData.currentselectedState);
+
                 }
 
                 console.log('================ON USE EFFECT====================');
@@ -337,7 +366,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
 
 
-    }, [])
+    }, [currentaddres])
 
 
     let options = {
@@ -426,83 +455,98 @@ const NewUserKyc = ({ navigation, route }) => {
     //================================VALIDATION FUNCTION AND NAVIAGTION ON NEXT PAGE ==============================================//
     const validateFields = async () => {
         if (!currentaddres || currentaddres === "Select") {
-            Alert.alert('Select current address same as Permanent address or not.');
+            setIsPopupVisible(true);
+            setPopupMessage('Select current address same as Permanent address or not.');
             return false;
         }
         if (!address) {
-            Alert.alert('Please enter your current address.');
+            setIsPopupVisible(true);
+            setPopupMessage('Please enter your current address.');
             return false;
         }
         if (!street) {
-            Alert.alert('Please enter street colony or locality name.');
+            setIsPopupVisible(true);
+            setPopupMessage('Please enter street colony or locality name.');
             return false;
         }
         if (!pincode && pincode != null) {
             console.log("))))))", pincode);
-            Alert.alert('Please enter a pincode and select a pincode to get state and district');
+            setIsPopupVisible(true);
+            setPopupMessage('Please enter a pincode and select a pincode to get state and district');
             return false;
         }
         if (!profession || profession === "Select") {
-            Alert.alert('Profession field is empty. Please fill it.');
+            setIsPopupVisible(true);
+            setPopupMessage('Profession field is empty. Please fill it.');
             return false;
         }
         if (!maritialStatus || maritialStatus === '') {
-            Alert.alert('Marital Status field is empty. Please fill it.');
+            setIsPopupVisible(true);
+            setPopupMessage('Marital Status field is empty. Please fill it.');
             return false;
         }
         if (!loyalty || loyalty === 'Select') {
-            Alert.alert('Loyalty field is empty. Please fill it.');
+            setIsPopupVisible(true);
+            setPopupMessage('Loyalty field is empty. Please fill it.');
             return false;
         }
         if (!annualincome) {
-            Alert.alert('Annual Business potenial field is empty. Please fill it.');
+            setIsPopupVisible(true);
+            setPopupMessage('Annual Business potenial field is empty. Please fill it.');
             return false;
         }
         if (!selfieData) {
-            Alert.alert('Please upload your selfie');
+            setIsPopupVisible(true);
+            setPopupMessage('Please upload your selfie');
             return false;
         }
         if (!aadharcardno) {
-            Alert.alert('Aadhar Card Number field is empty. Please fill it.');
+            setIsPopupVisible(true);
+            setPopupMessage('Aadhar Card Number field is empty. Please fill it.');
             return false;
         }
 
 
         if (!idProofFrontData) {
-            Alert.alert('Aadhar Front Image not taken.');
+            setIsPopupVisible(true);
+            setPopupMessage('Aadhar Front Image not taken.');
             return false;
         }
         if (!idProofBackData) {
-            Alert.alert('Aadhar Back Image not taken.');
+            setIsPopupVisible(true);
+            setPopupMessage('Aadhar Back Image not taken.');
             return false;
         }
         // if (!panData) {
-        //     Alert.alert('PAN Card Photo field is empty. Please fill it.');
+        //     setPopupMessage('PAN Card Photo field is empty. Please fill it.');
         //     return false;
         // }
         // if (!pancardno) {
-        //     Alert.alert('PAN Card Number field is empty. Please fill it.');
+        //     setPopupMessage('PAN Card Number field is empty. Please fill it.');
         //     return false;
         // }
 
         //  if (!landmark) {
-        //     Alert.alert('landmark field is empty. Please fill it.');
+        //     setPopupMessage('landmark field is empty. Please fill it.');
         //     return false;
         // }
 
         if (!currentselectedCity) {
             console.log(")))))))))))))", currentselectedCity);
-            Alert.alert(' Current City field is empty. Please fill it.');
+            setIsPopupVisible(true);
+            setPopupMessage(' Current City field is empty. Please fill it.');
             return false;
         }
         if (!currentselectedDistrict) {
             console.log(")))))))))))))", currentselectedDistrict);
-            Alert.alert('Current District field is empty. Please fill it.');
+            setIsPopupVisible(true);
+            setPopupMessage('Current District field is empty. Please fill it.');
             return false;
         }
         if (!currentselectedState) {
             console.log(")))))))))))))", currentselectedState);
-            Alert.alert('Current State field is empty. Please fill it.');
+            setIsPopupVisible(true);
+            setPopupMessage('Current State field is empty. Please fill it.');
             return false;
         }
         else {
@@ -601,6 +645,11 @@ const NewUserKyc = ({ navigation, route }) => {
                         </View>
 
                     </View>
+                    {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
+                        <Text>{popupMessage}</Text>
+                        {/* // <Text>ICORRECT OTP</Text> */}
+                    </Popup>
+                    )}
 
 
 
@@ -615,7 +664,7 @@ const NewUserKyc = ({ navigation, route }) => {
                             onValueChange={(itemValue, itemIndex) => {
                                 setcurrentaddres(itemValue);
                                 // Set text input values to null when "Yes" is selected
-                                if (itemValue === 'no') {
+                                if (itemValue == 'no') {
                                     setaddress('');
                                     setstreet('');
                                     setlandmark('');
@@ -629,16 +678,12 @@ const NewUserKyc = ({ navigation, route }) => {
 
 
                                 }
-                                if (itemValue === 'yes') {
+                                if (itemValue == 'yes') {
 
 
                                     setaddress(userData.address);
                                     setstreet(userData.street);
                                     setlandmark(userData.landmark);
-                                    console.log('====================================');
-                                    console.log(userData.pincode);
-                                    console.log(pincode);
-
                                     setpincode(userData.pincode);
                                     setCurrentselectedCity(userData.selectedCity);
                                     setCurrentselectedDistrict(userData.selectedDistrict);
@@ -646,6 +691,11 @@ const NewUserKyc = ({ navigation, route }) => {
                                     setcurrentstateid(userData.permananetsateid);
                                     setcurrentdistrictId(userData.permananetdistrictId);
                                     securrenttcityid(userData.permananetcityid);
+                                    console.log('====================================');
+                                    console.log(userData.pincode);
+                                    console.log(pincode);
+
+
 
 
 
@@ -745,7 +795,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                     mode="BADGE"
                                     showBadgeDot={true}
 
-                                    label="Pincode List"
+                                    label={item.pinCode}
                                     badgeStyle={(item, index) => ({
                                         padding: 5,
                                         backgroundColor: item.value ? 'red' : 'grey',
@@ -885,7 +935,7 @@ const NewUserKyc = ({ navigation, route }) => {
                         </Picker>
 
                     </View>
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:subprofession')}</Text>
+
 
                     {/* <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
@@ -1104,25 +1154,30 @@ const NewUserKyc = ({ navigation, route }) => {
                         />
 
                     </View>
+                    <View>
 
-                    <FloatingLabelInput
+                        <FloatingLabelInput
 
-                        label="Aadhar Card No*"
-                        value={aadharcardno}
-                        onChangeText={(text) => setaadharcardno(text)}
-                        keyboardType='number-pad'
+                            label="Aadhar Card No*"
+                            value={aadharcardno}
+                            onChangeText={(text) => setaadharcardno(text)}
+                            keyboardType='number-pad'
 
-                        containerStyles={[styles.input]}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
+                            containerStyles={[styles.input]}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: isAadharValid ? 'black' : 'red',
+                                paddingHorizontal: 10,
+                            }}
+                            onBlur={handleAadharBlur}
 
-
-                        maxLength={12}
-                    />
+                            maxLength={12}
+                        />
+                        {!isAadharValid && (
+                            <Text style={{ color: 'red', left: 20, }}>Please enter a valid Aadhar card number.</Text>
+                        )}
+                    </View>
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 12 }}>{t('auth:newuser:PanCardFront')}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, }}>
 
@@ -1152,24 +1207,29 @@ const NewUserKyc = ({ navigation, route }) => {
                         />
 
                     </View>
-                    <FloatingLabelInput
+                    <View>
+                        <FloatingLabelInput
 
-                        label="Pan Card No*"
-                        value={pancardno}
-                        onChangeText={(text) => setpancardno(text)}
-                        keyboardType='default'
+                            label="Pan Card No*"
+                            value={pancardno}
+                            onChangeText={(text) => setpancardno(text)}
+                            keyboardType='default'
 
-                        containerStyles={[styles.input,]}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
+                            containerStyles={[styles.input,]}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: isPanValid ? 'black' : 'red',
+                                paddingHorizontal: 10,
+                            }}
 
-
-                        maxLength={10}
-                    />
+                            onBlur={handlePanBlur}
+                            maxLength={10}
+                        />
+                        {!isPanValid && (
+                            <Text style={{ color: 'red', left: 20, }}>Please enter a valid PAN card number.</Text>
+                        )}
+                    </View>
                     <View style={{ display: 'flex', width: "100%", alignItems: 'center', marginVertical: 20 }}>
                         <Buttons
                             label="Next"
@@ -1210,9 +1270,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderColor: 'grey',
         borderWidth: 0.8,
+        marginVertical: 10,
+        bottom: -5
     },
     labelStyles: {
         backgroundColor: 'transparent',
-        margin: 15,
+        margin: 14,
     },
 })

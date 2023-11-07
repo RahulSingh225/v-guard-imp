@@ -5,16 +5,17 @@ import colors from '../../../../colors';
 import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
 import { Newuserotpvalidation } from "../../../utils/apiservice";
+import Popup from '../../../components/Popup';
 
 const LoginWithOtp = ({ navigation, route }) => {
-
-    const { usernumber, jobprofession } = route.params;
+    const { usernumber, jobprofession, preferedLanguage } = route.params;
 
     console.log("====>>>>", usernumber);
     console.log("====>>>>", jobprofession);
     const [otp, setOtp] = useState('');
     const [number, setnumber] = useState(usernumber);
-
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [popupMessage, setPopupMessage] = useState('');
 
 
 
@@ -25,7 +26,8 @@ const LoginWithOtp = ({ navigation, route }) => {
         try {
 
             if (!otp) {
-                Alert.alert("Please Enter the otp to proceed ")
+                setIsPopupVisible(true);
+                setPopupMessage("Please Enter the otp to proceed ")
                 // navigation.navigate('newUser', {
                 //     passedNo: number, // Pass the usernumber prop
                 //     jobprofession: jobprofession, // Pass the jobprofession prop
@@ -35,11 +37,25 @@ const LoginWithOtp = ({ navigation, route }) => {
             else {
                 const verification = await Newuserotpvalidation(number, otp);
                 const successMessage = verification.data.message;
-                Alert.alert(successMessage);
-                navigation.navigate('newUser', {
-                    passedNo: number, // Pass the usernumber prop
-                    jobprofession: jobprofession, // Pass the jobprofession prop
-                })
+                console.log(successMessage);
+                if (successMessage === 'OTP verified successfully, please proceed with the registration.') {
+
+                    setPopupMessage(successMessage);
+                    setIsPopupVisible(true);
+                    navigation.navigate('newUser', {
+                        passedNo: number, // Pass the usernumber prop
+                        jobprofession: jobprofession, // Pass the jobprofession prop
+                    })
+
+                } else {
+                    setIsPopupVisible(true);
+                    setPopupMessage(verification.data.message);
+                    navigation.navigate('newUser', {
+                        passedNo: number, // Pass the usernumber prop
+                        jobprofession: jobprofession, // Pass the jobprofession prop
+                    })
+                }
+
             }
 
 
@@ -68,6 +84,7 @@ const LoginWithOtp = ({ navigation, route }) => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.registerUser}>
                 <View style={styles.mainWrapper}>
+
                     <Image
                         source={require('../../../assets/images/group_907.png')}
                         style={styles.imageSaathi}
@@ -75,6 +92,11 @@ const LoginWithOtp = ({ navigation, route }) => {
                     <Text style={styles.mainHeader}>{t('auth:loginWIthOtp:heading')}</Text>
                     <View style={styles.formContainer}>
                         <View style={styles.containter}>
+                            {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
+                                <Text>{popupMessage}</Text>
+                                {/* // <Text>ICORRECT OTP</Text> */}
+                            </Popup>
+                            )}
                             <Text style={styles.textHeader}>{t('auth:register:enterOtpHeading')}</Text>
                             <TextInput
                                 style={styles.input}
