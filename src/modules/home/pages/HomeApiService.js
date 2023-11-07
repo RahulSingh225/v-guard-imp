@@ -73,5 +73,19 @@ export function getDailyWinners(date){
     return createDigestPostRequest(path, body);
 }
 
+export function productCategories(){
+    const path = "product/productWiseOffers/";
+    return createDigestGetRequest(path);
+}
+
+export function productWiseOffers(offerId) {
+    console.log("offerid:=====", offerId)
+    const path = `product/productWiseOffers/${offerId}/`;
+    console.log("path=======", path)
+    return createDigestGetRequest(path);
+  }
+  
+
+
 
 
