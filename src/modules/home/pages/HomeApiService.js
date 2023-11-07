@@ -1,4 +1,4 @@
-import { createDigestGetRequest, fetchImage } from "../../../utils/apiservice";
+import { createDigestGetRequest, createDigestPostRequest, fetchImage } from "../../../utils/apiservice";
 
 //home apis
 
@@ -36,4 +36,42 @@ export function fetchTicketHistory(){
     const path = "ticket/history";
     return createDigestGetRequest(path);
 }
+
+export function fetchTicketOptions(){
+    const path = "ticket/types";
+    return createDigestGetRequest(path);
+}
+
+export function fetchWelfare(){
+    const path = "welfare/";
+    return createDigestGetRequest(path);
+}
+
+export function fetchProductWiseEarning(){
+    const path = "product/getProductWiseEarning";
+    return createDigestGetRequest(path);
+}
+
+export function fetchSchemeWiseEarning(){
+    const path = "schemes/getSchemeWiseEarning";
+    return createDigestGetRequest(path);
+}
+
+export function fetchBonusRewards(){
+    const path = "user/bonusPoints";
+    return createDigestGetRequest(path);
+}
+
+export function getDailyWinnerDates(){
+    const path = "user/getDailyWinnerDates/";
+    return createDigestGetRequest(path);
+}
+
+export function getDailyWinners(date){
+    const path = "user/dailyWinners";
+    const body = {date}
+    return createDigestPostRequest(path, body);
+}
+
+
 

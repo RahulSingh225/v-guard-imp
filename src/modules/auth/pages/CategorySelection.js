@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import React, { useState } from 'react';
 import Buttons from '../../../components/Buttons';
 import colors from '../../../../colors';
@@ -6,6 +6,8 @@ import language from '../../../assets/images/language.png';
 import { useTranslation } from 'react-i18next';
 import blackTickImage from '../../../assets/images/ic_tick_black.png';
 import whiteTickImage from '../../../assets/images/ic_tick_white.png';
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import { height, width } from '../../../utils/dimensions';
 
 
 const CategorySelection = ({ navigation }) => {
@@ -17,7 +19,7 @@ const CategorySelection = ({ navigation }) => {
         setSelectedOption(option);
     };
     return (
-        <View style={styles.mainWrapper}>
+        <ScrollView style={styles.mainWrapper}>
             <View style={styles.buttonContainer}>
                 <Buttons
                     style={styles.button}
@@ -63,7 +65,7 @@ const CategorySelection = ({ navigation }) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.oval}
-                    onPress={() => handleOptionSelect('login')}
+                    onPress={() => handleOptionSelect('influencer')}
                 >
                     <Image
                         source={require('../../../assets/images/ic_retailer_1.png')}
@@ -86,22 +88,26 @@ const CategorySelection = ({ navigation }) => {
 
             <View style={styles.startButtonContainer}>
                 <Buttons
-                    style={styles.startButton}
                     label="Start"
                     variant="blackButton"
                     onPress={() => navigation.navigate('login')}
                     width="90%"
                 />
             </View>
-        </View>
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     mainWrapper: {
+        // height:height,
+        // width:width,
         flex: 1,
+        // height: '100%',
         padding: 25,
+        paddingBottom: 40,
         backgroundColor: colors.white,
+
     },
     buttonContainer: {
         width: '100%',
@@ -118,15 +124,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         width: '100%',
-        marginVertical: 80,
+        marginVertical: responsiveHeight(8),
     },
     imageSaathi: {
-        width: 150,
-        height: 146,
+        width: responsiveHeight(20),
+        height: responsiveHeight(19.6),
     },
     oval: {
-        height: 250,
-        width: 100,
+        height: responsiveHeight(30),
+        width: responsiveWidth(25),
         backgroundColor: colors.yellow,
         borderRadius: 50,
         paddingHorizontal: 8,
@@ -145,13 +151,17 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         gap: 30,
-        width: '100%'
+        width: '100%',
+        marginBottom: responsiveHeight(5)
     },
     startButtonContainer: {
+        marginTop:50,
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
-        height: '20%',
+        marginBottom: 50
+        // height: '40%',
+        // backgroundColor: colors.yellow
     },
     categoryIcon: {
         height: 50,
@@ -160,7 +170,7 @@ const styles = StyleSheet.create({
     },
     categoryText: {
         color: colors.black,
-        fontSize: 15,
+        fontSize: responsiveFontSize(1.5),
         flex: 1,
         fontWeight: 'bold'
     },

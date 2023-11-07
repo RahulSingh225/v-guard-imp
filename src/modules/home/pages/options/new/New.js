@@ -1,22 +1,38 @@
-import {React, useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Linking, StyleSheet } from 'react-native';
 import colors from '../../../../../../colors';
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import { getWhatsNew } from '../../HomeApiService';
 
-const New = () => {
+const New = ({ navigation }) => {
   const [data, setData] = useState([]);
   useEffect(() => {
     getWhatsNew()
       .then(response => response.json())
       .then(responseData => {
-        setData(responseData);
-        console.log("<><<><<><>><", responseData, "<><<<><><><><><><<><");
+        const updatedData = responseData.map(item => {
+          if (item.imagePath.startsWith('img/')) {
+            item.imagePath = `https://www.vguardrishta.com/${item.imagePath}`;
+          }
+          return item;
+        });
+        setData(updatedData);
+        console.log("<><<><<><>><", updatedData, "<><<<><><><><><><<><");
       })
       .catch(error => {
         console.error('Error fetching data:', error);
       });
-  }, []);  
+  }, []);
+
+  const handleLinkPress = (item) => {
+    if (item.imagePath === "daily_winner") {
+      // Navigate to the "daily_winner" screen
+      navigation.navigate("daily_winner");
+    } else {
+      // Open the URL in the browser for other cases
+      Linking.openURL(item.imagePath);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -26,7 +42,7 @@ const New = () => {
           <TouchableOpacity
             key={index}
             style={styles.listItem}
-            onPress={() => Linking.openURL(item.imagePath)}
+            onPress={() => handleLinkPress(item)}
           >
             <View style={styles.messageContainer}>
               <Text style={styles.messageText}>{item.fileName}</Text>

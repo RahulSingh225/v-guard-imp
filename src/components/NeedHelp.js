@@ -5,7 +5,6 @@ import { responsiveFontSize } from 'react-native-responsive-dimensions'
 import colors from '../../colors'
 
 import { useTranslation } from 'react-i18next';
-import { Linking } from 'react-native';
 
 const NeedHelp = () => {
     const { t } = useTranslation();

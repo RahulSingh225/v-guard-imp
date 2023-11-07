@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     buttonText: {
+        textAlignVertical:'top',
         fontSize: responsiveFontSize(1.8),
         color: colors.black,
         fontWeight: 'bold',
@@ -81,6 +82,8 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         shadowColor: 'rgba(0, 0, 0, 0.8)',
         elevation: 5,
+        flex:1,
+        
     },
     defaultButton: {
         backgroundColor: colors.yellow,
