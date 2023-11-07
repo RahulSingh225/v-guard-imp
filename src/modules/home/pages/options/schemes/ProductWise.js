@@ -1,14 +1,9 @@
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import colors from '../../../../../../colors';
-import {
-  responsiveFontSize,
-  responsiveHeight,
-  responsiveWidth,
-} from 'react-native-responsive-dimensions';
 import { productCategories } from '../../HomeApiService';
 
-const baseURL = 'https://www.vguardrishta.com/'; // Base URL
+const baseURL = 'https://www.vguardrishta.com/';
 
 const ProductWise = ({ navigation }) => {
   const [data, setData] = useState([]);
@@ -29,7 +24,6 @@ const ProductWise = ({ navigation }) => {
   }, []);
 
   const handleCategoryPress = (categoryId) => {
-    // Check if the category has offers
     const category = data.find(item => item.categoryId === categoryId);
       console.log("category id:", categoryId)
       navigation.navigate('ProductWiseOfferTable', { categoryId });

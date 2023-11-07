@@ -1,32 +1,120 @@
-import { View, Text, StyleSheet, TouchableHighlight, Image, TextInput, ScrollView, TouchableOpacity, Linking } from 'react-native'
-import React, {useState, useEffect} from 'react'
+import { View, Text, StyleSheet, TouchableHighlight, Modal, Image, Button, TextInput, ScrollView, TouchableOpacity, Linking } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import colors from '../../../../../../colors';
 import NeedHelp from '../../../../../components/NeedHelp';
 import Buttons from '../../../../../components/Buttons';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
-import { fetchTicketOptions } from '../../HomeApiService';
+import { createTicket, fetchTicketOptions } from '../../HomeApiService';
 import { Picker } from '@react-native-picker/picker';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { sendFile } from '../../../../../utils/apiservice';
 
 
 const Ticket = ({ navigation }) => {
-  
+
   const { t } = useTranslation();
   const [userName, setUserName] = useState('');
+  const [userId, setUserId] = useState('');
   const [userCode, setUserCode] = useState('');
+  const [userRole, setUserRole] = useState('');
   const [options, setOptions] = useState([]);
 
   const [selectedOption, setSelectedOption] = useState('');
-  const [isOptionsLoading, setIsOptionsLoading] = useState(true); // Track if options are loading
+  const [isOptionsLoading, setIsOptionsLoading] = useState(true);
+  const [showImagePickerModal, setShowImagePickerModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImageName, setSelectedImageName] = useState("");
+  const [entityUid, setEntityUid] = useState("");
+  const [descriptionInput, setDescriptionInput] = useState("");
+  const handleImagePickerPress = () => {
+    setShowImagePickerModal(true);
+  };
+
+
+  const handleCameraUpload = () => {
+    console.log("happening")
+    setShowImagePickerModal(false);
+    launchCamera(
+      {
+        mediaType: 'photo',
+        includeBase64: false,
+      },
+      (response) => {
+        console.log("working ");
+        console.log("response========", response)
+        if (response.didCancel) {
+          console.log('Camera was canceled');
+        } else if (response.error) {
+          console.error('Camera error: ', response.error);
+        } else {
+          const fileData = {
+            uri: response.assets[0].uri,
+            type: response.assets[0].type,
+            name: response.assets[0].fileName,
+          };
+          setSelectedImage(response.assets[0].uri);
+          setSelectedImageName(response.assets[0].fileName);
+          triggerApiWithImage(fileData);
+        }
+      }
+    );
+  };
+
+  const handleGalleryUpload = () => {
+    setShowImagePickerModal(false);
+    launchImageLibrary(
+      {
+        mediaType: 'photo',
+        includeBase64: false,
+      },
+      (response) => {
+        if (response.didCancel) {
+          console.log('Image picker was canceled');
+        } else if (response.error) {
+          console.error('Image picker error: ', response.error);
+        } else {
+          const fileData = {
+            uri: response.assets[0].uri,
+            type: response.assets[0].type,
+            name: response.assets[0].fileName,
+          };
+          setSelectedImage(response.assets[0].uri);
+          setSelectedImageName(response.assets[0].fileName);
+          triggerApiWithImage(fileData);
+        }
+      }
+    );
+  };
+
+  const triggerApiWithImage = async (fileData) => {
+    const formData = new FormData();
+    formData.append('USER_ROLE', userRole);
+    formData.append('image_related', 'TICKET');
+    formData.append('file', fileData);
+
+    try {
+      const response = await sendFile(formData);
+      setEntityUid(response.data.entityUid);
+    } catch (error) {
+      console.error('API Error:', error);
+    }
+  };
 
 
   useEffect(() => {
     AsyncStorage.getItem('name').then((name) => {
       setUserName(name);
     });
+    AsyncStorage.getItem('username').then((username) => {
+      setUserId(username);
+    });
     AsyncStorage.getItem('userCode').then((code) => {
       setUserCode(code);
+    });
+    AsyncStorage.getItem('userRole').then((code) => {
+      setUserRole(code);
     });
     fetchTicketOptions()
       .then(response => response.json())
@@ -50,7 +138,24 @@ const Ticket = ({ navigation }) => {
   openFaqS = () => {
     Linking.openURL("https://vguardrishta.com/frequently-questions-retailer.html");
   }
+  const handleSubmission = async () => {
+    const postData = {
+      userId: userId,
+      issueTypeId: selectedOption,
+      imagePath: entityUid,
+      description: descriptionInput,
+    };
 
+    try {
+      const response = await createTicket(postData);
+      const data = await response.json();
+      console.log(data, "----------------data")
+
+      return response;
+    } catch (error) {
+      console.error('API Error:', error);
+    }
+  };
   return (
     <ScrollView style={styles.mainWrapper}>
       <View style={styles.flexBox}>
@@ -87,18 +192,45 @@ const Ticket = ({ navigation }) => {
           </Picker>
         </View>
       )}
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder={t('dashboard:ticket:uploadPicture')}
-          placeholderTextColor={colors.grey}
-        />
+      <TouchableOpacity onPress={handleImagePickerPress} style={styles.inputContainer}>
+        {selectedImage ? (
+          <TextInput
+            style={styles.input}
+            placeholder={selectedImageName}
+            placeholderTextColor={colors.grey}
+            editable={false}
+          />
+        ) : (
+          <TextInput
+            style={styles.input}
+            placeholder={t('dashboard:ticket:uploadPicture')}
+            placeholderTextColor={colors.grey}
+            editable={false}
+          />
+        )}
         <View style={styles.inputImage}>
-          <Image source={require('../../../../../assets/images/photo_camera.png')}
-            style={{ width: '100%', height: '100%' }}
-            resizeMode="contain" />
+          {selectedImage ? (
+            <Image source={{ uri: selectedImage }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+          ) : (
+            <Image source={require('../../../../../assets/images/photo_camera.png')} style={{ width: '100%', height: '100%' }} resizeMode="contain" />
+          )}
         </View>
-      </View>
+      </TouchableOpacity>
+
+      {/* Modal for selecting camera or gallery */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showImagePickerModal}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Button title="Launch Camera" onPress={handleCameraUpload} />
+            <Button title="Choose from Gallery" onPress={handleGalleryUpload} />
+          </View>
+        </View>
+      </Modal>
+
       <Text style={styles.blackText}>Description</Text>
       <TextInput
         style={styles.descriptionInput}
@@ -106,11 +238,14 @@ const Ticket = ({ navigation }) => {
         placeholderTextColor={colors.grey}
         multiline={true}
         textAlignVertical="top"
+        value={descriptionInput}
+        onChangeText={(text) => setDescriptionInput(text)}
       />
+
       <Buttons
         label={t('dashboard:ticket:submit')}
         variant="filled"
-        onPress={() => console.log('Pressed')}
+        onPress={handleSubmission}
         width="100%"
       />
       <View style={styles.hyperlinks}>
@@ -122,7 +257,7 @@ const Ticket = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.footer} >
-      <NeedHelp />
+        <NeedHelp />
       </View>
     </ScrollView>
   )
@@ -231,10 +366,23 @@ const styles = StyleSheet.create({
     marginTop: responsiveHeight(1)
   },
   linkText: {
-    color: 'blue', 
+    color: 'blue',
     textDecorationLine: 'underline',
     fontSize: responsiveFontSize(1.5)
-  }
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    gap: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
 })
 
 export default Ticket

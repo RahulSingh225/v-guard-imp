@@ -79,12 +79,15 @@ export function productCategories(){
 }
 
 export function productWiseOffers(offerId) {
-    console.log("offerid:=====", offerId)
     const path = `product/productWiseOffers/${offerId}/`;
-    console.log("path=======", path)
     return createDigestGetRequest(path);
   }
   
+  export function createTicket(data){
+    const path = "ticket/create";
+    const body = {data}
+    return createDigestPostRequest(path, body);
+}
 
 
 
