@@ -146,15 +146,22 @@ const Ticket = ({ navigation }) => {
       description: descriptionInput,
     };
 
-    try {
-      const response = await createTicket(postData);
-      const data = await response.json();
-      console.log(data, "----------------data")
-
-      return response;
-    } catch (error) {
-      console.error('API Error:', error);
-    }
+    createTicket(postData)
+      .then(response => {
+        console.log(postData, "---------------postdata")
+        if (response.status === 200) {
+          const responses = response.json()
+          return responses;
+        } else {
+          throw new Error('Failed to create ticket');
+        }
+      })
+      .then(data => {
+        console.log(data);
+      })
+      .catch(error => {
+        console.error('API Error:', error);
+      });
   };
   return (
     <ScrollView style={styles.mainWrapper}>

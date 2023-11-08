@@ -83,11 +83,11 @@ export function productWiseOffers(offerId) {
     return createDigestGetRequest(path);
   }
   
-  export function createTicket(data){
+  export function createTicket(data) {
     const path = "ticket/create";
-    const body = {data}
-    return createDigestPostRequest(path, body);
-}
+    return createDigestPostRequest(path, data);
+  }
+  
 
 
 
