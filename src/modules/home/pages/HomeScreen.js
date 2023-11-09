@@ -14,12 +14,16 @@ import NeedHelp from '../../../components/NeedHelp';
 
 
 const HomeScreen = ({ navigation }) => {
+  const baseURL = 'https://www.vguardrishta.com/img/appImages/Profile/';
+
   const { t } = useTranslation();
   const [userName, setUserName] = useState('');
   const [userCode, setUserCode] = useState('');
   const [pointsBalance, setPointsBalance] = useState('');
   const [redeemedPoints, setRedeemedPoints] = useState('');
   const [numberOfScan, setNumberOfScan] = useState('');
+  const [userImage, setUserImage] = useState('');
+
 
   useEffect(() => {
     AsyncStorage.getItem('name').then((name) => {
@@ -37,12 +41,17 @@ const HomeScreen = ({ navigation }) => {
     AsyncStorage.getItem('numberOfScan').then((numberOfScan) => {
       setNumberOfScan(numberOfScan);
     });
+    AsyncStorage.getItem('userImage').then((userimage) => {
+      setUserImage(userimage);
+    });
   }, []);
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       <View style={styles.mainWrapper}>
         <View style={styles.profileDetails}>
-          <View style={styles.ImageProfile}></View>
+          <View style={styles.ImageProfile}>
+          <Image source={{ uri: baseURL + userImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
+          </View>
           <View style={styles.profileText}>
             <Text style={styles.textDetail}>{userName}</Text>
             <Text style={styles.textDetail}>{userCode}</Text>

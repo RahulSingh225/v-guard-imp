@@ -11,6 +11,8 @@ import NeedHelp from '../../../../../components/NeedHelp';
 import CustomTouchableOption from '../../../../../components/CustomTouchableOption';
 
 const Dashboard = () => {
+  const baseURL = 'https://www.vguardrishta.com/img/appImages/Profile/';
+
   const { t } = useTranslation();
 
   const [date, setDate] = useState(new Date());
@@ -19,6 +21,8 @@ const Dashboard = () => {
   const [userCode, setUserCode] = useState('');
   const [pointsBalance, setPointsBalance] = useState('');
   const [redeemedPoints, setRedeemedPoints] = useState('');
+  const [userImage, setUserImage] = useState('');
+
 
   const showPicker = useCallback((value) => setShow(value), []);
 
@@ -45,13 +49,18 @@ const Dashboard = () => {
     AsyncStorage.getItem('redeemedPoints').then((redeemedPoints) => {
       setRedeemedPoints(redeemedPoints);
     });
+    AsyncStorage.getItem('userImage').then((userimage) => {
+      setUserImage(userimage);
+    });
   }, []);
 
 
   return (
     <View style={styles.mainWrapper}>
       <View style={styles.profileDetails}>
-        <View style={styles.ImageProfile}></View>
+        <View style={styles.ImageProfile}>
+        <Image source={{ uri: baseURL + userImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
+        </View>
         <View style={styles.profileText}>
           <Text style={styles.textDetail}>{userName}</Text>
           <Text style={styles.textDetail}>{userCode}</Text>
