@@ -604,7 +604,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
 
 
-                    <Text style={{ color: 'black', marginLeft: 20, }}>{t('auth:newuser:CurrentAddresselctionHeader')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 20, }}>{t('strings:is_current_address_different')}</Text>
                     <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 3 }}>
 
 
@@ -717,7 +717,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                 paddingHorizontal: 10
                             }}
                         />
-                        <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:Secondpagepincode')}</Text>
+                        <Text style={{ color: 'black', marginLeft: 23, }}>{t('strings:lbl_pin_code_mandatory')}</Text>
                         {currentaddres === 'yes' ? <Text style={styles.input}>{userData.pincode}</Text>
 
 
@@ -798,7 +798,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                     }}
                                     style={{ backgroundColor: 'white', elevation: 50, opacity: 0.9, borderWidth: 0, width: width / 1.1, height: height / 15, alignSelf: 'center', bottom: 10, elevation: 0 }}
                                 /></>}
-                        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('auth:newuser:CurrentState')}</Text>
+                        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_state')}</Text>
                         <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
                             {/* <Picker
                                 style={{ color: 'black' }}
@@ -818,7 +818,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                 <Text style={{ color: 'black', margin: 15 }}>{currentselectedState}</Text>}
 
                         </View>
-                        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}> {t('auth:newuser:CurrentDistrict')}</Text>
+                        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}> {t('strings:select_district')}</Text>
                         <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
 
@@ -828,7 +828,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
                         </View>
 
-                        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('auth:newuser:CurrentCity')}</Text>
+                        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_city')}</Text>
                         {currentaddres === 'no' ? <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
                             <Picker
                                 mode='model'
@@ -865,7 +865,7 @@ const NewUserKyc = ({ navigation, route }) => {
                         </View>}
                     </>}
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Currentprofession')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:select_profession')}</Text>
 
                     <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
@@ -885,7 +885,7 @@ const NewUserKyc = ({ navigation, route }) => {
                         </Picker>
 
                     </View>
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:subprofession')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:select_sub_profession_category')}</Text>
 
                     {/* <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
@@ -905,7 +905,7 @@ const NewUserKyc = ({ navigation, route }) => {
                         </Picker>
 
                     </View> */}
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:MartialStatus')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:select_marital_status')}</Text>
 
                     <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
@@ -927,7 +927,7 @@ const NewUserKyc = ({ navigation, route }) => {
                     </View>
 
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Alreadyenroled')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:already_enrolled_into_loyalty_scheme')}</Text>
 
                     <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
@@ -995,7 +995,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
                     <FloatingLabelInput
 
-                        label="Annual business potential *"
+                        label={t('strings:annual_business_potential')}
                         value={annualincome}
                         onChangeText={(text) => setannualincome(text)}
                         keyboardType='number-pad'
@@ -1011,7 +1011,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
 
                     />
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Selfie')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_update_your_selfie')}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginBottom: 5, }}>
 
                         <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.25, borderColor: 'grey', borderWidth: 0.8 }}>
@@ -1040,7 +1040,7 @@ const NewUserKyc = ({ navigation, route }) => {
                         />
 
                     </View>
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:AadharCardFront')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:update_aadhar_voter_id_dl_front')}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginBottom: 5, }}>
 
                         <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.25, borderColor: 'grey', borderWidth: 0.8 }}>
@@ -1072,7 +1072,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
                     </View>
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginTop: 5 }}>{t('auth:newuser:AadharCardBack')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginTop: 5 }}>{t('strings:update_aadhar_voter_id_dl_back')}</Text>
 
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginTop: 10, marginBottom: 5, }}>
 
@@ -1107,7 +1107,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
                     <FloatingLabelInput
 
-                        label="Aadhar Card No*"
+                        label={t('strings:update_aadhar_voter_id_dl_manually')}
                         value={aadharcardno}
                         onChangeText={(text) => setaadharcardno(text)}
                         keyboardType='number-pad'
@@ -1123,7 +1123,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
                         maxLength={12}
                     />
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 12 }}>{t('auth:newuser:PanCardFront')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 12 }}>{t('strings:update_pan_card_front')}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, }}>
 
                         <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.25, bottom: 10, borderColor: 'grey', borderWidth: 0.8 }}>
@@ -1154,7 +1154,7 @@ const NewUserKyc = ({ navigation, route }) => {
                     </View>
                     <FloatingLabelInput
 
-                        label="Pan Card No*"
+                        label={t('strings:update_pan_number_manually')}
                         value={pancardno}
                         onChangeText={(text) => setpancardno(text)}
                         keyboardType='default'

@@ -328,11 +328,11 @@ const NomineePage = ({ navigation, route }) => {
 
                     </View>
 
-                    <Text style={{ color: 'black', marginLeft: 20, }}> {t('auth:newuser:BankDetailsForAccount')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 20, }}> {t('strings:lbl_bank_details')}</Text>
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Account Number"
+                        label={t('strings:lbl_account_number')}
 
 
                         keyboardType='number-pad'
@@ -351,7 +351,7 @@ const NomineePage = ({ navigation, route }) => {
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Account Holder Name"
+                        label={t('strings:lbl_account_holder_name')}
 
 
                         keyboardType='default'
@@ -368,7 +368,7 @@ const NomineePage = ({ navigation, route }) => {
 
 
 
-                    <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:SelectAccountype')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 23, }}>{t('strings:select_account_type')}</Text>
                     <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
 
@@ -379,9 +379,9 @@ const NomineePage = ({ navigation, route }) => {
                             onValueChange={(itemValue, itemIndex) =>
                                 setaccounttype(itemValue)
                             }>
-                            <Picker.Item label="Select Account Type" value="null" />
-                            <Picker.Item label=" Current" value="Current" />
-                            <Picker.Item label=" Saving" value="Saving" />
+                            <Picker.Item label={t('strings:account_type:placeholder')} value="null" />
+                            <Picker.Item label={t('strings:account_type:current')} value="Current" />
+                            <Picker.Item label={t('strings:account_type:saving')} value="Saving" />
 
 
 
@@ -391,7 +391,7 @@ const NomineePage = ({ navigation, route }) => {
 
 
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Bank')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:bank_name')}</Text>
 
                     <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
                         <Picker
@@ -419,7 +419,7 @@ const NomineePage = ({ navigation, route }) => {
                     </View>
                     <FloatingLabelInput
                         containerStyles={styles.input}
-                        label="IFSC Code"
+                        label={t('strings:ifsc')}
 
 
                         keyboardType='default'
@@ -434,7 +434,7 @@ const NomineePage = ({ navigation, route }) => {
                         }}
                         maxLength={20}
                     />
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:UploadepassbookFront')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_upload_cancelled_cheque')}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginTop: 0, }}>
 
                         <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.25 }}>
@@ -469,11 +469,11 @@ const NomineePage = ({ navigation, route }) => {
 
 
                     <View style={{ marginTop: 30 }}>
-                        <Text style={{ color: 'black', marginLeft: 20, fontSize: responsiveFontSize(2) }}>{t('auth:newuser:NomineeDetails')}</Text>
+                        <Text style={{ color: 'black', marginLeft: 20, fontSize: responsiveFontSize(2) }}>{t('strings:lbl_nominee_details')}</Text>
                         <FloatingLabelInput
                             containerStyles={styles.input}
 
-                            label="Name of Nominee"
+                            label={t('strings:lbl_name_of_nominee')}
 
 
                             keyboardType='default'
@@ -501,11 +501,11 @@ const NomineePage = ({ navigation, route }) => {
 
                         </View>
 
-                        <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:NomineeMobile')}</Text>
+                        <Text style={{ color: 'black', marginLeft: 23, }}>{t('strings:lbl_mobile_number')}</Text>
                         <FloatingLabelInput
                             containerStyles={styles.input}
 
-                            label="Mobile No"
+                            label={t('strings:mobile_number')}
 
 
                             keyboardType='number-pad'
@@ -522,11 +522,11 @@ const NomineePage = ({ navigation, route }) => {
 
 
 
-                        <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:NomineeEmailAddress')}</Text>
+                        <Text style={{ color: 'black', marginLeft: 23, }}>{t('strings:lbl_email')}</Text>
                         <FloatingLabelInput
                             containerStyles={styles.input}
 
-                            label="Email"
+                            label={t('strings:lbl_email')}
 
                             keyboardType='email-address'
                             value={nomineeemail}
@@ -541,11 +541,11 @@ const NomineePage = ({ navigation, route }) => {
                         />
 
 
-                        <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:NomineeAddress')}</Text>
+                        <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_address')}</Text>
                         <FloatingLabelInput
                             containerStyles={styles.input}
 
-                            label="Address"
+                            label={t('strings:lbl_address')}
 
 
                             keyboardType='email-address'
@@ -561,7 +561,7 @@ const NomineePage = ({ navigation, route }) => {
                         />
                         <FloatingLabelInput
                             containerStyles={styles.input}
-                            label="Relatioship with you"
+                            label={t('strings:lbl_relationship_with_you')}
                             keyboardType='default'
                             value={relationship}
                             onChangeText={(text) => setrelationship(text)}
@@ -580,14 +580,14 @@ const NomineePage = ({ navigation, route }) => {
                             status={checked ? 'checked' : 'unchecked'}
                             onPress={() => setChecked(!checked)}
                         />
-                        <Text style={{ color: 'black' }}>{t(' I agree to terms and condition')}</Text>
+                        <Text style={{ color: 'black' }}>{t('strings:')}</Text>
                     </View>
 
                     <View style={{ margin: 20 }}>
                         <Text style={{ color: 'blue', }}>
                             I have read & fully understood the{' '}
-                            <TouchableOpacity style={{ top: 5 }} onPress={openTermsAndConditions}>
-                                <Text style={{ color: 'blue', textDecorationLine: 'underline', top: 5 }}>
+                            <TouchableOpacity onPress={openTermsAndConditions}>
+                                <Text style={{ color: 'blue', textDecorationLine: 'underline' }}>
                                     terms and conditions
                                 </Text>
                             </TouchableOpacity>{' '}
@@ -596,7 +596,7 @@ const NomineePage = ({ navigation, route }) => {
                     </View>
                     <View style={{ display: 'flex', width: "100%", alignItems: 'center', marginVertical: 20 }}>
                         <Buttons
-                            label="Preview"
+                            label={t('strings:preview')}
                             onPress={() => validateFields()}
                             variant="filled" // or any other variant you want to use
                             width={350} // specify the width

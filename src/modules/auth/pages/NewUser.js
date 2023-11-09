@@ -374,7 +374,7 @@ const NewUser = ({ navigation, }) => {
         </View>
 
 
-        <Text style={{ color: 'black', marginLeft: 20, }}>{t('auth:newuser:Preferedlanguage')}</Text>
+        <Text style={{ color: 'black', marginLeft: 20, }}>{t('strings:lbl_preferred_language')}</Text>
         <FloatingLabelInput
           label="Selected Language"
 
@@ -393,7 +393,7 @@ const NewUser = ({ navigation, }) => {
         />
 
         <FloatingLabelInput
-          label="Name"
+          label={t('strings:name')}
           value={name}
 
 
@@ -412,7 +412,7 @@ const NewUser = ({ navigation, }) => {
 
 
 
-        <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Gender')}</Text>
+        <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_gender_mandatory')}</Text>
 
         <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
@@ -425,15 +425,15 @@ const NewUser = ({ navigation, }) => {
               console.log("Selected Value: ", itemValue)
               setGender(itemValue)
             }}>
-            <Picker.Item label="Select Gender*" value="Select Gender*" />
-            <Picker.Item label="Male" value="Male" />
-            <Picker.Item label="Female" value="Female" />
-            <Picker.Item label="Other" value="Other" />
+            <Picker.Item label={t('strings:select_gender:placeholder')} value="Select Gender*" />
+            <Picker.Item label={t('strings:select_gender:male')} value="Male" />
+            <Picker.Item label={t('strings:select_gender:female')} value="Female" />
+            <Picker.Item label={t('strings:select_gender:other')} value="Other" />
           </Picker>
 
         </View>
 
-        <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Date')}</Text>
+        <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_date_of_birth_mandatory')}</Text>
 
         <View style={{ backgroundColor: 'fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
@@ -466,7 +466,7 @@ const NewUser = ({ navigation, }) => {
           }}
 
         />
-        <Text style={{ color: 'black', marginLeft: 20, bottom: 5 }}>{t('auth:newuser:Whatappconatctsame')}</Text>
+        <Text style={{ color: 'black', marginLeft: 20, bottom: 5 }}>{t('strings:_is_what_s_app_contact_same_as_above')}</Text>
         <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
           <Picker
 
@@ -493,14 +493,14 @@ const NewUser = ({ navigation, }) => {
               }
 
             }}>
-            <Picker.Item label="Select WhatApp contact same as above ?" value="Select WhatApp contact same as above ?" />
-            <Picker.Item label="yes" value="yes" />
-            <Picker.Item label="No" value="No" />
+            <Picker.Item label={t('strings:whatsapp_yes_no:placeholder')} value="Select WhatApp contact same as above ?" />
+            <Picker.Item label={t('strings:whatsapp_yes_no:yes')} value="yes" />
+            <Picker.Item label={t('strings:whatsapp_yes_no:no')} value="No" />
           </Picker>
 
         </View>
         <FloatingLabelInput
-          label="WhatsApp Number"
+          label={t('strings:lbl_whats_app_number')}
 
           maxLength={10}
           value={whatapp}
@@ -526,7 +526,7 @@ const NewUser = ({ navigation, }) => {
         />
         <FloatingLabelInput
 
-          label="Email"
+          label={t('strings:email')}
 
 
           keyboardType='email-address'
@@ -543,7 +543,7 @@ const NewUser = ({ navigation, }) => {
         />
         <FloatingLabelInput
 
-          label="Permanent House Flat/block no"
+          label={t('strings:lbl_permanent_address_mandatory')}
 
 
           keyboardType='default'
@@ -561,7 +561,7 @@ const NewUser = ({ navigation, }) => {
         />
         <FloatingLabelInput
 
-          label="Street/ Colony/Locality Name *"
+          label={t('strings:lbl_street_locality')}
 
 
           maxLength={128}
@@ -578,7 +578,7 @@ const NewUser = ({ navigation, }) => {
         />
         <FloatingLabelInput
 
-          label="Landmark"
+          label={t('strings:lbl_landmark')}
 
           staticLabel
           maxLength={60}
@@ -595,11 +595,11 @@ const NewUser = ({ navigation, }) => {
         />
 
 
-        <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:pincode')}</Text>
+        <Text style={{ color: 'black', marginLeft: 23, }}>{t('strings:lbl_pin_code_mandatory')}</Text>
 
         <FloatingLabelInput
           containerStyles={styles.input}
-          label="Enter Pincode"
+          label={t('strings:lbl_pin_code_mandatory')}
           keyboardType="number-pad"
           value={pincode}
           onChangeText={(text) => [setPincode(text),
@@ -613,7 +613,7 @@ const NewUser = ({ navigation, }) => {
           }}
         />
 
-        <DropDownPicker
+        {/* <DropDownPicker
 
 
           label={value}
@@ -668,7 +668,7 @@ const NewUser = ({ navigation, }) => {
 
           }}
           style={{ backgroundColor: 'white', elevation: 50, opacity: 0.9, borderWidth: 0, width: width / 1.1, height: height / 15, alignSelf: 'center', bottom: 10, elevation: 0 }}
-        />
+        /> */}
 
         {/* <DropDownPicker
           open={open}
@@ -690,10 +690,10 @@ const NewUser = ({ navigation, }) => {
             fetchAndPopulateData(item.value);
           }}
         /> */}
-        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('auth:newuser:State')}</Text>
+        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_state')}</Text>
         <FloatingLabelInput
           containerStyles={styles.input}
-          label="Selelcted State"
+          label={t('strings:select_state')}
           keyboardType="default"
           value={selectedState}
           onChangeText={(text) => [setSelectedState(text),
@@ -707,7 +707,7 @@ const NewUser = ({ navigation, }) => {
           }}
         />
 
-        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('auth:newuser:District')}</Text>
+        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_district')}</Text>
 
         <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
@@ -716,7 +716,7 @@ const NewUser = ({ navigation, }) => {
 
         </View>
 
-        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}> {t('auth:newuser:City')}</Text>
+        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}> {t('strings:select_city')}</Text>
 
         <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
           <Picker
@@ -750,7 +750,7 @@ const NewUser = ({ navigation, }) => {
 
         <View style={{ display: 'flex', width: "100%", alignItems: 'center', marginVertical: 20 }}>
           <Buttons
-            label="Next"
+            label={t('strings:next')}
             onPress={() => {
 
               validateFields();
