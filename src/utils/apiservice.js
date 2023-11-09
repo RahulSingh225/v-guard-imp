@@ -92,6 +92,8 @@ export const loginPasswordDigest = async (relativeUrl, username, password) => {
         const { name, userCode } = userDetailsData;
         const userName = username;
         const Password = password;
+        const UserRole = userDetailsData.roleId;
+        const UserImage = userDetailsData.kycDetails.selfie;
         const pointsBalance = userDetailsData.pointsSummary.pointsBalance;
         const redeemedPoints = userDetailsData.pointsSummary.redeemedPoints;
         const numberOfScan = userDetailsData.pointsSummary.numberOfScan;
@@ -104,6 +106,8 @@ export const loginPasswordDigest = async (relativeUrl, username, password) => {
         await AsyncStorage.setItem('password', Password);
         await AsyncStorage.setItem('name', name);
         await AsyncStorage.setItem('userCode', userCode);
+        await AsyncStorage.setItem('userRole', UserRole);
+        await AsyncStorage.setItem('userImage', UserImage);
         await AsyncStorage.setItem('pointsBalance', safePointsBalance.toString());
         await AsyncStorage.setItem('redeemedPoints', safeRedeemedPoints.toString());
         await AsyncStorage.setItem('numberOfScan', safeNumberOfScan.toString());
@@ -305,6 +309,16 @@ export const Appversion = async () => {
     }
 }
 
+export function getUserProfile() {
+    const path = "user/profile";
+    return createDigestGetRequest(path);
+}
+
+export function getFile(uuid, imageRelated, userRole) {
+    const path = `file/${uuid}/${imageRelated}/${userRole}`;
+    console.log(path)
+    return createDigestGetRequest(path);
+}
 
 
 

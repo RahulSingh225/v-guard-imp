@@ -2,76 +2,114 @@ import { createDigestGetRequest, createDigestPostRequest, fetchImage } from "../
 
 //home apis
 
-export function getWhatsNew(){
+export function getWhatsNew() {
     const path = "whatsNew/";
     return createDigestGetRequest(path);
 }
 
-export function getRedemptionHistory(){
+export function getRedemptionHistory() {
     const path = "product/redemptionHistory?type=''";
     return createDigestGetRequest(path);
 }
 
-export function getActiveSchemesOffers(){
+export function getActiveSchemesOffers() {
     const path = "schemes/getActiveSchemeOffers";
     return createDigestGetRequest(path);
 }
 
-export function fetchInfo(){
+export function fetchInfo() {
     const path = "product/getVguardInfoDownloads";
     return createDigestGetRequest(path);
 }
 
-export function fetchDownloads(){
+export function fetchDownloads() {
     const path = "product/getDownloadsData";
     return createDigestGetRequest(path);
 }
 
-export function fetchProductCatalogue(){
+export function fetchProductCatalogue() {
     const path = "product/getVguardProdCatalog";
     return createDigestGetRequest(path);
 }
 
-export function fetchTicketHistory(){
+export function fetchTicketHistory() {
     const path = "ticket/history";
     return createDigestGetRequest(path);
 }
 
-export function fetchTicketOptions(){
+export function fetchTicketOptions() {
     const path = "ticket/types";
     return createDigestGetRequest(path);
 }
 
-export function fetchWelfare(){
+export function fetchWelfare() {
     const path = "welfare/";
     return createDigestGetRequest(path);
 }
 
-export function fetchProductWiseEarning(){
+export function fetchProductWiseEarning() {
     const path = "product/getProductWiseEarning";
     return createDigestGetRequest(path);
 }
 
-export function fetchSchemeWiseEarning(){
+export function fetchSchemeWiseEarning() {
     const path = "schemes/getSchemeWiseEarning";
     return createDigestGetRequest(path);
 }
 
-export function fetchBonusRewards(){
+export function fetchBonusRewards() {
     const path = "user/bonusPoints";
     return createDigestGetRequest(path);
 }
 
-export function getDailyWinnerDates(){
+export function getDailyWinnerDates() {
     const path = "user/getDailyWinnerDates/";
     return createDigestGetRequest(path);
 }
 
-export function getDailyWinners(date){
+export function getDailyWinners(date) {
     const path = "user/dailyWinners";
-    const body = {date}
+    const body = { date }
     return createDigestPostRequest(path, body);
 }
+
+export function productCategories() {
+    const path = "product/productWiseOffers/";
+    return createDigestGetRequest(path);
+}
+
+export function productWiseOffers(offerId) {
+    const path = `product/productWiseOffers/${offerId}/`;
+    return createDigestGetRequest(path);
+}
+
+export function createTicket(data) {
+    const path = "ticket/create";
+    return createDigestPostRequest(path, data);
+}
+
+export function updateBankDetails(data) {
+    const path = "user/updateBank";
+    return createDigestPostRequest(path, data);
+}
+
+export function getBankDetails() {
+    const path = "user/bankDetails";
+    return createDigestGetRequest(path);
+}
+
+export function InstantBankTransfer(data) {
+    const path = "user/updateBank";
+    return createDigestPostRequest(path, data);
+}
+
+export function getBankNames() {
+    const path = "banks/";
+    return createDigestGetRequest(path);
+}
+
+
+
 
 
 

@@ -22,7 +22,7 @@ const NeedHelp = () => {
     };
 
     const openWhatsApp = () => {
-        Linking.openURL(`whatsapp://send?phone=${whatsappNumber}`);
+        Linking.openURL(`https://wa.me/${whatsappNumber}`);
     };
     return (
         <View style={styles.contact}>

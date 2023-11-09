@@ -17,28 +17,6 @@ const TicketHistory = () => {
         console.error('Error fetching data:', error);
       });
   }, []); 
-    // const data = [
-    //     {
-    //         date: '23-03-2023',
-    //         message: 'Link 1',
-    //         status: 'In-Progress'
-    //     },
-    //     {
-    //         date: '23-03-2023',
-    //         message: 'Link 2',
-    //         status: 'In-Progress'
-    //     },
-    //     {
-    //         date: '23-03-2023',
-    //         message: 'Link 3',
-    //         status: 'In-Progress'
-    //     },
-    //     {
-    //         date: '23-03-2023',
-    //         message: 'Link 4',
-    //         status: 'In-Progress'
-    //     },
-    // ];
 
     return (
         <ScrollView style={styles.container}>
