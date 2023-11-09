@@ -54,7 +54,7 @@ const CategorySelection = ({ navigation }) => {
 
                     />
                     <Text style={styles.categoryText}>
-                        Electrical & Plumbing Experts
+                    {t('strings:electrical_amp_plumbing_expert')}
                     </Text>
                     <View style={styles.radioButtons}>
                         <Image
@@ -75,7 +75,7 @@ const CategorySelection = ({ navigation }) => {
                         resizeMode="contain"
                     />
                     <Text style={styles.categoryText}>
-                        AC Service Engineer
+                    {t('strings:ac_service_engineer')}
                     </Text>
                     <View style={styles.radioButtons}>
                         <Image
