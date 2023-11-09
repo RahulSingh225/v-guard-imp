@@ -314,6 +314,13 @@ export function getUserProfile() {
     return createDigestGetRequest(path);
 }
 
+export function getFile(uuid, imageRelated, userRole) {
+    const path = `file/${uuid}/${imageRelated}/${userRole}`;
+    console.log(path)
+    return createDigestGetRequest(path);
+}
+
+
 
 
 
