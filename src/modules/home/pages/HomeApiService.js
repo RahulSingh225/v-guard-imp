@@ -93,6 +93,16 @@ export function updateBankDetails(data) {
     return createDigestPostRequest(path, data);
 }
 
+export function getBankDetails() {
+    const path = "user/bankDetails";
+    return createDigestGetRequest(path);
+}
+
+export function InstantBankTransfer(data) {
+    const path = "user/updateBank";
+    return createDigestPostRequest(path, data);
+}
+
 export function getBankNames() {
     const path = "banks/";
     return createDigestGetRequest(path);

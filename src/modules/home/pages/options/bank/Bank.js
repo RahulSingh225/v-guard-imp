@@ -6,15 +6,16 @@ import { useTranslation } from 'react-i18next';
 // import { TextInput } from 'react-native-paper';
 import Buttons from '../../../../../components/Buttons';
 import arrowIcon from '../../../../../assets/images/arrow.png';
-import { sendFile } from '../../../../../utils/apiservice';
+import { getFile, sendFile } from '../../../../../utils/apiservice';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { getBankNames, updateBankDetails } from '../../HomeApiService';
+import { getBankDetails, getBankNames, updateBankDetails } from '../../HomeApiService';
 import Snackbar from 'react-native-snackbar';
 import { Picker } from '@react-native-picker/picker';
+import { imageUrl } from '../../../../../utils/constants';
 
 
-const InstantBankTransfer = () => {
+const Bank = () => {
     const { t } = useTranslation();
     const [accNo, setAccNo] = React.useState("");
     const [accHolder, setAccHolder] = React.useState("");
@@ -30,15 +31,44 @@ const InstantBankTransfer = () => {
 
 
     useEffect(() => {
-        AsyncStorage.getItem('userRole').then((userRole) => {
+        const getUserRoleFromAsyncStorage = async () => {
+            const userRole = await AsyncStorage.getItem('userRole');
             setUserRole(userRole);
-        });
+        };
+
+        // Define a function to get bank details and call getFileUri
+        const getBankDetailsAndCallFileUri = async () => {
+            try {
+                await getUserRoleFromAsyncStorage();
+                const response = await getBankDetails();
+                if (response.status === 200) {
+                    const data = await response.json();
+                    setAccHolder(data.bankAccHolderName);
+                    setAccType(data.bankAccType);
+                    setBankName(data.bankNameAndBranch);
+                    setIfscCode(data.bankIfsc);
+                    setAccNo(data.bankAccNo);
+                    setSelectedImageName(data.checkPhoto);
+                    setEntityUid(data.checkPhoto);
+
+                    // Call getFileUri with the user role
+                    await getFileUri(data.checkPhoto);
+                } else {
+                    throw new Error('Failed to get bank details');
+                }
+            } catch (error) {
+                console.error('API Error:', error);
+            }
+        };
+
+        getBankDetailsAndCallFileUri();
+
         getBankNames()
             .then(response => {
                 if (response.status === 200) {
                     return response.json();
                 } else {
-                    throw new Error('Failed to create ticket');
+                    throw new Error('Failed to get bank names');
                 }
             })
             .then(responses => {
@@ -54,8 +84,18 @@ const InstantBankTransfer = () => {
             });
     }, []);
 
-
-
+    const getFileUri = async (selectedImageName) => {
+        try {
+            const UserRole = await AsyncStorage.getItem('userRole');
+            const response = await getFile(selectedImageName, 'CHEQUE', UserRole);
+            console.log(response, 'file');
+            setSelectedImage(response.url);
+            return response;
+        } catch (error) {
+            console.error('Error getting file:', error);
+            throw error;
+        }
+    };
     const handleImagePickerPress = () => {
         setShowImagePickerModal(true);
     };
@@ -140,14 +180,6 @@ const InstantBankTransfer = () => {
             .then(response => {
                 console.log(postData, "---------------postdata")
                 if (response.status === 200) {
-                    setSelectedImage(null);
-                    setSelectedImageName('');
-                    setEntityUid('');
-                    setIfscCode('');
-                    setBankName('');
-                    setAccType('');
-                    setAccHolder('');
-                    setAccNo('');
                     const responses = response.json()
                     return responses;
                 } else {
@@ -155,7 +187,6 @@ const InstantBankTransfer = () => {
                 }
             })
             .then(data => {
-                // console.log(data, "--------------response to bank update");
                 showSnackbar(data.message);
             })
             .catch(error => {
@@ -195,15 +226,16 @@ const InstantBankTransfer = () => {
                         />
                     </View>
                     <View style={styles.inputContainer}>
-                    <Picker
+                        <Picker
                             selectedValue={accType}
                             onValueChange={(itemValue) => setAccType(itemValue)}
                             style={styles.picker}
                         >
-                            <Picker.Item label={t('dashboard:redeem:banktransfer:inputAccountType')} value="" style={{color:colors.grey, fontSize: responsiveFontSize(1.8)}} />
-                            <Picker.Item key={'savings'} label={'Savings'} value={'savings'} />
-                            <Picker.Item key={'current'} label={'Current'} value={'current'} />
+                            <Picker.Item label={'Savings'} value={'savings'} />
+                            <Picker.Item label={'Current'} value={'current'} />
                         </Picker>
+
+
                         <Image source={require('../../../../../assets/images/ic_ticket_drop_down2.png')} style={{ width: '5%', height: '100%', marginRight: 5 }} resizeMode="contain" />
                     </View>
                     <View style={styles.inputContainer}>
@@ -212,7 +244,6 @@ const InstantBankTransfer = () => {
                             onValueChange={(itemValue) => setBankName(itemValue)}
                             style={styles.picker}
                         >
-                            <Picker.Item label={t('dashboard:redeem:banktransfer:selectBank')} value="" style={{color:colors.grey, fontSize: responsiveFontSize(1.8)}} />
                             {availableBanks.map((bank, index) => (
                                 <Picker.Item key={index} label={bank} value={bank.bankNameAndBranch} />
                             ))}
@@ -271,7 +302,7 @@ const InstantBankTransfer = () => {
                 </View>
                 <View style={styles.button}>
                     <Buttons
-                        label={'Submit'}
+                        label={'Proceed'}
                         variant="filled"
                         onPress={() => handleProceed()}
                         width="100%"
@@ -372,11 +403,11 @@ const styles = StyleSheet.create({
     },
     picker: {
         width: '90%',
-        color: colors.grey   ,
+        color: colors.grey,
     },
     labelPicker: {
         color: colors.grey,
         fontWeight: 'bold'
     }
 })
-export default InstantBankTransfer
+export default Bank
