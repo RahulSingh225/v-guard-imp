@@ -88,7 +88,7 @@ const CategorySelection = ({ navigation }) => {
 
             <View style={styles.startButtonContainer}>
                 <Buttons
-                    label="Start"
+                    label={t('strings:submit')}
                     variant="blackButton"
                     onPress={() => navigation.navigate('login')}
                     width="90%"
