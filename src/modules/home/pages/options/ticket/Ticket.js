@@ -10,15 +10,20 @@ import { createTicket, fetchTicketOptions } from '../../HomeApiService';
 import { Picker } from '@react-native-picker/picker';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { sendFile } from '../../../../../utils/apiservice';
+import Snackbar from 'react-native-snackbar';
+
 
 
 const Ticket = ({ navigation }) => {
+
+  const baseURL = 'https://www.vguardrishta.com/img/appImages/Profile/';
 
   const { t } = useTranslation();
   const [userName, setUserName] = useState('');
   const [userId, setUserId] = useState('');
   const [userCode, setUserCode] = useState('');
   const [userRole, setUserRole] = useState('');
+  const [userImage, setUserImage] = useState('');
   const [options, setOptions] = useState([]);
 
   const [selectedOption, setSelectedOption] = useState('');
@@ -28,6 +33,8 @@ const Ticket = ({ navigation }) => {
   const [selectedImageName, setSelectedImageName] = useState("");
   const [entityUid, setEntityUid] = useState("");
   const [descriptionInput, setDescriptionInput] = useState("");
+
+
   const handleImagePickerPress = () => {
     setShowImagePickerModal(true);
   };
@@ -113,8 +120,11 @@ const Ticket = ({ navigation }) => {
     AsyncStorage.getItem('userCode').then((code) => {
       setUserCode(code);
     });
-    AsyncStorage.getItem('userRole').then((code) => {
-      setUserRole(code);
+    AsyncStorage.getItem('userRole').then((userRole) => {
+      setUserRole(userRole);
+    });
+    AsyncStorage.getItem('userImage').then((userimage) => {
+      setUserImage(userimage);
     });
     fetchTicketOptions()
       .then(response => response.json())
@@ -150,6 +160,13 @@ const Ticket = ({ navigation }) => {
       .then(response => {
         console.log(postData, "---------------postdata")
         if (response.status === 200) {
+          setSelectedOption('');
+          setSelectedImage(null);
+          setSelectedImageName('');
+          setEntityUid('');
+          setDescriptionInput('');
+          showSnackbar('Ticket Created Successfully');
+
           const responses = response.json()
           return responses;
         } else {
@@ -163,12 +180,23 @@ const Ticket = ({ navigation }) => {
         console.error('API Error:', error);
       });
   };
+
+  const showSnackbar = (message) => {
+    Snackbar.show({
+      text: message,
+      duration: Snackbar.LENGTH_SHORT,
+    });
+  };
+
+  console.log(baseURL+userImage)
   return (
     <ScrollView style={styles.mainWrapper}>
       <View style={styles.flexBox}>
 
         <View style={styles.profileDetails}>
-          <View style={styles.ImageProfile}></View>
+          <View style={styles.ImageProfile}>
+          <Image source={{ uri: baseURL + userImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
+          </View>
           <View style={styles.profileText}>
             <Text style={styles.textDetail}>{userName}</Text>
             <Text style={styles.textDetail}>{userCode}</Text>
