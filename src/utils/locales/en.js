@@ -139,7 +139,8 @@ export default {
         inputAccountType: 'Account Type',
         inputBankName: 'Bank Name',
         inputIfscCode: 'IFSC Code',
-        uploadCheque: 'Upload Passbook/Cancelled Cheque Copy'
+        uploadCheque: 'Upload Passbook/Cancelled Cheque Copy',
+        selectBank: 'Select Bank Name'
       },
       paytmTransferOption: {
         enterMobile: 'Enter Paytm Mobile No. below',
