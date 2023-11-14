@@ -3,8 +3,11 @@ import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
 import colors from '../../../../../../colors';
 import { responsiveFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
 import { fetchBonusRewards } from '../../HomeApiService';
+import { useTranslation } from 'react-i18next';
 
 const YourRewards = () => {
+    const { t } = useTranslation();
+
     const [rewards, setRewards] = useState([]);
 
     useEffect(() => {
@@ -25,7 +28,7 @@ const YourRewards = () => {
 
     return (
         <ScrollView contentContainerStyle={styles.mainWrapper}>
-            <Text style={styles.header}>Your Rewards</Text>
+            <Text style={styles.header}>{t('strings:your_rewards')}</Text>
             <View style={styles.subWrapper}>
                 {pairedRewards.map((pair, rowIndex) => (
                     <View key={rowIndex} style={styles.rowContainer}>
