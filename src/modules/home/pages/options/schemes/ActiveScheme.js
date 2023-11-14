@@ -3,8 +3,11 @@ import { View, Text, ScrollView, StyleSheet, Image } from 'react-native';
 import colors from '../../../../../../colors';
 import { responsiveFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
 import { getActiveSchemesOffers } from '../../HomeApiService';
+import { useTranslation } from 'react-i18next';
 
 const ActiveScheme = () => {
+    const { t } = useTranslation();
+
     const [data, setData] = useState([]);
   useEffect(() => {
     getActiveSchemesOffers()
@@ -32,7 +35,7 @@ const ActiveScheme = () => {
 
     return (
         <ScrollView style={styles.mainWrapper}>
-            <Text style={styles.header}>Active Scheme / Offers</Text>
+            <Text style={styles.header}>{t('strings:active_scheme_offers')}</Text>
             {data.map((item, index) => (
                 <View key={index} style={styles.messageItem}>
                     <Image style={styles.image} source={require('../../../../../assets/images/ic_active_offers.webp')} />
