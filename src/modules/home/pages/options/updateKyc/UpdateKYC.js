@@ -45,13 +45,13 @@ const UpdateKYC = () => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.mainWrapper}>
                 <View style={styles.header}>
-                    <Text style={styles.textHeader}>{t('dashboard:updateKYC:header')}</Text>
+                    <Text style={styles.textHeader}>{t('strings:update_kyc')}</Text>
                 </View>
                 <View style={styles.form}>
                     
                     <Buttons
                         style={styles.button}
-                        label={'Submit'}
+                        label={t('strings:submit')}
                         variant="filled"
                         onPress={() => handleProceed()}
                         width="100%"
