@@ -22,7 +22,7 @@ const ScanScreen = ({ navigation }) => {
         </View>
         <Buttons
           style={styles.button}
-          label={t('dashboard:scan:buttonText')}
+          label={t('strings:click_here_to_scan_a_unique_code')}
           variant="blackButton"
           onPress={() => console.log('Pressed')}
           width="100%"
@@ -31,17 +31,17 @@ const ScanScreen = ({ navigation }) => {
           iconGap={30}
           icon={cameraIcon}
         />
-        <Text style={styles.text}>{t('auth:login:or')}</Text>
+        <Text style={styles.text}>{t('strings:or')}</Text>
         <View style={styles.enterCode}>
           <View style={styles.topContainer}>
             <Text style={styles.smallText}>
-              {t('dashboard:scan:enterCode')}
+              {t('strings:enter_code')}
             </Text>
           </View>
           <View style={styles.bottomContainer}>
             <TextInput
               style={styles.input}
-              placeholder={t('dashboard:scan:enterInput')}
+              placeholder={t('strings:enter_code_here')}
               placeholderTextColor={colors.grey}
               textAlign="center"
             />
@@ -49,7 +49,7 @@ const ScanScreen = ({ navigation }) => {
         </View>
         <Buttons
           style={styles.button}
-          label={t('dashboard:scan:proceed')}
+          label={t('strings:proceed')}
           variant="filled"
           onPress={() => console.log('Pressed')}
           width="100%"
@@ -59,14 +59,14 @@ const ScanScreen = ({ navigation }) => {
           icon={arrowIcon}
         />
         <View style={styles.rightText}>
-          <Text style={styles.smallText}>{t('dashboard:scan:uniqueHistory')}</Text>
+          <Text style={styles.smallText}>{t('strings:go_to_unique_code_history')}</Text>
           <TouchableOpacity style={styles.scanImage} onPress={() => navigation.navigate('uniqueCodeHistory')}>
             <Image style={{ width: 30, height: 30 }} source={require('../../../../../assets/images/ic_circle_right_arrow_yellow.webp')} />
           </TouchableOpacity>
         </View>
         <Buttons
           style={styles.button}
-          label={t('dashboard:scan:scanningError')}
+          label={t('strings:upload_scan_error_')}
           variant="blackButton"
           onPress={() => navigation.navigate('uploadError')}
           width="100%"
