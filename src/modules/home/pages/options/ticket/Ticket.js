@@ -206,10 +206,10 @@ const Ticket = ({ navigation }) => {
           style={styles.button}
           onPress={() => navigation.navigate('ticketHistory')}
         >
-          <Text style={styles.buttonText}>Ticket History</Text>
+          <Text style={styles.buttonText}>{t('strings:ticket_history')}</Text>
         </TouchableHighlight>
       </View>
-      <Text style={styles.blackText}>Issue Type</Text>
+      <Text style={styles.blackText}>{t('strings:issue_type')}</Text>
       {isOptionsLoading ? (
         <Text style={styles.blackText}>Loading options...</Text>
       ) : options.length === 0 ? (
@@ -220,6 +220,7 @@ const Ticket = ({ navigation }) => {
             selectedValue={selectedOption}
             onValueChange={handleOptionChange}
             style={styles.picker}
+            label={t('strings:select_ticket_type')}
           >
             {options.map(option => (
               <Picker.Item key={option.issueTypeId} label={option.name} value={option.issueTypeId} />
@@ -238,7 +239,7 @@ const Ticket = ({ navigation }) => {
         ) : (
           <TextInput
             style={styles.input}
-            placeholder={t('dashboard:ticket:uploadPicture')}
+            placeholder={t('strings:upload_picture_optional')}
             placeholderTextColor={colors.grey}
             editable={false}
           />
@@ -266,10 +267,10 @@ const Ticket = ({ navigation }) => {
         </View>
       </Modal>
 
-      <Text style={styles.blackText}>Description</Text>
+      <Text style={styles.blackText}>{t('strings:description')}</Text>
       <TextInput
         style={styles.descriptionInput}
-        placeholder={t('dashboard:ticket:description')}
+        placeholder={t('strings:provide_description_in_the_box')}
         placeholderTextColor={colors.grey}
         multiline={true}
         textAlignVertical="top"
@@ -278,17 +279,17 @@ const Ticket = ({ navigation }) => {
       />
 
       <Buttons
-        label={t('dashboard:ticket:submit')}
+        label={t('strings:submit')}
         variant="filled"
         onPress={handleSubmission}
         width="100%"
       />
       <View style={styles.hyperlinks}>
         <TouchableOpacity onPress={openTnC}>
-          <Text style={styles.linkText}>Terms & Conditions</Text>
+          <Text style={styles.linkText}>{t('strings:terms_and_conditions')}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={openFaqS}>
-          <Text style={styles.linkText}>Frequently Asked Questions (FAQs)</Text>
+          <Text style={styles.linkText}>{t('strings:frequently_asked_quetions_faq')}</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.footer} >
