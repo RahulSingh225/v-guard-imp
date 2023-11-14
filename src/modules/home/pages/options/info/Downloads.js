@@ -3,10 +3,13 @@ import { View, Text, ScrollView, TouchableOpacity, Linking, StyleSheet } from 'r
 import colors from '../../../../../../colors';
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import { fetchDownloads } from '../../HomeApiService';
+import { useTranslation } from 'react-i18next';
 
 const Downloads = () => {
   const baseURL = 'https://vguardrishta.com/';
   const [data, setData] = useState([]);
+  const { t } = useTranslation();
+
   useEffect(() => {
     fetchDownloads()
       .then(response => response.json())
@@ -25,7 +28,7 @@ const Downloads = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Downloads</Text>
+      <Text style={styles.title}>{t('strings:downloads_small')}</Text>
       <ScrollView>
         {data.map((item, index) => (
           <TouchableOpacity

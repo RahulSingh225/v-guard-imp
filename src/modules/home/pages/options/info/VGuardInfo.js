@@ -3,8 +3,11 @@ import { View, Text, ScrollView, TouchableOpacity, Linking, StyleSheet } from 'r
 import colors from '../../../../../../colors';
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import { fetchInfo } from '../../HomeApiService';
+import { useTranslation } from 'react-i18next';
 
 const VGuardInfo = () => {
+  const { t } = useTranslation();
+
   const baseURL = 'https://vguardrishta.com/';
   const [data, setData] = useState([]);
   useEffect(() => {
@@ -43,7 +46,7 @@ const VGuardInfo = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>V-Guard Info</Text>
+      <Text style={styles.title}>{t('strings:v_guard_info')}</Text>
       <ScrollView>
         {data.map((item, index) => (
           <TouchableOpacity
