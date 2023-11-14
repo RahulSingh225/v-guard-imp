@@ -3,9 +3,12 @@ import { View, Text, ScrollView, TouchableOpacity, Linking, StyleSheet } from 'r
 import colors from '../../../../../../colors';
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import { getWhatsNew } from '../../HomeApiService';
+import { useTranslation } from 'react-i18next';
 
 const New = ({ navigation }) => {
   const [data, setData] = useState([]);
+  const { t } = useTranslation();
+
   useEffect(() => {
     getWhatsNew()
       .then(response => response.json())
