@@ -1,5 +1,6 @@
 export default {
-    app_name: "ভি-গার্ড রিশতা",
+    strings: {
+        app_name: "ভি-গার্ড রিশতা",
     please_wait: "অনুগ্রহ করে অপেক্ষা করুন",
     enter_username: "ইউজার নাম এন্টার করুন",
     enter_password: "পাসওয়ার্ড এন্টার করুন",
@@ -344,5 +345,6 @@ export default {
       placeholder: "ইতিমধ্যে লয়্যাল্টি স্কিমে তালিকাভুক্ত হিসেবে নির্বাচন করুন?",
       yes: "হ্যাঁ",
       no: "না"
+    }
     }
   }
