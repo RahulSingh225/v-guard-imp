@@ -34,49 +34,52 @@ const RedeemPoints = ({ navigation }) => {
       <View style={styles.mainWrapper}>
         <View style={styles.points}>
           <View style={styles.leftPoint}>
-            <Text style={styles.greyText}>{t('dashboard:points:balance')}</Text>
+            <Text style={styles.greyText}>{t('strings:points_balance')}</Text>
             <Text style={styles.point}>{pointsBalance}</Text>
           </View>
           <View style={styles.middlePoint}>
-            <Text style={styles.greyText}>{t('dashboard:points:redeemed')}</Text>
+            <Text style={styles.greyText}>{t('strings:points_redeemed')}</Text>
             <Text style={styles.point}>{redeemedPoints}</Text>
           </View>
           <View style={styles.rightPoint}>
-            <Text style={styles.greyText}>{t('dashboard:points:scans')}</Text>
+            <Text style={styles.greyText}>{t('strings:number_of_scans')}</Text>
             <Text style={styles.point}>{numberOfScan}</Text>
           </View>
         </View>
         <View style={styles.dashboard}>
           <View style={styles.row}>
             <CustomTouchableOption
-              text="dashboard:redeem:instantTransfer"
+              text="strings:bank_transfer"
               iconSource={require('../../../../../assets/images/ic_bank_transfer.webp')}
               screenName="banktransfer"
             />
             <CustomTouchableOption
-              text="dashboard:redeem:paytmTransfer"
+              text="strings:paytm_transfer"
               iconSource={require('../../../../../assets/images/ic_paytm_transfer.webp')}
               screenName="paytmtransfer"
             />
             <CustomTouchableOption
-              text="dashboard:redeem:redeemProducts"
+              text="strings:redeem_products"
               iconSource={require('../../../../../assets/images/ic_redeem_products.webp')}
               screenName="redeemproducts"
+              disabled={true}
             />
           </View>
           <View style={styles.row}>
             <CustomTouchableOption
-              text="dashboard:redeem:electronicGift"
+              text="strings:e_gift_cards"
               iconSource={require('../../../../../assets/images/ic_egift_cards.webp')}
               screenName="giftvoucher"
+              disabled={true}
             />
             <CustomTouchableOption
-              text="dashboard:redeem:trackRedemption"
+              text="strings:track_your_redemption"
               iconSource={require('../../../../../assets/images/ic_track_your_redemption.webp')}
               screenName="trackredemption"
+              disabled={true}
             />
             <CustomTouchableOption
-              text="dashboard:redeem:redemptionHistory"
+              text="strings:redemption_history"
               iconSource={require('../../../../../assets/images/ic_redemption_history.webp')}
               screenName="redemptionhistory"
             />
