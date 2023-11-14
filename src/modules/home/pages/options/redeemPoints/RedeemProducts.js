@@ -35,8 +35,8 @@ const RedeemProducts = ({ navigation }) => {
     { id: 3, name: 'Category 3' },
   ];
   const points = [
-    { id: 1, name: t('dashboard:redeem:redeemProduct:lowToHigh') },
-    { id: 2, name: t('dashboard:redeem:redeemProduct:highToLow') },
+    { id: 1, name: t('strings:points_low_to_high') },
+    { id: 2, name: t('strings:points_high_to_low') },
   ];
   const products = [
     {
@@ -64,7 +64,7 @@ const RedeemProducts = ({ navigation }) => {
   return (
     <PaperProvider>
       <ScrollView style={styles.mainWrapper}>
-        <Text style={styles.header}>{t('dashboard:redeem:redeemProduct:header')}</Text>
+        <Text style={styles.header}>{t('strings:redeem_products')}</Text>
         <View style={styles.topHeader}>
           <TouchableOpacity style={styles.touchableButton} onPress={showCategoryDialog}>
             <Text style={styles.buttonText}>{t('dashboard:redeem:redeemProduct:selectCategory')}</Text>

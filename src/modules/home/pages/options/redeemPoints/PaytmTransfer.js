@@ -31,11 +31,11 @@ const PaytmTransfer = () => {
       <View style={styles.mainWrapper}>
         <View style={styles.points}>
           <View style={styles.leftPoint}>
-            <Text style={styles.greyText}>{t('dashboard:points:balance')}</Text>
+            <Text style={styles.greyText}>{t('strings:points_balance')}</Text>
             <Text style={styles.point}>{pointsBalance}</Text>
           </View>
           <View style={styles.rightPoint}>
-            <Text style={styles.greyText}>{t('dashboard:points:redeemed')}</Text>
+            <Text style={styles.greyText}>{t('strings:points_redeemed')}</Text>
             <Text style={styles.point}>{redeemedPoints}</Text>
           </View>
         </View>
@@ -45,13 +45,13 @@ const PaytmTransfer = () => {
         <View style={styles.enterCode}>
           <View style={styles.topContainer}>
             <Text style={styles.smallText}>
-              {t('dashboard:redeem:paytmTransferOption:enterMobile')}
+              {t('strings:enter_paytm_mobile_no_below')}
             </Text>
           </View>
           <View style={styles.bottomContainer}>
             <TextInput
               style={styles.input}
-              placeholder={t('dashboard:redeem:paytmTransferOption:enterMobileInput')}
+              placeholder={t('strings:mobile_number')}
               placeholderTextColor={colors.grey}
               textAlign="center"
             />
@@ -60,26 +60,26 @@ const PaytmTransfer = () => {
         <View style={styles.enterCode}>
           <View style={styles.topContainer}>
             <Text style={styles.smallText}>
-              {t('dashboard:redeem:paytmTransferOption:enterPoints')}
+              {t('strings:enter_points_to_be_redeemed')}
             </Text>
           </View>
           <View style={styles.bottomContainer}>
             <TextInput
               style={styles.input}
-              placeholder={t('dashboard:redeem:paytmTransferOption:enterPointsInput')}
+              placeholder={t('strings:enter_points')}
               placeholderTextColor={colors.grey}
               textAlign="center"
             />
           </View>
         </View>
-        <Text style={styles.chooseWallet}>{t('dashboard:redeem:paytmTransferOption:chooseWallet')}</Text>
+        <Text style={styles.chooseWallet}>{t('strings:choose_wallet')}</Text>
         <View style={styles.wallet}>
           <Image resizeMode="contain" style={{ flex: 1, width: '100%', height: '100%' }} source={require('../../../../../assets/images/ic_paytm_logo.webp')} />
           <Image resizeMode="contain" style={{ flex: 1, width: '100%', height: '100%' }} source={require('../../../../../assets/images/tick_1.png')} />
         </View>
         <Buttons
           style={styles.button}
-          label={t('dashboard:scan:proceed')}
+          label={t('strings:proceed')}
           variant="filled"
           onPress={() => handleProceed()}
           width="100%"

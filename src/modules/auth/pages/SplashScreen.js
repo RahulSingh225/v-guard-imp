@@ -4,8 +4,11 @@ import Buttons from '../../../components/Buttons';
 import colors from '../../../../colors';
 import language from '../../../assets/images/language.png';
 import arrowIcon from '../../../assets/images/arrow.png';
+import { useTranslation } from 'react-i18next';
 
 const SplashScreen = ({ navigation }) => {
+  const { t } = useTranslation();
+
   return (
     <View style={styles.mainWrapper}>
       <View style={styles.buttonContainer}>
@@ -33,7 +36,7 @@ const SplashScreen = ({ navigation }) => {
       <View style={styles.startButtonContainer}>
         <Buttons
           style={styles.startButton}
-          label="Start"
+          label={t('strings:start')}
           variant="filledButton"
           onPress={() => navigation.navigate('category')}
           iconHeight={10}

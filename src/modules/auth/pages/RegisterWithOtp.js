@@ -24,7 +24,7 @@ const RegisterWithOtp = ({ navigation, route }) => {
                         source={require('../../../assets/images/group_907.png')}
                         style={styles.imageSaathi}
                     />
-                    <Text style={styles.mainHeader}>{t('auth:loginWIthOtp:heading')}</Text>
+                    <Text style={styles.mainHeader}>{t('strings:lbl_otp_verification')}</Text>
                     <View style={styles.formContainer}>
                         <View style={styles.containter}>
                             <Text style={styles.textHeader}>{t('auth:register:enterOtpHeading')}</Text>

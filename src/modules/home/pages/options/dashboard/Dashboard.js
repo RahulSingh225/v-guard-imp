@@ -88,28 +88,28 @@ const Dashboard = () => {
 
       <View style={styles.points}>
         <View style={styles.leftPoint}>
-          <Text style={styles.greyText}>{t('dashboard:points:balance')}</Text>
+          <Text style={styles.greyText}>{t('strings:points_balance')}</Text>
           <Text style={styles.point}>{pointsBalance}</Text>
         </View>
         <View style={styles.rightPoint}>
-          <Text style={styles.greyText}>{t('dashboard:points:redeemed')}</Text>
+          <Text style={styles.greyText}>{t('strings:points_redeemed')}</Text>
           <Text style={styles.point}>{redeemedPoints}</Text>
         </View>
       </View>
 
       <View style={styles.options}>
         <CustomTouchableOption
-          text="dashboard:dashboard:productWise"
+          text="strings:product_wise_earning"
           iconSource={require('../../../../../assets/images/ic_bank_transfer.webp')}
           screenName="productWiseEarning"
         />
         <CustomTouchableOption
-          text="dashboard:dashboard:schemeWise"
+          text="strings:scheme_wise_earning"
           iconSource={require('../../../../../assets/images/ic_paytm_transfer.webp')}
           screenName="schemeWiseEarning"
         />
         <CustomTouchableOption
-          text="dashboard:dashboard:yourRewards"
+          text="strings:your_rewards"
           iconSource={require('../../../../../assets/images/ic_egift_cards.webp')}
           screenName="yourRewards"
         />
