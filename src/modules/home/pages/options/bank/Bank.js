@@ -3,16 +3,15 @@ import React, { useState, useEffect } from 'react'
 import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions'
 import colors from '../../../../../../colors'
 import { useTranslation } from 'react-i18next';
-// import { TextInput } from 'react-native-paper';
 import Buttons from '../../../../../components/Buttons';
 import arrowIcon from '../../../../../assets/images/arrow.png';
 import { getFile, sendFile } from '../../../../../utils/apiservice';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { getBankDetails, getBankNames, updateBankDetails } from '../../HomeApiService';
 import Snackbar from 'react-native-snackbar';
 import { Picker } from '@react-native-picker/picker';
-import { imageUrl } from '../../../../../utils/constants';
+import Popup from '../../../../../components/Popup';
 
 
 const Bank = () => {
@@ -28,7 +27,8 @@ const Bank = () => {
     const [entityUid, setEntityUid] = useState("");
     const [userRole, setUserRole] = useState('');
     const [availableBanks, setAvailableBanks] = useState([]);
-
+    const [isPopupVisible, setPopupVisible] = useState(false);
+    const [popupContent, setPopupContent] = useState('');
 
     useEffect(() => {
         const getUserRoleFromAsyncStorage = async () => {
@@ -43,16 +43,23 @@ const Bank = () => {
                 const response = await getBankDetails();
                 if (response.status === 200) {
                     const data = await response.json();
-                    setAccHolder(data.bankAccHolderName);
-                    setAccType(data.bankAccType);
-                    setBankName(data.bankNameAndBranch);
-                    setIfscCode(data.bankIfsc);
-                    setAccNo(data.bankAccNo);
-                    setSelectedImageName(data.checkPhoto);
-                    setEntityUid(data.checkPhoto);
+                    console.log(data.errorMessage, "<><<error message<><>")
+                    if (data.errorMessage) {
+                        setPopupContent(data.errorMessage);
+                        setPopupVisible(true);
+                    }
+                    else {
+                        setAccHolder(data.bankAccHolderName);
+                        setAccType(data.bankAccType);
+                        setBankName(data.bankNameAndBranch);
+                        setIfscCode(data.bankIfsc);
+                        setAccNo(data.bankAccNo);
+                        setSelectedImageName(data.checkPhoto);
+                        setEntityUid(data.checkPhoto);
 
-                    // Call getFileUri with the user role
-                    await getFileUri(data.checkPhoto);
+                        // Call getFileUri with the user role
+                        await getFileUri(data.checkPhoto);
+                    }
                 } else {
                     throw new Error('Failed to get bank details');
                 }
@@ -203,14 +210,14 @@ const Bank = () => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.mainWrapper}>
                 <View style={styles.header}>
-                    <Text style={styles.textHeader}>{t('dashboard:redeem:banktransfer:header')}</Text>
-                    <Text style={styles.textSubHeader}>{t('dashboard:redeem:banktransfer:subHeader')}</Text>
+                    <Text style={styles.textHeader}>{t('strings:bank_details')}</Text>
+                    <Text style={styles.textSubHeader}>{t('strings:for_account_tranfer_only')}</Text>
                 </View>
                 <View style={styles.form}>
                     <View style={styles.inputContainer}>
                         <TextInput
                             style={styles.input}
-                            placeholder={t('dashboard:redeem:banktransfer:inputAccountNumber')}
+                            placeholder={t('strings:lbl_account_number')}
                             placeholderTextColor={colors.grey}
                             value={accNo}
                             onChangeText={accNo => setAccNo(accNo)}
@@ -219,7 +226,7 @@ const Bank = () => {
                     <View style={styles.inputContainer}>
                         <TextInput
                             style={styles.input}
-                            placeholder={t('dashboard:redeem:banktransfer:inputAccountHolder')}
+                            placeholder={t('strings:lbl_account_holder_name')}
                             value={accHolder}
                             placeholderTextColor={colors.grey}
                             onChangeText={accHolder => setAccHolder(accHolder)}
@@ -231,8 +238,8 @@ const Bank = () => {
                             onValueChange={(itemValue) => setAccType(itemValue)}
                             style={styles.picker}
                         >
-                            <Picker.Item label={'Savings'} value={'savings'} />
-                            <Picker.Item label={'Current'} value={'current'} />
+                            <Picker.Item label={t('strings:account_type:saving')} value={'savings'} />
+                            <Picker.Item label={t('strings:account_type:current')} value={'current'} />
                         </Picker>
 
 
@@ -253,7 +260,7 @@ const Bank = () => {
                     <View style={styles.inputContainer}>
                         <TextInput
                             style={styles.input}
-                            placeholder={t('dashboard:redeem:banktransfer:inputIfscCode')}
+                            placeholder={t('strings:ifsc')}
                             value={ifscCode}
                             placeholderTextColor={colors.grey}
                             onChangeText={ifscCode => setIfscCode(ifscCode)}
@@ -271,7 +278,7 @@ const Bank = () => {
                             ) : (
                                 <TextInput
                                     style={styles.input}
-                                    placeholder={t('dashboard:redeem:banktransfer:uploadCheque')}
+                                    placeholder={t('strings:lbl_upload_cancelled_cheque')}
                                     placeholderTextColor={colors.grey}
                                     editable={false}
                                 />
@@ -293,8 +300,8 @@ const Bank = () => {
                         >
                             <View style={styles.modalContainer}>
                                 <View style={styles.modalContent}>
-                                    <Button title="Launch Camera" onPress={handleCameraUpload} />
-                                    <Button title="Choose from Gallery" onPress={handleGalleryUpload} />
+                                    <Button title={t('strings:capture_from_camera')} onPress={handleCameraUpload} />
+                                    <Button title={t('strings:select_from_gallery')} onPress={handleGalleryUpload} />
                                 </View>
                             </View>
                         </Modal>
@@ -302,7 +309,7 @@ const Bank = () => {
                 </View>
                 <View style={styles.button}>
                     <Buttons
-                        label={'Proceed'}
+                        label={t('strings:proceed')}
                         variant="filled"
                         onPress={() => handleProceed()}
                         width="100%"
@@ -313,6 +320,11 @@ const Bank = () => {
                     />
                 </View>
             </View>
+            {isPopupVisible && (
+                <Popup isVisible={isPopupVisible} onClose={() => setPopupVisible(false)}>
+                    {popupContent}
+                </Popup>
+            )}
         </ScrollView>
     )
 }
