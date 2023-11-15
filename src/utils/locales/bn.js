@@ -1,5 +1,6 @@
 export default {
     strings: {
+        language: 'Bengali',
         app_name: "ভি-গার্ড রিশতা",
     please_wait: "অনুগ্রহ করে অপেক্ষা করুন",
     enter_username: "ইউজার নাম এন্টার করুন",
