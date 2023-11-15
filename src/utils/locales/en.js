@@ -1,5 +1,6 @@
 export default {
   strings: {
+    language: 'English',
     app_name: 'V-Guard Rishta',
     ga_tracking_id: 'UA-40418155-2',
     channel_id: 'Channel Id',

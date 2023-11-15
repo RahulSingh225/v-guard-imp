@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Notification from '../../notifications/pages/Notification';
 import Profile from '../../profile/pages/Profile';
 import BottomTabBar from '../../../components/BottomTabBar';
@@ -10,10 +10,27 @@ import colors from '../../../../colors';
 import ProfileStack from '../../profile/stack/ProfileStack';
 import LogoutConfirmationPopup from '../../../components/LogoutConfirmationPopup';
 import { useAuth } from '../../../components/AuthContext'
-import { View, Text, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity, Alert, Modal } from 'react-native'
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
+import { useTranslation } from 'react-i18next';
+import LanguagePicker from '../../../components/LanguagePicker';
 
 const BottomTab = () => {
+  const { t, i18n } = useTranslation();
+  const [showLanguagePicker, setShowLanguagePicker] = useState(false);
+
+  const handleLanguageButtonPress = () => {
+    setShowLanguagePicker(true);
+  };
+
+  const handleCloseLanguagePicker = () => {
+    setShowLanguagePicker(false);
+  };
+
+  useEffect(() => {
+    // Re-render the component when the language changes
+    console.log('Language changed:', i18n.language);
+  }, [i18n.language]);
   const Tab = createBottomTabNavigator();
   const [isLogoutPopupVisible, setLogoutPopupVisible] = useState(false);
   const { logout } = useAuth();
@@ -35,13 +52,13 @@ const BottomTab = () => {
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
       <View style={{flexDirection: 'row', gap: 10}}>
       <Text style={{color: colors.black, fontSize: responsiveFontSize(2.5), fontWeight: 'bold'}}>{route.name}</Text>
-      <View style = {styles.languageContainer}>
-        <Text style = {{color: colors.black}}>English</Text>
+      <TouchableOpacity style = {styles.languageContainer} onPress={handleLanguageButtonPress}>
+        <Text style = {{color: colors.black}}>{t('strings:language')}</Text>
         <Image style={{ width: 15, height: 15, marginLeft: 5}} source={require('../../../assets/images/down_yellow_arrow.png')} />
-      </View>
+      </TouchableOpacity>
       </View>
       <Image
-        source={require('../../../assets/images/group_910.png')} // Replace with the path to your image
+        source={require('../../../assets/images/group_910.png')}
         style={{ width: 83, height: 30, marginLeft: 10 }}
       />
     </View>
@@ -82,6 +99,20 @@ const BottomTab = () => {
         onConfirm={confirmLogout}
         onClose={hideLogoutPopup}
       />
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showLanguagePicker}
+        onRequestClose={handleCloseLanguagePicker}
+        style={styles.modal}
+      >
+        <View style={styles.languagePickerContainer}>
+          <LanguagePicker />
+          <TouchableOpacity onPress={handleCloseLanguagePicker}>
+            <Text style={styles.closeText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </>
   );
 };
@@ -95,7 +126,17 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     flexDirection: 'row',
     alignItems: 'center'
-  }
+  },
+  languagePickerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.white
+  },
+  closeText: {
+    marginTop: 20,
+    color: colors.black,
+  },
 })
 
 export default BottomTab;

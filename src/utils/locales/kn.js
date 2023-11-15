@@ -1,5 +1,6 @@
 export default {
     strings: {
+      language: 'Kannada',
         app_name: 'ವಿ-ಗಾರ್ಡ್ ರಿಷ್ತಾ',
     please_wait: 'ದಯಮಾಡಿ ನಿರೀಕ್ಷಿಸಿ...',
     enter_username: 'ಬಳಕೆದಾರ ಹೆಸರನ್ನು ನಮೂದಿಸಿ',
