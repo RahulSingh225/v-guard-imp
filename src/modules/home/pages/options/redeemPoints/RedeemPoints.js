@@ -1,31 +1,41 @@
-import { ScrollView, Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import {
+  ScrollView,
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import colors from '../../../../../../colors';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import CustomTouchableOption from '../../../../../components/CustomTouchableOption';
 import {
   responsiveFontSize,
-  responsiveWidth
-} from "react-native-responsive-dimensions";
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
 import NeedHelp from '../../../../../components/NeedHelp';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 
-
-const RedeemPoints = ({ navigation }) => {
-  const { t } = useTranslation();
+const RedeemPoints = ({navigation}) => {
+  const {t} = useTranslation();
   const [pointsBalance, setPointsBalance] = useState('');
   const [redeemedPoints, setRedeemedPoints] = useState('');
   const [numberOfScan, setNumberOfScan] = useState('');
-
+  const [pointData, setPointData] = useState({
+    pointsBalance: '',
+    redeemedPoints: '',
+    numberOfScan: '',
+  });
   useEffect(() => {
-    AsyncStorage.getItem('pointsBalance').then((pointsBalance) => {
-      setPointsBalance(pointsBalance);
-    });
-    AsyncStorage.getItem('redeemedPoints').then((redeemedPoints) => {
-      setRedeemedPoints(redeemedPoints);
-    });
-    AsyncStorage.getItem('numberOfScan').then((numberOfScan) => {
-      setNumberOfScan(numberOfScan);
+    AsyncStorage.getItem('USER').then(r => {
+      const user = JSON.parse(r);
+      const data = {
+        pointsBalance: user.pointsSummary.pointsBalance,
+        redeemedPoints: user.pointsSummary.redeemedPoints,
+        numberOfScan: user.pointsSummary.numberOfScan,
+      };
+      setPointData(data);
     });
   }, []);
 
@@ -34,16 +44,18 @@ const RedeemPoints = ({ navigation }) => {
       <View style={styles.mainWrapper}>
         <View style={styles.points}>
           <View style={styles.leftPoint}>
-            <Text style={styles.greyText}>{t('dashboard:points:balance')}</Text>
-            <Text style={styles.point}>{pointsBalance}</Text>
+            <Text style={styles.greyText}>{t('strings:points_balance')}</Text>
+            <Text style={styles.point}>{pointData.pointsBalance}</Text>
           </View>
           <View style={styles.middlePoint}>
-            <Text style={styles.greyText}>{t('dashboard:points:redeemed')}</Text>
-            <Text style={styles.point}>{redeemedPoints}</Text>
+            <Text style={styles.greyText}>{t('strings:points_redeemed')}</Text>
+            <Text style={styles.point}>
+              {pointData.redeemedPoints ? pointData.redeemedPoints : 0}
+            </Text>
           </View>
           <View style={styles.rightPoint}>
-            <Text style={styles.greyText}>{t('dashboard:points:scans')}</Text>
-            <Text style={styles.point}>{numberOfScan}</Text>
+            <Text style={styles.greyText}>{t('strings:number_of_scans')}</Text>
+            <Text style={styles.point}>{pointData.numberOfScan}</Text>
           </View>
         </View>
         <View style={styles.dashboard}>
@@ -91,10 +103,10 @@ const RedeemPoints = ({ navigation }) => {
 const styles = StyleSheet.create({
   scrollViewContainer: {
     flexGrow: 1,
-    backgroundColor: colors.white
+    backgroundColor: colors.white,
   },
   mainWrapper: {
-    padding: 15
+    padding: 15,
   },
   profileDetails: {
     display: 'flex',
@@ -112,18 +124,18 @@ const styles = StyleSheet.create({
     height: 50,
     width: 50,
     backgroundColor: colors.lightGrey,
-    borderRadius: 100
+    borderRadius: 100,
   },
   textDetail: {
     color: colors.black,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   points: {
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
     gap: 5,
-    marginTop: 30
+    marginTop: 30,
   },
   leftPoint: {
     width: responsiveWidth(30),
@@ -132,7 +144,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 50,
     borderBottomLeftRadius: 50,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   middlePoint: {
     width: responsiveWidth(30),
@@ -156,7 +168,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     fontSize: responsiveFontSize(1.7),
-    marginBottom: 10
+    marginBottom: 10,
   },
   point: {
     fontWeight: 'bold',
@@ -167,14 +179,14 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     gap: 30,
-    marginTop: 30
+    marginTop: 30,
   },
   row: {
     display: 'flex',
     flexDirection: 'row',
     gap: 20,
-    justifyContent: 'space-around'
-  }
-})
+    justifyContent: 'space-around',
+  },
+});
 
 export default RedeemPoints;

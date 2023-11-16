@@ -1,13 +1,15 @@
 import {createContext, useContext, useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createDigestPostRequest} from '../utils/apiservice';
+import VguardRishtaUserService from '../modules/common/services/VguardRishtaUserService';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({children}) => {
   const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
 
-  const login = async () => {
+  const login = async User => {
+   await AsyncStorage.setItem("USER",JSON.stringify(User))
     setIsUserAuthenticated(true);
   };
 
@@ -15,16 +17,7 @@ export const AuthProvider = ({children}) => {
     try {
       const path = 'user/logoutUser';
       createDigestPostRequest(path, '');
-      await AsyncStorage.multiRemove([
-        'numberOfScan',
-        'redeemedPoints',
-        'pointsBalance',
-        'userCode',
-        'name',
-        'password',
-        'username',
-        'isUserAuthenticated'
-      ]);
+      await AsyncStorage.removeItem("USER")
       setIsUserAuthenticated(false);
     } catch (error) {
       console.error('Error while logging out:', error);
@@ -34,12 +27,12 @@ export const AuthProvider = ({children}) => {
   // e.g., onPress={() => logAsyncStorageContents()}
 
   useEffect(() => {
-    AsyncStorage.getItem('isUserAuthenticated')
+    AsyncStorage.getItem('USER')
       .then(value => {
-        const isAuthenticated = value === 'true';
+        
 
-        if (isAuthenticated) {
-          login();
+        if (value) {
+          login(JSON.parse(value));
         } else {
           logout();
         }
