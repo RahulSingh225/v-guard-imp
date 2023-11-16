@@ -90,14 +90,14 @@ const RegisterUser = ({ navigation }) => {
                         source={require('../../../assets/images/group_907.png')}
                         style={styles.imageSaathi}
                     />
-                    <Text style={styles.mainHeader}>{t('auth:register:heading')}</Text>
+                    <Text style={styles.mainHeader}>{t('strings:new_user_registration')}</Text>
                     <View style={{ flex: 1 }}>
 
                         <Loader isLoading={isLoading} />
                     </View>
                     <View style={styles.formContainer}>
                         <View style={styles.containter}>
-                            <Text style={styles.textHeader}>{t('auth:register:selectProfession')}</Text>
+                            <Text style={styles.textHeader}>{t('strings:lbl_select_job_profession')}</Text>
                             <View style={styles.radioButtons}>
                                 <TouchableOpacity
                                     style={styles.option}
@@ -111,16 +111,16 @@ const RegisterUser = ({ navigation }) => {
                                         }
                                         style={styles.tick}
                                     />
-                                    <Text style={[styles.textHeader, { color: selectedOption === 'Retailer' ? 'black' : 'grey' }]}>{t('auth:register:influencer')}</Text>
+                                    <Text style={[styles.textHeader, { color: selectedOption === 'Retailer' ? 'black' : 'grey' }]}>{t('strings:influencer')}</Text>
                                 </TouchableOpacity>
 
                             </View>
                         </View>
                         <View style={styles.containter}>
-                            <Text style={styles.textHeader}>{t('auth:register:enterMobile')}</Text>
+                            <Text style={styles.textHeader}>{t('strings:lbl_enter_mobile_number')}</Text>
                             <TextInput
                                 style={styles.input}
-                                placeholder={t('auth:register:mobile')}
+                                placeholder={t('strings:enter_your_mobile_number')}
                                 placeholderTextColor={placeholderColor}
                                 value={number}
                                 keyboardType='number-pad'
@@ -131,7 +131,7 @@ const RegisterUser = ({ navigation }) => {
                         <View style={styles.buttonContainer}>
                             <Buttons
                                 style={styles.button}
-                                label={t('auth:register:getOtp')}
+                                label={t('strings:send_otp')}
                                 variant="filled"
                                 //  onPress={() => navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption })}
                                 onPress={() => handleValidation()}
@@ -142,17 +142,17 @@ const RegisterUser = ({ navigation }) => {
                                 icon={arrowIcon}
                             />
                         </View>
-                        <Text style={styles.or}>{t('auth:login:or')}</Text>
+                        <Text style={styles.or}>{t('strings:or')}</Text>
                         <View style={styles.otpPhone}>
                             <Image source={require('../../../assets/images/group_501.png')} style={styles.phone} />
-                            <Text style={styles.greyText}>{t('auth:register:getOtpPhone')}</Text>
+                            <Text style={styles.greyText}>{t('strings:call_to_get_otp')}</Text>
                         </View>
 
                     </View>
                 </View>
                 <View style={styles.footer}>
                     <View style={styles.footerContainer}>
-                        <Text style={styles.footergreyText}>{t('auth:login:poweredBy')}</Text>
+                        <Text style={styles.footergreyText}>{t('strings:powered_by_v_guard')}</Text>
                         <Image
                             source={require('../../../assets/images/group_910.png')}
                             style={styles.imageVguard}
@@ -276,6 +276,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingHorizontal: 50,
         justifyContent: 'center',
+        alignItems: 'center'
     }
 })
 

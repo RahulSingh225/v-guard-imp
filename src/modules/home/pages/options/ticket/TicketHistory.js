@@ -3,9 +3,12 @@ import { View, Text, ScrollView, TouchableOpacity, Linking, StyleSheet, Image } 
 import colors from '../../../../../../colors';
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import { fetchTicketHistory } from '../../HomeApiService';
+import { useTranslation } from 'react-i18next';
 
 const TicketHistory = () => {
     const [data, setData] = useState([]);
+    const { t } = useTranslation();
+
   useEffect(() => {
     fetchTicketHistory()
       .then(response => response.json())
@@ -20,14 +23,7 @@ const TicketHistory = () => {
 
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.title}>Ticket History</Text>
-            <View style={styles.profileDetails}>
-                <View style={styles.ImageProfile}></View>
-                <View style={styles.profileText}>
-                    <Text style={styles.textDetail}>Test User</Text>
-                    <Text style={styles.textDetail}>XXXXX</Text>
-                </View>
-            </View>
+            <Text style={styles.title}>{t('strings:ticket_history')}</Text>
             {data.map((item, index) => (
                 <TouchableOpacity
                     key={index}

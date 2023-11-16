@@ -4,10 +4,13 @@ import { Table, Row, Rows } from 'react-native-table-component';
 import colors from '../../../../../../colors';
 import { productWiseOffers } from '../../HomeApiService';
 import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions';
+import { useTranslation } from 'react-i18next';
 
 const ProductWiseOfferTable = ({ route, navigation }) => {
     const { categoryId } = route.params;
     const [data, setData] = useState([]);
+    const { t } = useTranslation();
+
 
     useEffect(() => {
         productWiseOffers(categoryId)
@@ -30,7 +33,7 @@ const ProductWiseOfferTable = ({ route, navigation }) => {
 
     return (
         <ScrollView style={styles.mainWrapper}>
-            <Text style={styles.title}>Product Wise Offer</Text>
+            <Text style={styles.title}>{t('strings:product_wise_offers')}</Text>
             <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
                 <Row data={tableHead} style={styles.head} textStyle={styles.text} />
                 <Rows data={dataofTable} textStyle={styles.text} />

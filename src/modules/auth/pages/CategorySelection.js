@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
-import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Modal } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import Buttons from '../../../components/Buttons';
 import colors from '../../../../colors';
 import language from '../../../assets/images/language.png';
@@ -8,10 +8,25 @@ import blackTickImage from '../../../assets/images/ic_tick_black.png';
 import whiteTickImage from '../../../assets/images/ic_tick_white.png';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import { height, width } from '../../../utils/dimensions';
+import LanguagePicker from '../../../components/LanguagePicker';
 
 
 const CategorySelection = ({ navigation }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+  const [showLanguagePicker, setShowLanguagePicker] = useState(false);
+
+  const handleLanguageButtonPress = () => {
+    setShowLanguagePicker(true);
+  };
+
+  const handleCloseLanguagePicker = () => {
+    setShowLanguagePicker(false);
+  };
+
+  useEffect(() => {
+    // Re-render the component when the language changes
+    console.log('Language changed:', i18n.language);
+  }, [i18n.language]);
 
     const [selectedOption, setSelectedOption] = useState('retailer');
 
@@ -25,7 +40,7 @@ const CategorySelection = ({ navigation }) => {
                     style={styles.button}
                     label=""
                     variant="outlined"
-                    onPress={() => alert('Choose Your Language')}
+                    onPress={handleLanguageButtonPress}
                     iconHeight={30}
                     iconWidth={30}
                     iconGap={0}
@@ -54,7 +69,7 @@ const CategorySelection = ({ navigation }) => {
 
                     />
                     <Text style={styles.categoryText}>
-                        Electrical & Plumbing Experts
+                    {t('strings:electrical_amp_plumbing_expert')}
                     </Text>
                     <View style={styles.radioButtons}>
                         <Image
@@ -75,7 +90,7 @@ const CategorySelection = ({ navigation }) => {
                         resizeMode="contain"
                     />
                     <Text style={styles.categoryText}>
-                        AC Service Engineer
+                    {t('strings:ac_service_engineer')}
                     </Text>
                     <View style={styles.radioButtons}>
                         <Image
@@ -88,12 +103,26 @@ const CategorySelection = ({ navigation }) => {
 
             <View style={styles.startButtonContainer}>
                 <Buttons
-                    label="Start"
+                    label={t('strings:submit')}
                     variant="blackButton"
                     onPress={() => navigation.navigate('login')}
                     width="90%"
                 />
             </View>
+            <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showLanguagePicker}
+        onRequestClose={handleCloseLanguagePicker}
+        style={styles.modal}
+      >
+        <View style={styles.languagePickerContainer}>
+          <LanguagePicker />
+          <TouchableOpacity onPress={handleCloseLanguagePicker}>
+            <Text style={styles.closeText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
         </ScrollView>
     );
 };
@@ -185,6 +214,16 @@ const styles = StyleSheet.create({
         height: 15,
         width: 15
     },
+    languagePickerContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: colors.white
+      },
+      closeText: {
+        marginTop: 20,
+        color: colors.black,
+      },
 });
 
 export default CategorySelection;

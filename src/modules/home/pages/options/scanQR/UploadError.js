@@ -21,7 +21,7 @@ const UploadError = () => {
                 </View>
                 <Buttons
                     style={styles.button}
-                    label={t('dashboard:scan:uploadErrorButton')}
+                    label={t('strings:click_here_to_report_error_scan')}
                     variant="blackButton"
                     onPress={() => console.log('Pressed')}
                     width="100%"
@@ -29,7 +29,7 @@ const UploadError = () => {
                 <View style={styles.inputContainer}>
                     <TextInput
                         style={styles.input}
-                        placeholder={t('dashboard:scan:enterInput')}
+                        placeholder={t('strings:enter_code_here')}
                         placeholderTextColor={colors.grey}
                     />
                     <View style={styles.scanImage}>
@@ -40,14 +40,14 @@ const UploadError = () => {
                 </View>
                 <TextInput
                     style={styles.descriptionInput}
-                    placeholder={t('dashboard:scan:description')}
+                    placeholder={t('strings:description_remarks')}
                     placeholderTextColor={colors.grey}
                     multiline={true}
                     textAlignVertical="top"
                 />
                 <Buttons
                     style={styles.button}
-                    label={t('dashboard:scan:submit')}
+                    label={t('strings:submit')}
                     variant="filled"
                     onPress={() => console.log('Pressed')}
                     width="100%"

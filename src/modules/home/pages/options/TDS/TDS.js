@@ -3,8 +3,12 @@ import React from 'react'
 import colors from '../../../../../../colors'
 import { responsiveFontSize } from 'react-native-responsive-dimensions'
 import { Linking } from 'react-native';
+import { useTranslation } from 'react-i18next';
+
 
 const TDS = () => {
+  const { t } = useTranslation();
+
   const data = [
     {
       year: '2022-2023',
@@ -20,7 +24,7 @@ const TDS = () => {
   };
   return (
     <View style={styles.mainWrapper}>
-      <Text style={styles.header}>TDS Certificate</Text>
+      <Text style={styles.header}>{t('strings:tds_certificate')}</Text>
       <Text style={styles.greyText}>Select Assessment Year</Text>
       {data.map((item, index) => (
         <View style={styles.card} key={index}>

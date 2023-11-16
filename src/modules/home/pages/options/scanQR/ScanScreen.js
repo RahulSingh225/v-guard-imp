@@ -114,7 +114,7 @@ const ScanScreen = ({navigation, route}) => {
         </View>
         <Buttons
           style={styles.button}
-          label={t('dashboard:scan:buttonText')}
+          label={t('strings:click_here_to_scan_a_unique_code')}
           variant="blackButton"
           onPress={() => scan()}
           width="100%"
@@ -123,16 +123,18 @@ const ScanScreen = ({navigation, route}) => {
           iconGap={30}
           icon={cameraIcon}
         />
-        <Text style={styles.text}>{t('auth:login:or')}</Text>
+        <Text style={styles.text}>{t('strings:or')}</Text>
         <View style={styles.enterCode}>
           <View style={styles.topContainer}>
+
             <Text style={styles.smallText}>{t('strings:enter_code')}</Text>
+
           </View>
           <View style={styles.bottomContainer}>
             <TextInput
               value={qrCode}
               style={styles.input}
-              placeholder={t('dashboard:scan:enterInput')}
+              placeholder={t('strings:enter_code_here')}
               placeholderTextColor={colors.grey}
               textAlign="center"
             />
@@ -140,7 +142,7 @@ const ScanScreen = ({navigation, route}) => {
         </View>
         <Buttons
           style={styles.button}
-          label={t('dashboard:scan:proceed')}
+          label={t('strings:proceed')}
           variant="filled"
           onPress={async () => await sendBarcode()}
           width="100%"
@@ -150,6 +152,7 @@ const ScanScreen = ({navigation, route}) => {
           icon={arrowIcon}
         />
         <View style={styles.rightText}>
+
           <Text style={styles.smallText}>
             {t('strings:go_to_unique_code_history')}
           </Text>
@@ -160,11 +163,12 @@ const ScanScreen = ({navigation, route}) => {
               style={{width: 30, height: 30}}
               source={require('../../../../../assets/images/ic_circle_right_arrow_yellow.webp')}
             />
+
           </TouchableOpacity>
         </View>
         <Buttons
           style={styles.button}
-          label={t('dashboard:scan:scanningError')}
+          label={t('strings:upload_scan_error_')}
           variant="blackButton"
           onPress={() => navigation.navigate('uploadError')}
           width="100%"

@@ -4,9 +4,12 @@ import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-nat
 import colors from '../../../../colors';
 import { getUserProfile } from '../../../utils/apiservice';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
+import { useTranslation } from 'react-i18next';
 
 
 const Profile = ({navigation}) => {
+  const { t } = useTranslation();
+
   const baseURL = 'https://www.vguardrishta.com/img/appImages/Profile/';
   const ecardURL = 'https://www.vguardrishta.com/img/appImages/eCard/';
 
@@ -122,14 +125,14 @@ const Profile = ({navigation}) => {
           style={styles.button}
           onPress={() => navigation.navigate('editProfile')}
         >
-          <Text style={styles.buttonText}>Edit Profile</Text>
+          <Text style={styles.buttonText}>{t('strings:edit_profile')}</Text>
         </TouchableHighlight>
       </View>
       <View style={styles.profileText}>
         <Text style={styles.textDetail}>{userName}</Text>
         <Text style={styles.textDetail}>{userCode}</Text>
         <TouchableOpacity onPress={openEVisitingCard}>
-        <Text style={styles.viewProfile}>View E-Visiting Card</Text>
+        <Text style={styles.viewProfile}>{t('strings:view_e_card')}</Text>
       </TouchableOpacity>
       </View>
       <View style={styles.detailsContainer}>

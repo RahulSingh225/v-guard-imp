@@ -1,11 +1,29 @@
-import { View, Text, StyleSheet, Image } from 'react-native';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Image, Modal, TouchableOpacity } from 'react-native';
 import Buttons from '../../../components/Buttons';
 import colors from '../../../../colors';
 import language from '../../../assets/images/language.png';
 import arrowIcon from '../../../assets/images/arrow.png';
+import { useTranslation } from 'react-i18next';
+import LanguagePicker from '../../../components/LanguagePicker';
 
 const SplashScreen = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
+  const [showLanguagePicker, setShowLanguagePicker] = useState(false);
+
+  const handleLanguageButtonPress = () => {
+    setShowLanguagePicker(true);
+  };
+
+  const handleCloseLanguagePicker = () => {
+    setShowLanguagePicker(false);
+  };
+
+  useEffect(() => {
+    // Re-render the component when the language changes
+    console.log('Language changed:', i18n.language);
+  }, [i18n.language]);
+
   return (
     <View style={styles.mainWrapper}>
       <View style={styles.buttonContainer}>
@@ -13,7 +31,7 @@ const SplashScreen = ({ navigation }) => {
           style={styles.button}
           label=""
           variant="outlined"
-          onPress={() => alert('Choose Your Language')}
+          onPress={handleLanguageButtonPress}
           iconHeight={30}
           iconWidth={30}
           iconGap={0}
@@ -33,7 +51,7 @@ const SplashScreen = ({ navigation }) => {
       <View style={styles.startButtonContainer}>
         <Buttons
           style={styles.startButton}
-          label="Start"
+          label={t('strings:start')}
           variant="filledButton"
           onPress={() => navigation.navigate('category')}
           iconHeight={10}
@@ -43,6 +61,21 @@ const SplashScreen = ({ navigation }) => {
           width="90%"
         />
       </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showLanguagePicker}
+        onRequestClose={handleCloseLanguagePicker}
+        style={styles.modal}
+      >
+        <View style={styles.languagePickerContainer}>
+          <LanguagePicker />
+          <TouchableOpacity onPress={handleCloseLanguagePicker}>
+            <Text style={styles.closeText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -84,6 +117,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '20%',
+  },
+  languagePickerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.white
+  },
+  closeText: {
+    marginTop: 20,
+    color: colors.black,
   },
 });
 

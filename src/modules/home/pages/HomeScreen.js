@@ -73,12 +73,14 @@ const HomeScreen = ({navigation}) => {
           <View style={styles.profileText}>
             <Text style={styles.textDetail}>{userData.userName}</Text>
             <Text style={styles.textDetail}>{userData.userCode}</Text>
+
             <Text style={styles.viewProfile}>{t('strings:view_profile')}</Text>
           </View>
         </View>
         <View style={styles.points}>
           <View style={styles.leftPoint}>
             <Text style={styles.greyText}>{t('strings:points_balance')}</Text>
+
             <Text style={styles.point}>{userData.pointsBalance}</Text>
           </View>
           <View style={styles.middlePoint}>
@@ -90,73 +92,74 @@ const HomeScreen = ({navigation}) => {
           <View style={styles.rightPoint}>
             <Text style={styles.greyText}>{t('strings:number_of_scans')}</Text>
             <Text style={styles.point}>{userData.numberOfScan}</Text>
+
           </View>
         </View>
         <View style={styles.dashboard}>
           <View style={styles.row}>
             <CustomTouchableOption
-              text="dashboard:options:scan"
+              text="strings:scan_code"
               iconSource={require('../../../assets/images/ic_scan_code.png')}
               screenName="scanscreen"
             />
             <CustomTouchableOption
-              text="dashboard:options:redeem"
+              text="strings:redeem_points"
               iconSource={require('../../../assets/images/ic_redeem_points.webp')}
               screenName="redeemscreen"
             />
             <CustomTouchableOption
-              text="dashboard:options:dashboard"
+              text="strings:dashboard"
               iconSource={require('../../../assets/images/ic_dashboard.webp')}
               screenName="dashboard"
             />
           </View>
           <View style={styles.row}>
             <CustomTouchableOption
-              text="dashboard:options:updateKyc"
+              text="strings:update_kyc"
               iconSource={require('../../../assets/images/ic_update_kyc.webp')}
               screenName="updateKyc"
             />
             <CustomTouchableOption
-              text="dashboard:options:schemes"
+              text="strings:scheme_offers"
               iconSource={require('../../../assets/images/ic_scheme_offers.png')}
               screenName="schemes"
             />
             <CustomTouchableOption
-              text="dashboard:options:info"
+              text="strings:info_desk"
               iconSource={require('../../../assets/images/ic_vguard_info.webp')}
               screenName="info"
             />
           </View>
           <View style={styles.row}>
             <CustomTouchableOption
-              text="dashboard:options:welfare"
+              text="strings:welfare"
               iconSource={require('../../../assets/images/ic_welfare.webp')}
               screenName="welfare"
             />
             <CustomTouchableOption
-              text="dashboard:options:new"
+              text="strings:what_s_new"
               iconSource={require('../../../assets/images/ic_whats_new.webp')}
               screenName="new"
             />
             <CustomTouchableOption
-              text="dashboard:options:ticket"
+              text="strings:raise_ticket"
               iconSource={require('../../../assets/images/ic_raise_ticket.webp')}
               screenName="ticket"
             />
           </View>
           <View style={styles.row}>
             <CustomTouchableOption
-              text="dashboard:options:bank"
+              text="strings:update_bank"
               iconSource={require('../../../assets/images/ic_raise_ticket.webp')}
               screenName="bank"
             />
             <CustomTouchableOption
-              text="dashboard:options:TDS"
+              text="strings:tds_certificate"
               iconSource={require('../../../assets/images/tds_ic.png')}
               screenName="TDS"
             />
             <CustomTouchableOption
-              text="dashboard:options:engagement"
+              text="strings:engagement"
               iconSource={require('../../../assets/images/elink.png')}
               screenName="engagement"
             />
@@ -176,7 +179,9 @@ const HomeScreen = ({navigation}) => {
                   resizeMode="contain"
                 />
               </View>
+
               <Text style={[styles.nav]}>Instruction Manual</Text>
+
             </TouchableOpacity>
             {/* <CustomTouchableOption
               text="dashboard:options:manual"

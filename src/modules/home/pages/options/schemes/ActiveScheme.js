@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, ScrollView, StyleSheet, Image} from 'react-native';
 import colors from '../../../../../../colors';
+
 import {
   responsiveFontSize,
   responsiveWidth,
@@ -12,6 +13,7 @@ const ActiveScheme = () => {
   const {t} = useTranslation();
 
   const [data, setData] = useState([]);
+
   useEffect(() => {
     getActiveSchemesOffers()
       .then(response => response.json())
@@ -36,6 +38,7 @@ const ActiveScheme = () => {
   //     },
   // ];
 
+
   return (
     <ScrollView style={styles.mainWrapper}>
       <Text style={styles.header}>{t('strings:active_scheme_offers')}</Text>
@@ -55,6 +58,7 @@ const ActiveScheme = () => {
       ))}
     </ScrollView>
   );
+
 };
 
 const styles = StyleSheet.create({

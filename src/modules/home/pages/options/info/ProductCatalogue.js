@@ -3,8 +3,11 @@ import { View, Text, ScrollView, TouchableOpacity, Linking, StyleSheet } from 'r
 import colors from '../../../../../../colors';
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import { fetchProductCatalogue } from '../../HomeApiService';
+import { useTranslation } from 'react-i18next';
 
 const ProductCatalogue = () => {
+  const { t } = useTranslation();
+
   const [data, setData] = useState([]);
   const baseURL = "https://vguardrishta.com/";
   useEffect(() => {
@@ -42,7 +45,7 @@ const ProductCatalogue = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Product Catalogue</Text>
+      <Text style={styles.title}>{t('strings:v_guard_product_catalog')}</Text>
       <ScrollView>
         {data.map((item, index) => (
           <TouchableOpacity

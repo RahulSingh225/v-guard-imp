@@ -3,9 +3,12 @@ import { View, Text, ScrollView, TouchableOpacity, Linking, StyleSheet } from 'r
 import colors from '../../../../../../colors';
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import { getWhatsNew } from '../../HomeApiService';
+import { useTranslation } from 'react-i18next';
 
 const New = ({ navigation }) => {
   const [data, setData] = useState([]);
+  const { t } = useTranslation();
+
   useEffect(() => {
     getWhatsNew()
       .then(response => response.json())
@@ -36,7 +39,7 @@ const New = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>What's New?</Text>
+      <Text style={styles.title}>{t('strings:what_s_new')}?</Text>
       <ScrollView>
         {data && data.map && data.map((item, index) => (
           <TouchableOpacity
@@ -47,7 +50,7 @@ const New = ({ navigation }) => {
             <View style={styles.messageContainer}>
               <Text style={styles.messageText}>{item.fileName}</Text>
             </View>
-            <Text style={styles.openLinkText}>View</Text>
+            <Text style={styles.openLinkText}>{t('strings:view')}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>

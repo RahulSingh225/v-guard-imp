@@ -70,20 +70,22 @@ const LoginScreen = ({navigation}) => {
             style={styles.imageSaathi}
           />
           <Text style={styles.mainHeader}>{t('strings:lbl_welcome')}</Text>
+
           <Text style={styles.textHeader}>
             {t('strings:lbl_login_or_register')}
           </Text>
+
           <View style={styles.formContainer}>
             <TextInput
               style={styles.input}
-              placeholder={t('auth:login:login')}
+              placeholder={t('strings:lbl_registered_mobile_number_login')}
               placeholderTextColor={placeholderColor}
               value={username}
               onChangeText={text => setUsername(text)}
             />
             <TextInput
               style={styles.input}
-              placeholder={t('auth:login:password')}
+              placeholder={t('strings:password')}
               placeholderTextColor={placeholderColor}
               secureTextEntry={true}
               value={password}
@@ -91,13 +93,15 @@ const LoginScreen = ({navigation}) => {
             />
             <View style={styles.updateAndForgot}>
               <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Update KYC</Text>
+                <Text style={styles.buttonText}>{t('strings:update_kyc')}</Text>
               </TouchableOpacity>
+
               <TouchableOpacity
                 onPress={() => navigation.navigate('forgotPassword')}>
                 <Text style={styles.forgotPassword}>
                   {t('strings:lbl_forgot_password')}
                 </Text>
+
               </TouchableOpacity>
             </View>
             {/* <Text style={styles.or}>{t('auth:login:or')}</Text>
@@ -111,7 +115,7 @@ const LoginScreen = ({navigation}) => {
             <View style={styles.buttonContainer}>
               <Buttons
                 style={styles.button}
-                label={t('auth:login:loginButton')}
+                label={t('strings:log_in')}
                 variant="filled"
                 onPress={handleLogin}
                 width="100%"
@@ -122,14 +126,14 @@ const LoginScreen = ({navigation}) => {
               />
               <Buttons
                 style={styles.button}
-                label={t('auth:login:withotp')}
+                label={t('strings:login_via_otp')}
                 variant="filled"
                 onPress={() => navigation.navigate('loginWithNumber')}
                 width="100%"
               />
               <Buttons
                 style={styles.button}
-                label={t('auth:login:registration')}
+                label={t('strings:new_user_registration')}
                 variant="blackButton"
                 onPress={() => navigation.navigate('register')}
                 width="100%"
@@ -143,6 +147,7 @@ const LoginScreen = ({navigation}) => {
               source={require('../../../assets/images/tick_1.png')}
               style={styles.tick}
             />
+
             <Text style={styles.footerText}>
               {t('strings:lbl_accept_terms')}
             </Text>
@@ -151,6 +156,7 @@ const LoginScreen = ({navigation}) => {
             <Text style={styles.footergreyText}>
               {t('strings:powered_by_v_guard')}
             </Text>
+
             <Image
               source={require('../../../assets/images/group_910.png')}
               style={styles.imageVguard}

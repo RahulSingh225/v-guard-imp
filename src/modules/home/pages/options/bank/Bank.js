@@ -1,3 +1,4 @@
+
 import {
   View,
   TextInput,
@@ -173,6 +174,7 @@ const Bank = () => {
     );
   };
 
+
   const triggerApiWithImage = async fileData => {
     const formData = new FormData();
     formData.append('USER_ROLE', userRole);
@@ -186,6 +188,7 @@ const Bank = () => {
       console.error('API Error:', error);
     }
   };
+
 
   const handleProceed = () => {
     const postData = {

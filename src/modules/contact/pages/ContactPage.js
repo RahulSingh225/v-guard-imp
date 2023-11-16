@@ -26,8 +26,8 @@ const ContactPage = ({ navigation }) => {
       };
     return (
         <View style={styles.mainWrapper}>
-            <Text style={styles.mainHeader}>{t('contact:heading')}</Text>
-            <Text style={styles.text}>{t('contact:subHeading')}</Text>
+            <Text style={styles.mainHeader}>{t('strings:need_help')}</Text>
+            <Text style={styles.text}>{t('strings:rishta_program_centre_contact_details')}</Text>
             <View style={styles.contact}>
                 <TouchableOpacity style={styles.helpContainer} onPress={handlePhoneCall}>
                     <Image
@@ -53,52 +53,49 @@ const ContactPage = ({ navigation }) => {
             </View>
             <View style={styles.container}>
                 <Text style={styles.text}>
-                    {t('contact:customerCareNumber')}
+                    {t('strings:v_guard_customer_care_numbers')}
                 </Text>
                 <View style={styles.smallContainer}>
                     <View style={styles.textContainer}>
                         <Text style={styles.blackDetail}>
-                            1800 103 1300 {t('contact:Airtel')}
+                            {t('strings:customerCareTollFree')} {t('strings:airtel')}
                         </Text>
                         <Text style={styles.greyDetail}>
-                            ({t('contact:tollfree')})
+                            {t('strings:toll_free')}
                         </Text>
                     </View>
                     <View style={styles.textContainer}>
                         <Text style={styles.blackDetail}>
-                            1860 180 3000 {t('contact:BSNL')}
+                            {t('strings:customerCareNoCharged')} BSNL
                         </Text>
                         <Text style={styles.greyDetail}>
-                            ({t('contact:chargesApply')})
+                            {t('strings:charges_apply')}
                         </Text>
                     </View>
                 </View>
             </View>
             <View style={styles.container}>
                 <Text style={styles.text}>
-                    V-Guard E Mail ID
+                    {t('strings:v_guard_e_mail_id')}
                 </Text>
                 <View style={styles.smallContainer}>
                     <View style={styles.textContainer}>
                         <Text style={styles.blackDetail}>
-                            customercare@vguard.in
+                            {t('strings:customercare_vguard_in')}
                         </Text>
                     </View>
                 </View>
             </View>
             <View style={styles.container}>
                 <Text style={styles.text}>
-                    {t('contact:officeHeading')}
+                    {t('strings:v_guard_corporate_office')}
                 </Text>
                 <View style={styles.smallContainer}>
-                    <Text style={styles.blackDetail}>
-                        {t('contact:officeSubheading')}
+                    <Text style={styles.smallDetail}>
+                    Regd. Office:
                     </Text>
                     <Text style={styles.smallDetail}>
-                        {t('contact:officeName')}
-                    </Text>
-                    <Text style={styles.smallDetail}>
-                        {t('contact:officeAddress')}
+                    42/962. Vennala Highschool Road Vennala. Kochi-682028
                     </Text>
                     <Text style={styles.smallDetail}>
                         Ph: +91 484 433 5000

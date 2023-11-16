@@ -478,11 +478,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         </View>
 
                     </View>
-                    <Text style={{ color: 'black', marginLeft: 20, }}>{t('auth:newuser:Preferedlanguage')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 20, }}>{t('strings:lbl_preferred_language')}</Text>
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Prefered Language"
+                        label={t('strings:lbl_preferred_language')}
 
                         maxLength={30}
                         editable={false}
@@ -503,7 +503,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Name"
+                        label={t('strings:name')}
 
                         maxLength={30}
                         value={name}
@@ -522,11 +522,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     />
 
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Gender')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:Gender')}</Text>
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Gender"
+                        label={t('strings:Gender')}
 
                         maxLength={30}
                         value={gender}
@@ -541,12 +541,12 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         }}
 
                     />
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Date')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:date_of_birth')}</Text>
 
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Date"
+                        label={t('strings:date_of_birth')}
 
                         maxLength={30}
                         value={selectedDate}
@@ -563,10 +563,10 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     />
                     {/* <TextcontainerStyles={styles.input}>{data.fullData.userData.selectedDate}</Text> */}
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Contact Number</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:contact_no')}</Text>
                     <FloatingLabelInput
                         containerStyles={styles.input}
-                        label="Contact Number"
+                        label={t('strings:contact_no')}
                         value={number}
                         // onChangeText={(text) => setNumber(text)}
                         keyboardType='number-pad'
@@ -582,11 +582,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
 
                     />
-                    <Text style={{ color: 'black', marginLeft: 20, }}>{t('auth:newuser:Whatappconatctsame')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 20, }}>{t('strings:whatsapp_no')}</Text>
 
                     <FloatingLabelInput
                         containerStyles={styles.input}
-                        label="WhatsApp Number"
+                        label={t('strings:whatsapp_no')}
                         maxLength={10}
                         editable={false}
                         value={whatapp}
@@ -601,10 +601,10 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
 
                     />
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Email Address</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:email')}</Text>
                     <FloatingLabelInput
                         containerStyles={styles.input}
-                        label="Email"
+                        label={t('strings:email')}
 
 
                         keyboardType='email-address'
@@ -618,10 +618,10 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                             paddingHorizontal: 10,
                         }}
                     />
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Permanent House Flat/block no</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_permanent_address_mandatory')}</Text>
                     <FloatingLabelInput
                         containerStyles={styles.input}
-                        label="Permanent House Flat/block no"
+                        label={t('strings:lbl_permanent_address_mandatory')}
 
 
                         editable={false}
@@ -636,10 +636,10 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                             paddingHorizontal: 10,
                         }}
                     />
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Street/ Colony/Locality Name *</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_street_locality')}</Text>
                     <FloatingLabelInput
                         containerStyles={styles.input}
-                        label="Street/ Colony/Locality Name *"
+                        label={t('strings:lbl_street_locality')}
                         editable={false}
 
 
@@ -654,10 +654,10 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                             paddingHorizontal: 10,
                         }}
                     />
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Landmark</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_landmark')}</Text>
                     <FloatingLabelInput
                         containerStyles={styles.input}
-                        label="Landmark"
+                        label={t('strings:lbl_landmark')}
                         editable={false}
 
 
@@ -674,11 +674,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     />
 
 
-                    <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:pincode')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 23, }}>{t('strings:lbl_pin_code_mandatory')}</Text>
 
                     <FloatingLabelInput
                         containerStyles={styles.input}
-                        label="Enter Pincode"
+                        label={t('strings:lbl_pin_code_mandatory')}
                         labelTextColor={"black"}
                         editable={false}
                         keyboardType="number-pad"
@@ -695,13 +695,13 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
 
 
-                    <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('auth:newuser:State')}</Text>
+                    <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:lbl_state')}</Text>
                     <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
                         <Text style={{ color: 'black', margin: 15 }}>{selectedCity}</Text>
                     </View>
 
-                    <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('auth:newuser:District')}</Text>
+                    <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:district')}</Text>
 
                     <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
@@ -710,14 +710,14 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     </View>
 
-                    <Text style={{ color: 'black', left: 20, marginBottom: 2 }}> {t('auth:newuser:City')}</Text>
+                    <Text style={{ color: 'black', left: 20, marginBottom: 2 }}> {t('strings:city')}</Text>
 
                     <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
                         <Text style={{ color: 'black', margin: 15 }}>{selectedState}</Text>
                     </View>
 
-                    <Text style={{ color: 'black', left: 20, marginBottom: 2 }}> Profession</Text>
+                    <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_profession')}</Text>
 
                     <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
@@ -736,10 +736,10 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         </Picker>
 
                     </View>
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Sub Profession</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:sub_profession_category')}</Text>
                     <FloatingLabelInput
                         containerStyles={styles.input}
-                        label="Sub Profession"
+                        label={t('strings:sub_profession_category')}
 
                         maxLength={30}
                         value={subprofession}
@@ -755,7 +755,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     />
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Martial Status</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:select_marital_status')}</Text>
 
                     <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
@@ -776,7 +776,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     </View>
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Enrolled In Loyalty  </Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:enrolled_into_loyalty_scheme')}</Text>
                     <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
 
@@ -795,10 +795,10 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         </Picker>
 
                     </View>
-                    <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>Annual Business Potential</Text>
+                    <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>{t('strings:annual_business_potential')}</Text>
                     <FloatingLabelInput
                         containerStyles={styles.input}
-                        label="Annual business potential *"
+                        label={t('strings:annual_business_potential')}
                         value={annualincome}
                         onChangeText={(text) => setannualincome(text)}
                         keyboardType='number-pad'
@@ -813,7 +813,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         }}
                     />
 
-                    <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>{t('auth:newuser:Selfie')}</Text>
+                    <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>{t('strings:selfie')}</Text>
 
 
                     <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
@@ -828,7 +828,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     </View>
 
-                    <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>Select Id Proof </Text>
+                    <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>{t('strings:select_kyc_type')}</Text>
 
                     <FloatingLabelInput
                         containerStyles={styles.input}
@@ -847,7 +847,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     />
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:AadharCardFront')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:id_proof_front')}</Text>
 
 
                     <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
@@ -857,7 +857,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     </View>
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:AadharCardBack')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:id_proof_back')}</Text>
 
 
                     <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
@@ -867,11 +867,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     </View>
 
-                    <Text style={{ color: 'black', marginLeft: 24, }}>Aadhar Card No</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, }}>{t('strings:id_proof_no')}</Text>
 
                     <FloatingLabelInput
                         containerStyles={[styles.input]}
-                        label="Aadhar Card No*"
+                        label={t('strings:id_proof_no')}
                         value={aadharcardno}
                         onChangeText={(text) => setaadharcardno(text)}
                         keyboardType='number-pad'
@@ -885,7 +885,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         maxLength={12}
                     />
 
-                    <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>{t('auth:newuser:Pan')}</Text>
+                    <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>{t('strings:pan_card_front')}</Text>
 
 
                     <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
@@ -895,11 +895,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     </View>
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Pan Card No</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:pan_no')}</Text>
 
                     <FloatingLabelInput
                         containerStyles={[styles.input]}
-                        label="Pan Card No*"
+                        label={t('strings:pan_no')}
                         value={pancardno}
                         onChangeText={(text) => setpancardno(text)}
                         keyboardType='default'
@@ -913,11 +913,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         maxLength={10}
                     />
 
-                    <Text style={{ color: 'black', marginLeft: 20, }}> {t('auth:newuser:BankDetailsForAccount')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 20, }}> {t('strings:lbl_bank_details')}</Text>
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Account Number"
+                        label={t('strings:lbl_account_number')}
 
 
                         editable={false}
@@ -934,12 +934,12 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     />
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Account Holder Name</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_account_holder_name')}</Text>
 
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Account Holder Name"
+                        label={t('strings:lbl_account_holder_name')}
                         editable={false}
 
 
@@ -955,7 +955,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                         maxLength={50}
                     />
-                    <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:SelectAccountype')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 23, }}>{t('strings:select_account_type')}</Text>
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
@@ -977,7 +977,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     />
 
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Bank')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:bank_name')}</Text>
 
                     {selectedbank == '' ? <FloatingLabelInput
                         containerStyles={styles.input}
@@ -1014,7 +1014,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         }}
                         maxLength={20}
                     />}
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>IFSC Code</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_ifsc_code')}</Text>
 
                     <FloatingLabelInput
                         containerStyles={styles.input}
@@ -1036,7 +1036,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         maxLength={20}
                     />
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:UploadepassbookFront')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_upload_cancelled_cheque')}</Text>
 
 
                     <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
@@ -1052,11 +1052,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
 
 
-                    <Text style={{ color: 'black', marginLeft: 20, fontSize: responsiveFontSize(2) }}>{t('auth:newuser:NomineeDetails')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 20, fontSize: responsiveFontSize(2) }}>{t('strings:lbl_nominee_details')}</Text>
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Name of Nominee"
+                        label={t('strings:lbl_name_of_nominee')}
 
 
                         editable={false}
@@ -1073,11 +1073,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     />
 
-                    <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:NomineeMobile')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 23, }}>{t('strings:lbl_mobile_number')}</Text>
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Mobile No"
+                        label={t('strings:lbl_mobile_number')}
 
 
                         editable={false}
@@ -1095,11 +1095,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
 
 
-                    <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:NomineeEmailAddress')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 23, }}>{t('strings:lbl_email')}</Text>
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Email"
+                        label={t('strings:lbl_email')}
                         editable={false}
 
 
@@ -1117,11 +1117,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     />
 
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:NomineeAddress')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_address')}</Text>
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Address"
+                        label={t('strings:lbl_address')}
                         editable={false}
 
 
@@ -1137,11 +1137,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     />
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>RelationShip with You</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_relationship_with_you')}</Text>
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Relationship with you"
+                        label={t('strings:lbl_relationship_with_you')}
                         editable={false}
 
 
@@ -1157,7 +1157,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     />
 
-                    <View style={{ display: 'flex', width: width / 1, alignItems: 'center', marginVertical: 20, flexDirection: 'row', justifyContent: 'space-evenly', marginHorizontal: 10 }}>
+                    <View style={{ display: 'flex', width: width / 1, alignItems: 'center', marginVertical: 20, flexDirection: 'row', justifyContent: 'space-around'}}>
                         <Buttons
                             label="Edit"
                             onPress={() => {
@@ -1168,10 +1168,10 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                                 updateDataInAsyncStorage();
                             }}
                             variant="filled" // or any other variant you want to use
-                            width={180} // specify the width
+                            width={'40%'} // specify the width
                             icon={require('../../../assets/images/edit.png')} // provide the path to your icon
-                            iconWidth={40} // specify the icon width
-                            iconHeight={25} // specify the icon height
+                            iconWidth={20} // specify the icon width
+                            iconHeight={20} // specify the icon height
                             iconGap={10}
                         // specify the gap between the label and the icon
                         />
@@ -1185,10 +1185,10 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                                 callUploadAndThenAnotherFunction();
                             }}
                             variant="filled" // or any other variant you want to use
-                            width={180} // specify the width
+                            width={'40%'} // specify the width
                             icon={require('../../../assets/images/arrow.png')} // provide the path to your icon
-                            iconWidth={50} // specify the icon width
-                            iconHeight={20} // specify the icon height
+                            iconWidth={30} // specify the icon width
+                            iconHeight={10} // specify the icon height
                             iconGap={10}
                         // specify the gap between the label and the icon
                         />
