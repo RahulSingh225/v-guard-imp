@@ -1,17 +1,25 @@
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useState, useEffect} from 'react';
 import colors from '../../../../../../colors';
-import { productCategories } from '../../HomeApiService';
+import {productCategories} from '../../HomeApiService';
 
 const baseURL = 'https://www.vguardrishta.com/';
 
-const ProductWise = ({ navigation }) => {
+const ProductWise = ({navigation}) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
     productCategories()
       .then(response => response.json())
       .then(responseData => {
+        console.log(responseData);
         const updatedData = responseData.map(category => ({
           ...category,
           imageUrl: baseURL + category.imageUrl,
@@ -23,10 +31,10 @@ const ProductWise = ({ navigation }) => {
       });
   }, []);
 
-  const handleCategoryPress = (categoryId) => {
+  const handleCategoryPress = categoryId => {
     const category = data.find(item => item.categoryId === categoryId);
-      console.log("category id:", categoryId)
-      navigation.navigate('ProductWiseOfferTable', { categoryId });
+    console.log('category id:', categoryId);
+    navigation.navigate('ProductWiseOfferTable', {categoryId});
   };
 
   return (
@@ -35,9 +43,11 @@ const ProductWise = ({ navigation }) => {
         <TouchableOpacity
           key={category.categoryId}
           style={styles.categoryContainer}
-          onPress={() => handleCategoryPress(category.categoryId)}
-        >
-          <Image source={{ uri: category.imageUrl }} style={styles.categoryImage} />
+          onPress={() => handleCategoryPress(category.categoryId)}>
+          <Image
+            source={{uri: category.imageUrl}}
+            style={styles.categoryImage}
+          />
         </TouchableOpacity>
       ))}
     </ScrollView>
@@ -51,7 +61,7 @@ const styles = StyleSheet.create({
   },
   categoryContainer: {
     alignItems: 'center',
-    marginBottom: 1
+    marginBottom: 1,
   },
   categoryImage: {
     width: '100%',

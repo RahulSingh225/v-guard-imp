@@ -1,75 +1,98 @@
-import { ScrollView, Image, StyleSheet, Text, View, TouchableOpacity, Linking } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import {
+  ScrollView,
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Linking,
+} from 'react-native';
+import React, {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import colors from '../../../../colors';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import AuthNavigator from '../../auth/stack/AuthNavigator';
 import CustomTouchableOption from '../../../components/CustomTouchableOption';
 import {
   responsiveFontSize,
   responsiveHeight,
-  responsiveWidth
-} from "react-native-responsive-dimensions";
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
 import NeedHelp from '../../../components/NeedHelp';
 
-
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({navigation}) => {
   const baseURL = 'https://www.vguardrishta.com/img/appImages/Profile/';
 
-  const { t } = useTranslation();
-  const [userName, setUserName] = useState('');
-  const [userCode, setUserCode] = useState('');
-  const [pointsBalance, setPointsBalance] = useState('');
-  const [redeemedPoints, setRedeemedPoints] = useState('');
-  const [numberOfScan, setNumberOfScan] = useState('');
-  const [userImage, setUserImage] = useState('');
-
+  const {t} = useTranslation();
+  // const [userName, setUserName] = useState('');
+  // const [userCode, setUserCode] = useState('');
+  // const [pointsBalance, setPointsBalance] = useState('');
+  // const [redeemedPoints, setRedeemedPoints] = useState('');
+  // const [numberOfScan, setNumberOfScan] = useState('');
+  // const [userImage, setUserImage] = useState('');
+  const [userData, setUserData] = useState({
+    userName: null,
+    userCode: null,
+    pointsBalance: 0,
+    redeemedPoints: 0,
+    numberOfScan: 0,
+    userImage: null,
+  });
+  const [LoggedInUser, setLoggedInUser] = useState(null);
 
   useEffect(() => {
-    AsyncStorage.getItem('name').then((name) => {
-      setUserName(name);
-    });
-    AsyncStorage.getItem('userCode').then((code) => {
-      setUserCode(code);
-    });
-    AsyncStorage.getItem('pointsBalance').then((pointsBalance) => {
-      setPointsBalance(pointsBalance);
-    });
-    AsyncStorage.getItem('redeemedPoints').then((redeemedPoints) => {
-      setRedeemedPoints(redeemedPoints);
-    });
-    AsyncStorage.getItem('numberOfScan').then((numberOfScan) => {
-      setNumberOfScan(numberOfScan);
-    });
-    AsyncStorage.getItem('userImage').then((userimage) => {
-      setUserImage(userimage);
-    });
-  }, []);
+    if (!LoggedInUser) {
+      AsyncStorage.getItem('USER').then(r => {
+        const value = JSON.parse(r);
+        setLoggedInUser(value);
+        const user = {
+          userName: value.name,
+          userCode: value.userCode,
+          pointsBalance: value.pointsSummary.pointsBalance,
+          redeemedPoints: value.pointsSummary.redeemedPoints,
+          numberOfScan: value.pointsSummary.numberOfScan,
+          userImage: value.kycDetails.selfie,
+        };
+        setUserData(user);
+      });
+    }
+  }, [LoggedInUser]);
+
+  console.log(LoggedInUser);
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       <View style={styles.mainWrapper}>
         <View style={styles.profileDetails}>
           <View style={styles.ImageProfile}>
-          <Image source={{ uri: baseURL + userImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
+            <Image
+              source={{uri: baseURL + userData.userImage}}
+              style={{width: '100%', height: '100%', borderRadius: 100}}
+              resizeMode="contain"
+            />
           </View>
           <View style={styles.profileText}>
-            <Text style={styles.textDetail}>{userName}</Text>
-            <Text style={styles.textDetail}>{userCode}</Text>
+            <Text style={styles.textDetail}>{userData.userName}</Text>
+            <Text style={styles.textDetail}>{userData.userCode}</Text>
+
             <Text style={styles.viewProfile}>{t('strings:view_profile')}</Text>
           </View>
         </View>
         <View style={styles.points}>
           <View style={styles.leftPoint}>
             <Text style={styles.greyText}>{t('strings:points_balance')}</Text>
-            <Text style={styles.point}>{pointsBalance}</Text>
+
+            <Text style={styles.point}>{userData.pointsBalance}</Text>
           </View>
           <View style={styles.middlePoint}>
             <Text style={styles.greyText}>{t('strings:points_redeemed')}</Text>
-            <Text style={styles.point}>{redeemedPoints}</Text>
+            <Text style={styles.point}>
+              {userData.redeemedPoints ? userData.redeemedPoints : 0}
+            </Text>
           </View>
           <View style={styles.rightPoint}>
             <Text style={styles.greyText}>{t('strings:number_of_scans')}</Text>
-            <Text style={styles.point}>{numberOfScan}</Text>
+            <Text style={styles.point}>{userData.numberOfScan}</Text>
+
           </View>
         </View>
         <View style={styles.dashboard}>
@@ -143,27 +166,22 @@ const HomeScreen = ({ navigation }) => {
           </View>
           <View style={styles.lastrow}>
             <TouchableOpacity
-              style={[
-                styles.oval,
-              ]}
-              onPress={() => Linking.openURL('https://www.vguardrishta.com/img/appImages/Instructionmanual.pdf')}
-            >
-              <View style={[
-                styles.optionIcon,
-              ]}>
+              style={[styles.oval]}
+              onPress={() =>
+                Linking.openURL(
+                  'https://www.vguardrishta.com/img/appImages/Instructionmanual.pdf',
+                )
+              }>
+              <View style={[styles.optionIcon]}>
                 <Image
                   source={require('../../../assets/images/ic_instruction_manual.jpeg')}
-                  style={[
-                    { flex: 1, width: '100%', height: '100%' },
-                  ]}
+                  style={[{flex: 1, width: '100%', height: '100%'}]}
                   resizeMode="contain"
                 />
               </View>
-              <Text style={[
-                styles.nav,
-              ]}>
-                Instruction Manual
-              </Text>
+
+              <Text style={[styles.nav]}>Instruction Manual</Text>
+
             </TouchableOpacity>
             {/* <CustomTouchableOption
               text="dashboard:options:manual"
@@ -181,10 +199,10 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   scrollViewContainer: {
     flexGrow: 1,
-    backgroundColor: colors.white
+    backgroundColor: colors.white,
   },
   mainWrapper: {
-    padding: 15
+    padding: 15,
   },
   profileDetails: {
     display: 'flex',
@@ -202,19 +220,19 @@ const styles = StyleSheet.create({
     height: 50,
     width: 50,
     backgroundColor: colors.lightGrey,
-    borderRadius: 100
+    borderRadius: 100,
   },
   textDetail: {
     color: colors.black,
     fontWeight: 'bold',
-    fontSize: responsiveFontSize(1.7)
+    fontSize: responsiveFontSize(1.7),
   },
   points: {
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
     gap: 5,
-    marginTop: 30
+    marginTop: 30,
   },
   leftPoint: {
     width: responsiveWidth(30),
@@ -223,7 +241,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 50,
     borderBottomLeftRadius: 50,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   middlePoint: {
     width: responsiveWidth(30),
@@ -247,7 +265,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     fontSize: responsiveFontSize(1.7),
-    marginBottom: 10
+    marginBottom: 10,
   },
   point: {
     fontWeight: 'bold',
@@ -258,16 +276,16 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     gap: 30,
-    marginTop: 30
+    marginTop: 30,
   },
   row: {
     display: 'flex',
     flexDirection: 'row',
     gap: 20,
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
   },
   lastrow: {
-    marginLeft: 5
+    marginLeft: 5,
   },
   oval: {
     padding: 10,
@@ -294,6 +312,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
-})
+});
 
 export default HomeScreen;
