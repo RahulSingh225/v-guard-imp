@@ -16,6 +16,7 @@ import NeedHelp from "../../../components/NeedHelp";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Popup from '../../../components/Popup';
 import colors from '../../../../colors';
+import Loader from '../../../components/Loader';
 import { useTranslation } from 'react-i18next';
 import {
     responsiveHeight,
@@ -40,9 +41,9 @@ const NomineePage = ({ navigation, route }) => {
     const [accountholdername, setaccountholdername] = useState(null);
     const [chequeImage, setchequeImage] = useState(null);
     const [IFSC, setIFSC] = useState(null);
-    const [accounttype, setaccounttype] = useState('Select');
+    const [accounttype, setaccounttype] = useState('');
 
-    const [selectedbank, setselectedbank] = useState('Select');
+    const [selectedbank, setselectedbank] = useState('');
     const [allbankslist, setallbankslist] = useState(null);
     const [bankid, setbankid] = useState('');
     const [validateallfieldforbank, setvalidateallfieldforbank] = useState(false);
@@ -53,10 +54,11 @@ const NomineePage = ({ navigation, route }) => {
     const [nomineemobileno, setnomineemobileno] = useState('');
     const [nomineeemail, setnomineeemail] = useState('');
     const [nomineeaddress, setnomineeaddress] = useState('');
-    const [nomineeselectedDate, setnomineeSelectedDate] = useState(new Date());
+    const [nomineeselectedDate, setnomineeSelectedDate] = useState();
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
 
     const handleDateChange = (event, selectedDate) => {
@@ -103,20 +105,20 @@ const NomineePage = ({ navigation, route }) => {
 
         if (checked) {
 
-            console.log(accountnumber);
-            console.log(accountholdername);
-            console.log(chequeImage);
-            console.log(IFSC);
-            console.log(accounttype);
-            console.log(selectedbank);
+            // console.log(accountnumber);
+            // console.log(accountholdername);
+            // console.log(chequeImage);
+            // console.log(IFSC);
+            // console.log(accounttype);
+            // console.log(selectedbank);
 
             if (
                 accountnumber === '' &&
                 accountholdername === null &&
                 chequeImage === null &&
                 IFSC === null &&
-                accounttype == 'Select' &&
-                selectedbank == 'Select'
+                accounttype == '' &&
+                selectedbank == ''
             ) {
 
                 const dataToStore = JSON.stringify(PreviewSummaryData);
@@ -128,23 +130,23 @@ const NomineePage = ({ navigation, route }) => {
                 accountholdername !== null &&
                 chequeImage !== null &&
                 IFSC !== null &&
-                accounttype != 'Select' &&
-                selectedbank != 'Select'
+                accounttype != '' &&
+                selectedbank != ''
             ) {
 
                 const dataToStore = JSON.stringify(PreviewSummaryData);
                 await AsyncStorage.setItem("previewSummaryData", dataToStore);
-                //  console.log("++++++++INSDENOMINEE PAGE CONSLE BEFORE NAVIGATION++++++++$$$$$$", dataToStore);
+                console.log("++++++++INSDE NOMINEE PAGE CONSLE BEFORE NAVIGATION++++++++$$$$$$", dataToStore);
                 navigation.navigate("PreviewSummary");
             }
             else {
 
-                console.log(accountnumber);
-                console.log(accountholdername);
-                console.log(chequeImage);
-                console.log(IFSC);
-                console.log(accounttype);
-                console.log(selectedbank);
+                // console.log(accountnumber);
+                // console.log(accountholdername);
+                // console.log(chequeImage);
+                // console.log(IFSC);
+                // console.log(accounttype);
+                // console.log(selectedbank);
                 setIsPopupVisible(true);
                 setPopupMessage('Please fill compleate bank details.');
 
@@ -194,9 +196,9 @@ const NomineePage = ({ navigation, route }) => {
                 switch (documentType) {
                     case 'cheque':
                         setchequeImage(newPhoto);
-                        console.log('====================================');
-                        console.log(chequeImage);
-                        console.log('====================================');
+                        // console.log('====================================');
+                        // console.log(chequeImage);
+                        // console.log('====================================');
                         break;
 
                     default:
@@ -262,6 +264,7 @@ const NomineePage = ({ navigation, route }) => {
 
         const retrieveData = async () => {
             try {
+                setIsLoading(true);
                 const data = await AsyncStorage.getItem('previewSummaryData');
                 if (data) {
                     const retrievedData = JSON.parse(data);
@@ -294,6 +297,8 @@ const NomineePage = ({ navigation, route }) => {
                 }
             } catch (error) {
                 console.error('Error retrieving data: ', error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -342,6 +347,10 @@ const NomineePage = ({ navigation, route }) => {
                             <Text style={{ color: 'grey' }}>Mobile No.</Text>
                         </View>
 
+                    </View>
+                    <View style={{ flex: 1 }}>
+
+                        <Loader isLoading={isLoading} />
                     </View>
                     {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
                         <Text>{popupMessage}</Text>
@@ -400,7 +409,7 @@ const NomineePage = ({ navigation, route }) => {
                             onValueChange={(itemValue, itemIndex) =>
                                 setaccounttype(itemValue)
                             }>
-                            <Picker.Item label="Select Account Type" value="" />
+                            <Picker.Item label="Select Account Type" value='' />
                             <Picker.Item label=" Current" value="Current" />
                             <Picker.Item label=" Saving" value="Saving" />
 
@@ -422,9 +431,11 @@ const NomineePage = ({ navigation, route }) => {
                             onValueChange={(itemValue, itemIndex) => {
                                 const selectedItem = allbankslist[itemIndex];
                                 setselectedbank(itemValue);
-                                setbankid(selectedItem.key);
+                                setbankid(selectedItem.bankId);
+
+                                console.log("<><><><><><><><><>>", bankid);
                             }}>
-                            <Picker.Item label="Select" value=" " />
+                            <Picker.Item label="Select" value='' />
                             {Array.isArray(allbankslist) && allbankslist.length > 0 ? (
                                 allbankslist.map(item => (
                                     <Picker.Item
@@ -509,7 +520,7 @@ const NomineePage = ({ navigation, route }) => {
 
 
                         />
-
+                        <Text style={{ color: 'black', marginLeft: 20, }}>{t('auth:newuser:NomineeeDob')}</Text>
                         <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
 

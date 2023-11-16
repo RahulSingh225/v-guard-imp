@@ -12,6 +12,7 @@ const LoginWithOtp = ({ navigation, route }) => {
 
     console.log("====>>>>", usernumber);
     console.log("====>>>>", jobprofession);
+    console.log("====>>>>", preferedLanguage);
     const [otp, setOtp] = useState('');
     const [number, setnumber] = useState(usernumber);
     const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -42,18 +43,24 @@ const LoginWithOtp = ({ navigation, route }) => {
 
                     setPopupMessage(successMessage);
                     setIsPopupVisible(true);
-                    navigation.navigate('newUser', {
-                        passedNo: number, // Pass the usernumber prop
-                        jobprofession: jobprofession, // Pass the jobprofession prop
-                    })
+                    setTimeout(() => {
+
+                        navigation.navigate('newUser', {
+                            passedNo: number, // Pass the usernumber prop
+                            jobprofession: jobprofession,
+                            preferedLanguage: preferedLanguage // Pass the jobprofession prop
+                        })
+
+                    }, 1500);
+
 
                 } else {
                     setIsPopupVisible(true);
                     setPopupMessage(verification.data.message);
-                    navigation.navigate('newUser', {
-                        passedNo: number, // Pass the usernumber prop
-                        jobprofession: jobprofession, // Pass the jobprofession prop
-                    })
+                    // navigation.navigate('newUser', {
+                    //     passedNo: number, // Pass the usernumber prop
+                    //     jobprofession: jobprofession, // Pass the jobprofession prop
+                    // })
                 }
 
             }

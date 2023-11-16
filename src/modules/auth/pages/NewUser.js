@@ -11,17 +11,20 @@ import { FloatingLabelInput } from 'react-native-floating-label-input';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from '../../../components/Loader';
 import Popup from '../../../components/Popup';
+import vguardristuser from '../../common/Model/Vguardristauser';
+
 
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useTranslation } from 'react-i18next';
 import NewUserKyc from './NewUserKyc';
 
-const NewUser = ({ navigation, }) => {
+const NewUser = ({ navigation }) => {
   // console.log('====================================');
   // console.log(route.params);
   // console.log('====================================');
-  // const { passedNo, jobprofession } = route.params;
-  // console.log("====>>>>", passedNo);
+  // const { passedNo, jobprofession, preferedLanguage } = route.params;
+  //  setSelectedLanguage(route.params.preferedLanguage);
+  //  console.log("====>>>>", preferedLanguage);
   // console.log("====>>>>", jobprofession);
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
@@ -49,9 +52,8 @@ const NewUser = ({ navigation, }) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
 
-  const [birthday, setBirthday] = useState('');
-  const [phone, setPhone] = useState('');
-  const [price, setPrice] = useState('');
+
+
 
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState();
@@ -60,7 +62,7 @@ const NewUser = ({ navigation, }) => {
   //   { label: 'Banana', value: 'banana' }
   // ]);
   const [loading, setLoading] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState();
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const handleDateChange = (event, selectedDate) => {
@@ -133,6 +135,7 @@ const NewUser = ({ navigation, }) => {
 
   useEffect(() => {
 
+
     AsyncStorage.getItem("userno").then(userno => {
       if (userno) {
         // Update the state with the retrieved value
@@ -149,56 +152,62 @@ const NewUser = ({ navigation, }) => {
         console.log(selectedLanguage);
         console.log('====================================');
       }
+
+      // AsyncStorage.getItem('vguarduserdata').then(user => {
+      //   vguardristuser = JSON.parse(user);
+      //   console.log(vguardristuser);
+      // });
+
     });
-    const retrieveData = async () => {
-      try {
-        const data = await AsyncStorage.getItem('previewSummaryData');
-        if (data) {
-          const retrievedData = JSON.parse(data);
-
-          // Set the state variables with the retrieved data
-          setSelectedLanguage(retrievedData.fulldata.userData.selectedLanguage);
-          setGender(retrievedData.fulldata.userData.gender);
-          setemail(retrievedData.fulldata.userData.email);
-          setNumber(retrievedData.fulldata.userData.number);
-          setwhatapp(retrievedData.fulldata.userData.whatapp);
-          setaddress(retrievedData.fulldata.userData.address);
-          setstreet(retrievedData.fulldata.userDat.street);
-          setlandmark(retrievedData.fulldata.userData.landmark);
-          setname(retrievedData.fulldata.userData.name);
-          setPincode(retrievedData.fulldata.userData.pincode.toString());
-          setSelectedState(retrievedData.fulldata.userData.selectedState);
-          setSelectedDistrict(retrievedData.fulldata.userData.selectedDistrict);
-          setSelectedCity(retrievedData.fulldata.userData.selectedCity);
-          console.log('====================================');
-          console.log(retrievedData);
-          console.log('====================================');
-
-          // Set other state variables for additional fields.
-        }
-      } catch (error) {
-        console.error('Error retrieving data: ', error);
-      }
-    };
-
     retrieveData()
-
-
-    if (pincode.length >= 2) {
-
-      fetchPincodeSuggestions(pincode);
-
-    }
-
     const timeout = setTimeout(() => {
       setLoading(false);
     }, 5000);
 
     // Clear the timeout if the component unmounts before the timeout is reached
     return () => clearTimeout(timeout);
+  }, [])
 
+  function pinocdefeting(text) {
+    if (text.length >= 3) {
+      fetchPincodeSuggestions(text);
+      setOpen(true)
+    }
+    setPincode(text);
+  }
+  const retrieveData = async () => {
+    try {
+      setIsLoading(true);
+      const data = await AsyncStorage.getItem('previewSummaryData');
+      if (data) {
+        const retrievedData = JSON.parse(data);
 
-  }, [pincode, address, street, landmark])
+        // Set the state variables with the retrieved data
+        setSelectedLanguage(retrievedData.fulldata.userData.selectedLanguage);
+        setGender(retrievedData.fulldata.userData.gender);
+        setemail(retrievedData.fulldata.userData.email);
+        setNumber(retrievedData.fulldata.userData.number);
+        setwhatapp(retrievedData.fulldata.userData.whatapp);
+        setaddress(retrievedData.fulldata.userData.address);
+        setstreet(retrievedData.fulldata.userDat.street);
+        setlandmark(retrievedData.fulldata.userData.landmark);
+        setname(retrievedData.fulldata.userData.name);
+        setPincode(retrievedData.fulldata.userData.pincode.toString());
+        setSelectedState(retrievedData.fulldata.userData.selectedState);
+        setSelectedDistrict(retrievedData.fulldata.userData.selectedDistrict);
+        setSelectedCity(retrievedData.fulldata.userData.selectedCity);
+        console.log('====================================');
+        console.log(retrievedData);
+        console.log('====================================');
+
+        // Set other state variables for additional fields.
+      }
+    } catch (error) {
+      console.error('Error retrieving data: ', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // ===============================================GETTING SUGGESTION=====/// FOR PINCODE======================//
   const fetchPincodeSuggestions = async (pincode) => {
@@ -277,10 +286,10 @@ const NewUser = ({ navigation, }) => {
         const updatedPreviewSummaryDataString = JSON.stringify(previewSummaryData);
 
         // Save the updated 'previewSummaryData' back to AsyncStorage
-        console.log("+++++++++++++++++++++++", updatedPreviewSummaryDataString);
+        // console.log("+++++++++++++++++++++++", updatedPreviewSummaryDataString);
         await AsyncStorage.setItem('previewSummaryData', updatedPreviewSummaryDataString);
 
-        console.log('Updated User Data in previewSummaryData:', userData);
+        // console.log('Updated User Data in previewSummaryData:', userData);
       } else {
         console.log('No previewSummaryData found in AsyncStorage');
       }
@@ -355,8 +364,10 @@ const NewUser = ({ navigation, }) => {
 
 
       const updatedValue = await AsyncStorage.getItem('previewSummaryData');
+
       console.log('Updated Value in AsyncStorage (previewSummaryData +++++++++++++++++):', updatedValue);
 
+      //await AsyncStorage.setItem("previewSummaryData", JSON.stringify(userData));
 
       navigation.navigate('NewUserKyc', { userData });
 
@@ -384,18 +395,11 @@ const NewUser = ({ navigation, }) => {
             <Text style={{ color: 'grey' }}>New User</Text>
             <Text style={{ color: 'grey' }}>Rishta ID</Text>
             <Text style={{ color: 'grey' }}>Mobile No.</Text>
-
-
-
           </View>
 
         </View>
-
-
-
         <FloatingLabelInput
           label={t('auth:newuser:Preferedlanguage')}
-
           staticLabel
           maxLength={30}
           editable={false}
@@ -426,15 +430,9 @@ const NewUser = ({ navigation, }) => {
             paddingVertical: 10,
           }}
         />
-
-
-
-
         <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Gender')}</Text>
 
         <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
-
-
           <Picker
             mode='dropdown'
             style={{ color: 'black' }}
@@ -454,8 +452,6 @@ const NewUser = ({ navigation, }) => {
         <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Date')}</Text>
 
         <View style={{ backgroundColor: 'fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
-
-
           <DatePicker
             date={selectedDate}
             onDateChange={handleDateChange}
@@ -613,103 +609,73 @@ const NewUser = ({ navigation, }) => {
             paddingHorizontal: 10,
           }}
         />
-
-
-
-
-        <FloatingLabelInput
-          containerStyles={styles.input}
-          label={t('auth:newuser:pincode')}
-          keyboardType="number-pad"
-          value={pincode}
-          onChangeText={(text) => [setPincode(text),
-          setOpen(true)]}
-          maxLength={6}
-          staticLabel
-          labelStyles={styles.labelStyles}
-          inputStyles={{
-            color: 'black',
-            paddingHorizontal: 10,
-          }}
-        />
-
         <DropDownPicker
+          mode="BADGE"
+          showBadgeDot={true}
+          searchable={true}
+          loading={isLoading}
+          label={value}
+          placeholder={pincode === null ? 'Search Pincode' : `Searched Pincode:${pincode}`}
+          searchablePlaceholder="Search Pincode"
+          translation=
+          {t('auth:newuser:Secondpagepincode')}
 
-
-          label={item.pinCode}
+          // placeholder={value}
+          searchTextInputProps={{
+            maxLength: 6
+          }}
           badgeStyle={(item, index) => ({
             padding: 5,
             backgroundColor: item.value ? 'red' : 'grey',
+
           })}
+          badgeProps={{
+            activeOpacity: 1.5
+          }}
+
           badgeSeparatorStyle={{
             width: 30,
           }}
-          badgeColors={["red",]}
-          badgeDotColors={["red", "blue", "orange"]}
+          badgeColors={['red']}
+          badgeDotColors={['red']}
           listMode="SCROLLVIEW"
           scrollViewProps={{ nestedScrollEnabled: true, decelerationRate: "fast" }}
           open={open}
-
           items={suggestions.map((item) => ({
             label: item.pinCode,
             value: item.pinCode,
-            key: item.pinCodeId,
           }))}
-
-
           setOpen={setOpen}
-          value={pincode.toString()}
-          onChangeText={(text) => {
-            [setPincode(text), setOpen(false),]
-            if (loading) {
-              return (
-                <View style={styles.loaderContainer}>
-                  <ActivityIndicator size="large" color="blue" />
-                </View>
-              );
-            }
-
-          }}
-          dropDownContainerStyle={{
-
-            width: width / 1.1, height: height / 8, padding: 10, left: 18, top: 50, borderWidth: 0, elevation: 0
-
-          }}
-
-          setValue={(value) => {
-            setPincode(value);
-            if (loading) {
-              return (
-                <View style={styles.loaderContainer}>
-                  <ActivityIndicator size="large" color="blue" />
-                </View>
-              );
-            }
-
-          }}
-          style={{ backgroundColor: 'white', elevation: 50, opacity: 0.9, borderWidth: 0, width: width / 1.1, height: height / 15, alignSelf: 'center', bottom: 10, elevation: 0 }}
-        />
-
-        {/* <DropDownPicker
-          open={open}
-          items={suggestions.map((suggestion) => ({
-            label: suggestion.pinCode, // Set the label for each suggestion
-            value: suggestion.pinCode, // Set the value to the PIN code
-          }))}
-
-          label="Enter PIN code"
-          defaultValue={pincode} // Set the default value
-          searchable={true}
-          searchablelabel="Search for PIN code"
-          searchablelabelTextColor="gray"
-          searchableError={() => <Text>Not Found</Text>}
+          value={pincode}
           onChangeItem={(item) => {
 
-            // When an item is selected, set the selected PIN code and fetch data
             setPincode(item.value);
-            fetchAndPopulateData(item.value);
           }}
-        /> */}
+          onChangeSearchText={(text) => pinocdefeting(text)}
+          dropDownContainerStyle={{
+            width: width / 1.1,
+            height: height / 5,
+            padding: 10,
+            left: 18,
+            top: 50,
+            borderWidth: 0,
+            elevation: 0
+          }}
+          style={{
+            backgroundColor: 'white',
+            margin: 20,
+
+            elevation: 50,
+            opacity: 0.9,
+            borderWidth: 0.6,
+            width: width / 1.1,
+            height: height / 15,
+            alignSelf: 'center',
+            bottom: 10,
+            elevation: 0,
+            margintop: 50,
+          }}
+        />
 
         <FloatingLabelInput
           containerStyles={styles.input}
@@ -726,9 +692,6 @@ const NewUser = ({ navigation, }) => {
             paddingHorizontal: 10,
           }}
         />
-
-
-
         <FloatingLabelInput
           containerStyles={styles.input}
           label={t('auth:newuser:District')}
@@ -736,7 +699,6 @@ const NewUser = ({ navigation, }) => {
           value={selectedDistrict}
           onChangeText={(text) => [setSelectedState(text),
           setOpen(true)]}
-
           staticLabel
           labelStyles={styles.labelStyles}
           inputStyles={{
@@ -761,8 +723,10 @@ const NewUser = ({ navigation, }) => {
               console.log('====================================');
 
             }}>
+            <Picker.Item label="Select" value='' />
             {Array.isArray(citylistpicker) && citylistpicker.length > 0 ? (
               citylistpicker.map(item => (
+
                 <Picker.Item
                   key={item.id}
                   label={item.cityName}

@@ -9,6 +9,7 @@ import Message from "../../../components/Message";
 import Loader from '../../../components/Loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Popup from '../../../components/Popup';
+// import vguardristuser from '../../../modules/common/Model/Vguardristauser';
 const RegisterUser = ({ navigation }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [number, setNumber] = useState('');
@@ -20,58 +21,60 @@ const RegisterUser = ({ navigation }) => {
 
 
 
-
     const handleValidation = async () => {
         try {
-            if (!number || number === null || number.trim() === '') {
-                setIsPopupVisible(true);
-                setPopupMessage("Please enter your phone no ");
-            }
-            else if (selectedOption === 'Retailer') {
-                setIsPopupVisible(true);
-                setPopupMessage('Please select a Job Profession');
-            }
-            // Call the API function with user inputs
-
-            else {
+            if (!number || number === null || number.trim() === '' || number.length !== 10) {
+                showPopupMessage("Please enter a valid phone number");
+            } else if (selectedOption === 'Retailer') {
+                showPopupMessage("Please select a Job Profession");
+            } else {
                 setIsLoading(true);
-                console.log('Validation response:', number);
+
                 const validationResponse = await NewusermobileNumberValidation(number, preferedLanguage);
-                console.log('Validation response:', validationResponse.data.message);
                 const successMessage = validationResponse.data.message;
-                setPopupMessage(successMessage);
-                setIsPopupVisible(true);
-                if (successMessage == 'Please enter OTP to proceed with the registration process') {
-                    await AsyncStorage.setItem("userno", number);
-                    // await AsyncStorage.setItem("preferedLanguage", preferedLanguage.toString());
 
-                    navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption, preferedLanguage: preferedLanguage })
 
-                } else {
-                    setIsLoading(false);
-                    // Alert.alert(validationResponse.data.message)
+
+                if (successMessage === 'Please enter OTP to proceed with the registration process') {
                     setIsPopupVisible(true);
-                    setPopupMessage(validationResponse.data.message);
-
-
-
-                    //  navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption, preferedLanguage: preferedLanguage })
+                    showPopupMessage(successMessage);
+                    setTimeout(() => {
+                        AsyncStorage.setItem("userno", number);
+                        AsyncStorage.setItem("preferedLanguage", preferedLanguage.toString());
+                        navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption, preferedLanguage: preferedLanguage });
+                    }, 1500);
                 }
 
+
+
+
+
+                setIsLoading(false);
             }
+        }
+        catch (error) {
+            console.error('Validation error:', error);
 
-
-            // Handle the response as needed
-        } catch (error) {
-            console.error('Error during validation:', error);
-            // setIsPopupVisible(true);
-            // setPopupMessage("Somthing went wrong ");
-            // Handle the error as needed
-        } finally {
+            showPopupMessage('Error during validation. Please try again.');
             setIsLoading(false);
-
+        }
+        finally {
+            setIsLoading(false)
         }
     };
+
+    const showPopupMessage = (message) => {
+        setPopupMessage(message);
+        setIsPopupVisible(true);
+        setTimeout(() => {
+            setIsPopupVisible(false);
+        }, 2500);
+    };
+
+
+
+    // Handle the response as needed
+
 
     const placeholderColor = colors.grey;
 

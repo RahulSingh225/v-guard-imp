@@ -9,12 +9,12 @@ const DatePicker = ({ date, onDateChange, showDatePicker, onShowDatePicker }) =>
             <TextInput
                 style={styles.input}
                 placeholder="Select date"
-                value={date.toLocaleDateString()}
+                value={date ? date.toLocaleDateString() : ''}
                 onFocus={onShowDatePicker}
             />
             {showDatePicker && (
                 <DateTimePicker
-                    value={date}
+                    value={date || new Date()}
                     mode="date"
                     display="calendar"
                     onChange={onDateChange}
@@ -28,12 +28,10 @@ const styles = StyleSheet.create({
     input: {
         borderColor: "transaparent",
         backgroundColor: "#fff",
-        // borderWidth: 2,
         borderRadius: 5,
         padding: 10,
         color: colors.black,
-        // marginBottom: 10,
     },
-})
+});
 
 export default DatePicker;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, TouchableOpacity, PermissionsAndroid, Image, ActivityIndicator, Alert } from 'react-native';
 import { height, width } from '../../../utils/dimensions';
-import { Avatar, } from 'react-native-paper';
+import { Avatar, Button, } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Buttons from "../../../components/Buttons";
@@ -17,6 +17,7 @@ import { FloatingLabelInput } from 'react-native-floating-label-input';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { CurrentRenderContext } from '@react-navigation/native';
 import Popup from '../../../components/Popup';
+import Loader from '../../../components/Loader';
 const NewUserKyc = ({ navigation, route }) => {
     const { userData } = route.params;
     // console.log('==================%%%==================', userData.selectedCity);
@@ -27,6 +28,7 @@ const NewUserKyc = ({ navigation, route }) => {
     const [profession, setprofession] = useState("Select");
     const [subprofession, setsubprofession] = useState("Select");
     const [maritialStatus, setmaritialStatus] = useState('Select');
+    const [maritialstatusId, setmaritialstatusId] = useState('');
     const [loyalty, setloyalty] = useState('Select');
     const [Number, setNumber] = useState();
     const [selfieData, setSelfieData] = useState(null);
@@ -43,23 +45,34 @@ const NewUserKyc = ({ navigation, route }) => {
     const [currentcityid, securrenttcityid] = useState('');
     const [currentdistrictId, setcurrentdistrictId] = useState('');
     const [currentstateid, setcurrentstateid] = useState('');
-    const [isPopupVisible, setIsPopupVisible] = useState(false);
-    const [popupMessage, setPopupMessage] = useState('');
-
-
-
     const [currentselectedState, setCurrentselectedState] = useState('');
     const [currentselectedDistrict, setCurrentselectedDistrict] = useState('');
     const [currentselectedCity, setCurrentselectedCity] = useState('');
     const [professiondata, setprofessiondata] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
-    const [schmename, setschmename] = useState('');
-    const [resonforlikingschme, setresonforlikingschme] = useState('');
     const [citylistpicker, setcitylistpicker] = useState(null);
     const [redendering, setredendering] = useState(0);
     const [subprofessiondata, setsubprofessiondata] = useState([]);
     const [isAadharValid, setIsAadharValid] = useState(true);
     const [isPanValid, setIsPanValid] = useState(true);
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [popupMessage, setPopupMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [showTextFields, setShowTextFields] = useState(false);
+    const [schmename, setschmename] = useState('');
+    const [resonforlikingschme, setresonforlikingschme] = useState('');
+    const [otherschemebrand2, setotherschemebrand2] = useState();
+    const [whatyouliked2, setwhatyouliked2] = useState();
+    const [otherschemebrand3, setotherschemebrand3] = useState();
+    const [whatyouliked3, setwhatyouliked3] = useState();
+    const [otherschemebrand4, setotherschemebrand4] = useState();
+    const [whatyouliked4, setwhatyouliked4] = useState();
+    const [otherschemebrand5, setotherschemebrand5] = useState();
+    const [whatyouliked5, setwhatyouliked5] = useState();
+    const [schemes, setSchemes] = useState([{ schmename: '', resonforlikingschme: '' }]);
+    const [addttextfield, setaddttextfield] = useState(false);
+    const isInitialMount = useRef(true);
+
 
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState();
@@ -137,29 +150,28 @@ const NewUserKyc = ({ navigation, route }) => {
             console.log('Pin Code Data:', pincodeid);
 
             const secondData = await PincodedetailList(pincodeid);
+            console.log("<><><><><>IF NO HAPPENING THIS ", secondData.distId);
             securrenttcityid(secondData.cityId);
             setcurrentdistrictId(secondData.distId);
             setcurrentstateid(secondData.stateId);
-            console.log('================INSDE FETCH PINCODE FUNCTION ====================');
-            console.log(currentdistrictId);
-            console.log(currentstateid);
-            console.log(currentcityid);
-            console.log('====================================');
+
 
             const cityData = await getCityDataForDistrict(secondData.distId);
             // console.log('City Data:', cityData);
             setcitylistpicker(cityData);
             setCurrentselectedState(secondData.stateName);
 
+
             setCurrentselectedDistrict(secondData.distName);
-
-            console.log('Second API call:', secondData);
-
-
+            setcurrentdistrictId(secondData.distId);
+            console.log('================INSDE FETCH PINCODE FUNCTION ====================');
+            console.log(currentdistrictId);
+            console.log(currentstateid);
+            console.log(currentcityid);
+            console.log('====================================');
         } catch (error) {
             console.error('Error in Page 1:', error);
         } finally {
-            // After the API call (whether it succeeds or fails), hide the loader
             setLoading(false);
         }
     }
@@ -172,7 +184,7 @@ const NewUserKyc = ({ navigation, route }) => {
             const suggestionData = await fetchPinCodeData(pincode);
 
             if (Array.isArray(suggestionData) && suggestionData.length > 0) {
-                // Filter out suggestions with null values
+
                 const filteredSuggestions = suggestionData.filter((item) => (
                     item.pinCode !== null
                 ));
@@ -186,7 +198,7 @@ const NewUserKyc = ({ navigation, route }) => {
             console.error('Error fetching suggestions:', error);
         }
         finally {
-            // After the API call (whether it succeeds or fails), hide the loader
+
             setLoading(false);
         }
     };
@@ -208,10 +220,10 @@ const NewUserKyc = ({ navigation, route }) => {
     }
     //=========== ***********************END OF THE ABOVE FUNCTION =================================//
 
-
     //===================START OF RETRIVING DATA FROM ASYNC STORAGE=======================================//
     const retrieveData = async () => {
         try {
+            setIsLoading(true);
             const data = await AsyncStorage.getItem('previewSummaryData');
             if (data) {
                 const retrievedData = JSON.parse(data);
@@ -223,16 +235,12 @@ const NewUserKyc = ({ navigation, route }) => {
                 if (retrievedData.fullData.NewUserKycData.currentaddres === null) {
                     setcurrentaddres('Select');
                 }
-
                 else if (retrievedData.fullData.NewUserKycData.currentaddres === "no") {
                     setcurrentaddres(retrievedData.fullData.NewUserKycData.currentaddres);
                     setpincode(retrievedData.fullData.NewUserKycData.pinCode)
                     setaddress(retrievedData.fullData.NewUserKycData.address);
                     setstreet(retrievedData.fullData.NewUserKycData.street);
                     setlandmark(retrievedData.fullData.NewUserKycData.landmark);
-                    setCurrentselectedCity(retrievedData.fullData.NewUserKycData.currentselectedCity);
-                    setCurrentselectedDistrict(retrievedData.fullData.NewUserKycData.currentselectedDistrict);
-                    setCurrentselectedState(retrievedData.fullData.NewUserKycData.currentselectedState);
                     setpincode(retrievedData.fullData.NewUserKycData.pinCode)
                     setprofession(retrievedData.fullData.NewUserKycData.profession);
                     setmaritialStatus(retrievedData.fullData.NewUserKycData.maritialStatus);
@@ -248,6 +256,10 @@ const NewUserKyc = ({ navigation, route }) => {
                     setCurrentselectedCity(retrievedData.fullData.NewUserKycData.currentselectedCity);
                     setCurrentselectedDistrict(retrievedData.fullData.NewUserKycData.currentselectedDistrict);
                     setCurrentselectedState(retrievedData.fullData.NewUserKycData.currentselectedState);
+                    securrenttcityid(retrievedData.fullData.NewUserKycData.currentcityid);
+                    setcurrentdistrictId(retrievedData.fullData.NewUserKycData.districtId);
+                    setcurrentstateid(retrievedData.fullData.NewUserKycData.currentstateid);
+                    // setcitylistpicker(retrievedData.fullData.NewUserKycData.currentselectedCity);
 
                 }
                 if (retrievedData.fullData.NewUserKycData.currentaddres === 'yes') {
@@ -276,9 +288,10 @@ const NewUserKyc = ({ navigation, route }) => {
                     setpancardno(retrievedData.fullData.NewUserKycData.pancardno);
                     setaadharcardno(retrievedData.fullData.NewUserKycData.aadharcardno);
                     setannualincome(retrievedData.fullData.NewUserKycData.annualincome);
-                    setCurrentselectedCity(retrievedData.fullData.NewUserKycData.currentselectedCity);
-                    setCurrentselectedDistrict(retrievedData.fullData.NewUserKycData.currentselectedDistrict);
-                    setCurrentselectedState(retrievedData.fullData.NewUserKycData.currentselectedState);
+
+                    securrenttcityid(retrievedData.fullData.userData.permananetcityid);
+                    setcurrentdistrictId(retrievedData.fullData.userData.permananetdistrictId);
+                    setcurrentstateid(retrievedData.fullData.userData.permananetsateid);
 
 
                 }
@@ -315,15 +328,14 @@ const NewUserKyc = ({ navigation, route }) => {
                     setCurrentselectedState(retrievedData.fullData.NewUserKycData.currentselectedState);
 
                 }
+                console.log("<><><><><><><><><><><><>", retrievedData.fullData.NewUserKycData.currentselectedCity);
+                console.log("<><><><><><><><><><><><>", retrievedData.fullData.NewUserKycData.pincode);
 
-                console.log('================ON USE EFFECT====================');
-                console.log(pincode);
-                console.log('====================================');
-
-                // Set other state variables for additional fields.
             }
         } catch (error) {
             console.error('Error retrieving data: ', error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -331,7 +343,6 @@ const NewUserKyc = ({ navigation, route }) => {
 
 
         if (currentaddres === 'no' && text.length >= 2) {
-
 
             fetchPincodeSuggestions(text);
             setOpen(true);
@@ -341,32 +352,10 @@ const NewUserKyc = ({ navigation, route }) => {
     }
     //===================END OF RETRIVING DATA FROM ASYNC STORAGE=======================================//
     useEffect(() => {
-        // requestCameraPermission();
-
-        console.log("===>>ON FOIRST", currentaddres);
-
-        retrieveData()
-
-
+        retrieveData();
         Gettingprofession();
         // getsubprofession();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    }, [currentaddres])
+    }, [])
 
 
     let options = {
@@ -427,6 +416,7 @@ const NewUserKyc = ({ navigation, route }) => {
         profession,
         subprofession,
         maritialStatus,
+        maritialstatusId,
         loyalty,
         annualincome,
         aadharcardno,
@@ -446,6 +436,47 @@ const NewUserKyc = ({ navigation, route }) => {
         currentdistrictId,
         currentstateid,
     };
+
+    async function updateNewUserKycDataInPreviewSummary(NewUserKycData) {
+        try {
+            // setIsLoading(true);
+            // Retrieve the existing 'previewSummaryData' from AsyncStorage
+            const previewSummaryDataString = await AsyncStorage.getItem('previewSummaryData');
+
+            if (previewSummaryDataString) {
+                // Parse the JSON string to an object
+                const previewSummaryData = JSON.parse(previewSummaryDataString);
+
+                // Ensure that the object structure is properly initialized
+                if (!previewSummaryData.fullData) {
+                    previewSummaryData.fullData = {};
+                }
+
+                // Ensure that the object structure for 'NewUserKycData' is properly initialized
+                if (!previewSummaryData.fullData.NewUserKycData) {
+                    previewSummaryData.fullData.NewUserKycData = {};
+                }
+
+                // Update the 'NewUserKycData' property directly with the provided 'newUserData'
+                previewSummaryData.fullData.NewUserKycData = NewUserKycData;
+
+                // Convert the updated object back to a JSON string
+                const updatedPreviewSummaryDataString = JSON.stringify(previewSummaryData);
+
+                // Save the updated 'previewSummaryData' back to AsyncStorage
+                await AsyncStorage.setItem('previewSummaryData', updatedPreviewSummaryDataString);
+
+                console.log('Updated NewUserKycData in previewSummaryData:', NewUserKycData);
+            } else {
+                console.log('No previewSummaryData found in AsyncStorage');
+            }
+        } catch (error) {
+            console.error('Error updating NewUserKycData in previewSummaryData:', error);
+        } finally {
+            // setIsLoading(false);
+        }
+    }
+
 
     //Combine user data and form data into one object
     const fullData = {
@@ -521,10 +552,19 @@ const NewUserKyc = ({ navigation, route }) => {
         //     setPopupMessage('PAN Card Photo field is empty. Please fill it.');
         //     return false;
         // }
-        // if (!pancardno) {
-        //     setPopupMessage('PAN Card Number field is empty. Please fill it.');
-        //     return false;
-        // }
+        if (pancardno) {
+            if (pancardno.length < 10) {
+                setIsPopupVisible(true);
+                setPopupMessage('Please enter a valid PAN Card Number.');
+                return false;
+            }
+
+            if (!validatePan(pancardno)) {
+                setIsPopupVisible(true);
+                setPopupMessage('Please enter a valid PAN Card Number.');
+                return false;
+            }
+        }
 
         //  if (!landmark) {
         //     setPopupMessage('landmark field is empty. Please fill it.');
@@ -557,6 +597,9 @@ const NewUserKyc = ({ navigation, route }) => {
             // console.log("+++++++++++++++++++", fullData);
             // await AsyncStorage.setItem("previewSummaryData", fullData);
             // log
+            updateNewUserKycDataInPreviewSummary(NewUserKycData);
+            const updatedValue = await AsyncStorage.getItem('previewSummaryData');
+            console.log('Updated Value in AsyncStorage (previewSummaryData +++++NEWUSERkYC++++++++++++):', updatedValue);
             navigation.navigate('NomineePage', { fullData });
         }
         // Add validation checks for other fields
@@ -631,6 +674,27 @@ const NewUserKyc = ({ navigation, route }) => {
             }
         }
     };
+    const handleButtonPress = () => {
+        setaddttextfield(true);
+    };
+
+
+    const handleInputChange = (index, fieldName, value) => {
+        const updatedSchemes = [...schemes];
+        updatedSchemes[index][fieldName] = value;
+        setSchemes(updatedSchemes);
+    };
+
+    const handleIconButtonPress = () => {
+        // Add a new set of text inputs
+        if (schemes.length < 5) {
+            setSchemes([...schemes, { schmename: '', resonforlikingschme: '' }]);
+        }
+    };
+
+
+
+
 
     return (
         <SafeAreaView>
@@ -645,14 +709,15 @@ const NewUserKyc = ({ navigation, route }) => {
                         </View>
 
                     </View>
+                    <View style={{ flex: 1 }}>
+
+                        <Loader isLoading={isLoading} />
+                    </View>
                     {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
                         <Text>{popupMessage}</Text>
                         {/* // <Text>ICORRECT OTP</Text> */}
                     </Popup>
                     )}
-
-
-
                     <Text style={{ color: 'black', marginLeft: 20, }}>{t('auth:newuser:CurrentAddresselctionHeader')}</Text>
                     <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 3 }}>
 
@@ -675,6 +740,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                     setcurrentstateid('');
                                     setcurrentdistrictId('');
                                     securrenttcityid('');
+                                    //setcitylistpicker('');
 
 
                                 }
@@ -699,9 +765,9 @@ const NewUserKyc = ({ navigation, route }) => {
 
 
 
-                                    console.log('====================####================', currentselectedCity);
-                                    console.log('====================####================', currentselectedDistrict);
-                                    console.log('====================####================', currentselectedState);
+                                    // console.log('====================####================', currentselectedCity);
+                                    //  console.log('====================####================', currentselectedDistrict);
+                                    //  console.log('====================####================', currentselectedState);
                                 }
                             }}>
                             <Picker.Item label="Select" value="Select" />
@@ -774,80 +840,78 @@ const NewUserKyc = ({ navigation, route }) => {
                             :
 
                             <>
-                                <FloatingLabelInput
-
-                                    label="Enter Pincode"
-                                    labelTextColor={"black"}
-                                    keyboardType="number-pad"
-                                    value={pincode}
-                                    onChangeText={(text) => pincodefunction(text)}
-                                    maxLength={6}
-                                    containerStyles={styles.input}
-                                    staticLabel
-                                    labelStyles={styles.labelStyles}
-                                    inputStyles={{
-                                        color: 'black',
-                                        paddingHorizontal: 5,
-                                    }}
-                                />
 
                                 <DropDownPicker
                                     mode="BADGE"
                                     showBadgeDot={true}
+                                    searchable={true}
+                                    loading={isLoading}
+                                    label={value}
+                                    placeholder={pincode === null ? 'Search Pincode' : `Searched Pincode: ${pincode}`}
+                                    searchablePlaceholder="Search Pincode"
+                                    translation=
+                                    {t('auth:newuser:Secondpagepincode')}
 
-                                    label={item.pinCode}
+                                    // placeholder={value}
+                                    searchTextInputProps={{
+                                        maxLength: 6
+                                    }}
                                     badgeStyle={(item, index) => ({
                                         padding: 5,
                                         backgroundColor: item.value ? 'red' : 'grey',
+
                                     })}
+                                    badgeProps={{
+                                        activeOpacity: 1.5
+                                    }}
+
                                     badgeSeparatorStyle={{
                                         width: 30,
                                     }}
-                                    badgeColors={["red",]}
-                                    badgeDotColors={["red", "blue", "orange"]}
+                                    badgeColors={['red']}
+                                    badgeDotColors={['red']}
                                     listMode="SCROLLVIEW"
                                     scrollViewProps={{ nestedScrollEnabled: true, decelerationRate: "fast" }}
                                     open={open}
-
                                     items={suggestions.map((item) => ({
                                         label: item.pinCode,
                                         value: item.pinCode,
                                     }))}
-
-
                                     setOpen={setOpen}
                                     value={pincode}
-                                    onChangeText={(text) => {
-                                        [setpincode(text), setOpen(false)]
-                                        if (loading) {
-                                            return (
-                                                <View style={styles.loaderContainer}>
-                                                    <ActivityIndicator size="large" color="blue" />
-                                                </View>
-                                            );
-                                        }
-                                        // Call your filtering function with the user's input
-                                        //fetchPincodeSuggestions(text);
+                                    onChangeItem={(item) => {
+
+                                        setpincode(item.value);
                                     }}
+                                    onChangeSearchText={(text) => pincodefunction(text)}
                                     dropDownContainerStyle={{
-
-                                        width: width / 1.1, height: height / 8, padding: 10, left: 18, top: 50, borderWidth: 0, elevation: 0
-
+                                        width: width / 1.1,
+                                        height: height / 5,
+                                        padding: 10,
+                                        left: 18,
+                                        top: 50,
+                                        borderWidth: 0,
+                                        elevation: 0
                                     }}
-
-                                    setValue={(value) => {
-                                        setpincode(value);
-                                        if (loading) {
-                                            return (
-                                                <View style={styles.loaderContainer}>
-                                                    <ActivityIndicator size="large" color="blue" />
-                                                </View>
-                                            );
-                                        }
-
+                                    style={{
+                                        backgroundColor: 'white',
+                                        elevation: 50,
+                                        opacity: 0.9,
+                                        borderWidth: 0.6,
+                                        margin: 20,
+                                        width: width / 1.1,
+                                        height: height / 15,
+                                        alignSelf: 'center',
+                                        bottom: 10,
+                                        elevation: 0,
+                                        margintop: 50,
                                     }}
-                                    style={{ backgroundColor: 'white', elevation: 50, opacity: 0.9, borderWidth: 0, width: width / 1.1, height: height / 15, alignSelf: 'center', bottom: 10, elevation: 0 }}
-                                /></>}
+                                />
+
+
+
+                            </>}
+
                         <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('auth:newuser:CurrentState')}</Text>
                         <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
                             {/* <Picker
@@ -879,7 +943,7 @@ const NewUserKyc = ({ navigation, route }) => {
                         </View>
 
                         <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('auth:newuser:CurrentCity')}</Text>
-                        {currentaddres === 'no' ? <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                        {currentaddres === 'no' || currentselectedCity === null ? <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
                             <Picker
                                 mode='model'
                                 style={{ color: 'black' }}
@@ -889,6 +953,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                     setCurrentselectedCity(itemValue);
                                     securrenttcityid(selectedItem.id);
                                 }}>
+                                <Picker.Item label="Select" value='' />
                                 {Array.isArray(citylistpicker) && citylistpicker.length >= 0 ? (
                                     citylistpicker.map(item => (
                                         <Picker.Item
@@ -918,8 +983,6 @@ const NewUserKyc = ({ navigation, route }) => {
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Currentprofession')}</Text>
 
                     <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
-
-
                         <Picker
                             mode='dropdown'
                             style={{ color: 'black' }}
@@ -964,12 +1027,15 @@ const NewUserKyc = ({ navigation, route }) => {
                             mode='dropdown'
                             style={{ color: 'black' }}
                             selectedValue={maritialStatus}
-                            onValueChange={(itemValue, itemIndex) =>
-                                setmaritialStatus(itemValue)
+                            onValueChange={(itemValue, itemIndex) => {
+                                // setmaritialstatusId(itemValue) 
+                                setmaritialStatus(itemValue);
+
+                            }
                             }>
-                            <Picker.Item label="Select" value="" />
-                            <Picker.Item label="Married" value="1" />
-                            <Picker.Item label=" Unmarried" value="0" />
+                            <Picker.Item label="Select" value="0" />
+                            <Picker.Item label="Married" value="Married" />
+                            <Picker.Item label=" Unmarried" value="Unmarried" />
 
 
                         </Picker>
@@ -997,7 +1063,6 @@ const NewUserKyc = ({ navigation, route }) => {
                         </Picker>
 
                     </View>
-
                     {loyalty == 'Yes' ?
                         <FloatingLabelInput
 
@@ -1043,6 +1108,50 @@ const NewUserKyc = ({ navigation, route }) => {
                         : null
                     }
 
+
+
+                    {/* <View>
+                        {loyalty == 'Yes' && schemes.map((scheme, index) => (
+                            <View key={index} style={styles.schemeContainer}>
+                                <FloatingLabelInput
+                                    label="If yes please mention Scheme and brand name"
+                                    value={scheme.schmename}
+                                    onChangeText={(text) => handleInputChange(index, 'schmename', text)}
+                                    keyboardType='default'
+                                    containerStyles={styles.input}
+                                    staticLabel
+                                    labelStyles={styles.labelStyles}
+                                    inputStyles={{
+                                        color: 'black',
+                                        paddingHorizontal: 10
+                                    }}
+                                />
+                                <View style={{ flexDirection: 'row' }}>
+                                    <FloatingLabelInput
+                                        label="If yes what you liked about the program *"
+                                        value={scheme.resonforlikingschme}
+                                        onChangeText={(text) => handleInputChange(index, 'resonforlikingschme', text)}
+                                        keyboardType='default'
+                                        containerStyles={styles.input}
+                                        staticLabel
+                                        labelStyles={styles.labelStyles}
+                                        inputStyles={{
+                                            color: 'black',
+                                            paddingHorizontal: 10
+                                        }}
+                                    />
+                                    <IconButton
+                                        icon="camera"
+                                        size={20}
+                                        onPress={handleIconButtonPress}
+                                    />
+                                </View>
+                            </View>
+                        ))}
+                    </View> */}
+
+
+
                     <FloatingLabelInput
 
                         label="Annual business potential *"
@@ -1056,11 +1165,9 @@ const NewUserKyc = ({ navigation, route }) => {
                             color: 'black',
                             paddingHorizontal: 10,
                         }}
-
-
-
-
                     />
+
+
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Selfie')}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginBottom: 5, }}>
 
@@ -1257,6 +1364,9 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    schemeContainer: {
+        marginVertical: 10,
     },
     input: {
 

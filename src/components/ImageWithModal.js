@@ -27,10 +27,11 @@ const ImageWithModal = ({ imageUri }) => {
                         source={{ uri: imageUri }}
                         style={{
                             width: width / 8,
-                            height: height / 18,
+                            height: height / 21,
                             backgroundColor: 'red',
                             borderRadius: 5,
                             margin: 5,
+
                         }}
                     />
                     {/* <Text style={{ color: 'black' }}>

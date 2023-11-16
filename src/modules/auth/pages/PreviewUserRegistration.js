@@ -54,13 +54,14 @@ const PreviewUserRegistration = ({ navigation, route }) => {
     const [currentselectedCity, setcurrentSelectedCity] = useState('');
     const [suggestions, setSuggestions] = useState([]);
 
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedDate, setSelectedDate] = useState();
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [open, setOpen] = useState(false);
     const [profession, setprofession] = useState('');
     const [professiondata, setprofessiondata] = useState([]);
     const [subprofession, setsubprofession] = useState();
     const [maritialStatus, setmaritialStatus] = useState('Select');
+    const [maritialStatusid, setmaritialStatusid] = useState('');
 
     const [loyalty, setloyalty] = useState('Select');
     const [annualincome, setannualincome] = useState('');
@@ -80,13 +81,13 @@ const PreviewUserRegistration = ({ navigation, route }) => {
     const [appversion, setAppversion] = useState('');
 
     const [selectedbank, setselectedbank] = useState('');
-    const [bankid, setbankid] = useState();
+    const [bankid, setbankid] = useState("");
     const [validateallfieldforbank, setvalidateallfieldforbank] = useState(false);
-    const [aadharfrontuuid, setaadharfrontuuid] = useState('');
-    const [aadharbackuuid, setaadharbackuuid] = useState('');
-    const [selfieeuuid, setselfieeuuid] = useState('');
-    const [chequeImageuuid, setchequeimageuuid] = useState('');
-    const [pancarduuid, setpancarduuid] = useState('');
+    const [aadharfrontuuid, setaadharfrontuuid] = useState(null);
+    const [aadharbackuuid, setaadharbackuuid] = useState(null);
+    const [selfieeuuid, setselfieeuuid] = useState(null);
+    const [chequeImageuuid, setchequeimageuuid] = useState(null);
+    const [pancarduuid, setpancarduuid] = useState(null);
 
 
     const [permanentcityid, setpermanentcityid] = useState('');
@@ -121,21 +122,24 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
         // Retrieve the data from AsyncStorage
         const retrieveData = async () => {
-            try {
 
+            try {
+                setIsLoading(true)
                 const data = await AsyncStorage.getItem('previewSummaryData');
+
 
                 if (data) {
                     // Parse the JSON string back into an object
 
                     const retrievedData = JSON.parse(data);
                     console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData);
-                    console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.userData.permananetsateid);
-                    console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.userData.permananetcityid);
-                    console.log("++++++++++++&&&&&&&&++DISTRACT++^^^^^^^^^^^^++++++++++", retrievedData.fullData.userData.permananetdistrictId);
-                    console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.NewUserKycData.currentcityid);
-                    console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.NewUserKycData.currentdistrictId);
-                    console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.NewUserKycData.currentstateid);
+                    // console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.userData.permananetsateid);
+                    // console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.userData.permananetcityid);
+                    // console.log("++++++++++++&&&&&&&&++DISTRACT++^^^^^^^^^^^^++++++++++", retrievedData.fullData.userData.permananetdistrictId);
+                    // console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.NewUserKycData.currentcityid);
+                    // console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.NewUserKycData.currentdistrictId);
+                    // console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.NewUserKycData.currentstateid);
+                    // console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.BankDetailsAndNominee.bankid);
                     setSelectedLanguage(retrievedData.fullData.userData.selectedLanguage);
                     setGender(retrievedData.fullData.userData.gender);
                     setemail(retrievedData.fullData.userData.email);
@@ -144,13 +148,12 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     setaddress(retrievedData.fullData.userData.address);
                     setstreet(retrievedData.fullData.userData.street);
                     setlandmark(retrievedData.fullData.userData.landmark);
-                    setSelectedDate(retrievedData.fullData.userData.selectedDate.toDateString());
+                    setSelectedDate(retrievedData.fullData.userData.selectedDate);
                     setname(retrievedData.fullData.userData.name);
-                    setPincode(retrievedData.fullData.userData.pincode.toString());
+                    setPincode(retrievedData.fullData.userData.pincode);
                     setSelectedState(retrievedData.fullData.userData.selectedState);
                     setSelectedDistrict(retrievedData.fullData.userData.selectedDistrict);
                     setSelectedCity(retrievedData.fullData.userData.selectedCity);
-
                     setcurrentaddress(retrievedData.fullData.NewUserKycData.address);
                     setcurrentstreet(retrievedData.fullData.NewUserKycData.street);
                     setcurrentlandmark(retrievedData.fullData.NewUserKycData.landmark);
@@ -158,19 +161,12 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     setcurrentSelectedCity(retrievedData.fullData.NewUserKycData.currentselectedCity);
                     setcurrentSelectedDistrict(retrievedData.fullData.NewUserKycData.currentselectedDistrict);
                     setcurrentSelectedState(retrievedData.fullData.NewUserKycData.currentselectedState);
-
-                    setpermananrstateid(retrievedData.fullData.userData.permananetsateid);
-                    setpermantdistrictid(retrievedData.fullData.userData.permananetdistrictId);
-                    setpermanentcityid(retrievedData.fullData.userData.permananetcityid);
-                    setcurrentdistrictid(retrievedData.fullData.NewUserKycData.currentdistrictId);
-                    setcurrentcityid(retrievedData.fullData.NewUserKycData.currentcityid);
-                    setcurrentstateid(retrievedData.fullData.NewUserKycData.currentstateid);
-
                     //KYC DATA
 
                     setprofession(retrievedData.fullData.NewUserKycData.profession);
                     // setsubprofession(retrievedData.fullData.NewUserKycData.subprofession);
                     setmaritialStatus(retrievedData.fullData.NewUserKycData.maritialStatus);
+                    setmaritialStatusid(retrievedData.fullData.NewUserKycData.maritialstatusId);
                     setloyalty(retrievedData.fullData.NewUserKycData.loyalty);
                     setannualincome(retrievedData.fullData.NewUserKycData.annualincome);
                     setSelfieData(retrievedData.fullData.NewUserKycData.selfieData);
@@ -185,32 +181,65 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     setchequeImage(retrievedData.BankDetailsAndNominee.chequeImage)
                     setaccounttype(retrievedData.BankDetailsAndNominee.accounttype);
                     setselectedbank(retrievedData.BankDetailsAndNominee.selectedbank);
-                    setbankid(retrievedData.BankDetailsAndNominee.bankId);
+                    setbankid(retrievedData.BankDetailsAndNominee.bankid);
                     setnomineename(retrievedData.BankDetailsAndNominee.nomineename);
                     setnomineemobileno(retrievedData.BankDetailsAndNominee.nomineemobileno);
                     setnomineeemail(retrievedData.BankDetailsAndNominee.nomineeemail);
                     setnomineeaddress(retrievedData.BankDetailsAndNominee.nomineeaddress);
                     setrelationwithyou(retrievedData.BankDetailsAndNominee.relationship);
                     setnomineedate(retrievedData.BankDetailsAndNominee.nomineeselectedDate);
-                    //  setnomineedate(retrievedData.BankDetailsAndNominee.nomineeselectedDate);
+                    setnomineedate(retrievedData.BankDetailsAndNominee.nomineeselectedDate);
+                    console.log("><><><><><><<><><", retrievedData.fullData.userData.selectedDate);
+                    if (retrievedData.fullData.NewUserKycData.currentaddres == "yes") {
+                        setpermananrstateid(retrievedData.fullData.userData.permananetsateid);
+                        setpermantdistrictid(retrievedData.fullData.userData.permananetdistrictId);
+                        setpermanentcityid(retrievedData.fullData.userData.permananetcityid);
+                        setcurrentdistrictid(retrievedData.fullData.userData.permananetdistrictId);
+                        setcurrentcityid(retrievedData.fullData.userData.permananetcityid);
+                        setcurrentstateid(retrievedData.fullData.userData.permananetsateid);
 
+                    } else {
+                        setpermananrstateid(retrievedData.fullData.userData.permananetsateid);
+                        setpermantdistrictid(retrievedData.fullData.userData.permananetdistrictId);
+                        setpermanentcityid(retrievedData.fullData.userData.permananetcityid);
+                        setcurrentdistrictid(retrievedData.fullData.NewUserKycData.currentdistrictId);
+                        setcurrentcityid(retrievedData.fullData.NewUserKycData.currentcityid);
+                        setcurrentstateid(retrievedData.fullData.NewUserKycData.currentstateid);
+                    }
+
+                }
+
+                if (selectedDate) {
+                    const date = selectedDate;
+                    if (!isNaN(date)) {
+                        const dateWithoutTime = date.toISOString().split('T')[0];
+                        setSelectedDate(dateWithoutTime);
+                    } else {
+                        console.error('Invalid date:', selectedDate);
+                    }
                 }
             } catch (error) {
                 console.error('Error retrieving data: ', error);
             } finally {
-
+                setIsLoading(false);
             }
+
         };
 
         retrieveData();
 
         // GettingAppversion();
         Gettingprofession();
-    }, [previewData]);
+        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharfrontuuid,);
+        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharbackuuid);
+        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", pancarduuid);
+        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", chequeImageuuid);
+        // console.log("================================================");
+        // console.log(">><><<><>><><><><><><><><><><><><", userbody);
+        // console.log("================================================");
+    }, []);
 
     const updateDataInAsyncStorage = async () => {
-
-
         navigation.navigate("newUser");
     };
 
@@ -242,7 +271,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
         "genderPos": "1",
         "dob": selectedDate,
         "contactNo": number,
-        "whatsappNo": number,
+        "whatsappNo": whatapp,
         "permanentAddress": address,
         "streetAndLocality": street,
         "landmark": landmark,
@@ -311,10 +340,6 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
     }
 
-
-
-
-
     const uploadFiles = async (fileDataArray) => {
 
         try {
@@ -350,13 +375,14 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
     const callUploadAndThenAnotherFunction = async () => {
         try {
-
+            setIsLoading(true);
             const filesToUpload = [
                 { imageRelated: 'ID_CARD_FRONT', file: idProofFrontData },
                 { imageRelated: 'ID_CARD_BACK', file: idProofBackData },
                 { imageRelated: 'PAN_CARD_FRONT', file: panData },
                 { imageRelated: 'CHEQUE', file: chequeImage },
-                // Add more files as needed
+                { imageRelated: 'PROFILE', file: selfieData },
+
             ];
 
             // Filter out files with null data
@@ -380,55 +406,61 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         case 'CHEQUE':
                             setchequeimageuuid(response.entityUid);
                             break;
-                        // Add more cases for other files if needed
+
+                        case 'PROFILE':
+                            setselfieeuuid(response.entityUid);
+                            break;
                         default:
                             break;
                     }
 
                 });
 
-                console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharfrontuuid,);
-                console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharbackuuid);
-                console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", pancarduuid);
-                console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", chequeImageuuid);
-                if (aadharfrontuuid !== null && aadharbackuuid !== null) {
+
+                if (aadharfrontuuid != null && aadharfrontuuid != 'undefined' && aadharbackuuid != null && aadharbackuuid != 'undefined' && selfieeuuid != 'undefined' && selfieeuuid != null) {
+                    // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharfrontuuid,);
+                    // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharbackuuid);
+                    // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", pancarduuid);
+                    // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", chequeImageuuid);
+                    // console.log("%%%%%%%%%%%%%%%%%%%%%%", selfieeuuid);
+                    // console.log("================================================");
+                    // console.log(">><><<><>><><><><><><><><><><><><><", userbody);
+                    // console.log("================================================");
                     registernewuser(userbody);
                 }
+                else {
 
-
-                // console.log('API Responses:', responses);
-                // console.log(aadharfrontuuid);
-                // console.log('====================================');
-                // console.log(aadharbackuuid);
-                // console.log('====================================');
-
-
+                }
             } else {
                 console.log('No valid files to upload.');
             }
         } catch (error) {
             console.error('Error:', error);
         } finally {
-
+            setIsLoading(false);
         }
     };
 
     async function registernewuser() {
         try {
-            //   console.log("+++++++++++++++++++++", userbody)
+
+            console.log("+++++++++++++++++++++", userbody)
             setIsLoading(true);
             const response = await RegisterNewUser(userbody);
 
             if (response.message === 'Member registered successfully') {
                 setIsPopupVisible(true);
                 setPopupMessage(response.message);
-                Alert.alert(response.message);
-                navigation.navigate('login');
+                // Alert.alert(response.message);
+                //  navigation.navigate('login');
+                setTimeout(() => {
+                    navigation.navigate('login');
+                }, 2500);
             } else {
                 setIsPopupVisible(true);
                 setPopupMessage(response.message);
             }
-            //  console.log(response)
+            // console.log(response)
 
         } catch (error) {
             throw error;
@@ -519,7 +551,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
 
                     />
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Name</Text>
+
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
@@ -583,7 +615,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     />
                     {/* <TextcontainerStyles={styles.input}>{data.fullData.userData.selectedDate}</Text> */}
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Contact Number</Text>
+
                     <FloatingLabelInput
                         containerStyles={styles.input}
                         label={t('auth:newuser:Contact')}
@@ -602,7 +634,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
 
                     />
-                    <Text style={{ color: 'black', marginLeft: 20, }}>{t('auth:newuser:Whatappconatctsame')}</Text>
+
 
                     <FloatingLabelInput
                         containerStyles={styles.input}
@@ -621,7 +653,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
 
                     />
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Email Address</Text>
+
                     <FloatingLabelInput
                         containerStyles={styles.input}
                         label={t('auth:newuser:Email')}
@@ -694,7 +726,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     />
 
 
-                    <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:pincode')}</Text>
+
 
                     <FloatingLabelInput
                         containerStyles={styles.input}
@@ -756,7 +788,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         </Picker>
 
                     </View>
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Sub Profession</Text>
+
                     <FloatingLabelInput
                         containerStyles={styles.input}
                         label={t('auth:newuser:Subprofession')}
@@ -788,8 +820,8 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                                 setmaritialStatus(itemValue)
                             }>
                             <Picker.Item label="Select" value="Select" />
-                            <Picker.Item label="Married" value="Married" />
-                            <Picker.Item label=" Unmarried" value="Unmarried" />
+                            <Picker.Item label="Married" value="1" />
+                            <Picker.Item label=" Unmarried" value="0" />
 
 
                         </Picker>
@@ -839,7 +871,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
 
 
-                        {selfieData != null ? <Text style={{ color: 'black', }}>{selfieData.name.substring(0, 30)}</Text> : null}
+                        {selfieData != null ? <Text style={{ color: 'black', right: width / 2 }}>{selfieData.name.substring(0, 30)}</Text> : null}
                         {selfieData != null ?
                             <ImageWithModal imageUri={selfieData.uri} name={selfieData.name} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
 
@@ -848,14 +880,16 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     </View>
 
-                    <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>Select Id Proof </Text>
+
 
                     <FloatingLabelInput
                         containerStyles={styles.input}
-                        label="Aadhar Card"
+                        label="Id Proof Type"
                         value={Idprooftype}
                         onChangeText={(text) => setIdprooftype(text)}
                         keyboardType='number-pad'
+                        placeholder='Aadhar Card'
+                        placeholderTextColor={'black'}
 
                         staticLabel
                         labelStyles={styles.labelStyles}
@@ -867,36 +901,36 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     />
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:AadharCardFront')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:IdProof')}</Text>
 
 
                     <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
-                        {idProofFrontData != null ? <Text style={{ color: 'black', }}>{idProofFrontData.name.substring(0, 30)}</Text> : null}
+                        {idProofFrontData != null ? <Text style={{ color: 'black', right: width / 2 }}>{idProofFrontData.name.substring(0, 30)}</Text> : null}
                         {idProofFrontData != null ? <ImageWithModal imageUri={idProofFrontData.uri} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
 
 
                     </View>
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:AadharCardBack')}</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:IdproofBack')}</Text>
 
 
                     <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
-                        {idProofBackData != null ? <Text style={{ color: 'black', }}>{idProofBackData.name.substring(0, 30)}</Text> : null}
+                        {idProofBackData != null ? <Text style={{ color: 'black', right: width / 2 }}>{idProofBackData.name.substring(0, 30)}</Text> : null}
                         {idProofBackData != null ? <ImageWithModal imageUri={idProofBackData.uri} /> : <Image resizeMode="contain" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, borderRadius: 5, margin: 5 }} />}
 
 
                     </View>
 
-                    <Text style={{ color: 'black', marginLeft: 24, }}>Aadhar Card No</Text>
+                    <Text style={{ color: 'black', marginLeft: 24, }}>Id Proof No.</Text>
 
                     <FloatingLabelInput
                         containerStyles={[styles.input]}
-                        label="Aadhar Card No*"
+
                         value={aadharcardno}
                         onChangeText={(text) => setaadharcardno(text)}
                         keyboardType='number-pad'
 
-                        staticLabel
+
                         labelStyles={styles.labelStyles}
                         inputStyles={{
                             color: 'black',
@@ -909,7 +943,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
 
                     <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
-                        {panData != null ? <Text style={{ color: 'black', }}>{panData.name.substring(0, 30)}</Text> : null}
+                        {panData != null ? <Text style={{ color: 'black', right: width / 2 }}>{panData.name.substring(0, 30)}</Text> : null}
                         {panData != null ? <ImageWithModal imageUri={panData.uri} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
 
 
@@ -919,7 +953,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     <FloatingLabelInput
                         containerStyles={[styles.input]}
-                        label="Pan Card No*"
+
                         value={pancardno}
                         onChangeText={(text) => setpancardno(text)}
                         keyboardType='default'
@@ -937,7 +971,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Account Number"
+                        label='Account Number'
 
 
                         editable={false}
@@ -954,7 +988,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     />
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>Account Holder Name</Text>
+
 
                     <FloatingLabelInput
                         containerStyles={styles.input}
@@ -975,12 +1009,12 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                         maxLength={50}
                     />
-                    <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:SelectAccountype')}</Text>
+
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
                         editable={false}
-                        label="Account Type"
+                        label={t('auth:newuser:SelectAccountype')}
 
                         keyboardType='default'
                         value={accounttype}
@@ -997,12 +1031,12 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     />
 
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Bank')}</Text>
+
 
                     {selectedbank == '' ? <FloatingLabelInput
                         containerStyles={styles.input}
                         editable={false}
-                        label="Selected Bank"
+                        label={t('auth:newuser:Bank')}
 
 
                         keyboardType='default'
@@ -1018,7 +1052,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     /> : <FloatingLabelInput
                         containerStyles={styles.input}
                         editable={false}
-                        label="Selected Bank"
+                        label={t('auth:newuser:Bank')}
 
 
                         keyboardType='default'
@@ -1034,7 +1068,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         }}
                         maxLength={20}
                     />}
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>IFSC Code</Text>
+
 
                     <FloatingLabelInput
                         containerStyles={styles.input}
@@ -1060,10 +1094,10 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
 
                     <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
-                        {chequeImage != null ? <Text style={{ color: 'black', }}>{chequeImage.name.substring(0, 30)}</Text> : null}
+                        {chequeImage != null ? <Text style={{ color: 'black', right: width / 2 }}>{chequeImage.name.substring(0, 30)}</Text> : null}
                         {chequeImage != null ?
 
-                            <Image resizeMode="cover" source={{ uri: chequeImage.uri }} style={{ width: width / 8, height: height / 18, backgroundColor: 'transparent', borderRadius: 5, margin: 5 }} />
+                            <ImageWithModal imageUri={chequeImage.uri} />
                             : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />
 
                         }
@@ -1072,11 +1106,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
 
 
-                    <Text style={{ color: 'black', marginLeft: 20, fontSize: responsiveFontSize(2) }}>{t('auth:newuser:NomineeDetails')}</Text>
+
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Name of Nominee"
+                        label={t('auth:newuser:NomineeDetails')}
 
 
                         editable={false}
@@ -1093,13 +1127,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     />
 
-                    <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:NomineeMobile')}</Text>
+
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Mobile No"
-
-
+                        label={t('auth:newuser:NomineeMobile')}
                         editable={false}
                         keyboardType='number-pad'
                         value={nomineemobileno}
@@ -1115,11 +1147,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
 
 
-                    <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:NomineeEmailAddress')}</Text>
+
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Email"
+                        label={t('auth:newuser:NomineeEmailAddress')}
                         editable={false}
 
 
@@ -1137,11 +1169,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     />
 
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:NomineeAddress')}</Text>
+
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Address"
+                        label={t('auth:newuser:NomineeAddress')}
                         editable={false}
 
 
@@ -1157,7 +1189,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     />
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>RelationShip with You</Text>
+
                     <FloatingLabelInput
                         containerStyles={styles.input}
 

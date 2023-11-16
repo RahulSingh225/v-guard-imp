@@ -3,13 +3,16 @@ import digestFetch from 'react-native-digest-fetch';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-const API_LINK = 'http://34.100.133.239:18092'; // Replace with your API base URL
+
+const API_LINK = 'http://34.100.133.239:18092';
 
 
 
-const imageURL = "https://vguardrishta.com/";
+const imageURL = "https://vguardrishta.com/vguard/api/";
+const imageURL2 = "http://34.100.133.239:18092/vguard/api/";
 
 const BASE_URL = 'http://34.100.133.239:18092/vguard/api/';
+
 
 export const createDigestPostRequest = async (relativeUrl = {}, data) => {
     try {
@@ -65,8 +68,9 @@ export const createDigestGetRequest = async (relativeUrl = {}) => {
         throw error;
     }
 };
+
 export const loginPasswordDigest = async (relativeUrl, username, password) => {
-    
+
     try {
         const url = BASE_URL + relativeUrl;
         const headers = {
@@ -108,7 +112,7 @@ export const loginPasswordDigest = async (relativeUrl, username, password) => {
         await AsyncStorage.setItem('redeemedPoints', safeRedeemedPoints.toString());
         await AsyncStorage.setItem('numberOfScan', safeNumberOfScan.toString());
 
-        console.log("usercode=======", await AsyncStorage.getItem('userCode'))
+        // console.log("usercode=======", await AsyncStorage.getItem('userCode'))
         return response;
     } catch (error) {
         throw error;
@@ -123,6 +127,9 @@ const api = axios.create({
 });
 const imageApi = axios.create({
     baseURL: imageURL,
+});
+const imageApi2 = axios.create({
+    baseURL: imageURL2,
 });
 
 
@@ -142,11 +149,22 @@ export const forgotPassword = async (mobileNumber) => {
 }
 
 export const fetchImage = async (relativeUrl) => {
-    try{
+    try {
         const response = await imageApi.get(relativeUrl);
         return response;
     }
-    catch(error){
+    catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export const fetchImage2 = async (relativeUrl) => {
+    try {
+        const response = await imageApi2.get(relativeUrl);
+        return response;
+    }
+    catch (error) {
         console.error(error);
         throw error;
     }
@@ -303,7 +321,54 @@ export const Appversion = async () => {
         throw error;
 
     }
+};
+
+export const Profile = async () => {
+    try {
+        const response = await api.get(`/vguard/api/user/profile`);
+        return response;
+    }
+    catch (error) {
+        console.log(error);
+
+    }
 }
+
+
+
+export const reupdatekyc = async (data) => {
+    try {
+        const relativeUrl = 'user/updateKyc';
+        console.log("<***********>", data);
+        const response = await createDigestPostRequest(relativeUrl, data);
+
+
+        if (response.ok) {
+
+            const responseData = await response.json(); // Assuming the response body is in JSON format
+            return responseData;
+        } else {
+
+            console.error('Error updating KYC:', response.statusText);
+            throw new Error('Failed to update KYC');
+        }
+    } catch (error) {
+
+        console.error('Error updating KYC:', error);
+        throw error;
+    }
+};
+
+export function getUserProfile() {
+    const path = "user/profile";
+    return createDigestGetRequest(path);
+}
+export function getFile(uuid, imageRelated, userRole) {
+    const path = `file/${uuid}/${imageRelated}/${userRole}`;
+    console.log(path)
+    return createDigestGetRequest(path);
+}
+
 
 
 
