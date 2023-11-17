@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Image,
@@ -7,10 +7,10 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
 } from 'react-native';
-import {height, width} from '../utils/dimensions';
-import {black} from 'react-native-paper/lib/typescript/styles/colors';
+import { height, width } from '../utils/dimensions';
+import { black } from 'react-native-paper/lib/typescript/styles/colors';
 
-const ImageWithModal = ({imageUri}) => {
+const ImageWithModal = ({ imageUri }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const toggleModal = () => {
@@ -24,13 +24,14 @@ const ImageWithModal = ({imageUri}) => {
         <View>
           <Image
             resizeMode="cover"
-            source={{uri: imageUri}}
+            source={{ uri: imageUri }}
             style={{
               width: width / 8,
-              height: height / 18,
+              height: height / 20,
               backgroundColor: 'red',
               borderRadius: 5,
-              margin: 5,
+              margin: 5
+
             }}
           />
           {/* <Text style={{ color: 'black' }}>
@@ -44,12 +45,12 @@ const ImageWithModal = ({imageUri}) => {
         <TouchableWithoutFeedback onPress={toggleModal}>
           <Image
             resizeMode="contain"
-            source={{uri: imageUri}}
-            style={{width: '100%', height: '100%'}}
+            source={{ uri: imageUri }}
+            style={{ width: '100%', height: '100%' }}
           />
         </TouchableWithoutFeedback>
-        <TouchableOpacity onPress={toggleModal} style={{top: 10}}>
-          <Text style={{color: 'black', alignSelf: 'center', margin: 10}}>
+        <TouchableOpacity onPress={toggleModal} style={{ top: 10 }}>
+          <Text style={{ color: 'black', alignSelf: 'center', margin: 10 }}>
             Close
           </Text>
         </TouchableOpacity>

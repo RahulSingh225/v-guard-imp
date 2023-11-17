@@ -1,7 +1,7 @@
 import { createDigestGetRequest, loginPasswordDigest } from "../../utils/apiservice";
 import { createDigestPostRequest } from "../../utils/apiservice";
 
-export function loginWithPassword(username, password){
+export function loginWithPassword(username, password) {
     const path = "user/userDetails/login";
     console.log("<><><><", username)
     return loginPasswordDigest(path, username, password);
@@ -16,7 +16,7 @@ export function sendloginWithOtp(number) {
     return createDigestPostRequest(path, body)
 }
 
-export function validateLoginOtp(number, otp){
+export function validateLoginOtp(number, otp) {
     const body = {
         loginOtpUserName: number,
         otp: otp
@@ -24,3 +24,4 @@ export function validateLoginOtp(number, otp){
     const path = "user/validateLoginOtp"
     return createDigestPostRequest(path, body)
 }
+

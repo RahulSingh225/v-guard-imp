@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, TouchableOpacity, PermissionsAndroid, Image, ActivityIndicator, Alert } from 'react-native';
 import { height, width } from '../../../utils/dimensions';
-import { Avatar, } from 'react-native-paper';
+import { Avatar, Button, } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Buttons from "../../../components/Buttons";
@@ -16,6 +16,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FloatingLabelInput } from 'react-native-floating-label-input';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { CurrentRenderContext } from '@react-navigation/native';
+import Popup from '../../../components/Popup';
+import Loader from '../../../components/Loader';
 const NewUserKyc = ({ navigation, route }) => {
     const { userData } = route.params;
     // console.log('==================%%%==================', userData.selectedCity);
@@ -26,6 +28,7 @@ const NewUserKyc = ({ navigation, route }) => {
     const [profession, setprofession] = useState("Select");
     const [subprofession, setsubprofession] = useState("Select");
     const [maritialStatus, setmaritialStatus] = useState('Select');
+    const [maritialstatusId, setmaritialstatusId] = useState('');
     const [loyalty, setloyalty] = useState('Select');
     const [Number, setNumber] = useState();
     const [selfieData, setSelfieData] = useState(null);
@@ -42,19 +45,34 @@ const NewUserKyc = ({ navigation, route }) => {
     const [currentcityid, securrenttcityid] = useState('');
     const [currentdistrictId, setcurrentdistrictId] = useState('');
     const [currentstateid, setcurrentstateid] = useState('');
-
-
-
     const [currentselectedState, setCurrentselectedState] = useState('');
     const [currentselectedDistrict, setCurrentselectedDistrict] = useState('');
     const [currentselectedCity, setCurrentselectedCity] = useState('');
     const [professiondata, setprofessiondata] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
-    const [schmename, setschmename] = useState('');
-    const [resonforlikingschme, setresonforlikingschme] = useState('');
     const [citylistpicker, setcitylistpicker] = useState(null);
     const [redendering, setredendering] = useState(0);
     const [subprofessiondata, setsubprofessiondata] = useState([]);
+    const [isAadharValid, setIsAadharValid] = useState(true);
+    const [isPanValid, setIsPanValid] = useState(true);
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [popupMessage, setPopupMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [showTextFields, setShowTextFields] = useState(false);
+    const [schmename, setschmename] = useState('');
+    const [resonforlikingschme, setresonforlikingschme] = useState('');
+    const [otherschemebrand2, setotherschemebrand2] = useState();
+    const [whatyouliked2, setwhatyouliked2] = useState();
+    const [otherschemebrand3, setotherschemebrand3] = useState();
+    const [whatyouliked3, setwhatyouliked3] = useState();
+    const [otherschemebrand4, setotherschemebrand4] = useState();
+    const [whatyouliked4, setwhatyouliked4] = useState();
+    const [otherschemebrand5, setotherschemebrand5] = useState();
+    const [whatyouliked5, setwhatyouliked5] = useState();
+    const [schemes, setSchemes] = useState([{ schmename: '', resonforlikingschme: '' }]);
+    const [addttextfield, setaddttextfield] = useState(false);
+    const isInitialMount = useRef(true);
+
 
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState();
@@ -80,6 +98,29 @@ const NewUserKyc = ({ navigation, route }) => {
 
     // }
 
+    const validateAadhar = (aadhar) => {
+        // Use a regular expression to check if the Aadhar card number is valid.
+        const aadharPattern = /^\d{12}$/;
+        return aadharPattern.test(aadhar);
+    };
+
+    const handleAadharBlur = () => {
+        const isValid = validateAadhar(aadharcardno);
+        setIsAadharValid(isValid);
+    };
+
+    const validatePan = (pan) => {
+        // Use a regular expression to check if the PAN card number is valid.
+        const panPattern = /^([A-Z]){5}([0-9]){4}([A-Z]){1}?$/;
+        return panPattern.test(pan);
+    };
+
+    const handlePanBlur = () => {
+        const upperCasePan = pancardno.toUpperCase(); // Convert to uppercase
+        const isValid = validatePan(upperCasePan);
+        setIsPanValid(isValid);
+        setpancardno(upperCasePan); // Update the state with uppercase value
+    };
 
     async function Gettingprofession(params) {
 
@@ -109,29 +150,28 @@ const NewUserKyc = ({ navigation, route }) => {
             console.log('Pin Code Data:', pincodeid);
 
             const secondData = await PincodedetailList(pincodeid);
+            console.log("<><><><><>IF NO HAPPENING THIS ", secondData.distId);
             securrenttcityid(secondData.cityId);
             setcurrentdistrictId(secondData.distId);
             setcurrentstateid(secondData.stateId);
-            console.log('================INSDE FETCH PINCODE FUNCTION ====================');
-            console.log(currentdistrictId);
-            console.log(currentstateid);
-            console.log(currentcityid);
-            console.log('====================================');
+
 
             const cityData = await getCityDataForDistrict(secondData.distId);
             // console.log('City Data:', cityData);
             setcitylistpicker(cityData);
             setCurrentselectedState(secondData.stateName);
 
+
             setCurrentselectedDistrict(secondData.distName);
-
-            console.log('Second API call:', secondData);
-
-
+            setcurrentdistrictId(secondData.distId);
+            console.log('================INSDE FETCH PINCODE FUNCTION ====================');
+            console.log(currentdistrictId);
+            console.log(currentstateid);
+            console.log(currentcityid);
+            console.log('====================================');
         } catch (error) {
             console.error('Error in Page 1:', error);
         } finally {
-            // After the API call (whether it succeeds or fails), hide the loader
             setLoading(false);
         }
     }
@@ -144,7 +184,7 @@ const NewUserKyc = ({ navigation, route }) => {
             const suggestionData = await fetchPinCodeData(pincode);
 
             if (Array.isArray(suggestionData) && suggestionData.length > 0) {
-                // Filter out suggestions with null values
+
                 const filteredSuggestions = suggestionData.filter((item) => (
                     item.pinCode !== null
                 ));
@@ -158,7 +198,7 @@ const NewUserKyc = ({ navigation, route }) => {
             console.error('Error fetching suggestions:', error);
         }
         finally {
-            // After the API call (whether it succeeds or fails), hide the loader
+
             setLoading(false);
         }
     };
@@ -180,10 +220,10 @@ const NewUserKyc = ({ navigation, route }) => {
     }
     //=========== ***********************END OF THE ABOVE FUNCTION =================================//
 
-
     //===================START OF RETRIVING DATA FROM ASYNC STORAGE=======================================//
     const retrieveData = async () => {
         try {
+            setIsLoading(true);
             const data = await AsyncStorage.getItem('previewSummaryData');
             if (data) {
                 const retrievedData = JSON.parse(data);
@@ -195,16 +235,12 @@ const NewUserKyc = ({ navigation, route }) => {
                 if (retrievedData.fullData.NewUserKycData.currentaddres === null) {
                     setcurrentaddres('Select');
                 }
-
                 else if (retrievedData.fullData.NewUserKycData.currentaddres === "no") {
                     setcurrentaddres(retrievedData.fullData.NewUserKycData.currentaddres);
                     setpincode(retrievedData.fullData.NewUserKycData.pinCode)
                     setaddress(retrievedData.fullData.NewUserKycData.address);
                     setstreet(retrievedData.fullData.NewUserKycData.street);
                     setlandmark(retrievedData.fullData.NewUserKycData.landmark);
-                    setCurrentselectedCity(retrievedData.fullData.NewUserKycData.currentselectedCity);
-                    setCurrentselectedDistrict(retrievedData.fullData.NewUserKycData.currentselectedDistrict);
-                    setCurrentselectedState(retrievedData.fullData.NewUserKycData.currentselectedState);
                     setpincode(retrievedData.fullData.NewUserKycData.pinCode)
                     setprofession(retrievedData.fullData.NewUserKycData.profession);
                     setmaritialStatus(retrievedData.fullData.NewUserKycData.maritialStatus);
@@ -220,6 +256,10 @@ const NewUserKyc = ({ navigation, route }) => {
                     setCurrentselectedCity(retrievedData.fullData.NewUserKycData.currentselectedCity);
                     setCurrentselectedDistrict(retrievedData.fullData.NewUserKycData.currentselectedDistrict);
                     setCurrentselectedState(retrievedData.fullData.NewUserKycData.currentselectedState);
+                    securrenttcityid(retrievedData.fullData.NewUserKycData.currentcityid);
+                    setcurrentdistrictId(retrievedData.fullData.NewUserKycData.districtId);
+                    setcurrentstateid(retrievedData.fullData.NewUserKycData.currentstateid);
+                    // setcitylistpicker(retrievedData.fullData.NewUserKycData.currentselectedCity);
 
                 }
                 if (retrievedData.fullData.NewUserKycData.currentaddres === 'yes') {
@@ -248,9 +288,10 @@ const NewUserKyc = ({ navigation, route }) => {
                     setpancardno(retrievedData.fullData.NewUserKycData.pancardno);
                     setaadharcardno(retrievedData.fullData.NewUserKycData.aadharcardno);
                     setannualincome(retrievedData.fullData.NewUserKycData.annualincome);
-                    setCurrentselectedCity(retrievedData.fullData.NewUserKycData.currentselectedCity);
-                    setCurrentselectedDistrict(retrievedData.fullData.NewUserKycData.currentselectedDistrict);
-                    setCurrentselectedState(retrievedData.fullData.NewUserKycData.currentselectedState);
+
+                    securrenttcityid(retrievedData.fullData.userData.permananetcityid);
+                    setcurrentdistrictId(retrievedData.fullData.userData.permananetdistrictId);
+                    setcurrentstateid(retrievedData.fullData.userData.permananetsateid);
 
 
                 }
@@ -285,16 +326,16 @@ const NewUserKyc = ({ navigation, route }) => {
                     setCurrentselectedCity(retrievedData.fullData.NewUserKycData.currentselectedCity);
                     setCurrentselectedDistrict(retrievedData.fullData.NewUserKycData.currentselectedDistrict);
                     setCurrentselectedState(retrievedData.fullData.NewUserKycData.currentselectedState);
+
                 }
+                console.log("<><><><><><><><><><><><>", retrievedData.fullData.NewUserKycData.currentselectedCity);
+                console.log("<><><><><><><><><><><><>", retrievedData.fullData.NewUserKycData.pincode);
 
-                console.log('================ON USE EFFECT====================');
-                console.log(pincode);
-                console.log('====================================');
-
-                // Set other state variables for additional fields.
             }
         } catch (error) {
             console.error('Error retrieving data: ', error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -302,7 +343,6 @@ const NewUserKyc = ({ navigation, route }) => {
 
 
         if (currentaddres === 'no' && text.length >= 2) {
-
 
             fetchPincodeSuggestions(text);
             setOpen(true);
@@ -312,31 +352,9 @@ const NewUserKyc = ({ navigation, route }) => {
     }
     //===================END OF RETRIVING DATA FROM ASYNC STORAGE=======================================//
     useEffect(() => {
-        // requestCameraPermission();
-
-        console.log("===>>ON FOIRST", currentaddres);
-
-        retrieveData()
-
-
+        retrieveData();
         Gettingprofession();
         // getsubprofession();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }, [])
 
 
@@ -398,6 +416,7 @@ const NewUserKyc = ({ navigation, route }) => {
         profession,
         subprofession,
         maritialStatus,
+        maritialstatusId,
         loyalty,
         annualincome,
         aadharcardno,
@@ -418,6 +437,47 @@ const NewUserKyc = ({ navigation, route }) => {
         currentstateid,
     };
 
+    async function updateNewUserKycDataInPreviewSummary(NewUserKycData) {
+        try {
+            // setIsLoading(true);
+            // Retrieve the existing 'previewSummaryData' from AsyncStorage
+            const previewSummaryDataString = await AsyncStorage.getItem('previewSummaryData');
+
+            if (previewSummaryDataString) {
+                // Parse the JSON string to an object
+                const previewSummaryData = JSON.parse(previewSummaryDataString);
+
+                // Ensure that the object structure is properly initialized
+                if (!previewSummaryData.fullData) {
+                    previewSummaryData.fullData = {};
+                }
+
+                // Ensure that the object structure for 'NewUserKycData' is properly initialized
+                if (!previewSummaryData.fullData.NewUserKycData) {
+                    previewSummaryData.fullData.NewUserKycData = {};
+                }
+
+                // Update the 'NewUserKycData' property directly with the provided 'newUserData'
+                previewSummaryData.fullData.NewUserKycData = NewUserKycData;
+
+                // Convert the updated object back to a JSON string
+                const updatedPreviewSummaryDataString = JSON.stringify(previewSummaryData);
+
+                // Save the updated 'previewSummaryData' back to AsyncStorage
+                await AsyncStorage.setItem('previewSummaryData', updatedPreviewSummaryDataString);
+
+                console.log('Updated NewUserKycData in previewSummaryData:', NewUserKycData);
+            } else {
+                console.log('No previewSummaryData found in AsyncStorage');
+            }
+        } catch (error) {
+            console.error('Error updating NewUserKycData in previewSummaryData:', error);
+        } finally {
+            // setIsLoading(false);
+        }
+    }
+
+
     //Combine user data and form data into one object
     const fullData = {
         userData,
@@ -426,83 +486,107 @@ const NewUserKyc = ({ navigation, route }) => {
     //================================VALIDATION FUNCTION AND NAVIAGTION ON NEXT PAGE ==============================================//
     const validateFields = async () => {
         if (!currentaddres || currentaddres === "Select") {
-            Alert.alert('Select current address same as Permanent address or not.');
+            setIsPopupVisible(true);
+            setPopupMessage('Select current address same as Permanent address or not.');
             return false;
         }
         if (!address) {
-            Alert.alert('Please enter your current address.');
+            setIsPopupVisible(true);
+            setPopupMessage('Please enter your current address.');
             return false;
         }
         if (!street) {
-            Alert.alert('Please enter street colony or locality name.');
+            setIsPopupVisible(true);
+            setPopupMessage('Please enter street colony or locality name.');
             return false;
         }
         if (!pincode && pincode != null) {
             console.log("))))))", pincode);
-            Alert.alert('Please enter a pincode and select a pincode to get state and district');
+            setIsPopupVisible(true);
+            setPopupMessage('Please enter a pincode and select a pincode to get state and district');
             return false;
         }
         if (!profession || profession === "Select") {
-            Alert.alert('Profession field is empty. Please fill it.');
+            setIsPopupVisible(true);
+            setPopupMessage('Profession field is empty. Please fill it.');
             return false;
         }
         if (!maritialStatus || maritialStatus === '') {
-            Alert.alert('Marital Status field is empty. Please fill it.');
+            setIsPopupVisible(true);
+            setPopupMessage('Marital Status field is empty. Please fill it.');
             return false;
         }
         if (!loyalty || loyalty === 'Select') {
-            Alert.alert('Loyalty field is empty. Please fill it.');
+            setIsPopupVisible(true);
+            setPopupMessage('Loyalty field is empty. Please fill it.');
             return false;
         }
         if (!annualincome) {
-            Alert.alert('Annual Business potenial field is empty. Please fill it.');
+            setIsPopupVisible(true);
+            setPopupMessage('Annual Business potenial field is empty. Please fill it.');
             return false;
         }
         if (!selfieData) {
-            Alert.alert('Please upload your selfie');
+            setIsPopupVisible(true);
+            setPopupMessage('Please upload your selfie');
             return false;
         }
         if (!aadharcardno) {
-            Alert.alert('Aadhar Card Number field is empty. Please fill it.');
+            setIsPopupVisible(true);
+            setPopupMessage('Aadhar Card Number field is empty. Please fill it.');
             return false;
         }
 
 
         if (!idProofFrontData) {
-            Alert.alert('Aadhar Front Image not taken.');
+            setIsPopupVisible(true);
+            setPopupMessage('Aadhar Front Image not taken.');
             return false;
         }
         if (!idProofBackData) {
-            Alert.alert('Aadhar Back Image not taken.');
+            setIsPopupVisible(true);
+            setPopupMessage('Aadhar Back Image not taken.');
             return false;
         }
         // if (!panData) {
-        //     Alert.alert('PAN Card Photo field is empty. Please fill it.');
+        //     setPopupMessage('PAN Card Photo field is empty. Please fill it.');
         //     return false;
         // }
-        // if (!pancardno) {
-        //     Alert.alert('PAN Card Number field is empty. Please fill it.');
-        //     return false;
-        // }
+        if (pancardno) {
+            if (pancardno.length < 10) {
+                setIsPopupVisible(true);
+                setPopupMessage('Please enter a valid PAN Card Number.');
+                return false;
+            }
+
+            if (!validatePan(pancardno)) {
+                setIsPopupVisible(true);
+                setPopupMessage('Please enter a valid PAN Card Number.');
+                return false;
+            }
+        }
 
         //  if (!landmark) {
-        //     Alert.alert('landmark field is empty. Please fill it.');
+        //     setPopupMessage('landmark field is empty. Please fill it.');
         //     return false;
         // }
 
         if (!currentselectedCity) {
             console.log(")))))))))))))", currentselectedCity);
-            Alert.alert(' Current City field is empty. Please fill it.');
+            setIsPopupVisible(true);
+            setPopupMessage(' Current City field is empty. Please fill it.');
             return false;
         }
         if (!currentselectedDistrict) {
             console.log(")))))))))))))", currentselectedDistrict);
-            Alert.alert('Current District field is empty. Please fill it.');
+            setIsPopupVisible(true);
+            setPopupMessage('Current District field is empty. Please fill it.');
             return false;
         }
         if (!currentselectedState) {
             console.log(")))))))))))))", currentselectedState);
-            Alert.alert('Current State field is empty. Please fill it.');
+            setIsPopupVisible(true);
+            setPopupMessage('Current State field is empty. Please fill it.');
             return false;
         }
         else {
@@ -513,6 +597,9 @@ const NewUserKyc = ({ navigation, route }) => {
             // console.log("+++++++++++++++++++", fullData);
             // await AsyncStorage.setItem("previewSummaryData", fullData);
             // log
+            updateNewUserKycDataInPreviewSummary(NewUserKycData);
+            const updatedValue = await AsyncStorage.getItem('previewSummaryData');
+            console.log('Updated Value in AsyncStorage (previewSummaryData +++++NEWUSERkYC++++++++++++):', updatedValue);
             navigation.navigate('NomineePage', { fullData });
         }
         // Add validation checks for other fields
@@ -587,6 +674,27 @@ const NewUserKyc = ({ navigation, route }) => {
             }
         }
     };
+    const handleButtonPress = () => {
+        setaddttextfield(true);
+    };
+
+
+    const handleInputChange = (index, fieldName, value) => {
+        const updatedSchemes = [...schemes];
+        updatedSchemes[index][fieldName] = value;
+        setSchemes(updatedSchemes);
+    };
+
+    const handleIconButtonPress = () => {
+        // Add a new set of text inputs
+        if (schemes.length < 5) {
+            setSchemes([...schemes, { schmename: '', resonforlikingschme: '' }]);
+        }
+    };
+
+
+
+
 
     return (
         <SafeAreaView>
@@ -601,9 +709,15 @@ const NewUserKyc = ({ navigation, route }) => {
                         </View>
 
                     </View>
+                    {isLoading == true ? <View style={{ flex: 1 }}>
 
-
-
+                        <Loader isLoading={isLoading} />
+                    </View> : null}
+                    {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
+                        <Text>{popupMessage}</Text>
+                        {/* // <Text>ICORRECT OTP</Text> */}
+                    </Popup>
+                    )}
                     <Text style={{ color: 'black', marginLeft: 20, }}>{t('strings:is_current_address_different')}</Text>
                     <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 3 }}>
 
@@ -615,7 +729,7 @@ const NewUserKyc = ({ navigation, route }) => {
                             onValueChange={(itemValue, itemIndex) => {
                                 setcurrentaddres(itemValue);
                                 // Set text input values to null when "Yes" is selected
-                                if (itemValue === 'no') {
+                                if (itemValue == 'no') {
                                     setaddress('');
                                     setstreet('');
                                     setlandmark('');
@@ -626,19 +740,16 @@ const NewUserKyc = ({ navigation, route }) => {
                                     setcurrentstateid('');
                                     setcurrentdistrictId('');
                                     securrenttcityid('');
+                                    //setcitylistpicker('');
 
 
                                 }
-                                if (itemValue === 'yes') {
+                                if (itemValue == 'yes') {
 
 
                                     setaddress(userData.address);
                                     setstreet(userData.street);
                                     setlandmark(userData.landmark);
-                                    console.log('====================================');
-                                    console.log(userData.pincode);
-                                    console.log(pincode);
-
                                     setpincode(userData.pincode);
                                     setCurrentselectedCity(userData.selectedCity);
                                     setCurrentselectedDistrict(userData.selectedDistrict);
@@ -646,12 +757,17 @@ const NewUserKyc = ({ navigation, route }) => {
                                     setcurrentstateid(userData.permananetsateid);
                                     setcurrentdistrictId(userData.permananetdistrictId);
                                     securrenttcityid(userData.permananetcityid);
+                                    console.log('====================================');
+                                    console.log(userData.pincode);
+                                    console.log(pincode);
 
 
 
-                                    console.log('====================####================', currentselectedCity);
-                                    console.log('====================####================', currentselectedDistrict);
-                                    console.log('====================####================', currentselectedState);
+
+
+                                    // console.log('====================####================', currentselectedCity);
+                                    //  console.log('====================####================', currentselectedDistrict);
+                                    //  console.log('====================####================', currentselectedState);
                                 }
                             }}>
                             <Picker.Item label="Select" value="Select" />
@@ -724,80 +840,81 @@ const NewUserKyc = ({ navigation, route }) => {
                             :
 
                             <>
-                                <FloatingLabelInput
-
-                                    label="Enter Pincode"
-                                    labelTextColor={"black"}
-                                    keyboardType="number-pad"
-                                    value={pincode}
-                                    onChangeText={(text) => pincodefunction(text)}
-                                    maxLength={6}
-                                    containerStyles={styles.input}
-                                    staticLabel
-                                    labelStyles={styles.labelStyles}
-                                    inputStyles={{
-                                        color: 'black',
-                                        paddingHorizontal: 5,
-                                    }}
-                                />
 
                                 <DropDownPicker
                                     mode="BADGE"
                                     showBadgeDot={true}
+                                    searchable={true}
+                                    loading={isLoading}
+                                    label={value}
+                                    placeholder={pincode === null ? 'Search Pincode' : `Searched Pincode: ${pincode}`}
+                                    searchablePlaceholder="Search Pincode"
+                                    translation=
+                                    {t('auth:newuser:Secondpagepincode')}
 
-                                    label="Pincode List"
+                                    // placeholder={value}
+                                    searchTextInputProps={{
+                                        maxLength: 6
+                                    }}
                                     badgeStyle={(item, index) => ({
                                         padding: 5,
                                         backgroundColor: item.value ? 'red' : 'grey',
+
                                     })}
+                                    badgeProps={{
+                                        activeOpacity: 1.5
+                                    }}
+
                                     badgeSeparatorStyle={{
                                         width: 30,
                                     }}
-                                    badgeColors={["red",]}
-                                    badgeDotColors={["red", "blue", "orange"]}
+                                    badgeColors={['red']}
+                                    badgeDotColors={['red']}
                                     listMode="SCROLLVIEW"
                                     scrollViewProps={{ nestedScrollEnabled: true, decelerationRate: "fast" }}
                                     open={open}
-
                                     items={suggestions.map((item) => ({
                                         label: item.pinCode,
                                         value: item.pinCode,
                                     }))}
-
-
                                     setOpen={setOpen}
                                     value={pincode}
-                                    onChangeText={(text) => {
-                                        [setpincode(text), setOpen(false)]
-                                        if (loading) {
-                                            return (
-                                                <View style={styles.loaderContainer}>
-                                                    <ActivityIndicator size="large" color="blue" />
-                                                </View>
-                                            );
-                                        }
-                                        // Call your filtering function with the user's input
-                                        //fetchPincodeSuggestions(text);
+                                    onChangeItem={(item) => {
+
+                                        setpincode(item.value);
                                     }}
+                                    onChangeSearchText={(text) => pincodefunction(text)}
                                     dropDownContainerStyle={{
-
-                                        width: width / 1.1, height: height / 8, padding: 10, left: 18, top: 50, borderWidth: 0, elevation: 0
-
+                                        width: width / 1.1,
+                                        height: height / 5,
+                                        padding: 10,
+                                        left: 20,
+                                        top: 60,
+                                        borderWidth: 0.5,
+                                        borderTopWidth: 0,
+                                        justifyContent: 'center',
+                                        elevation: 0,
+                                        backgroundColor: "#D3D3D3"
                                     }}
-
-                                    setValue={(value) => {
-                                        setpincode(value);
-                                        if (loading) {
-                                            return (
-                                                <View style={styles.loaderContainer}>
-                                                    <ActivityIndicator size="large" color="blue" />
-                                                </View>
-                                            );
-                                        }
-
+                                    style={{
+                                        backgroundColor: 'white',
+                                        elevation: 50,
+                                        opacity: 0.9,
+                                        borderWidth: 0.6,
+                                        margin: 20,
+                                        width: width / 1.1,
+                                        height: height / 15,
+                                        alignSelf: 'center',
+                                        bottom: 10,
+                                        elevation: 0,
+                                        margintop: 50,
                                     }}
-                                    style={{ backgroundColor: 'white', elevation: 50, opacity: 0.9, borderWidth: 0, width: width / 1.1, height: height / 15, alignSelf: 'center', bottom: 10, elevation: 0 }}
-                                /></>}
+                                />
+
+
+
+                            </>}
+
                         <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_state')}</Text>
                         <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
                             {/* <Picker
@@ -829,7 +946,7 @@ const NewUserKyc = ({ navigation, route }) => {
                         </View>
 
                         <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_city')}</Text>
-                        {currentaddres === 'no' ? <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                        {currentaddres === 'no' || currentselectedCity === null ? <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
                             <Picker
                                 mode='model'
                                 style={{ color: 'black' }}
@@ -839,6 +956,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                     setCurrentselectedCity(itemValue);
                                     securrenttcityid(selectedItem.id);
                                 }}>
+                                <Picker.Item label="Select" value='' />
                                 {Array.isArray(citylistpicker) && citylistpicker.length >= 0 ? (
                                     citylistpicker.map(item => (
                                         <Picker.Item
@@ -868,8 +986,6 @@ const NewUserKyc = ({ navigation, route }) => {
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:select_profession')}</Text>
 
                     <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
-
-
                         <Picker
                             mode='dropdown'
                             style={{ color: 'black' }}
@@ -885,7 +1001,7 @@ const NewUserKyc = ({ navigation, route }) => {
                         </Picker>
 
                     </View>
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:select_sub_profession_category')}</Text>
+
 
                     {/* <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
@@ -914,12 +1030,15 @@ const NewUserKyc = ({ navigation, route }) => {
                             mode='dropdown'
                             style={{ color: 'black' }}
                             selectedValue={maritialStatus}
-                            onValueChange={(itemValue, itemIndex) =>
-                                setmaritialStatus(itemValue)
+                            onValueChange={(itemValue, itemIndex) => {
+                                // setmaritialstatusId(itemValue) 
+                                setmaritialStatus(itemValue);
+
+                            }
                             }>
-                            <Picker.Item label="Select" value="" />
-                            <Picker.Item label="Married" value="1" />
-                            <Picker.Item label=" Unmarried" value="0" />
+                            <Picker.Item label="Select" value="0" />
+                            <Picker.Item label="Married" value="Married" />
+                            <Picker.Item label=" Unmarried" value="Unmarried" />
 
 
                         </Picker>
@@ -947,7 +1066,6 @@ const NewUserKyc = ({ navigation, route }) => {
                         </Picker>
 
                     </View>
-
                     {loyalty == 'Yes' ?
                         <FloatingLabelInput
 
@@ -993,6 +1111,50 @@ const NewUserKyc = ({ navigation, route }) => {
                         : null
                     }
 
+
+
+                    {/* <View>
+                        {loyalty == 'Yes' && schemes.map((scheme, index) => (
+                            <View key={index} style={styles.schemeContainer}>
+                                <FloatingLabelInput
+                                    label="If yes please mention Scheme and brand name"
+                                    value={scheme.schmename}
+                                    onChangeText={(text) => handleInputChange(index, 'schmename', text)}
+                                    keyboardType='default'
+                                    containerStyles={styles.input}
+                                    staticLabel
+                                    labelStyles={styles.labelStyles}
+                                    inputStyles={{
+                                        color: 'black',
+                                        paddingHorizontal: 10
+                                    }}
+                                />
+                                <View style={{ flexDirection: 'row' }}>
+                                    <FloatingLabelInput
+                                        label="If yes what you liked about the program *"
+                                        value={scheme.resonforlikingschme}
+                                        onChangeText={(text) => handleInputChange(index, 'resonforlikingschme', text)}
+                                        keyboardType='default'
+                                        containerStyles={styles.input}
+                                        staticLabel
+                                        labelStyles={styles.labelStyles}
+                                        inputStyles={{
+                                            color: 'black',
+                                            paddingHorizontal: 10
+                                        }}
+                                    />
+                                    <IconButton
+                                        icon="camera"
+                                        size={20}
+                                        onPress={handleIconButtonPress}
+                                    />
+                                </View>
+                            </View>
+                        ))}
+                    </View> */}
+
+
+
                     <FloatingLabelInput
 
                         label={t('strings:annual_business_potential')}
@@ -1006,11 +1168,9 @@ const NewUserKyc = ({ navigation, route }) => {
                             color: 'black',
                             paddingHorizontal: 10,
                         }}
-
-
-
-
                     />
+
+
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_update_your_selfie')}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginBottom: 5, }}>
 
@@ -1104,25 +1264,30 @@ const NewUserKyc = ({ navigation, route }) => {
                         />
 
                     </View>
+                    <View>
 
-                    <FloatingLabelInput
+                        <FloatingLabelInput
 
-                        label={t('strings:update_aadhar_voter_id_dl_manually')}
-                        value={aadharcardno}
-                        onChangeText={(text) => setaadharcardno(text)}
-                        keyboardType='number-pad'
+                            label={t('strings:update_aadhar_voter_id_dl_manually')}
+                            value={aadharcardno}
+                            onChangeText={(text) => setaadharcardno(text)}
+                            keyboardType='number-pad'
 
-                        containerStyles={[styles.input]}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
+                            containerStyles={[styles.input]}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: isAadharValid ? 'black' : 'red',
+                                paddingHorizontal: 10,
+                            }}
+                            onBlur={handleAadharBlur}
 
-
-                        maxLength={12}
-                    />
+                            maxLength={12}
+                        />
+                        {!isAadharValid && (
+                            <Text style={{ color: 'red', left: 20, }}>Please enter a valid Aadhar card number.</Text>
+                        )}
+                    </View>
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 12 }}>{t('strings:update_pan_card_front')}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, }}>
 
@@ -1152,24 +1317,29 @@ const NewUserKyc = ({ navigation, route }) => {
                         />
 
                     </View>
-                    <FloatingLabelInput
+                    <View>
+                        <FloatingLabelInput
 
-                        label={t('strings:update_pan_number_manually')}
-                        value={pancardno}
-                        onChangeText={(text) => setpancardno(text)}
-                        keyboardType='default'
+                            label={t('strings:update_pan_number_manually')}
+                            value={pancardno}
+                            onChangeText={(text) => setpancardno(text)}
+                            keyboardType='default'
 
-                        containerStyles={[styles.input,]}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
+                            containerStyles={[styles.input,]}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: isPanValid ? 'black' : 'red',
+                                paddingHorizontal: 10,
+                            }}
 
-
-                        maxLength={10}
-                    />
+                            onBlur={handlePanBlur}
+                            maxLength={10}
+                        />
+                        {!isPanValid && (
+                            <Text style={{ color: 'red', left: 20, }}>Please enter a valid PAN card number.</Text>
+                        )}
+                    </View>
                     <View style={{ display: 'flex', width: "100%", alignItems: 'center', marginVertical: 20 }}>
                         <Buttons
                             label="Next"
@@ -1198,6 +1368,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    schemeContainer: {
+        marginVertical: 10,
+    },
     input: {
 
         padding: 5,
@@ -1210,9 +1383,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderColor: 'grey',
         borderWidth: 0.8,
+        marginVertical: 10,
+        bottom: -5
     },
     labelStyles: {
         backgroundColor: 'transparent',
-        margin: 15,
+        margin: 14,
     },
 })
