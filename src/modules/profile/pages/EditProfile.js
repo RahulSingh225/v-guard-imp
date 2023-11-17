@@ -19,7 +19,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { useTranslation } from 'react-i18next';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ImageWithModal from '../../../components/ImageWithModal';
-import { fetchPinCodeData, PincodedetailList, GetProfession, Citylist, Getsubprofession, getUserProfile } from '../../../utils/apiservice';
+import { fetchPinCodeData, PincodedetailList, GetProfession, Citylist, Getsubprofession, getUserProfile, sendFile, getFile } from '../../../utils/apiservice';
 // import Popup from '../../../components/Popup';
 // import Loader from '../../../components/Loader';
 
@@ -38,7 +38,9 @@ const EditProfile = () => {
 
     const [SelfieData, setSelfieData] = useState(null);
     const [Idcardfront, setIdcardfront] = useState(null);
-    const [selfieid, setselfieid] = useState();
+    const [Idcardback, setIdcardback] = useState(null);
+    const [pancarddata, setpancarddata] = useState(null);
+
     const [selfieemodal, setselfieemodal] = useState(false);
     const [professiondata, setprofessiondata] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
@@ -200,18 +202,10 @@ const EditProfile = () => {
             // Handle the captured data based on the document type
             switch (documentType) {
                 case 'Selfie':
-                    setSelfieData(newPhoto);
+                    setSelfieData(newPhoto.uri);
                     // console.log(SelfieData);
                     break;
-                case 'IdProofFront':
-                    setIdProofFrontData(newPhoto);
-                    break;
-                case 'IdProofBack':
-                    setIdProofBackData(newPhoto);
-                    break;
-                case 'Pan':
-                    setPanData(newPhoto);
-                    break;
+
                 default:
                     console.log('Unknown document type');
             }
@@ -249,7 +243,7 @@ const EditProfile = () => {
                 // Handle the captured data based on the document type
                 switch (documentType) {
                     case 'Selfie':
-                        setSelfieData(newPhoto);
+                        setSelfieData(newPhoto.uri);
                         break;
 
                     default:
@@ -338,8 +332,8 @@ const EditProfile = () => {
 
     }
     useEffect(() => {
-        const baseurl = 'https://www.vguardrishta.com/img/appImages/Profile/';
-        Gettingprofession();
+
+        //  Gettingprofession();
         AsyncStorage.getItem('userImage').then((userimage) => {
             setUserImage(userimage);
         });
@@ -353,6 +347,8 @@ const EditProfile = () => {
             .then(response => response.json())
             .then(responseData => {
                 setData(responseData);
+                setUserName(responseData.name);
+                setUserCode(responseData.userCode);
                 // console.log("?????????????????????", data);
                 setform1(prevForm1 => ({
                     ...prevForm1,
@@ -376,13 +372,6 @@ const EditProfile = () => {
 
 
                 }));
-
-                setselfieid(baseurl + responseData.kycDetails.selfie);
-                console.log(responseData.gender);
-                setSelfieData(selfieid);
-
-
-
                 setform2(prevform2 => ({
                     ...prevform2,
                     curremtaddress: responseData.currentAddress || "",
@@ -420,6 +409,12 @@ const EditProfile = () => {
 
 
                 }))
+                fetchAndSetImageData(responseData.kycDetails.selfie, 'PROFILE', 1);
+                fetchAndSetImageData(responseData.kycDetails.aadharOrVoterOrDlBack, 'ID_CARD_FRONT', 1);
+                fetchAndSetImageData(responseData.kycDetails.aadharOrVoterOrDlBack, 'ID_CARD_BACK', 1);
+                fetchAndSetImageData(responseData.kycDetails.panCardFront, 'PAN_CARD_FRONT', 1);
+
+
 
                 console.log("<><><", SelfieData);
                 console.log("<><<><<><>><", responseData, "<><<<><><><><><><<><");
@@ -427,17 +422,51 @@ const EditProfile = () => {
             .catch(error => {
                 console.error('Error fetching data:', error);
             });
-        setSelfieData(selfieid);
-        console.log(SelfieData);
+
+
 
     }, [])
+    const fetchAndSetImageData = async (uuid, imageRelated, userRole) => {
+        try {
+            setIsLoading(true)
+            const response = await getFile(uuid, imageRelated, userRole);
+            const imageUrl = response.url;
+
+
+            switch (imageRelated) {
+                case 'ID_CARD_FRONT':
+                    setIdcardfront(imageUrl);
+                    break;
+                case 'ID_CARD_BACK':
+                    setIdcardback(imageUrl);
+                    break;
+                case 'PAN_CARD_FRONT':
+                    setpancarddata(imageUrl);
+                    break;
+                case 'PROFILE':
+                    setSelfieData(imageUrl);
+                    break;
+
+                default:
+                    console.warn(`Unhandled imageRelated value: ${imageRelated}`);
+            }
+
+            console.log(`Data set for ${imageRelated} (${uuid}):`, imageUrl);
+            return response;
+        } catch (error) {
+            console.error(`Error getting file for ${imageRelated} (${uuid}):`, error);
+            throw error;
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const baseurl = 'https://www.vguardrishta.com/img/appImages/Profile/';
     return (
         <><ScrollView style={styles.mainWrapper}>
             <View style={styles.flexBox}>
                 <View style={styles.ImageProfile}>
-                    <Image source={{ uri: baseurl + userImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
+                    <Image source={{ uri: SelfieData }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
                 </View>
                 <View style={{ margin: 10, backgroundColor: 'yellow' }}></View>
                 <View style={styles.profileText}>
@@ -448,7 +477,7 @@ const EditProfile = () => {
             {/* <View style={{ backgroundColor: 'red', height: height, flexDirection: 'column', justifyContent: 'space-around', padding: 10 }}> */}
             <View style={{ flexDirection: 'column', justifyContent: 'space-around', }}>
                 <FloatingLabelInput
-                    label={t('auth:newuser:Preferedlanguage')}
+                    label={t('strings:lbl_preferred_language')}
                     staticLabel
                     maxLength={30}
                     editable={false}
@@ -463,7 +492,7 @@ const EditProfile = () => {
                         paddingHorizontal: 15,
                     }} />
                 <FloatingLabelInput
-                    label={t('auth:newuser:Name')}
+                    label={t('strings:name')}
                     value={form1.name}
                     keyboardType="default"
                     //   onChangeText={value => setname(value)}
@@ -476,7 +505,7 @@ const EditProfile = () => {
                         paddingVertical: 10,
                     }} />
 
-                <Text style={{ color: 'black', marginLeft: 24, }}>{t('auth:newuser:Gender')}</Text>
+                <Text style={{ color: 'black', marginLeft: 24, }}>{t('strings:lbl_gender_mandatory')}</Text>
 
                 <View style={{ backgroundColor: '#fff', height: height / 17, margin: 10, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 1.8, borderColor: '#D3D3D3' }}>
                     <Picker
@@ -495,7 +524,7 @@ const EditProfile = () => {
 
                 </View>
 
-
+                <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_date_of_birth_mandatory')}</Text>
                 <View style={{
                     flexDirection: 'row',
 
@@ -522,7 +551,7 @@ const EditProfile = () => {
 
                 <FloatingLabelInput
 
-                    label={t('auth:newuser:Contact')}
+                    label={t('strings:contact_no')}
                     value={form1.number}
 
                     keyboardType='number-pad'
@@ -536,7 +565,7 @@ const EditProfile = () => {
                         paddingHorizontal: 15,
                     }} />
                 <FloatingLabelInput
-                    label={t('auth:newuser:Whatapp')}
+                    label={t('strings:_is_what_s_app_contact_same_as_above')}
                     maxLength={10}
                     value={form1.WhatappNo}
                     onChangeText={(text) => handleFieldChange('WhatappNo', text)}
@@ -549,7 +578,7 @@ const EditProfile = () => {
                         paddingHorizontal: 15,
                     }} />
                 <FloatingLabelInput
-                    label={t('auth:newuser:Email')}
+                    label={t('strings:email')}
                     keyboardType='email-address'
                     value={form1.email}
                     onChangeText={(text) => handleFieldChange("email", text)}
@@ -563,7 +592,7 @@ const EditProfile = () => {
                 <Text>Permanent Address</Text>
                 <FloatingLabelInput
 
-                    label={t('auth:newuser:Permanentaddress')}
+                    label={t('strings:lbl_permanent_address_mandatory')}
 
 
                     keyboardType='default'
@@ -578,7 +607,7 @@ const EditProfile = () => {
                         paddingHorizontal: 15,
                     }} />
                 <FloatingLabelInput
-                    label={t('auth:newuser:Street')}
+                    label={t('strings:lbl_street_locality')}
                     maxLength={128}
                     keyboardType='default'
                     value={form1.permanantStreet}
@@ -591,7 +620,8 @@ const EditProfile = () => {
                         paddingHorizontal: 16,
                     }} />
                 <FloatingLabelInput
-                    label={t('auth:newuser:Landmark')}
+                    label={t('strings:lbl_landmark')}
+
                     staticLabel
                     maxLength={60}
                     keyboardType='default'
@@ -608,7 +638,8 @@ const EditProfile = () => {
 
                 <FloatingLabelInput
                     containerStyles={styles.input}
-                    label={t('auth:newuser:State')}
+                    label={t('strings:select_city')}
+
                     keyboardType="default"
                     value={form1.permanantcity}
                     //   onChangeText={(text) => [setSelectedState(text),
@@ -622,7 +653,7 @@ const EditProfile = () => {
 
                 <FloatingLabelInput
                     containerStyles={styles.input}
-                    label={t('auth:newuser:District')}
+                    label={t('strings:select_district')}
                     keyboardType="default"
                     value={form1.permanentdistrict}
                     //   onChangeText={(text) => [setSelectedState(text),
@@ -635,7 +666,8 @@ const EditProfile = () => {
                     }} />
                 <FloatingLabelInput
                     containerStyles={styles.input}
-                    label={t('auth:newuser:State')}
+                    label={t('strings:select_state')}
+
                     keyboardType="default"
                     value={form1.permanentstate}
                     //   onChangeText={(text) => [setSelectedState(text),
@@ -648,7 +680,8 @@ const EditProfile = () => {
                     }} />
                 <FloatingLabelInput
                     containerStyles={styles.input}
-                    label="Pincode"
+                    label={t('auth:newuser:Secondpagepincode')}
+
                     keyboardType="default"
                     value={form1.pincode}
                     //   onChangeText={(text) => [setSelectedState(text),
@@ -660,7 +693,7 @@ const EditProfile = () => {
                         paddingHorizontal: 15,
                     }} />
 
-                <Text style={{ color: 'black', marginLeft: 15, margin: 5, color: "grey", fontSize: responsiveFontSize(1.8) }}>Current address same as permananet address?</Text>
+                <Text style={{ color: 'black', marginLeft: 15, margin: 5, color: "grey", fontSize: responsiveFontSize(1.8) }}>{t('strings:is_current_address_different')}</Text>
 
                 <View style={{
                     backgroundColor: '#fff', height: height / 17, margin: 10, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 1.8, borderColor: '#D3D3D3', borderRadius: 10,
@@ -825,7 +858,7 @@ const EditProfile = () => {
                     </>}
 
 
-
+                <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:select_profession')}</Text>
                 <View style={{
                     backgroundColor: '#fff', height: height / 17, margin: 10, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 1.8, borderColor: '#D3D3D3', borderRadius: 10,
                 }}>
@@ -845,7 +878,7 @@ const EditProfile = () => {
 
                 </View>
 
-
+                <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:select_marital_status')}</Text>
                 <View style={{
                     backgroundColor: '#fff', height: height / 17, margin: 10, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 1.8, borderColor: '#D3D3D3', borderRadius: 10,
                 }}>
@@ -885,8 +918,8 @@ const EditProfile = () => {
                     maxLength={12} />
 
 
-
-                <View style={styles.imagepickercontainer}>
+                <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_update_your_selfie')}</Text>
+                <View style={styles.imagecontainereditprofile}>
                     <View
                         style={styles.imagepicker}
                     >
@@ -897,7 +930,7 @@ const EditProfile = () => {
                             </TouchableOpacity> :
                             <TouchableOpacity onPress={() => setselfieemodal(true)} color={'grey'} style={{ width: width / 1.8, margin: 5 }}>
                                 <View>
-                                    <Text style={{ color: "#D3D3D3", marginTop: 10 }}>Selfie</Text>
+                                    <Text style={{ color: "#D3D3D3", marginTop: 10, width: width / 5 }}>Selfie</Text>
                                 </View>
 
                             </TouchableOpacity>}
@@ -959,19 +992,20 @@ const EditProfile = () => {
 
 
 
+
+
                     </View>
 
-                    <TouchableOpacity>
-                        {SelfieData != null ?
-                            <View style={{ left: 25 }}>
-                                <ImageWithModal imageUri={SelfieData.uri} />
-                            </View>
-                            :
-                            <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={styles.noimagepicker} />}
-                    </TouchableOpacity>
+                    <ImageWithModal imageUri={SelfieData} style={styles.noimagepicker} />
+
+
+
+
+
+
 
                 </View>
-                <Text style={{ color: 'black', marginLeft: 24, marginBottom: 5 }}>{t('auth:newuser:Alreadyenroled')}</Text>
+                <Text style={{ color: 'black', marginLeft: 24, marginBottom: 5 }}>{t('strings:already_enrolled_into_loyalty_scheme')}</Text>
 
                 <View style={{ backgroundColor: '#fff', height: height / 15, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 1.8, borderColor: '#D3D3D3', width: width / 1.2, alignSelf: 'center', borderRadius: 10 }}>
 
@@ -1007,18 +1041,20 @@ const EditProfile = () => {
                     // onBlur={handleAadharBlur}
                     maxLength={12} />
 
-
-                <View style={styles.input}>
+                <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:update_aadhar_voter_id_dl_front')}</Text>
+                <View style={styles.imagecontainereditprofile}>
                     <Text style={{ color: '#D3D3D3', }}>IdProof*(Front)</Text>
-                    {Idcardfront != null ? <ImageWithModal imageUri={SelfieData.uri} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={styles.noimagepicker} />}
+                    {Idcardfront != null ? <ImageWithModal imageUri={Idcardfront} style={styles.noimagepicker} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={styles.noimagepicker} />}
                 </View>
-                <View style={styles.input}>
+                <Text style={{ color: 'black', marginLeft: 24, marginTop: 5 }}>{t('strings:update_aadhar_voter_id_dl_back')}</Text>
+                <View style={styles.imagecontainereditprofile}>
                     <Text style={{ color: '#D3D3D3', }}>IdProof*(Front)</Text>
-                    {Idcardfront != null ? <ImageWithModal imageUri={SelfieData.uri} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={styles.noimagepicker} />}
+                    {Idcardback != null ? <ImageWithModal imageUri={Idcardback} style={styles.noimagepicker} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={styles.noimagepicker} />}
                 </View>
                 <FloatingLabelInput
 
-                    label="Id Proof No."
+                    label={t('strings:update_aadhar_voter_id_dl_manually')}
+
                     // value={aadharcardno}
                     // onChangeText={(text) => setaadharcardno(text)}
                     keyboardType='number-pad'
@@ -1033,13 +1069,18 @@ const EditProfile = () => {
                     }}
                     // onBlur={handleAadharBlur}
                     maxLength={12} />
-                <View style={styles.input}>
-                    <Text style={{ color: '#D3D3D3', }}>IdProof*(Front)</Text>
-                    {Idcardfront != null ? <ImageWithModal imageUri={SelfieData.uri} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={styles.noimagepicker} />}
+
+
+                <Text style={{ color: 'black', marginLeft: 24, marginBottom: 12 }}>{t('strings:update_pan_card_front')}</Text>
+                <View style={styles.imagecontainereditprofile}>
+                    <Text style={{ color: '#D3D3D3', }}>Pan Card(Front)</Text>
+                    {pancarddata != null ? <ImageWithModal imageUri={pancarddata} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={styles.noimagepicker} />}
                 </View>
+
                 <FloatingLabelInput
 
-                    label="Pan Card No"
+                    label={t('strings:update_pan_number_manually')}
+
                     // value={aadharcardno}
                     // onChangeText={(text) => setaadharcardno(text)}
                     keyboardType='number-pad'
@@ -1054,14 +1095,12 @@ const EditProfile = () => {
                     // onBlur={handleAadharBlur}
                     maxLength={12} />
 
-
-
                 <View style={{ marginTop: 30 }}>
-                    <Text style={{ color: 'black', marginLeft: 20, fontSize: responsiveFontSize(2) }}>{t('auth:newuser:NomineeDetails')}</Text>
+
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Name of Nominee"
+                        label={t('strings:lbl_name_of_nominee')}
 
 
                         keyboardType='default'
@@ -1098,10 +1137,10 @@ const EditProfile = () => {
 
                     </View>
 
-                    <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:NomineeMobile')}</Text>
+
                     <FloatingLabelInput
                         containerStyles={styles.input}
-                        label="Mobile No"
+                        label={t('strings:lbl_mobile_number')}
                         keyboardType='number-pad'
                         value={nominee.nomineenumber}
                         onChangeText={(text) => handlefiledchnage3("nomineenumber", text)}
@@ -1113,10 +1152,10 @@ const EditProfile = () => {
                         }}
                         maxLength={10} />
 
-                    <Text style={{ color: 'black', marginLeft: 23, }}>{t('auth:newuser:NomineeEmailAddress')}</Text>
+
                     <FloatingLabelInput
                         containerStyles={styles.input}
-                        label="Email"
+                        label={t('strings:lbl_email')}
                         keyboardType='email-address'
                         value={nominee.nomineemail}
                         onChangeText={(text) => handlefiledchnage3("nomineemail", text)}
@@ -1128,11 +1167,11 @@ const EditProfile = () => {
                         }} />
 
 
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:NomineeAddress')}</Text>
+
                     <FloatingLabelInput
                         containerStyles={styles.input}
 
-                        label="Address"
+                        label={t('strings:lbl_address')}
 
 
                         keyboardType='email-address'
@@ -1144,6 +1183,7 @@ const EditProfile = () => {
                             color: 'black',
                             paddingHorizontal: 15,
                         }} />
+
                     <FloatingLabelInput
                         containerStyles={styles.input}
                         label="Relatioship with you"
@@ -1293,7 +1333,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 5,
 
-        left: width / 1.5,
+        left: width / 1.4,
         // marginBottom: 150,
         bottom: 20
     },
@@ -1331,6 +1371,22 @@ const styles = StyleSheet.create({
         margin: 10,
         justifycontent: 'Space-between',
 
+    },
+    imagecontainereditprofile: {
+        flexDirection: 'row', padding: 5,
+        height: height / 15,
+        margin: 10,
+        marginTop: 5,
+        color: 'black',
+        borderRadius: 5,
+        backgroundColor: '#fff',
+        borderColor: 'grey',
+        borderWidth: 1.8,
+        borderwidth: 2,
+        bottom: 0,
+        borderRadius: 8,
+        borderColor: "#D3D3D3",
+        justifyContent: 'space-between'
     },
     modalcontainer: { alignSelf: 'center', backgroundColor: 'rgba(0,0,0,0.7)' },
 })
