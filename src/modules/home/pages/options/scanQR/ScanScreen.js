@@ -33,6 +33,16 @@ const ScanScreen = ({navigation, route}) => {
   const {t} = useTranslation();
   const [qrCode, setQrcode] = React.useState('');
   const [scratchCard, showScratchCard] = React.useState(false);
+  var USER = null;
+
+  React.useEffect(() => {
+
+AsyncStorage.getItem("USER").then(r=>{
+  USER = JSON.parse(r);
+})
+
+
+  }, []);
 
   async function scan() {
     scanQR()
@@ -50,7 +60,7 @@ const ScanScreen = ({navigation, route}) => {
       pin: '',
       smsText: '',
       from: '',
-      userType: '',
+      userType: USER.roleId.toString(),
       userId: 0,
       apmID: 0,
       retailerCoupon: false,
@@ -126,9 +136,7 @@ const ScanScreen = ({navigation, route}) => {
         <Text style={styles.text}>{t('strings:or')}</Text>
         <View style={styles.enterCode}>
           <View style={styles.topContainer}>
-
             <Text style={styles.smallText}>{t('strings:enter_code')}</Text>
-
           </View>
           <View style={styles.bottomContainer}>
             <TextInput
@@ -152,7 +160,6 @@ const ScanScreen = ({navigation, route}) => {
           icon={arrowIcon}
         />
         <View style={styles.rightText}>
-
           <Text style={styles.smallText}>
             {t('strings:go_to_unique_code_history')}
           </Text>
@@ -163,7 +170,6 @@ const ScanScreen = ({navigation, route}) => {
               style={{width: 30, height: 30}}
               source={require('../../../../../assets/images/ic_circle_right_arrow_yellow.webp')}
             />
-
           </TouchableOpacity>
         </View>
         <Buttons
