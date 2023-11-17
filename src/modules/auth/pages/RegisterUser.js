@@ -18,9 +18,6 @@ const RegisterUser = ({ navigation }) => {
     const [selectedOption, setSelectedOption] = useState('Retailer');
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
-
-
-
     const handleValidation = async () => {
         try {
             if (!number || number === null || number.trim() === '' || number.length !== 10) {
@@ -32,9 +29,6 @@ const RegisterUser = ({ navigation }) => {
 
                 const validationResponse = await NewusermobileNumberValidation(number, preferedLanguage);
                 const successMessage = validationResponse.data.message;
-
-
-
                 if (successMessage === 'Please enter OTP to proceed with the registration process') {
                     setIsPopupVisible(true);
                     showPopupMessage(successMessage);
@@ -45,11 +39,6 @@ const RegisterUser = ({ navigation }) => {
                     }, 1500);
                 }
 
-
-
-
-
-                setIsLoading(false);
             }
         }
         catch (error) {
@@ -114,10 +103,10 @@ const RegisterUser = ({ navigation }) => {
                         style={styles.imageSaathi}
                     />
                     <Text style={styles.mainHeader}>{t('strings:new_user_registration')}</Text>
-                    <View style={{ flex: 1 }}>
+                    {isLoading == true ? <View style={{ flex: 1 }}>
 
                         <Loader isLoading={isLoading} />
-                    </View>
+                    </View> : null}
                     {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
                         <Text>{popupMessage}</Text>
                         {/* // <Text>ICORRECT OTP</Text> */}

@@ -11,7 +11,7 @@ import { FloatingLabelInput } from 'react-native-floating-label-input';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from '../../../components/Loader';
 import Popup from '../../../components/Popup';
-import vguardristuser from '../../common/Model/Vguardristauser';
+
 
 
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -381,10 +381,10 @@ const NewUser = ({ navigation }) => {
     <ScrollView >
       <View >
         <View style={{ backgroundColor: 'transparent', height: height / 8, margin: 20, flexDirection: 'row', width: width / 2.1, justifyContent: 'space-evenly', alignItems: 'center', padding: 20 }}>
-          <View style={{ flex: 1 }}>
+          {isLoading == true ? <View style={{ flex: 1 }}>
 
             <Loader isLoading={isLoading} />
-          </View>
+          </View> : null}
           {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
             <Text>{popupMessage}</Text>
             {/* // <Text>ICORRECT OTP</Text> */}
@@ -398,11 +398,8 @@ const NewUser = ({ navigation }) => {
           </View>
 
         </View>
-
-
-        <Text style={{ color: 'black', marginLeft: 20, }}>{t('strings:lbl_preferred_language')}</Text>
         <FloatingLabelInput
-          label={t('auth:newuser:Preferedlanguage')}
+          label={t('strings:lbl_preferred_language')}
           staticLabel
           maxLength={30}
           editable={false}
@@ -433,10 +430,6 @@ const NewUser = ({ navigation }) => {
             paddingVertical: 10,
           }}
         />
-
-
-
-
         <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_gender_mandatory')}</Text>
 
         <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
@@ -448,10 +441,10 @@ const NewUser = ({ navigation }) => {
               console.log("Selected Value: ", itemValue)
               setGender(itemValue)
             }}>
-            <Picker.Item label={t('strings:select_gender:placeholder')} value="Select Gender*" />
-            <Picker.Item label={t('strings:select_gender:male')} value="Male" />
-            <Picker.Item label={t('strings:select_gender:female')} value="Female" />
-            <Picker.Item label={t('strings:select_gender:other')} value="Other" />
+            <Picker.Item label="Select Gender*" value="Select Gender*" />
+            <Picker.Item label="Male" value="Male" />
+            <Picker.Item label="Female" value="Female" />
+            <Picker.Item label="Other" value="Other" />
           </Picker>
 
         </View>
@@ -470,7 +463,7 @@ const NewUser = ({ navigation }) => {
 
         <FloatingLabelInput
 
-          label={t('auth:newuser:Contact')}
+          label={t('strings:contact_no')}
           value={number}
 
           keyboardType='number-pad'
@@ -514,14 +507,15 @@ const NewUser = ({ navigation }) => {
               }
 
             }}>
-            <Picker.Item label={t('strings:whatsapp_yes_no:placeholder')} value="Select WhatApp contact same as above ?" />
-            <Picker.Item label={t('strings:whatsapp_yes_no:yes')} value="yes" />
-            <Picker.Item label={t('strings:whatsapp_yes_no:no')} value="No" />
+            <Picker.Item label="Select WhatApp contact same as above ?" value="Select WhatApp contact same as above ?" />
+            <Picker.Item label="yes" value="yes" />
+            <Picker.Item label="No" value="No" />
           </Picker>
 
         </View>
         <FloatingLabelInput
           label={t('strings:lbl_whats_app_number')}
+
 
           maxLength={10}
           value={whatapp}
@@ -582,6 +576,7 @@ const NewUser = ({ navigation }) => {
         />
         <FloatingLabelInput
 
+
           label={t('strings:lbl_street_locality')}
 
 
@@ -601,6 +596,7 @@ const NewUser = ({ navigation }) => {
 
           label={t('strings:lbl_landmark')}
 
+
           staticLabel
           maxLength={60}
           keyboardType='default'
@@ -614,29 +610,11 @@ const NewUser = ({ navigation }) => {
             paddingHorizontal: 10,
           }}
         />
-
-
-        <Text style={{ color: 'black', marginLeft: 23, }}>{t('strings:lbl_pin_code_mandatory')}</Text>
-
-        <FloatingLabelInput
-          containerStyles={styles.input}
-          label={t('strings:lbl_pin_code_mandatory')}
-          keyboardType="number-pad"
-          value={pincode}
-          onChangeText={(text) => [setPincode(text),
-          setOpen(true)]}
-          maxLength={6}
-          staticLabel
-          labelStyles={styles.labelStyles}
-          inputStyles={{
-            color: 'black',
-            paddingHorizontal: 10,
-          }}
-        />
-
-        {/* <DropDownPicker
-
-
+        <DropDownPicker
+          mode="BADGE"
+          showBadgeDot={true}
+          searchable={true}
+          loading={isLoading}
           label={value}
           placeholder={pincode === null ? 'Search Pincode' : `Searched Pincode:${pincode}`}
           searchablePlaceholder="Search Pincode"
@@ -669,57 +647,40 @@ const NewUser = ({ navigation }) => {
             value: item.pinCode,
           }))}
           setOpen={setOpen}
-          value={pincode.toString()}
-          onChangeText={(text) => {
-            [setPincode(text), setOpen(false),]
-            if (loading) {
-              return (
-                <View style={styles.loaderContainer}>
-                  <ActivityIndicator size="large" color="blue" />
-                </View>
-              );
-            }
-
-          }}
-          dropDownContainerStyle={{
-
-            width: width / 1.1, height: height / 8, padding: 10, left: 18, top: 50, borderWidth: 0, elevation: 0
-
-          }}
-
-          setValue={(value) => {
-            setPincode(value);
-            if (loading) {
-              return (
-                <View style={styles.loaderContainer}>
-                  <ActivityIndicator size="large" color="blue" />
-                </View>
-              );
-            }
-
-          }}
-          style={{ backgroundColor: 'white', elevation: 50, opacity: 0.9, borderWidth: 0, width: width / 1.1, height: height / 15, alignSelf: 'center', bottom: 10, elevation: 0 }}
-        /> */}
-
-        {/* <DropDownPicker
-          open={open}
-          items={suggestions.map((suggestion) => ({
-            label: suggestion.pinCode, // Set the label for each suggestion
-            value: suggestion.pinCode, // Set the value to the PIN code
-          }))}
-
-          label="Enter PIN code"
-          defaultValue={pincode} // Set the default value
-          searchable={true}
-          searchablelabel="Search for PIN code"
-          searchablelabelTextColor="gray"
-          searchableError={() => <Text>Not Found</Text>}
+          value={pincode}
           onChangeItem={(item) => {
 
             setPincode(item.value);
           }}
-        /> */}
-        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_state')}</Text>
+          onChangeSearchText={(text) => pinocdefeting(text)}
+          dropDownContainerStyle={{
+            width: width / 1.1,
+            height: height / 5,
+            padding: 10,
+            left: 20,
+            top: 60,
+            borderWidth: 0.5,
+            borderTopWidth: 0,
+            justifyContent: 'center',
+            elevation: 0,
+            backgroundColor: "#D3D3D3"
+          }}
+          style={{
+            backgroundColor: 'white',
+            margin: 20,
+
+            elevation: 50,
+            opacity: 0.9,
+            borderWidth: 0.6,
+            width: width / 1.1,
+            height: height / 15,
+            alignSelf: 'center',
+            bottom: 10,
+            elevation: 0,
+            margintop: 50,
+          }}
+        />
+
         <FloatingLabelInput
           containerStyles={styles.input}
           label={t('strings:select_state')}
@@ -735,15 +696,20 @@ const NewUser = ({ navigation }) => {
             paddingHorizontal: 10,
           }}
         />
-
-        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_district')}</Text>
-
-        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
-
-          <Text style={{ color: 'black', margin: 15 }}>{selectedDistrict}</Text>
-
-
-        </View>
+        <FloatingLabelInput
+          containerStyles={styles.input}
+          label={t('strings:select_district')}
+          keyboardType="default"
+          value={selectedDistrict}
+          onChangeText={(text) => [setSelectedState(text),
+          setOpen(true)]}
+          staticLabel
+          labelStyles={styles.labelStyles}
+          inputStyles={{
+            color: 'grey',
+            paddingHorizontal: 10,
+          }}
+        />
 
         <Text style={{ color: 'black', left: 20, marginBottom: 2 }}> {t('strings:select_city')}</Text>
 
@@ -781,7 +747,7 @@ const NewUser = ({ navigation }) => {
 
         <View style={{ display: 'flex', width: "100%", alignItems: 'center', marginVertical: 20 }}>
           <Buttons
-            label={t('strings:next')}
+            label="Next"
             onPress={() => {
 
               validateFields();
@@ -844,9 +810,3 @@ const styles = StyleSheet.create({
 });
 
 export default NewUser;
-
-
-
-
-
-

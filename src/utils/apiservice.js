@@ -126,7 +126,7 @@ const imageApi = axios.create({
     baseURL: imageURL,
 });
 const imageApi2 = axios.create({
-    baseURL: imageURL2,
+    baseURL: imageURL,
 });
 
 // Example API functions
@@ -345,3 +345,69 @@ export function getNotifications(transactionId) {
     const path = `alert/`;
     return createDigestGetRequest(path);
 }
+// export const sendFile = async (formData) => {
+//     try {
+
+//         const response = await api.post(`/vguard/api/file`, formData);
+//         return response;
+//     } catch (error) {
+//         console.error('Error sending file:', error);
+//         throw error;
+//     }
+// };
+
+// export const Appversion = async () => {
+//     try {
+//         const response = await api.get(`/vguard/api/user/version`);
+//         return response;
+//     } catch (error) {
+//         throw error;
+
+//     }
+// };
+
+export const Profile = async () => {
+    try {
+        const response = await api.get(`/vguard/api/user/profile`);
+        return response;
+    }
+    catch (error) {
+        console.log(error);
+
+    }
+}
+
+
+
+export const reupdatekyc = async (data) => {
+    try {
+        const relativeUrl = 'user/updateKyc';
+        console.log("<***********>", data);
+        const response = await createDigestPostRequest(relativeUrl, data);
+
+
+        if (response.ok) {
+
+            const responseData = await response.json(); // Assuming the response body is in JSON format
+            return responseData;
+        } else {
+
+            console.error('Error updating KYC:', response.statusText);
+            throw new Error('Failed to update KYC');
+        }
+    } catch (error) {
+
+        console.error('Error updating KYC:', error);
+        throw error;
+    }
+};
+
+// export function getUserProfile() {
+//     const path = "user/profile";
+//     return createDigestGetRequest(path);
+// }
+// export function getFile(uuid, imageRelated, userRole) {
+//     const path = `file/${uuid}/${imageRelated}/${userRole}`;
+//     console.log(path)
+//     return createDigestGetRequest(path);
+// }

@@ -54,11 +54,13 @@ const NomineePage = ({ navigation, route }) => {
     const [nomineemobileno, setnomineemobileno] = useState('');
     const [nomineeemail, setnomineeemail] = useState('');
     const [nomineeaddress, setnomineeaddress] = useState('');
+
     const [nomineeselectedDate, setnomineeSelectedDate] = useState();
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [selectedDate, setSelectedDate] = useState();
 
 
     const handleDateChange = (event, selectedDate) => {
@@ -284,6 +286,7 @@ const NomineePage = ({ navigation, route }) => {
                     setnomineemobileno(retrievedData.BankDetailsAndNominee.nomineemobileno);
                     setnomineeemail(retrievedData.BankDetailsAndNominee.nomineeemail);
                     setnomineeaddress(retrievedData.BankDetailsAndNominee.nomineeaddress);
+                    // setnomineeSelectedDate(retrievedData.BankDetailsAndNominee.nomineeselectedDate.toString());
                     setrelationship(retrievedData.BankDetailsAndNominee.relationship);
 
 
@@ -348,10 +351,10 @@ const NomineePage = ({ navigation, route }) => {
                         </View>
 
                     </View>
-                    <View style={{ flex: 1 }}>
+                    {isLoading == true ? <View style={{ flex: 1 }}>
 
                         <Loader isLoading={isLoading} />
-                    </View>
+                    </View> : null}
                     {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
                         <Text>{popupMessage}</Text>
                         {/* // <Text>ICORRECT OTP</Text> */}
@@ -409,7 +412,7 @@ const NomineePage = ({ navigation, route }) => {
                             onValueChange={(itemValue, itemIndex) =>
                                 setaccounttype(itemValue)
                             }>
-                            <Picker.Item label={t('strings:account_type:placeholder')} value="null" />
+                            <Picker.Item label={t('strings:account_type:placeholder')} value='' />
                             <Picker.Item label={t('strings:account_type:current')} value="Current" />
                             <Picker.Item label={t('strings:account_type:saving')} value="Saving" />
 
@@ -520,7 +523,7 @@ const NomineePage = ({ navigation, route }) => {
 
 
                         />
-                        <Text style={{ color: 'black', marginLeft: 20, }}>{t('auth:newuser:NomineeeDob')}</Text>
+                        {/* <Text style={{ color: 'black', marginLeft: 20, }}>{t('auth:newuser:NomineeeDob')}</Text>
                         <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
 
@@ -531,13 +534,13 @@ const NomineePage = ({ navigation, route }) => {
                                 onShowDatePicker={handleShowDatePicker}
                             />
 
-                        </View>
+                        </View> */}
 
-                        <Text style={{ color: 'black', marginLeft: 23, }}>{t('strings:lbl_mobile_number')}</Text>
+
                         <FloatingLabelInput
                             containerStyles={styles.input}
 
-                            label={t('strings:mobile_number')}
+                            label={t('strings:lbl_mobile_number')}
 
 
                             keyboardType='number-pad'
@@ -554,7 +557,7 @@ const NomineePage = ({ navigation, route }) => {
 
 
 
-                        <Text style={{ color: 'black', marginLeft: 23, }}>{t('strings:lbl_email')}</Text>
+
                         <FloatingLabelInput
                             containerStyles={styles.input}
 
@@ -573,7 +576,7 @@ const NomineePage = ({ navigation, route }) => {
                         />
 
 
-                        <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_address')}</Text>
+
                         <FloatingLabelInput
                             containerStyles={styles.input}
 
@@ -593,7 +596,7 @@ const NomineePage = ({ navigation, route }) => {
                         />
                         <FloatingLabelInput
                             containerStyles={styles.input}
-                            label={t('strings:lbl_relationship_with_you')}
+                            label="Relatioship with you"
                             keyboardType='default'
                             value={relationship}
                             onChangeText={(text) => setrelationship(text)}
@@ -612,14 +615,14 @@ const NomineePage = ({ navigation, route }) => {
                             status={checked ? 'checked' : 'unchecked'}
                             onPress={() => setChecked(!checked)}
                         />
-                        <Text style={{ color: 'black' }}>{t('strings:')}</Text>
+                        <Text style={{ color: 'black' }}>{t(' I agree to terms and condition')}</Text>
                     </View>
 
                     <View style={{ margin: 20 }}>
                         <Text style={{ color: 'blue', }}>
                             I have read & fully understood the{' '}
-                            <TouchableOpacity onPress={openTermsAndConditions}>
-                                <Text style={{ color: 'blue', textDecorationLine: 'underline' }}>
+                            <TouchableOpacity style={{ top: 5 }} onPress={openTermsAndConditions}>
+                                <Text style={{ color: 'blue', textDecorationLine: 'underline', top: 5 }}>
                                     terms and conditions
                                 </Text>
                             </TouchableOpacity>{' '}
@@ -628,7 +631,7 @@ const NomineePage = ({ navigation, route }) => {
                     </View>
                     <View style={{ display: 'flex', width: "100%", alignItems: 'center', marginVertical: 20 }}>
                         <Buttons
-                            label={t('strings:preview')}
+                            label="Preview"
                             onPress={() => validateFields()}
                             variant="filled" // or any other variant you want to use
                             width={350} // specify the width

@@ -189,6 +189,7 @@ const UpdateKYC = ({ navigation }) => {
 
     async function Fetchingprofile() {
         try {
+            setIsLoading(true);
             const response = await Profile();
             console.log("update kyc profile", response);
             setselfieuuid(response.data.kycDetails.selfie);
@@ -201,11 +202,14 @@ const UpdateKYC = ({ navigation }) => {
             await fetchAndSetImageData(response.data.kycDetails.aadharOrVoterOrDlBack, 'ID_CARD_FRONT', 1);
             await fetchAndSetImageData(response.data.kycDetails.aadharOrVoterOrDlBack, 'ID_CARD_BACK', 1);
             await fetchAndSetImageData(response.data.kycDetails.panCardFront, 'PAN_CARD_FRONT', 1);
+            await fetchAndSetImageData()
 
 
 
         } catch (error) {
             console.log("Error:", error);
+        } finally {
+            setIsLoading(false)
         }
     }
 
@@ -410,10 +414,10 @@ const UpdateKYC = ({ navigation }) => {
                     <Text style={styles.textHeader}>{t('dashboard:updateKYC:header')}</Text>
                 </View> */}
                 {/* <View style={styles.form}> */}
-                <View style={{ flex: 1 }}>
+                {isLoading == true ? <View style={{ flex: 1 }}>
 
                     <Loader isLoading={isLoading} />
-                </View>
+                </View> : null}
                 {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
                     <Text>{popupMessage}</Text>
 
@@ -897,12 +901,12 @@ const styles = StyleSheet.create({
 
     },
     noimage: {
-        width: width / 8,
-        height: height / 20,
-        backgroundColor: 'red',
+
+        backgroundColor: '#D3D3D3',
         borderRadius: 5,
         margin: 5,
-        left: 25,
+
+
     },
     modalcontainer: { alignSelf: 'center', backgroundColor: 'rgba(0,0,0,0.7)' },
 })
