@@ -1,129 +1,72 @@
-import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
-import React from 'react';
-import colors from '../../../../../../colors';
 import {
-  responsiveFontSize,
-  responsiveHeight,
-  responsiveWidth,
-} from 'react-native-responsive-dimensions';
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import colors from '../../../../../../colors';
+import {productCategories} from '../../HomeApiService';
 
-const ProductWise = () => {
+const baseURL = 'https://www.vguardrishta.com/';
+
+const ProductWise = ({navigation}) => {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    productCategories()
+      .then(response => response.json())
+      .then(responseData => {
+        console.log(responseData);
+        const updatedData = responseData.map(category => ({
+          ...category,
+          imageUrl: baseURL + category.imageUrl,
+        }));
+        setData(updatedData);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+
+  const handleCategoryPress = categoryId => {
+    const category = data.find(item => item.categoryId === categoryId);
+    console.log('category id:', categoryId);
+    navigation.navigate('ProductWiseOfferTable', {categoryId});
+  };
+
   return (
     <ScrollView style={styles.mainWrapper}>
-      <View style={styles.row}>
-        <View style={styles.imageContainer}>
+      {data.map(category => (
+        <TouchableOpacity
+          key={category.categoryId}
+          style={styles.categoryContainer}
+          onPress={() => handleCategoryPress(category.categoryId)}>
           <Image
-            source={require('../../../../../assets/images/image1.png')}
-            style={styles.image}
-            resizeMode="contain"
+            source={{uri: category.imageUrl}}
+            style={styles.categoryImage}
           />
-        </View>
-        <View style={styles.productContainer}>
-        </View>
-        <View style={styles.downArrowContainer}>
-          <Image
-            style={[styles.downArrow, { transform: [{ rotate: '-90deg' }] }]}
-            source={require('../../../../../assets/images/down_yellow_arrow.png')}
-          />
-        </View>
-      </View>
-      <View style={styles.row}>
-        
-        <View style={styles.productContainer}>
-        </View>
-        <View style={styles.imageContainer}>
-          <Image
-            source={require('../../../../../assets/images/image2.png')}
-            style={styles.image}
-            resizeMode="contain"
-          />
-        </View>
-        <View style={styles.downArrowContainer}>
-          <Image
-            style={[styles.downArrow, { transform: [{ rotate: '90deg' }] }]}
-            source={require('../../../../../assets/images/down_yellow_arrow.png')}
-          />
-        </View>
-      </View>
-      <View style={styles.row}>
-        <View style={styles.imageContainer}>
-          <Image
-            source={require('../../../../../assets/images/image3.png')}
-            style={styles.image}
-            resizeMode="contain"
-          />
-        </View>
-        <View style={styles.productContainer}>
-        </View>
-        <View style={styles.downArrowContainer}>
-          <Image
-            style={[styles.downArrow, { transform: [{ rotate: '-90deg' }] }]}
-            source={require('../../../../../assets/images/down_yellow_arrow.png')}
-          />
-        </View>
-      </View>
-      <View style={styles.row}>
-        
-        <View style={styles.productContainer}>
-        </View>
-        <View style={styles.imageContainer}>
-          <Image
-            source={require('../../../../../assets/images/image4.png')}
-            style={styles.image}
-            resizeMode="contain"
-          />
-        </View>
-        <View style={styles.downArrowContainer}>
-          <Image
-            style={[styles.downArrow, { transform: [{ rotate: '90deg' }] }]}
-            source={require('../../../../../assets/images/down_yellow_arrow.png')}
-          />
-        </View>
-
-      </View>
+        </TouchableOpacity>
+      ))}
     </ScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   mainWrapper: {
     backgroundColor: colors.white,
     flex: 1,
   },
-  productContainer: {
-    width: '50%',
-    backgroundColor: colors.grey,
+  categoryContainer: {
+    alignItems: 'center',
+    marginBottom: 1,
   },
-  imageContainer: {
-    width: '50%',
-    backgroundColor: colors.black,
-    padding: 30,
-  },
-  downArrowContainer: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: [{ translateX: -responsiveWidth(2.5) }, { translateY: -responsiveHeight(1.5) }],
-  },
-  downArrow: {
-    height: responsiveFontSize(3),
-    width: responsiveFontSize(3),
-  },
-  image: {
-    height: '100%',
+  categoryImage: {
     width: '100%',
-    flex: 1,
+    height: 100,
   },
-  row: {
-    display: 'flex',
-    flexDirection: 'row',
-    height: responsiveHeight(20),
-    marginBottom: 1
-  },
-  dot: {
-    textAlign: 'center',
-    color: colors.black
-  }
 });
 
 export default ProductWise;

@@ -398,6 +398,9 @@ const NewUser = ({ navigation }) => {
           </View>
 
         </View>
+
+
+        <Text style={{ color: 'black', marginLeft: 20, }}>{t('strings:lbl_preferred_language')}</Text>
         <FloatingLabelInput
           label={t('auth:newuser:Preferedlanguage')}
           staticLabel
@@ -415,7 +418,7 @@ const NewUser = ({ navigation }) => {
         />
 
         <FloatingLabelInput
-          label={t('auth:newuser:Name')}
+          label={t('strings:name')}
           value={name}
 
 
@@ -430,7 +433,11 @@ const NewUser = ({ navigation }) => {
             paddingVertical: 10,
           }}
         />
-        <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Gender')}</Text>
+
+
+
+
+        <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_gender_mandatory')}</Text>
 
         <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
           <Picker
@@ -441,15 +448,15 @@ const NewUser = ({ navigation }) => {
               console.log("Selected Value: ", itemValue)
               setGender(itemValue)
             }}>
-            <Picker.Item label="Select Gender*" value="Select Gender*" />
-            <Picker.Item label="Male" value="Male" />
-            <Picker.Item label="Female" value="Female" />
-            <Picker.Item label="Other" value="Other" />
+            <Picker.Item label={t('strings:select_gender:placeholder')} value="Select Gender*" />
+            <Picker.Item label={t('strings:select_gender:male')} value="Male" />
+            <Picker.Item label={t('strings:select_gender:female')} value="Female" />
+            <Picker.Item label={t('strings:select_gender:other')} value="Other" />
           </Picker>
 
         </View>
 
-        <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('auth:newuser:Date')}</Text>
+        <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_date_of_birth_mandatory')}</Text>
 
         <View style={{ backgroundColor: 'fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
           <DatePicker
@@ -480,7 +487,7 @@ const NewUser = ({ navigation }) => {
           }}
 
         />
-        <Text style={{ color: 'black', marginLeft: 20, bottom: 5 }}>{t('auth:newuser:Whatappconatctsame')}</Text>
+        <Text style={{ color: 'black', marginLeft: 20, bottom: 5 }}>{t('strings:_is_what_s_app_contact_same_as_above')}</Text>
         <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
           <Picker
 
@@ -507,15 +514,14 @@ const NewUser = ({ navigation }) => {
               }
 
             }}>
-            <Picker.Item label="Select WhatApp contact same as above ?" value="Select WhatApp contact same as above ?" />
-            <Picker.Item label="yes" value="yes" />
-            <Picker.Item label="No" value="No" />
+            <Picker.Item label={t('strings:whatsapp_yes_no:placeholder')} value="Select WhatApp contact same as above ?" />
+            <Picker.Item label={t('strings:whatsapp_yes_no:yes')} value="yes" />
+            <Picker.Item label={t('strings:whatsapp_yes_no:no')} value="No" />
           </Picker>
 
         </View>
         <FloatingLabelInput
-          label={t('auth:newuser:Whatapp')}
-
+          label={t('strings:lbl_whats_app_number')}
 
           maxLength={10}
           value={whatapp}
@@ -541,7 +547,7 @@ const NewUser = ({ navigation }) => {
         />
         <FloatingLabelInput
 
-          label={t('auth:newuser:Email')}
+          label={t('strings:email')}
 
 
           keyboardType='email-address'
@@ -558,7 +564,7 @@ const NewUser = ({ navigation }) => {
         />
         <FloatingLabelInput
 
-          label={t('auth:newuser:Permanentaddress')}
+          label={t('strings:lbl_permanent_address_mandatory')}
 
 
           keyboardType='default'
@@ -576,8 +582,7 @@ const NewUser = ({ navigation }) => {
         />
         <FloatingLabelInput
 
-
-          label={t('auth:newuser:Street')}
+          label={t('strings:lbl_street_locality')}
 
 
           maxLength={128}
@@ -594,7 +599,7 @@ const NewUser = ({ navigation }) => {
         />
         <FloatingLabelInput
 
-          label={t('auth:newuser:Landmark')}
+          label={t('strings:lbl_landmark')}
 
           staticLabel
           maxLength={60}
@@ -609,11 +614,29 @@ const NewUser = ({ navigation }) => {
             paddingHorizontal: 10,
           }}
         />
-        <DropDownPicker
-          mode="BADGE"
-          showBadgeDot={true}
-          searchable={true}
-          loading={isLoading}
+
+
+        <Text style={{ color: 'black', marginLeft: 23, }}>{t('strings:lbl_pin_code_mandatory')}</Text>
+
+        <FloatingLabelInput
+          containerStyles={styles.input}
+          label={t('strings:lbl_pin_code_mandatory')}
+          keyboardType="number-pad"
+          value={pincode}
+          onChangeText={(text) => [setPincode(text),
+          setOpen(true)]}
+          maxLength={6}
+          staticLabel
+          labelStyles={styles.labelStyles}
+          inputStyles={{
+            color: 'black',
+            paddingHorizontal: 10,
+          }}
+        />
+
+        {/* <DropDownPicker
+
+
           label={value}
           placeholder={pincode === null ? 'Search Pincode' : `Searched Pincode:${pincode}`}
           searchablePlaceholder="Search Pincode"
@@ -646,40 +669,60 @@ const NewUser = ({ navigation }) => {
             value: item.pinCode,
           }))}
           setOpen={setOpen}
-          value={pincode}
+          value={pincode.toString()}
+          onChangeText={(text) => {
+            [setPincode(text), setOpen(false),]
+            if (loading) {
+              return (
+                <View style={styles.loaderContainer}>
+                  <ActivityIndicator size="large" color="blue" />
+                </View>
+              );
+            }
+
+          }}
+          dropDownContainerStyle={{
+
+            width: width / 1.1, height: height / 8, padding: 10, left: 18, top: 50, borderWidth: 0, elevation: 0
+
+          }}
+
+          setValue={(value) => {
+            setPincode(value);
+            if (loading) {
+              return (
+                <View style={styles.loaderContainer}>
+                  <ActivityIndicator size="large" color="blue" />
+                </View>
+              );
+            }
+
+          }}
+          style={{ backgroundColor: 'white', elevation: 50, opacity: 0.9, borderWidth: 0, width: width / 1.1, height: height / 15, alignSelf: 'center', bottom: 10, elevation: 0 }}
+        /> */}
+
+        {/* <DropDownPicker
+          open={open}
+          items={suggestions.map((suggestion) => ({
+            label: suggestion.pinCode, // Set the label for each suggestion
+            value: suggestion.pinCode, // Set the value to the PIN code
+          }))}
+
+          label="Enter PIN code"
+          defaultValue={pincode} // Set the default value
+          searchable={true}
+          searchablelabel="Search for PIN code"
+          searchablelabelTextColor="gray"
+          searchableError={() => <Text>Not Found</Text>}
           onChangeItem={(item) => {
 
             setPincode(item.value);
           }}
-          onChangeSearchText={(text) => pinocdefeting(text)}
-          dropDownContainerStyle={{
-            width: width / 1.1,
-            height: height / 5,
-            padding: 10,
-            left: 18,
-            top: 50,
-            borderWidth: 0,
-            elevation: 0
-          }}
-          style={{
-            backgroundColor: 'white',
-            margin: 20,
-
-            elevation: 50,
-            opacity: 0.9,
-            borderWidth: 0.6,
-            width: width / 1.1,
-            height: height / 15,
-            alignSelf: 'center',
-            bottom: 10,
-            elevation: 0,
-            margintop: 50,
-          }}
-        />
-
+        /> */}
+        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_state')}</Text>
         <FloatingLabelInput
           containerStyles={styles.input}
-          label={t('auth:newuser:State')}
+          label={t('strings:select_state')}
           keyboardType="default"
           value={selectedState}
           onChangeText={(text) => [setSelectedState(text),
@@ -692,22 +735,17 @@ const NewUser = ({ navigation }) => {
             paddingHorizontal: 10,
           }}
         />
-        <FloatingLabelInput
-          containerStyles={styles.input}
-          label={t('auth:newuser:District')}
-          keyboardType="default"
-          value={selectedDistrict}
-          onChangeText={(text) => [setSelectedState(text),
-          setOpen(true)]}
-          staticLabel
-          labelStyles={styles.labelStyles}
-          inputStyles={{
-            color: 'grey',
-            paddingHorizontal: 10,
-          }}
-        />
 
-        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}> {t('auth:newuser:City')}</Text>
+        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_district')}</Text>
+
+        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+
+          <Text style={{ color: 'black', margin: 15 }}>{selectedDistrict}</Text>
+
+
+        </View>
+
+        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}> {t('strings:select_city')}</Text>
 
         <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
           <Picker
@@ -743,7 +781,7 @@ const NewUser = ({ navigation }) => {
 
         <View style={{ display: 'flex', width: "100%", alignItems: 'center', marginVertical: 20 }}>
           <Buttons
-            label="Next"
+            label={t('strings:next')}
             onPress={() => {
 
               validateFields();

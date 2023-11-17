@@ -96,18 +96,13 @@ const LoginWithOtp = ({ navigation, route }) => {
                         source={require('../../../assets/images/group_907.png')}
                         style={styles.imageSaathi}
                     />
-                    <Text style={styles.mainHeader}>{t('auth:loginWIthOtp:heading')}</Text>
+                    <Text style={styles.mainHeader}>{t('strings:lbl_otp_verification')}</Text>
                     <View style={styles.formContainer}>
                         <View style={styles.containter}>
-                            {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
-                                <Text>{popupMessage}</Text>
-                                {/* // <Text>ICORRECT OTP</Text> */}
-                            </Popup>
-                            )}
-                            <Text style={styles.textHeader}>{t('auth:register:enterOtpHeading')}</Text>
+                            <Text style={styles.textHeader}>{t('strings:enter_otp_description')}</Text>
                             <TextInput
                                 style={styles.input}
-                                placeholder={t('auth:register:enterOtp')}
+                                placeholder={t('strings:enter_otp')}
                                 placeholderTextColor={placeholderColor}
                                 keyboardType='number-pad'
                                 value={otp}
@@ -118,7 +113,7 @@ const LoginWithOtp = ({ navigation, route }) => {
                         <View style={styles.buttonContainer}>
                             <Buttons
                                 style={styles.button}
-                                label={t('auth:loginWIthOtp:submit')}
+                                label={t('strings:submit')}
                                 variant="filled"
                                 onPress={() => validateotp()}
                                 width="100%"
@@ -128,17 +123,17 @@ const LoginWithOtp = ({ navigation, route }) => {
                                 icon={arrowIcon}
                             />
                         </View>
-                        <Text style={styles.or}>{t('auth:login:or')}</Text>
+                        <Text style={styles.or}>{t('strings:or')}</Text>
                         <View style={styles.otpPhone}>
                             <Image source={require('../../../assets/images/group_501.png')} style={styles.phone} />
-                            <Text style={styles.greyText}>{t('auth:register:getOtpPhone')}</Text>
+                            <Text style={styles.greyText}>{t('strings:call_to_get_otp')}</Text>
                         </View>
 
                     </View>
                 </View>
                 <View style={styles.footer}>
                     <View style={styles.footerContainer}>
-                        <Text style={styles.footergreyText}>{t('auth:login:poweredBy')}</Text>
+                        <Text style={styles.footergreyText}>{t('strings:powered_by_v_guard')}</Text>
                         <Image
                             source={require('../../../assets/images/group_910.png')}
                             style={styles.imageVguard}
@@ -265,6 +260,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingHorizontal: 50,
         justifyContent: 'center',
+        alignItems: 'center'
     }
 })
 

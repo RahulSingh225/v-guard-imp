@@ -35,7 +35,7 @@ const UniqueCodeHistory = () => {
   return (
     <View style={styles.mainWrapper}>
       <View style={styles.headerWrapper}>
-        <Text style={styles.header}>{t('dashboard:scan:UniqueCodeHeader')}</Text>
+        <Text style={styles.header}>{t('strings:uniquie_code_history')}</Text>
       </View>
       <FlatList
         data={redemptionHistoryData}

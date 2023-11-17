@@ -5,8 +5,11 @@ import colors from '../../../../../../colors';
 import image from '../../../../../assets/images/banner_redeem_ppoints.webp'
 import CustomTouchableOption from '../../../../../components/CustomTouchableOption';
 import NeedHelp from '../../../../../components/NeedHelp';
+import { useTranslation } from 'react-i18next';
 
 const Info = () => {
+  const { t } = useTranslation();
+
   const carouselData = [
     { imageUrl: require('../../../../../assets/images/banner_redeem_ppoints.webp') },
     { imageUrl: require('../../../../../assets/images/banner.webp') },
@@ -21,17 +24,17 @@ const Info = () => {
       <View style = {styles.mainWrapper}>
       <View style={styles.options}>
       <CustomTouchableOption
-              text="dashboard:info:vguardInfo"
+              text="strings:v_guard_info"
               iconSource={require('../../../../../assets/images/ic_vguard_info.webp')}
               screenName="vGuardInfo"
             />
       <CustomTouchableOption
-              text="dashboard:info:downloads"
+              text="strings:downloads_small"
               iconSource={require('../../../../../assets/images/ic_downloads_.webp')}
               screenName="downloads"
             />
       <CustomTouchableOption
-              text="dashboard:info:catalogue"
+              text="strings:v_guard_product_catalog"
               iconSource={require('../../../../../assets/images/ic_vguard_product_catalog.webp')}
               screenName="productCatalogue"
             />

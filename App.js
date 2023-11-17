@@ -44,6 +44,9 @@ async function requestAllPermissions() {
 }
 
 import { AuthProvider } from './src/components/AuthContext';
+import ScanStack from './src/modules/home/pages/options/scanQR/stack/ScanStack';
+import ScanScreen from './src/modules/home/pages/options/scanQR/ScanScreen';
+import ScratchCard from './src/components/ScratchCard';
 
 const App = () => {
 
@@ -53,6 +56,9 @@ const App = () => {
 
 
   }, [])
+  // return(
+  //   <ScratchCard points={10}onPress={()=>console.log("pressed")}/>
+  // )
 
   return (
     <AuthProvider>

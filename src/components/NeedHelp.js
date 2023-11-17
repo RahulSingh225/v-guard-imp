@@ -22,12 +22,12 @@ const NeedHelp = () => {
     };
 
     const openWhatsApp = () => {
-        Linking.openURL(`whatsapp://send?phone=${whatsappNumber}`);
+        Linking.openURL(`https://wa.me/${whatsappNumber}`);
     };
     return (
         <View style={styles.contact}>
             <Text style={styles.textHeader}>
-                {t('dashboard:help:header')}
+                {t('strings:need_help')}
             </Text>
             <TouchableOpacity onPress={callPhoneNumber}>
                 <View style={styles.helpContainer}>

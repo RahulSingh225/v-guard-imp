@@ -21,17 +21,17 @@ const Schemes = () => {
       <View style = {styles.mainWrapper}>
       <View style={styles.options}>
       <CustomTouchableOption
-              text="dashboard:schemes:productWise"
+              text="strings:product_wise_offers"
               iconSource={require('../../../../../assets/images/ic_product_wise_offers.webp')}
               screenName="productWiseOffers"
             />
       <CustomTouchableOption
-              text="dashboard:schemes:active"
+              text="strings:active_scheme_offers"
               iconSource={require('../../../../../assets/images/ic_active_offers.webp')}
               screenName="activeScheme"
             />
       <CustomTouchableOption
-              text="dashboard:schemes:special"
+              text="strings:special_combo_offers"
               iconSource={require('../../../../../assets/images/ic_special_combo_offers.webp')}
               screenName="specialCombo"
               disabled={true}
