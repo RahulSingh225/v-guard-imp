@@ -671,6 +671,8 @@ const styles = StyleSheet.create({
         color: 'black',
         borderRadius: 5,
         backgroundColor: '#fff',
+
+        marginTop: 10,
     },
     smallContainer: {
         backgroundColor: colors.white,

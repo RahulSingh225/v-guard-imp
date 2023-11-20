@@ -1266,8 +1266,8 @@ const styles = StyleSheet.create({
     },
     input: {
         padding: 5,
-        height: height / 14,
-        margin: 25,
+        height: height / 13,
+        margin: 20,
         marginTop: 0,
         color: 'black',
         borderRadius: 5,
