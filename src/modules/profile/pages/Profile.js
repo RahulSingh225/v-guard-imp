@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableHighlight, Image, Linking, TouchableOpacity } from 'react-native';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import colors from '../../../../colors';
-import { getUserProfile } from '../../../utils/apiservice';
+import { getFile, getUserProfile } from '../../../utils/apiservice';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import { useTranslation } from 'react-i18next';
 
@@ -14,21 +14,32 @@ const Profile = ({navigation}) => {
   const ecardURL = 'https://www.vguardrishta.com/img/appImages/eCard/';
 
   const [data, setData] = useState([]);
-  const [userName, setUserName] = useState('');
-  const [userCode, setUserCode] = useState('');
-  const [userImage, setUserImage] = useState('');
+  const [userData, setUserData] = useState({
+    userName: '',
+    userCode: '',
+    pointsBalance: '',
+    redeemedPoints: '',
+    userImage: '',
+    userRole: ''
+  });
+  const [profileImage, setProfileImage] = useState('');
+
+
 
   useEffect(() => {
-    AsyncStorage.getItem('userImage').then((userimage) => {
-      setUserImage(userimage);
-    });
-    AsyncStorage.getItem('name').then((name) => {
-      setUserName(name);
-    });
-    AsyncStorage.getItem('userCode').then((code) => {
-      setUserCode(code);
-    });
-    getUserProfile()
+    AsyncStorage.getItem('USER').then(r => {
+      const user = JSON.parse(r);
+      console.log(user);
+      const data = {
+        userName: user.name,
+        userCode: user.userCode,
+        pointsBalance: user.pointsSummary.pointsBalance,
+        redeemedPoints: user.pointsSummary.redeemedPoints,
+        userImage: user.kycDetails.selfie,
+        userRole: user.professionId
+      };
+      setUserData(data);
+      getUserProfile()
       .then(response => response.json())
       .then(responseData => {
         setData(responseData);
@@ -37,7 +48,24 @@ const Profile = ({navigation}) => {
       .catch(error => {
         console.error('Error fetching data:', error);
       });
+    });
   }, []);
+
+  useEffect(() => {
+    if (userData.userRole && userData.userImage) {
+      
+      const getImage = async () => {
+        try {
+          const profileImage = await getFile(userData.userImage, 'PROFILE', userData.userRole);
+          setProfileImage(profileImage.url);
+        } catch (error) {
+          console.log('Error while fetching profile image:', error);
+        }
+      };
+  
+      getImage();
+    }
+  }, [userData.userRole, userData.userImage]);
 
   const labels = [
     'Preferred Language',
@@ -119,7 +147,7 @@ const Profile = ({navigation}) => {
     <ScrollView style={styles.mainWrapper}>
       <View style={styles.flexBox}>
         <View style={styles.ImageProfile}>
-        <Image source={{ uri: baseURL + userImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
+        <Image source={{ uri: profileImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
         </View>
         <TouchableHighlight
           style={styles.button}
@@ -129,8 +157,8 @@ const Profile = ({navigation}) => {
         </TouchableHighlight>
       </View>
       <View style={styles.profileText}>
-        <Text style={styles.textDetail}>{userName}</Text>
-        <Text style={styles.textDetail}>{userCode}</Text>
+        <Text style={styles.textDetail}>{userData.userName}</Text>
+        <Text style={styles.textDetail}>{userData.userCode}</Text>
         <TouchableOpacity onPress={openEVisitingCard}>
         <Text style={styles.viewProfile}>{t('strings:view_e_card')}</Text>
       </TouchableOpacity>
