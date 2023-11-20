@@ -512,9 +512,9 @@ const PreviewUserRegistration = ({ navigation, route }) => {
         <ScrollView>
             <KeyboardAvoidingView>
                 <View >
-                    <View style={{ backgroundColor: 'transparent', height: height / 8, margin: 20, flexDirection: 'row', width: width / 2.1, justifyContent: 'space-evenly', alignItems: 'center', padding: 20 }}>
+                    <View style={{ backgroundColor: 'transparent', height: height / 8, margin: 25, flexDirection: 'row', width: width / 1.8, justifyContent: 'space-evenly', alignItems: 'center', padding: 20, }}>
                         <Avatar.Image size={84} source={require('../../../assets/images/ac_icon.png')} />
-                        <View style={{ marginLeft: 40, flexDirection: 'column' }}>
+                        <View style={{ marginLeft: 40, flexDirection: 'column', backgroundColor: "transparent", width: width / 2.7 }}>
                             <Text style={{ color: 'grey' }}>PreviewSummaryData</Text>
                             <Text style={{ color: 'grey' }}>Rishta ID</Text>
                             <Text style={{ color: 'grey' }}>Mobile No.</Text>
@@ -871,7 +871,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
 
 
-                        {selfieData != null ? <Text style={{ color: 'black', right: width / 2 }}>{selfieData.name.substring(0, 30)}</Text> : null}
+                        {selfieData != null ? <Text style={{ color: 'black', right: width / 2 }}>{selfieData.name.substring(0, 10)}</Text> : null}
                         {selfieData != null ?
                             <ImageWithModal imageUri={selfieData.uri} name={selfieData.name} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
 
@@ -905,7 +905,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
 
                     <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
-                        {idProofFrontData != null ? <Text style={{ color: 'black', right: width / 2 }}>{idProofFrontData.name.substring(0, 30)}</Text> : null}
+                        {idProofFrontData != null ? <Text style={{ color: 'black', right: width / 2 }}>{idProofFrontData.name.substring(0, 10)}</Text> : null}
                         {idProofFrontData != null ? <ImageWithModal imageUri={idProofFrontData.uri} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
 
 
@@ -915,7 +915,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
 
                     <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
-                        {idProofBackData != null ? <Text style={{ color: 'black', right: width / 2 }}>{idProofBackData.name.substring(0, 30)}</Text> : null}
+                        {idProofBackData != null ? <Text style={{ color: 'black', right: width / 2 }}>{idProofBackData.name.substring(0, 10)}</Text> : null}
                         {idProofBackData != null ? <ImageWithModal imageUri={idProofBackData.uri} /> : <Image resizeMode="contain" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, borderRadius: 5, margin: 5 }} />}
 
 
@@ -943,7 +943,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
 
                     <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
-                        {panData != null ? <Text style={{ color: 'black', right: width / 2 }}>{panData.name.substring(0, 30)}</Text> : null}
+                        {panData != null ? <Text style={{ color: 'black', right: width / 2 }}>{panData.name.substring(0, 10)}</Text> : null}
                         {panData != null ? <ImageWithModal imageUri={panData.uri} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
 
 
@@ -1096,7 +1096,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
 
                     <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
-                        {chequeImage != null ? <Text style={{ color: 'black', right: width / 2 }}>{chequeImage.name.substring(0, 30)}</Text> : null}
+                        {chequeImage != null ? <Text style={{ color: 'black', right: width / 2 }}>{chequeImage.name.substring(0, 10)}</Text> : null}
                         {chequeImage != null ?
 
                             <ImageWithModal imageUri={chequeImage.uri} />
@@ -1267,14 +1267,17 @@ const styles = StyleSheet.create({
     input: {
         padding: 5,
         height: height / 14,
-        margin: 20,
-        marginTop: 5,
+        margin: 25,
+        marginTop: 0,
         color: 'black',
         borderRadius: 5,
         backgroundColor: '#fff',
-        bottom: -5,
+        bottom: -15,
         borderWidth: 1.5,
-        borderColor: '#D3D3D3'
+        borderColor: '#D3D3D3',
+        paddingVertical: 5,
+        paddingHorizontal: 0,
+
     },
     dropdownContainer: {
         height: 40,

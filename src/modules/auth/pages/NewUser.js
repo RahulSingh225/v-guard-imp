@@ -391,7 +391,7 @@ const NewUser = ({ navigation }) => {
           </Popup>
           )}
           <Avatar.Image size={84} source={require('../../../assets/images/ac_icon.png')} />
-          <View style={{ margin: 20, flexDirection: 'column' }}>
+          <View style={{ margin: 20, flexDirection: 'column', padding: 10, height: height / 10, Left: 10, }}>
             <Text style={{ color: 'grey' }}>New User</Text>
             <Text style={{ color: 'grey' }}>Rishta ID</Text>
             <Text style={{ color: 'grey' }}>Mobile No.</Text>

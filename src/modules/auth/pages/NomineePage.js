@@ -318,7 +318,7 @@ const NomineePage = ({ navigation, route }) => {
 
 
 
-    }, [allbankslist, checked])
+    }, [allbankslist])
 
 
     async function getallbanks() {

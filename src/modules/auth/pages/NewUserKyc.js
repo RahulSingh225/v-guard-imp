@@ -702,7 +702,7 @@ const NewUserKyc = ({ navigation, route }) => {
                 <View >
                     <View style={{ backgroundColor: 'transparent', height: height / 8, margin: 20, flexDirection: 'row', width: width / 2.1, justifyContent: 'space-evenly', alignItems: 'center', padding: 20 }}>
                         <Avatar.Image size={84} source={require('../../../assets/images/ac_icon.png')} />
-                        <View style={{ margin: 20, flexDirection: 'column' }}>
+                        <View style={{ margin: 20, flexDirection: 'column', padding: 10, height: height / 10, Left: 10, }}>
                             <Text style={{ color: 'grey' }}>New User</Text>
                             <Text style={{ color: 'grey' }}>Rishta ID</Text>
                             <Text style={{ color: 'grey' }}>Mobile No.</Text>
