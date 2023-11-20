@@ -17,6 +17,8 @@ import SchemesStack from '../pages/options/schemes/stack/SchemesStack';
 import InfoStack from '../pages/options/info/stack/InfoStack';
 import NewStack from '../pages/options/new/stack/NewStack';
 import ProductWiseOfferTable from '../pages/options/schemes/ProductWiseOfferTable';
+import EditProfile from '../../profile/pages/EditProfile';
+import ProfileStack from '../../profile/stack/ProfileStack';
 
 const HomeStack = () => {
   const Stack = createNativeStackNavigator();
@@ -40,7 +42,8 @@ const HomeStack = () => {
       <Stack.Screen name="TDS" component={TDS} />      
       <Stack.Screen name="engagement" component={Engagement} />      
       <Stack.Screen name="manual" component={Manual} />      
-      <Stack.Screen name="ProductWiseOfferTable" component={ProductWiseOfferTable} />      
+      <Stack.Screen name="ProductWiseOfferTable" component={ProductWiseOfferTable} />  
+      <Stack.Screen name="profile" component={ProfileStack} />
     </Stack.Navigator>
   );
 };

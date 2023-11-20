@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'; // Import 
 import { createTicket, fetchTicketOptions } from '../../HomeApiService';
 import { Picker } from '@react-native-picker/picker';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { sendFile } from '../../../../../utils/apiservice';
+import { getFile, sendFile } from '../../../../../utils/apiservice';
 import Snackbar from 'react-native-snackbar';
 
 
@@ -19,11 +19,21 @@ const Ticket = ({ navigation }) => {
   const baseURL = 'https://www.vguardrishta.com/img/appImages/Profile/';
 
   const { t } = useTranslation();
-  const [userName, setUserName] = useState('');
-  const [userId, setUserId] = useState('');
-  const [userCode, setUserCode] = useState('');
-  const [userRole, setUserRole] = useState('');
-  const [userImage, setUserImage] = useState('');
+  // const [userName, setUserName] = useState('');
+  // const [userId, setUserId] = useState('');
+  // const [userCode, setUserCode] = useState('');
+  // const [userRole, setUserRole] = useState('');
+  // const [userImage, setUserImage] = useState('');
+  const [userData, setUserData] = useState({
+    userName: '',
+    userId: '',
+    userCode: '',
+    userImage: '',
+    userRole: ''
+  });
+  const [profileImage, setProfileImage] = useState('');
+
+  
   const [options, setOptions] = useState([]);
 
   const [selectedOption, setSelectedOption] = useState('');
@@ -111,20 +121,18 @@ const Ticket = ({ navigation }) => {
 
 
   useEffect(() => {
-    AsyncStorage.getItem('name').then((name) => {
-      setUserName(name);
-    });
-    AsyncStorage.getItem('username').then((username) => {
-      setUserId(username);
-    });
-    AsyncStorage.getItem('userCode').then((code) => {
-      setUserCode(code);
-    });
-    AsyncStorage.getItem('userRole').then((userRole) => {
-      setUserRole(userRole);
-    });
-    AsyncStorage.getItem('userImage').then((userimage) => {
-      setUserImage(userimage);
+    AsyncStorage.getItem('USER').then(r => {
+      const user = JSON.parse(r);
+      console.log(user);
+      const data = {
+        userName: user.name,
+        userCode: user.userCode,
+        pointsBalance: user.pointsSummary.pointsBalance,
+        redeemedPoints: user.pointsSummary.redeemedPoints,
+        userImage: user.kycDetails.selfie,
+        userRole: user.professionId      
+      };
+      setUserData(data);
     });
     fetchTicketOptions()
       .then(response => response.json())
@@ -137,6 +145,22 @@ const Ticket = ({ navigation }) => {
         setIsOptionsLoading(false);
       });
   }, []);
+  useEffect(() => {
+    console.log("<><><><><><")
+    if (userData.userRole && userData.userImage) {
+      
+      const getImage = async () => {
+        try {
+          const profileImage = await getFile(userData.userImage, 'PROFILE', userData.userRole);
+          setProfileImage(profileImage.url);
+        } catch (error) {
+          console.log('Error while fetching profile image:', error);
+        }
+      };
+  
+      getImage();
+    }
+  }, [userData.userRole, userData.userImage]);
 
   const handleOptionChange = (value) => {
     setSelectedOption(value);
@@ -188,18 +212,18 @@ const Ticket = ({ navigation }) => {
     });
   };
 
-  console.log(baseURL+userImage)
+  // console.log(baseURL+userImage)
   return (
     <ScrollView style={styles.mainWrapper}>
       <View style={styles.flexBox}>
 
         <View style={styles.profileDetails}>
           <View style={styles.ImageProfile}>
-          <Image source={{ uri: baseURL + userImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
+          <Image source={{ uri: profileImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
           </View>
           <View style={styles.profileText}>
-            <Text style={styles.textDetail}>{userName}</Text>
-            <Text style={styles.textDetail}>{userCode}</Text>
+            <Text style={styles.textDetail}>{userData.userName}</Text>
+            <Text style={styles.textDetail}>{userData.userCode}</Text>
           </View>
         </View>
         <TouchableHighlight
