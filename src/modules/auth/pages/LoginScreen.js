@@ -23,7 +23,6 @@ const LoginScreen = ({ navigation }) => {
   const placeholderColor = colors.grey;
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
   const { login } = useAuth();
   const [isPopupVisible, setIsPopupVisible] = useState(false);
 
@@ -42,12 +41,10 @@ const LoginScreen = ({ navigation }) => {
       if (response.status === 200) {
         login();
       } else {
-        setMessage('Something went wrong')
         togglePopup();
       }
     } catch (error) {
-      setMessage('Incorrect Username or Password');
-      togglePopup();
+      console.error('Login error:', error);
     }
   };
 
@@ -142,7 +139,7 @@ const LoginScreen = ({ navigation }) => {
         </View>
         {isPopupVisible && (
           <Popup isVisible={isPopupVisible} onClose={togglePopup}>
-            <Text style={{ fontWeight: 'bold' }}>{message}</Text>
+            <Text style={{ fontWeight: 'bold' }}>Incorrect Username or Password</Text>
           </Popup>
         )}
       </View>

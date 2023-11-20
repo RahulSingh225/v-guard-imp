@@ -11,10 +11,10 @@ import {
   responsiveWidth
 } from "react-native-responsive-dimensions";
 import NeedHelp from '../../../components/NeedHelp';
-import { getFile } from '../../../utils/apiservice';
 
 
 const HomeScreen = ({ navigation }) => {
+  const baseURL = 'https://www.vguardrishta.com/img/appImages/Profile/';
 
   const { t } = useTranslation();
   const [userName, setUserName] = useState('');
@@ -23,8 +23,6 @@ const HomeScreen = ({ navigation }) => {
   const [redeemedPoints, setRedeemedPoints] = useState('');
   const [numberOfScan, setNumberOfScan] = useState('');
   const [userImage, setUserImage] = useState('');
-  const [userRole, setUserRole] = useState('');
-  const [profileImage, setProfileImage] = useState('');
 
 
   useEffect(() => {
@@ -46,40 +44,18 @@ const HomeScreen = ({ navigation }) => {
     AsyncStorage.getItem('userImage').then((userimage) => {
       setUserImage(userimage);
     });
-    AsyncStorage.getItem('userRole').then((userRole) => {
-      setUserRole(userRole);
-    });
   }, []);
-
-  useEffect(() => {
-    if (userRole && userImage) {
-      const getImage = async () => {
-        try {
-          const profileImage = await getFile(userImage, 'PROFILE', userRole);
-          setProfileImage(profileImage.url);
-        } catch (error) {
-          console.log('Error while fetching profile image:', error);
-        }
-      };
-
-      getImage();
-    }
-  }, [userRole, userImage]);
-
-
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       <View style={styles.mainWrapper}>
         <View style={styles.profileDetails}>
           <View style={styles.ImageProfile}>
-            <Image source={{ uri: profileImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
+          <Image source={{ uri: baseURL + userImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
           </View>
           <View style={styles.profileText}>
             <Text style={styles.textDetail}>{userName}</Text>
             <Text style={styles.textDetail}>{userCode}</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen')}>
-              <Text style={styles.viewProfile}>{t('strings:view_profile')}</Text>
-            </TouchableOpacity>
+            <Text style={styles.viewProfile}>{t('strings:view_profile')}</Text>
           </View>
         </View>
         <View style={styles.points}>

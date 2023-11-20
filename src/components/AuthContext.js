@@ -1,10 +1,10 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import {createContext, useContext, useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createDigestPostRequest } from '../utils/apiservice';
+import {createDigestPostRequest} from '../utils/apiservice';
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({children}) => {
   const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
 
   const login = async () => {
@@ -25,8 +25,6 @@ export const AuthProvider = ({ children }) => {
         'name',
         'password',
         'username',
-        'userRole',
-        'userImage',
         'isUserAuthenticated'
       ]);
       setIsUserAuthenticated(false);
@@ -56,7 +54,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isUserAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{isUserAuthenticated, login, logout}}>
       {children}
     </AuthContext.Provider>
   );

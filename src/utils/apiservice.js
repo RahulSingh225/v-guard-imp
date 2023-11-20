@@ -76,6 +76,7 @@ export const loginPasswordDigest = async (relativeUrl, username, password) => {
         };
         await AsyncStorage.clear();
         let response = null;
+        console.log(response);
         response = await digestFetch(url, {
             method: 'GET',
             headers,
@@ -83,6 +84,7 @@ export const loginPasswordDigest = async (relativeUrl, username, password) => {
             password,
         });
 
+        console.log("username=======", username)
         const userDetailsData = await response.json();
 
         console.log(userDetailsData)
@@ -109,6 +111,8 @@ export const loginPasswordDigest = async (relativeUrl, username, password) => {
         await AsyncStorage.setItem('pointsBalance', safePointsBalance.toString());
         await AsyncStorage.setItem('redeemedPoints', safeRedeemedPoints.toString());
         await AsyncStorage.setItem('numberOfScan', safeNumberOfScan.toString());
+
+        console.log("usercode=======", await AsyncStorage.getItem('userCode'))
         return response;
     } catch (error) {
         throw error;

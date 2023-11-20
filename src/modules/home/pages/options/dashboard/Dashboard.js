@@ -9,7 +9,6 @@ import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-di
 import { useTranslation } from 'react-i18next';
 import NeedHelp from '../../../../../components/NeedHelp';
 import CustomTouchableOption from '../../../../../components/CustomTouchableOption';
-import { getFile } from '../../../../../utils/apiservice';
 
 const Dashboard = () => {
   const baseURL = 'https://www.vguardrishta.com/img/appImages/Profile/';
@@ -23,8 +22,7 @@ const Dashboard = () => {
   const [pointsBalance, setPointsBalance] = useState('');
   const [redeemedPoints, setRedeemedPoints] = useState('');
   const [userImage, setUserImage] = useState('');
-  const [profileImage, setProfileImage] = useState('');
-  const [userRole, setUserRole] = useState('');
+
 
   const showPicker = useCallback((value) => setShow(value), []);
 
@@ -54,32 +52,14 @@ const Dashboard = () => {
     AsyncStorage.getItem('userImage').then((userimage) => {
       setUserImage(userimage);
     });
-    AsyncStorage.getItem('userRole').then((userRole) => {
-      setUserRole(userRole);
-    });
   }, []);
-
-  useEffect(() => {
-    if (userRole && userImage) {
-      const getImage = async () => {
-        try {
-          const profileImage = await getFile(userImage, 'PROFILE', userRole);
-          setProfileImage(profileImage.url);
-        } catch (error) {
-          console.log('Error while fetching profile image:', error);
-        }
-      };
-  
-      getImage();
-    }
-  }, [userRole, userImage]);
 
 
   return (
     <View style={styles.mainWrapper}>
       <View style={styles.profileDetails}>
         <View style={styles.ImageProfile}>
-        <Image source={{ uri: profileImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
+        <Image source={{ uri: baseURL + userImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
         </View>
         <View style={styles.profileText}>
           <Text style={styles.textDetail}>{userName}</Text>

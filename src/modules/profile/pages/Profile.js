@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableHighlight, Image, Linking, TouchableOpacity } from 'react-native';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import colors from '../../../../colors';
-import { getFile, getUserProfile } from '../../../utils/apiservice';
+import { getUserProfile } from '../../../utils/apiservice';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import { useTranslation } from 'react-i18next';
 
@@ -17,8 +17,6 @@ const Profile = ({navigation}) => {
   const [userName, setUserName] = useState('');
   const [userCode, setUserCode] = useState('');
   const [userImage, setUserImage] = useState('');
-  const [userRole, setUserRole] = useState('');
-  const [profileImage, setProfileImage] = useState('');
 
   useEffect(() => {
     AsyncStorage.getItem('userImage').then((userimage) => {
@@ -30,9 +28,6 @@ const Profile = ({navigation}) => {
     AsyncStorage.getItem('userCode').then((code) => {
       setUserCode(code);
     });
-    AsyncStorage.getItem('userRole').then((userRole) => {
-      setUserRole(userRole);
-    });
     getUserProfile()
       .then(response => response.json())
       .then(responseData => {
@@ -43,20 +38,6 @@ const Profile = ({navigation}) => {
         console.error('Error fetching data:', error);
       });
   }, []);
-  useEffect(() => {
-    if (userRole && userImage) {
-      const getImage = async () => {
-        try {
-          const profileImage = await getFile(userImage, 'PROFILE', userRole);
-          setProfileImage(profileImage.url);
-        } catch (error) {
-          console.log('Error while fetching profile image:', error);
-        }
-      };
-  
-      getImage();
-    }
-  }, [userRole, userImage]);
 
   const labels = [
     'Preferred Language',
@@ -138,7 +119,7 @@ const Profile = ({navigation}) => {
     <ScrollView style={styles.mainWrapper}>
       <View style={styles.flexBox}>
         <View style={styles.ImageProfile}>
-        <Image source={{ uri: profileImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
+        <Image source={{ uri: baseURL + userImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
         </View>
         <TouchableHighlight
           style={styles.button}
