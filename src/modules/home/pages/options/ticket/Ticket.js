@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'; // Import 
 import { createTicket, fetchTicketOptions } from '../../HomeApiService';
 import { Picker } from '@react-native-picker/picker';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { sendFile } from '../../../../../utils/apiservice';
+import { getFile, sendFile } from '../../../../../utils/apiservice';
 import Snackbar from 'react-native-snackbar';
 
 
@@ -33,6 +33,7 @@ const Ticket = ({ navigation }) => {
   const [selectedImageName, setSelectedImageName] = useState("");
   const [entityUid, setEntityUid] = useState("");
   const [descriptionInput, setDescriptionInput] = useState("");
+  const [profileImage, setProfileImage] = useState('');
 
 
   const handleImagePickerPress = () => {
@@ -138,6 +139,21 @@ const Ticket = ({ navigation }) => {
       });
   }, []);
 
+  useEffect(() => {
+    if (userRole && userImage) {
+      const getImage = async () => {
+        try {
+          const profileImage = await getFile(userImage, 'PROFILE', userRole);
+          setProfileImage(profileImage.url);
+        } catch (error) {
+          console.log('Error while fetching profile image:', error);
+        }
+      };
+  
+      getImage();
+    }
+  }, [userRole, userImage]);
+
   const handleOptionChange = (value) => {
     setSelectedOption(value);
   };
@@ -195,7 +211,7 @@ const Ticket = ({ navigation }) => {
 
         <View style={styles.profileDetails}>
           <View style={styles.ImageProfile}>
-          <Image source={{ uri: baseURL + userImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
+          <Image source={{ uri: profileImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
           </View>
           <View style={styles.profileText}>
             <Text style={styles.textDetail}>{userName}</Text>

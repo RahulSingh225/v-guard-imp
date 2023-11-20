@@ -3,7 +3,6 @@ import { createDigestPostRequest } from "../../utils/apiservice";
 
 export function loginWithPassword(username, password){
     const path = "user/userDetails/login";
-    console.log("<><><><", username)
     return loginPasswordDigest(path, username, password);
 }
 
