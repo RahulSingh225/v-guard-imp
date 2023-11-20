@@ -15,6 +15,8 @@ export const AuthProvider = ({ children }) => {
     try {
       const path = 'user/logoutUser';
       createDigestPostRequest(path, '');
+      console.log('Before logout - AsyncStorage values:', await AsyncStorage.multiGet(['username', 'password', 'name', 'userCode', 'userRole', 'userImage', 'pointsBalance', 'redeemedPoints', 'numberOfScan']));
+
       await AsyncStorage.multiRemove([
         'numberOfScan',
         'redeemedPoints',
@@ -28,6 +30,8 @@ export const AuthProvider = ({ children }) => {
         'isUserAuthenticated'
       ]);
       setIsUserAuthenticated(false);
+      console.log('After logout - AsyncStorage values:', await AsyncStorage.multiGet(['username', 'password', 'name', 'userCode', 'userRole', 'userImage', 'pointsBalance', 'redeemedPoints', 'numberOfScan']));
+
     } catch (error) {
       console.error('Error while logging out:', error);
     }
