@@ -66,7 +66,7 @@ const Dashboard = () => {
       setUserData(data);
     });
   }, []);
-  
+
   useEffect(() => {
     console.log("<><><><><><")
     if (userData.userRole && userData.userImage) {
@@ -123,11 +123,11 @@ const Dashboard = () => {
         <View style={styles.leftPoint}>
           <Text style={styles.greyText}>{t('strings:points_balance')}</Text>
 
-          <Text style={styles.point}>{userData.pointsBalance}</Text>
+          <Text style={styles.point}>{userData.pointsBalance ? userData.pointsBalance : 0}</Text>
         </View>
         <View style={styles.rightPoint}>
           <Text style={styles.greyText}>{t('strings:points_redeemed')}</Text>
-          <Text style={styles.point}>{userData.redeemedPoints}</Text>
+          <Text style={styles.point}>{userData.redeemedPoints ? userData.redeemedPoints : 0}</Text>
 
         </View>
       </View>
