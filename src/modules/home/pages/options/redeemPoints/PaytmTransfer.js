@@ -12,18 +12,21 @@ const PaytmTransfer = () => {
   const handleProceed = () =>{
     console.log('Pressed')
   }
-  const [pointsBalance, setPointsBalance] = useState('');
-  const [redeemedPoints, setRedeemedPoints] = useState('');
+  const [pointData, setPointData] = useState({
+    pointsBalance: '',
+    redeemedPoints: '',
+    numberOfScan: '',
+  });
 
   useEffect(() => {
-    AsyncStorage.getItem('pointsBalance').then((pointsBalance) => {
-      setPointsBalance(pointsBalance);
-    });
-    AsyncStorage.getItem('redeemedPoints').then((redeemedPoints) => {
-      setRedeemedPoints(redeemedPoints);
-    });
-    AsyncStorage.getItem('numberOfScan').then((numberOfScan) => {
-      setNumberOfScan(numberOfScan);
+    AsyncStorage.getItem('USER').then(r => {
+      const user = JSON.parse(r);
+      const data = {
+        pointsBalance: user.pointsSummary.pointsBalance,
+        redeemedPoints: user.pointsSummary.redeemedPoints,
+        numberOfScan: user.pointsSummary.numberOfScan,
+      };
+      setPointData(data);
     });
   }, []);
   return (
@@ -32,11 +35,11 @@ const PaytmTransfer = () => {
         <View style={styles.points}>
           <View style={styles.leftPoint}>
             <Text style={styles.greyText}>{t('strings:points_balance')}</Text>
-            <Text style={styles.point}>{pointsBalance}</Text>
+            <Text style={styles.point}>{pointData.pointsBalance ? pointData.pointsBalance : 0}</Text>
           </View>
           <View style={styles.rightPoint}>
             <Text style={styles.greyText}>{t('strings:points_redeemed')}</Text>
-            <Text style={styles.point}>{redeemedPoints}</Text>
+            <Text style={styles.point}>{pointData.redeemedPoints ? pointData.redeemedPoints : 0}</Text>
           </View>
         </View>
         <View style={styles.rightTextView}>

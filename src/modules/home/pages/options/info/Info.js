@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white
   },
   carousel: {
-    backgroundColor: colors.black
+    backgroundColor: colors.white
   },
   options: {
     display: 'flex',
