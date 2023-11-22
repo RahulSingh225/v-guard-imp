@@ -14,7 +14,7 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { Picker } from '@react-native-picker/picker';
 import Loader from '../../../../../components/Loader';
 import { FloatingLabelInput } from 'react-native-floating-label-input';
-import { Profile, fetchImage, fetchImage2, reupdatekyc, sendFile, getFile } from '../../../../../utils/apiservice';
+import { Profile, fetchImage, fetchImage2, reupdatekyc, sendFile, getFile, sendFileAfterLogin } from '../../../../../utils/apiservice';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Popup from '../../../../../components/Popup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -55,6 +55,7 @@ const UpdateKYC = ({ navigation }) => {
     const [aadharfrontuuidnew, setaadharfrontuuidnew] = useState(null);
     const [pancarduuidnew, setpancarduuidnew] = useState(null);
     const [selfieuuidnew, setselfieuuidnew] = useState(null);
+    const [userRole, setUserRole] = useState('');
 
     let options = {
         saveToPhotoes: true,
@@ -137,7 +138,7 @@ const UpdateKYC = ({ navigation }) => {
             } else {
                 const photo = result.assets[0];
                 const newPhoto = { uri: photo.uri, type: photo.type, name: photo.fileName }
-
+                console.log(newPhoto, 'SSSSSS')
                 // Handle the captured data based on the document type
                 switch (documentType) {
 
@@ -191,7 +192,7 @@ const UpdateKYC = ({ navigation }) => {
         try {
             setIsLoading(true);
             const response = await Profile();
-            console.log("update kyc profile", response);
+            // console.log("update kyc profile", response);
             setselfieuuid(response.data.kycDetails.selfie);
             setaadharfrontuuid(response.data.kycDetails.aadharOrVoterOrDLFront);
             setaadharbackuuid(response.data.kycDetails.aadharOrVoterOrDlBack);
@@ -199,10 +200,14 @@ const UpdateKYC = ({ navigation }) => {
             setpancardno(response.data.kycDetails.panCardNo);
             setaadharcardno(response.data.kycDetails.aadharOrVoterOrDlNo);
             await fetchAndSetImageData(response.data.kycDetails.selfie, 'PROFILE', 1);
-            await fetchAndSetImageData(response.data.kycDetails.aadharOrVoterOrDlBack, 'ID_CARD_FRONT', 1);
+            await fetchAndSetImageData(response.data.kycDetails.aadharOrVoterOrDLFront, 'ID_CARD_FRONT', 1);
             await fetchAndSetImageData(response.data.kycDetails.aadharOrVoterOrDlBack, 'ID_CARD_BACK', 1);
             await fetchAndSetImageData(response.data.kycDetails.panCardFront, 'PAN_CARD_FRONT', 1);
-            await fetchAndSetImageData()
+            console.log("%%%%%%%%%%%INSDE THE FETCH PROFILE UUID %%%%%%%%%%%%%%", response.data.kycDetails.aadharOrVoterOrDLFront,);
+            console.log("%%%%%%%%%%%INSDE THE FETCH PROFILE UUID %%%%%%%%%%%%%%", aadharbackuuid);
+            console.log("%%%%%%%%%%%INSDE THE FETCH PROFILE UUID %%%%%%%%%%%%%%", pancarduuid);
+            console.log("%%%%%%%%%%%INSDE THE FETCH PROFILE UUID %%%%%%%%%%%", selfieuuid);
+
 
 
 
@@ -215,33 +220,40 @@ const UpdateKYC = ({ navigation }) => {
 
     const uploadFiles = async (fileDataArray) => {
 
-        console.log("", IdProofFrontData);
-        console.log("", IdProofFrontData);
-        console.log("", SelfieData);
-        console.log("", PanData);
+        // console.log("", IdProofFrontData);
+        // console.log("", IdProofFrontData);
+        // console.log("", SelfieData);
+        // console.log("", PanData);
 
-        console.log("$$$$$$$$", aadharbackuuid);
-        console.log("$$$$$$$$", aadharfrontuuid);
-        console.log("$$$$$$$$", selfieuuid);
-        console.log("$$$$$$$$", pancarduuid);
+        // console.log("$$$$$$$$", aadharbackuuid);
+        // console.log("$$$$$$$$", aadharfrontuuid);
+        // console.log("$$$$$$$$", selfieuuid);
+        // console.log("$$$$$$$$", pancarduuid);
 
         try {
-
+            const responses = [];
             for (const fileData of fileDataArray) {
                 const { imageRelated, file } = fileData;
-                console.log(file);
+                console.log("inside api uplode files", file);
 
                 if (file) { // Check if the file is not null
                     const formData = new FormData();
-                    formData.append('USER_ROLE', '1');
-                    formData.append('image_related', imageRelated);
+
+
                     formData.append('file', {
-                        uri: file.uri,
+                        uri: file,
+                        type: 'image/' + file.split('/').pop().split('.').pop(),
+                        name: file.split('/').pop().split('.').pop(),
 
                     });
+                    formData.append('image_related', imageRelated);
+                    formData.append('USER_ROLE', "1");
+
+                    console.log("<><><><><FROM DATA  ><><><", formData);
 
                     const response = await sendFile(formData);
-                    response.push(response.data);
+                    console.log("<><><><><FROM API GET FILE  ><><><", response);
+                    responses.push(response.data);
                 }
             }
 
@@ -254,7 +266,23 @@ const UpdateKYC = ({ navigation }) => {
         }
     };
 
-    const callUploadAndThenAnotherFunction = async () => {
+    // const sendingfile = async () => {
+    //     console.log("Insde senfile", IdProofFrontData);
+    //     const formData = new FormData();
+    //     let imageHere = {}
+    //     imageHere.uri = IdProofFrontData;
+    //     imageHere.type = 'image/' + IdProofFrontData.split('/').pop().split('.').pop();
+    //     imageHere.name = IdProofFrontData.split('/').pop().split('.').pop();
+    //     formData.append('image_related', "PROFILE");
+    //     formData.append('USER_ROLE', "1");
+    //     formData.append('file', imageHere);
+    //     const response = await sendFileAfterLogin(formData);
+    //     console.log("<><><><><sending file api ><><><", response);
+    //     setaadharfrontuuid(response);
+
+    // }
+
+    const triggerApiWithImageupdatekyc = async () => {
         try {
             setIsLoading(true);
             const filesToUpload = [
@@ -268,7 +296,7 @@ const UpdateKYC = ({ navigation }) => {
             // Filter out files with null data
             const validFilesToUpload = filesToUpload.filter(fileData => fileData.file !== null);
 
-            if (validFilesToUpload.length > 0) {
+            if (validFilesToUpload.length >= 0) {
                 const responses = await uploadFiles(validFilesToUpload);
 
                 // Extract and store entityUid values in separate state variables
@@ -276,6 +304,7 @@ const UpdateKYC = ({ navigation }) => {
                     switch (validFilesToUpload[index].imageRelated) {
                         case 'ID_CARD_FRONT':
                             setaadharfrontuuidnew(response.entityUid);
+                            //  console.log("WHERE THE FILE IS SETTING UP", aadharfrontuuid);
                             break;
                         case 'ID_CARD_BACK':
                             setaadharbackuuidnew(response.entityUid);
@@ -291,13 +320,22 @@ const UpdateKYC = ({ navigation }) => {
                     }
 
                 });
+                console.log("$$$$$$$$", aadharbackuuidnew);
+                console.log("$$$$$$$$", aadharfrontuuidnew);
+                console.log("$$$$$$$$", selfieuuidnew);
+                console.log("$$$$$$$$", pancarduuidnew);
 
 
-                if (aadharfrontuuid != null && aadharfrontuuid != 'undefined' && aadharbackuuid != null && aadharbackuuid != 'undefined' && selfieuuid != 'undefined' && selfieuuid != null) {
+                if (aadharfrontuuidnew != null && aadharfrontuuidnew != 'undefined' && aadharbackuuidnew != null && aadharbackuuidnew != 'undefined' && selfieuuidnew != 'undefined' && selfieuuidnew != null) {
                     console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharfrontuuid,);
                     console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharbackuuid);
                     console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", pancarduuid);
                     console.log("%%%%%%%%%%%%%%%%%%%%%%", selfieuuid);
+
+                    console.log("$$$$$$$$", aadharbackuuidnew);
+                    console.log("$$$$$$$$", aadharfrontuuidnew);
+                    console.log("$$$$$$$$", selfieuuidnew);
+                    console.log("$$$$$$$$", pancarduuidnew);
                     // console.log("================================================");
                     // console.log(">><><<><>><><><><><><><><><><><><><", userbody);
                     // console.log("================================================");
@@ -318,6 +356,14 @@ const UpdateKYC = ({ navigation }) => {
 
     const handleKycUpdate = async () => {
         try {
+            console.log("%%%%%%%INSDE THE HANDLE KYC UPDATE %%%%%%%%%%%%%%%%%%", aadharfrontuuid,);
+            console.log("%%%%%%%INSDE THE HANDLE KYC UPDATE %%%%%%%%%%%%%%%%%%", aadharbackuuid);
+            console.log("%%%%%%%INSDE THE HANDLE KYC UPDATE %%%%%%%%%%%%%%%%%%", pancarduuid);
+            console.log("%%%%%%%INSDE THE HANDLE KYC UPDATE %%%%%%%%%%%%%%%", selfieuuid);
+            console.log("$$$INSIDE NEW UUID $$$$$", aadharbackuuidnew);
+            console.log("$$$INSIDE NEW UUID $$$$$", aadharfrontuuidnew);
+            console.log("$$$INSIDE NEW UUID $$$$$", selfieuuidnew);
+            console.log("$$$INSIDE NEW UUID $$$$$", pancarduuidnew);
             setIsLoading(true)
             const kycData = {
                 kycFlag: kycflag,
@@ -362,7 +408,12 @@ const UpdateKYC = ({ navigation }) => {
     };
 
     useEffect(() => {
+        const getUserRoleFromAsyncStorage = async () => {
+            const userRole = await AsyncStorage.getItem('userRole');
+            setUserRole(userRole);
+        };
 
+        getUserRoleFromAsyncStorage();
 
         Fetchingprofile();
 
@@ -383,6 +434,7 @@ const UpdateKYC = ({ navigation }) => {
                     break;
                 case 'ID_CARD_BACK':
                     setIdProofBackData(imageUrl);
+                    console.log("INSDE THE ID PROOF BACK IMAGE ", IdProofBackData);
                     break;
                 case 'PAN_CARD_FRONT':
                     setPanData(imageUrl);
@@ -776,7 +828,7 @@ const UpdateKYC = ({ navigation }) => {
                                 label="Update Pan Number manually*"
                                 value={pancardno}
                                 onChangeText={(text) => setpancardno(text)}
-                                keyboardType='number-pad'
+                                keyboardType='default'
 
                                 containerStyles={[styles.input]}
                                 staticLabel
@@ -811,7 +863,7 @@ const UpdateKYC = ({ navigation }) => {
                     style={styles.button}
                     label={'Submit'}
                     variant="filled"
-                    onPress={() => callUploadAndThenAnotherFunction()}
+                    onPress={() => triggerApiWithImageupdatekyc()}
                     width="100%"
                     iconHeight={10}
                     iconWidth={30}
@@ -891,9 +943,10 @@ const styles = StyleSheet.create({
         width: width / 1.20,
         borderWidth: 2,
 
+
         borderColor: '#D3D3D3',
         borderRadius: 10,
-        height: height / 16.5,
+        height: height / 13.5,
 
         margin: 10,
         justifycontent: 'Space-between',

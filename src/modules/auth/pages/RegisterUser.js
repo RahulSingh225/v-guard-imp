@@ -36,7 +36,7 @@ const RegisterUser = ({ navigation }) => {
                         AsyncStorage.setItem("userno", number);
                         AsyncStorage.setItem("preferedLanguage", preferedLanguage.toString());
                         navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption, preferedLanguage: preferedLanguage });
-                    }, 1500);
+                    }, 150);
                 }
 
             }

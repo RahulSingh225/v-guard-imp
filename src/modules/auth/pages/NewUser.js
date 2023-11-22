@@ -41,6 +41,7 @@ const NewUser = ({ navigation }) => {
   const [landmark, setlandmark] = useState('');
   const [name, setname] = useState('');
   const [pincode, setPincode] = useState('');
+  const [serchedpinocode, setserchedpinocode] = useState()
   const [selectedState, setSelectedState] = useState();
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
@@ -51,16 +52,17 @@ const NewUser = ({ navigation }) => {
   const [permananetcityid, setpermananetcityid] = useState('');
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
+  const [items, setItems] = useState([
+    { label: 'Apple', value: 'apple' },
+    { label: 'Banana', value: 'banana' }
+  ]);
 
 
 
 
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState();
-  // const [items, setItems] = useState([
-  //   { label: 'Apple', value: 'apple' },
-  //   { label: 'Banana', value: 'banana' }
-  // ]);
+
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState();
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -79,10 +81,12 @@ const NewUser = ({ navigation }) => {
 
   //=============== FUNCTION FOR GETTING THE  DISTRIC ID STATE ID UPIN SELECTING THE ID AND DETAILED PINCODE DATA  
   async function fetchDataForPinCode1(pincode) {
-    setLoading(true);
+
+    // setLoading(true);
     try {
       setLoading(true);
       const data = await fetchPinCodeData(pincode);
+      //console.log("???????", pincode);
       const pincodeid = data[0].pinCodeId;
       console.log('Pin Code Data:', pincodeid);
 
@@ -168,13 +172,7 @@ const NewUser = ({ navigation }) => {
     return () => clearTimeout(timeout);
   }, [])
 
-  function pinocdefeting(text) {
-    if (text.length >= 3) {
-      fetchPincodeSuggestions(text);
-      setOpen(true)
-    }
-    setPincode(text);
-  }
+
   const retrieveData = async () => {
     try {
       setIsLoading(true);
@@ -209,10 +207,23 @@ const NewUser = ({ navigation }) => {
     }
   };
 
+  function pinocdefeting(text) {
+
+    if (text.length == 6) {
+
+
+      fetchPincodeSuggestions(text);
+
+      setOpen(true)
+    }
+    setPincode(text);
+  }
+
   // ===============================================GETTING SUGGESTION=====/// FOR PINCODE======================//
   const fetchPincodeSuggestions = async (pincode) => {
 
     try {
+
       const suggestionData = await fetchPinCodeData(pincode);
 
       if (Array.isArray(suggestionData) && suggestionData.length > 0) {
@@ -222,9 +233,12 @@ const NewUser = ({ navigation }) => {
         ));
         setSuggestions(filteredSuggestions);
 
-        console.log("*********************", pincode);
-        setIsLoading(true);
-        fetchDataForPinCode1(pincode);
+        console.log("********IN FETCHPINCODESUGGESTION*************", pincode);
+        // setPincode(pincode);
+        //setIsLoading(true);
+        if (pincode.length == 6) {
+          fetchDataForPinCode1(pincode);
+        }
 
 
 
@@ -324,6 +338,7 @@ const NewUser = ({ navigation }) => {
       return false;
     }
     if (!whatappyes || whatappyes === "Select WhatApp contact same as above ?") {
+      setIsPopupVisible(true);
       setPopupMessage('Please specify your WhatsApp no same or not. ');
       return false;
     }
@@ -394,7 +409,7 @@ const NewUser = ({ navigation }) => {
           <View style={{ margin: 20, flexDirection: 'column', padding: 10, height: height / 10, Left: 10, }}>
             <Text style={{ color: 'grey' }}>New User</Text>
             <Text style={{ color: 'grey' }}>Rishta ID</Text>
-            <Text style={{ color: 'grey' }}>Mobile No.</Text>
+            <Text style={{ color: 'grey' }}> {number}</Text>
           </View>
 
         </View>
@@ -623,35 +638,35 @@ const NewUser = ({ navigation }) => {
 
           // placeholder={value}
           searchTextInputProps={{
-            maxLength: 6
-          }}
-          badgeStyle={(item, index) => ({
-            padding: 5,
-            backgroundColor: item.value ? 'red' : 'grey',
+            maxLength: 6,
+            keyboardType: "number-pad"
 
-          })}
-          badgeProps={{
-            activeOpacity: 1.5
           }}
 
-          badgeSeparatorStyle={{
-            width: 30,
-          }}
-          badgeColors={['red']}
-          badgeDotColors={['red']}
           listMode="SCROLLVIEW"
           scrollViewProps={{ nestedScrollEnabled: true, decelerationRate: "fast" }}
           open={open}
           items={suggestions.map((item) => ({
             label: item.pinCode,
             value: item.pinCode,
-          }))}
+
+          }
+          ))}
           setOpen={setOpen}
           value={pincode}
           onChangeItem={(item) => {
-
             setPincode(item.value);
+            // pinocdefeting(item.value);
+            //console.log(value);
+
+
+
+
+
           }}
+
+
+
           onChangeSearchText={(text) => pinocdefeting(text)}
           dropDownContainerStyle={{
             width: width / 1.1,

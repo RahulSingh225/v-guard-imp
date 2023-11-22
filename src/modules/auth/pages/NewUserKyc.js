@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, TouchableOpacity, PermissionsAndroid, Image, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, TouchableOpacity, PermissionsAndroid, Image, ActivityIndicator, Alert, BackHandler } from 'react-native';
 import { height, width } from '../../../utils/dimensions';
 import { Avatar, Button, } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
@@ -61,17 +61,29 @@ const NewUserKyc = ({ navigation, route }) => {
     const [showTextFields, setShowTextFields] = useState(false);
     const [schmename, setschmename] = useState('');
     const [resonforlikingschme, setresonforlikingschme] = useState('');
-    const [otherschemebrand2, setotherschemebrand2] = useState();
-    const [whatyouliked2, setwhatyouliked2] = useState();
-    const [otherschemebrand3, setotherschemebrand3] = useState();
-    const [whatyouliked3, setwhatyouliked3] = useState();
-    const [otherschemebrand4, setotherschemebrand4] = useState();
-    const [whatyouliked4, setwhatyouliked4] = useState();
-    const [otherschemebrand5, setotherschemebrand5] = useState();
-    const [whatyouliked5, setwhatyouliked5] = useState();
+
     const [schemes, setSchemes] = useState([{ schmename: '', resonforlikingschme: '' }]);
     const [addttextfield, setaddttextfield] = useState(false);
     const isInitialMount = useRef(true);
+    const [schemeData, setSchemeData] = useState({
+        1: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+        2: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+        3: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+        4: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+        5: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+    });
+
+    const handleInputChangeschemes = (schemeNumber, field, value) => {
+        setSchemeData((prevData) => ({
+            ...prevData,
+            [schemeNumber]: {
+                ...prevData[schemeNumber],
+                [field]: value,
+            },
+
+        }));
+        console.log('Updated schemeData:', schemeData);
+    };
 
 
     const [open, setOpen] = useState(false);
@@ -97,6 +109,8 @@ const NewUserKyc = ({ navigation, route }) => {
     //     }
 
     // }
+
+
 
     const validateAadhar = (aadhar) => {
         // Use a regular expression to check if the Aadhar card number is valid.
@@ -145,23 +159,24 @@ const NewUserKyc = ({ navigation, route }) => {
         setLoading(true);
         try {
             const data = await fetchPinCodeData(pincode);
-            console.log('Fetching data for pincode API CALL:', typeof pincode);
+            // console.log('Fetching data for pincode API CALL:', typeof pincode);
             const pincodeid = data[0].pinCodeId; // Declare the variable using 'const'
-            console.log('Pin Code Data:', pincodeid);
+            // console.log('Pin Code Data:', pincodeid);
 
             const secondData = await PincodedetailList(pincodeid);
-            console.log("<><><><><>IF NO HAPPENING THIS ", secondData.distId);
-            securrenttcityid(secondData.cityId);
             setcurrentdistrictId(secondData.distId);
+            setcurrentdistrictId(secondData.distId)
+            // console.log("<><><><><>IF NO HAPPENING THIS ", currentdistrictId);
+            securrenttcityid(secondData.cityId);
+
             setcurrentstateid(secondData.stateId);
+            //  console.log("INSDE CURRENT DISTID", currentselectedCity);
 
 
             const cityData = await getCityDataForDistrict(secondData.distId);
             // console.log('City Data:', cityData);
             setcitylistpicker(cityData);
             setCurrentselectedState(secondData.stateName);
-
-
             setCurrentselectedDistrict(secondData.distName);
             setcurrentdistrictId(secondData.distId);
             console.log('================INSDE FETCH PINCODE FUNCTION ====================');
@@ -228,10 +243,38 @@ const NewUserKyc = ({ navigation, route }) => {
             if (data) {
                 const retrievedData = JSON.parse(data);
 
+
                 // Set the state variables with the retrieved data
                 console.log('=============CCAME FROM THE PREVIOUS ONCE RUN=======================');
-                console.log(retrievedData.fullData.NewUserKycData.currentaddres);
-                console.log('====================================');
+                console.log("<><>STORED SCHEMA DATA<><>", retrievedData.fullData.NewUserKycData.schemeData[1].otherSchemeBrand);
+                const retrievedSchemeData = retrievedData.fullData.NewUserKycData.schemeData;
+                console.log("??????????????????", retrievedSchemeData);
+                const updatedSchemeData = {
+                    1: {
+                        otherSchemeBrand: retrievedSchemeData[1]?.otherSchemeBrand,
+                        abtOtherSchemeLiked: retrievedSchemeData[1]?.abtOtherSchemeLiked,
+                    },
+                    2: {
+                        otherSchemeBrand: retrievedSchemeData[2]?.otherSchemeBrand1,
+                        abtOtherSchemeLiked: retrievedSchemeData[2]?.abtOtherSchemeLiked1,
+                    },
+                    3: {
+                        otherSchemeBrand: retrievedSchemeData[3]?.otherSchemeBrand2,
+                        abtOtherSchemeLiked: retrievedSchemeData[3]?.abtOtherSchemeLiked2,
+                    },
+                    4: {
+                        otherSchemeBrand: retrievedSchemeData[4]?.otherSchemeBrand3,
+                        abtOtherSchemeLiked: retrievedSchemeData[4]?.abtOtherSchemeLiked3,
+                    },
+                    5: {
+                        otherSchemeBrand: retrievedSchemeData[5]?.otherSchemeBrand4,
+                        abtOtherSchemeLiked: retrievedSchemeData[5]?.abtOtherSchemeLiked4,
+                    },
+                };
+                console.log("??????????????????", updatedSchemeData);
+                setSchemeData(updatedSchemeData);
+                // console.log("<><><><>", schemeData);
+                console.log('====================================', retrievedData.fullData.NewUserKycData.currentselectedCity);
                 if (retrievedData.fullData.NewUserKycData.currentaddres === null) {
                     setcurrentaddres('Select');
                 }
@@ -244,8 +287,9 @@ const NewUserKyc = ({ navigation, route }) => {
                     setpincode(retrievedData.fullData.NewUserKycData.pinCode)
                     setprofession(retrievedData.fullData.NewUserKycData.profession);
                     setmaritialStatus(retrievedData.fullData.NewUserKycData.maritialStatus);
+                    setmaritialstatusId(retrievedData.fullData.NewUserKycData.maritialstatusId);
                     setloyalty(retrievedData.fullData.NewUserKycData.loyalty);
-                    setNumber(retrievedData.fullData.NewUserKycData.Number);
+                    setNumber(retrievedData.fullData.userData.number);
                     setSelfieData(retrievedData.fullData.NewUserKycData.selfieData);
                     setIdProofFrontData(retrievedData.fullData.NewUserKycData.idProofFrontData);
                     setIdProofBackData(retrievedData.fullData.NewUserKycData.idProofBackData);
@@ -257,7 +301,7 @@ const NewUserKyc = ({ navigation, route }) => {
                     setCurrentselectedDistrict(retrievedData.fullData.NewUserKycData.currentselectedDistrict);
                     setCurrentselectedState(retrievedData.fullData.NewUserKycData.currentselectedState);
                     securrenttcityid(retrievedData.fullData.NewUserKycData.currentcityid);
-                    setcurrentdistrictId(retrievedData.fullData.NewUserKycData.districtId);
+                    setcurrentdistrictId(retrievedData.fullData.NewUserKycData.currentdistrictId);
                     setcurrentstateid(retrievedData.fullData.NewUserKycData.currentstateid);
                     // setcitylistpicker(retrievedData.fullData.NewUserKycData.currentselectedCity);
 
@@ -280,7 +324,7 @@ const NewUserKyc = ({ navigation, route }) => {
                     setprofession(retrievedData.fullData.NewUserKycData.profession);
                     setmaritialStatus(retrievedData.fullData.NewUserKycData.maritialStatus);
                     setloyalty(retrievedData.fullData.NewUserKycData.loyalty);
-                    setNumber(retrievedData.fullData.NewUserKycData.Number);
+                    setNumber(retrievedData.fullData.userData.number);
                     setSelfieData(retrievedData.fullData.NewUserKycData.selfieData);
                     setIdProofFrontData(retrievedData.fullData.NewUserKycData.idProofFrontData);
                     setIdProofBackData(retrievedData.fullData.NewUserKycData.idProofBackData);
@@ -326,13 +370,26 @@ const NewUserKyc = ({ navigation, route }) => {
                     setCurrentselectedCity(retrievedData.fullData.NewUserKycData.currentselectedCity);
                     setCurrentselectedDistrict(retrievedData.fullData.NewUserKycData.currentselectedDistrict);
                     setCurrentselectedState(retrievedData.fullData.NewUserKycData.currentselectedState);
+                    setSchemeData(retrievedData.fullData.NewUserKyc.schemeData)
+
+
+
+
+
 
                 }
-                console.log("<><><><><><><><><><><><>", retrievedData.fullData.NewUserKycData.currentselectedCity);
-                console.log("<><><><><><><><><><><><>", retrievedData.fullData.NewUserKycData.pincode);
+
+
+
+
 
             }
-        } catch (error) {
+
+        }
+
+
+
+        catch (error) {
             console.error('Error retrieving data: ', error);
         } finally {
             setIsLoading(false);
@@ -342,7 +399,7 @@ const NewUserKyc = ({ navigation, route }) => {
     function pincodefunction(text) {
 
 
-        if (currentaddres === 'no' && text.length >= 2) {
+        if (currentaddres === 'no' && text.length >= 6) {
 
             fetchPincodeSuggestions(text);
             setOpen(true);
@@ -350,12 +407,37 @@ const NewUserKyc = ({ navigation, route }) => {
         setpincode(text)
 
     }
-    //===================END OF RETRIVING DATA FROM ASYNC STORAGE=======================================//
+    // const getSchemeDataFromStorage = async () => {
+    //     try {
+    //         const storedDataString = await AsyncStorage.getItem('previewSummaryData');
+    //         if (storedDataString) {
+    //             const storedData = JSON.parse(storedDataString);
+
+    //             // Assuming storedData.fullData.NewUserKyc.schemeData is an object
+    //             const storedSchemeData = storedData.fullData.NewUserKyc.schemeData;
+
+    //             // Set the state with the retrieved data
+    //             setSchemeData(storedSchemeData);
+    //             console.log(schemeData);
+    //         } else {
+    //             console.log('No stored scheme data found.');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error retrieving scheme data from AsyncStorage:', error);
+    //     }
+    // };
+
+
+
+
     useEffect(() => {
+
+
         retrieveData();
         Gettingprofession();
-        // getsubprofession();
+
     }, [])
+
 
 
     let options = {
@@ -435,6 +517,25 @@ const NewUserKyc = ({ navigation, route }) => {
         currentcityid,
         currentdistrictId,
         currentstateid,
+        schemeData: {
+            1: { otherSchemeBrand: schemeData[1]?.otherSchemeBrand || '', abtOtherSchemeLiked: schemeData[1]?.abtOtherSchemeLiked || '' },
+            2: { otherSchemeBrand1: schemeData[2]?.otherSchemeBrand || '', abtOtherSchemeLiked1: schemeData[2]?.abtOtherSchemeLiked || '' },
+            3: { otherSchemeBrand2: schemeData[3]?.otherSchemeBrand || '', abtOtherSchemeLiked2: schemeData[3]?.abtOtherSchemeLiked || '' },
+            4: { otherSchemeBrand3: schemeData[4]?.otherSchemeBrand || '', abtOtherSchemeLiked3: schemeData[4]?.abtOtherSchemeLiked || '' },
+            5: { otherSchemeBrand4: schemeData[5]?.otherSchemeBrand || '', abtOtherSchemeLiked4: schemeData[5]?.abtOtherSchemeLiked || '' },
+        },
+        //         otherSchemeBrand:schemeData[1]?.otherSchemeBrand,      
+        //         otherSchemeBrand2: schemeData[3]?.otherSchemeBrand,
+        //         otherSchemeBrand3: schemeData[4]?.otherSchemeBrand,
+        //         otherSchemeBrand4: schemeData[5]?.otherSchemeBrand,
+        //         abtOtherSchemeLiked: schemeData[1]?.abtOtherSchemeLiked ,
+        // abtOtherSchemeLiked1: schemeData[2]?.abtOtherSchemeLiked,
+        // abtOtherSchemeLiked2: schemeData[3]?.abtOtherSchemeLiked,
+        // abtOtherSchemeLiked3: schemeData[4]?.abtOtherSchemeLiked,
+        // abtOtherSchemeLiked4: schemeData[5]?.abtOtherSchemeLiked,
+
+
+
     };
 
     async function updateNewUserKycDataInPreviewSummary(NewUserKycData) {
@@ -459,6 +560,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
                 // Update the 'NewUserKycData' property directly with the provided 'newUserData'
                 previewSummaryData.fullData.NewUserKycData = NewUserKycData;
+
 
                 // Convert the updated object back to a JSON string
                 const updatedPreviewSummaryDataString = JSON.stringify(previewSummaryData);
@@ -705,7 +807,7 @@ const NewUserKyc = ({ navigation, route }) => {
                         <View style={{ margin: 20, flexDirection: 'column', padding: 10, height: height / 10, Left: 10, }}>
                             <Text style={{ color: 'grey' }}>New User</Text>
                             <Text style={{ color: 'grey' }}>Rishta ID</Text>
-                            <Text style={{ color: 'grey' }}>Mobile No.</Text>
+                            <Text style={{ color: 'grey' }}>{Number}</Text>
                         </View>
 
                     </View>
@@ -854,7 +956,8 @@ const NewUserKyc = ({ navigation, route }) => {
 
                                     // placeholder={value}
                                     searchTextInputProps={{
-                                        maxLength: 6
+                                        maxLength: 6,
+                                        keyboardType: 'number-pad',
                                     }}
                                     badgeStyle={(item, index) => ({
                                         padding: 5,
@@ -967,7 +1070,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                     ))
                                 ) : (
 
-                                    <Picker.Item label="Select City" value="" />
+                                    <Picker.Item label={currentselectedCity} value={currentselectedCity} />
 
 
                                 )}
@@ -1032,7 +1135,10 @@ const NewUserKyc = ({ navigation, route }) => {
                             selectedValue={maritialStatus}
                             onValueChange={(itemValue, itemIndex) => {
                                 // setmaritialstatusId(itemValue) 
+                                const maritialStatusId = itemValue === "Married" ? '1' : '2';
                                 setmaritialStatus(itemValue);
+                                setmaritialstatusId(maritialStatusId);
+
 
                             }
                             }>
@@ -1066,92 +1172,47 @@ const NewUserKyc = ({ navigation, route }) => {
                         </Picker>
 
                     </View>
-                    {loyalty == 'Yes' ?
-                        <FloatingLabelInput
 
-                            label="If yes please mention Scheme and brand name "
-                            value={schmename}
-                            onChangeText={(text) => setschmename(text)}
-                            keyboardType='default'
-
-                            containerStyles={styles.input}
-                            staticLabel
-                            labelStyles={styles.labelStyles}
-                            inputStyles={{
-                                color: 'black',
-                                paddingHorizontal: 10
-                            }}
-
-
-                        />
-
-
-                        : null
-                    }
-
-                    {loyalty == 'Yes' ?
-                        <FloatingLabelInput
-
-                            label="If yes what you liked about the program *"
-                            value={resonforlikingschme}
-                            onChangeText={(text) => setresonforlikingschme(text)}
-                            keyboardType='default'
-                            containerStyles={styles.input}
-                            staticLabel
-                            labelStyles={styles.labelStyles}
-                            inputStyles={{
-                                color: 'black',
-                                paddingHorizontal: 10
-                            }}
-
-
-                        />
-
-
-                        : null
-                    }
 
 
 
-                    {/* <View>
-                        {loyalty == 'Yes' && schemes.map((scheme, index) => (
-                            <View key={index} style={styles.schemeContainer}>
-                                <FloatingLabelInput
-                                    label="If yes please mention Scheme and brand name"
-                                    value={scheme.schmename}
-                                    onChangeText={(text) => handleInputChange(index, 'schmename', text)}
-                                    keyboardType='default'
-                                    containerStyles={styles.input}
-                                    staticLabel
-                                    labelStyles={styles.labelStyles}
-                                    inputStyles={{
-                                        color: 'black',
-                                        paddingHorizontal: 10
-                                    }}
-                                />
-                                <View style={{ flexDirection: 'row' }}>
-                                    <FloatingLabelInput
-                                        label="If yes what you liked about the program *"
-                                        value={scheme.resonforlikingschme}
-                                        onChangeText={(text) => handleInputChange(index, 'resonforlikingschme', text)}
-                                        keyboardType='default'
-                                        containerStyles={styles.input}
-                                        staticLabel
-                                        labelStyles={styles.labelStyles}
-                                        inputStyles={{
-                                            color: 'black',
-                                            paddingHorizontal: 10
-                                        }}
-                                    />
-                                    <IconButton
-                                        icon="camera"
-                                        size={20}
-                                        onPress={handleIconButtonPress}
-                                    />
-                                </View>
-                            </View>
-                        ))}
-                    </View> */}
+                    {loyalty == 'Yes' ?
+                        <View>
+                            {loyalty === 'Yes' &&
+                                schemes.map((scheme, index) => (
+                                    <View key={index} style={styles.schemeContainer}>
+                                        <FloatingLabelInput
+                                            label={`Scheme ${index + 1} Brand Name`}
+                                            value={schemeData[index + 1].otherSchemeBrand}
+                                            onChangeText={(text) => handleInputChangeschemes(index + 1, `otherSchemeBrand`, text)}
+                                            keyboardType="default"
+                                            containerStyles={styles.input}
+                                            staticLabel
+                                            labelStyles={styles.labelStyles}
+                                            inputStyles={{
+                                                color: 'black',
+                                                paddingHorizontal: 10,
+                                            }}
+                                        />
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <FloatingLabelInput
+                                                label={`Reason for liking Scheme ${index + 1}`}
+                                                value={schemeData[index + 1].abtOtherSchemeLiked}
+                                                onChangeText={(text) => handleInputChangeschemes(index + 1, `abtOtherSchemeLiked`, text)}
+                                                keyboardType="default"
+                                                containerStyles={styles.input}
+                                                staticLabel
+                                                labelStyles={styles.labelStyles}
+                                                inputStyles={{
+                                                    color: 'black',
+                                                    paddingHorizontal: 10,
+                                                }}
+                                            />
+                                            <IconButton style={styles.iconButton} icon="plus" size={20} onPress={handleIconButtonPress} />
+                                        </View>
+                                    </View>
+                                ))}
+                        </View> : null}
 
 
 
@@ -1370,6 +1431,11 @@ const styles = StyleSheet.create({
     },
     schemeContainer: {
         marginVertical: 10,
+    },
+    iconButton: {
+        backgroundColor: 'yellow', // Replace 'yourBackgroundColor' with the desired color
+        borderRadius: 50,
+        alignSelf: 'center',
     },
     input: {
 

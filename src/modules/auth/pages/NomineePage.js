@@ -37,11 +37,12 @@ const NomineePage = ({ navigation, route }) => {
     const { t } = useTranslation();
     // const [currentaddres, setcurrentaddres] = useState('Select');
     const [checked, setChecked] = useState(false);
+    const [number, setnumber] = useState();
     const [accountnumber, setaccountnumber] = useState('');
     const [accountholdername, setaccountholdername] = useState(null);
     const [chequeImage, setchequeImage] = useState(null);
     const [IFSC, setIFSC] = useState(null);
-    const [accounttype, setaccounttype] = useState('');
+    const [accounttype, setaccounttype] = useState("");
 
     const [selectedbank, setselectedbank] = useState('');
     const [allbankslist, setallbankslist] = useState(null);
@@ -60,12 +61,15 @@ const NomineePage = ({ navigation, route }) => {
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedDate, setSelectedDate] = useState();
+    const [selectedDatenominee, setSelectedDatenominee] = useState();
 
 
-    const handleDateChange = (event, selectedDate) => {
+    const handleDateChange = (event, selectedDatenominee) => {
         if (event.type === 'set') {
-            setnomineeSelectedDate(selectedDate);
+            setSelectedDatenominee(selectedDatenominee);
+            // setnomineeSelectedDate(selectedDate);
+            // setnomineeSelectedDate(selectedDate);
+
 
         }
         setShowDatePicker(false);
@@ -92,7 +96,7 @@ const NomineePage = ({ navigation, route }) => {
             nomineeemail,
             nomineeaddress,
             relationship,
-            nomineeselectedDate,
+            selectedDatenominee,
             bankid,
         }
         const PreviewSummaryData = {
@@ -119,10 +123,10 @@ const NomineePage = ({ navigation, route }) => {
                 accountholdername === null &&
                 chequeImage === null &&
                 IFSC === null &&
-                accounttype == '' &&
+                accounttype == "" &&
                 selectedbank == ''
             ) {
-
+                console.log("<><><><>>", BankDetailsAndNominee);
                 const dataToStore = JSON.stringify(PreviewSummaryData);
                 await AsyncStorage.setItem("previewSummaryData", dataToStore);
                 navigation.navigate("PreviewSummary");
@@ -132,7 +136,7 @@ const NomineePage = ({ navigation, route }) => {
                 accountholdername !== null &&
                 chequeImage !== null &&
                 IFSC !== null &&
-                accounttype != '' &&
+                accounttype != "" &&
                 selectedbank != ''
             ) {
 
@@ -270,30 +274,35 @@ const NomineePage = ({ navigation, route }) => {
                 const data = await AsyncStorage.getItem('previewSummaryData');
                 if (data) {
                     const retrievedData = JSON.parse(data);
+                    const selectedDatenomineeDate = new Date(retrievedData.BankDetailsAndNominee.selectedDatenominee);
+                    const formattedDate = selectedDatenomineeDate.toLocaleDateString();
+                    console.log('Formatted Date:', formattedDate);
 
 
                     console.log('=============in nominee page=======================');
-                    console.log(retrievedData);
+                    console.log(retrievedData.fullData.userData.number);
                     console.log('====================================');
+                    setnumber(retrievedData.fullData.userData.number)
                     setaccountnumber(retrievedData.BankDetailsAndNominee.accountnumber);
                     setaccountholdername(retrievedData.BankDetailsAndNominee.accountholdername);
                     setchequeImage(retrievedData.BankDetailsAndNominee.chequeImage);
                     setIFSC(retrievedData.BankDetailsAndNominee.IFSC);
                     setaccounttype(retrievedData.BankDetailsAndNominee.accounttype);
                     setselectedbank(retrievedData.BankDetailsAndNominee.selectedbank);
+                    // setSelectedDatenominee(retrievedData.BankDetailsAndNominee.selectedDatenominee.tolocalDateString());
 
                     setnomineename(retrievedData.BankDetailsAndNominee.nomineename);
                     setnomineemobileno(retrievedData.BankDetailsAndNominee.nomineemobileno);
                     setnomineeemail(retrievedData.BankDetailsAndNominee.nomineeemail);
                     setnomineeaddress(retrievedData.BankDetailsAndNominee.nomineeaddress);
-                    // setnomineeSelectedDate(retrievedData.BankDetailsAndNominee.nomineeselectedDate.toString());
+                    setSelectedDatenominee(selectedDatenomineeDate);
                     setrelationship(retrievedData.BankDetailsAndNominee.relationship);
 
 
 
 
                     console.log('==============in nominee page======================');
-                    console.log(accountholdername);
+                    console.log(selectedDatenominee);
                     console.log('====================================');
 
 
@@ -342,12 +351,12 @@ const NomineePage = ({ navigation, route }) => {
         <SafeAreaView>
             <ScrollView >
                 <View >
-                    <View style={{ backgroundColor: 'transparent', height: height / 8, margin: 20, flexDirection: 'row', width: width / 2.1, justifyContent: 'space-evenly', alignItems: 'center', padding: 20 }}>
+                    <View style={{ backgroundColor: 'transparent', height: height / 8, margin: 20, flexDirection: 'row', width: width / 2.1, justifyContent: 'space-evenly', alignItems: 'center', }}>
                         <Avatar.Image size={84} source={require('../../../assets/images/ac_icon.png')} />
                         <View style={{ margin: 20, flexDirection: 'column' }}>
                             <Text style={{ color: 'grey' }}>New User</Text>
                             <Text style={{ color: 'grey' }}>Rishta ID</Text>
-                            <Text style={{ color: 'grey' }}>Mobile No.</Text>
+                            <Text style={{ color: 'grey' }}>{number}</Text>
                         </View>
 
                     </View>
@@ -412,7 +421,7 @@ const NomineePage = ({ navigation, route }) => {
                             onValueChange={(itemValue, itemIndex) =>
                                 setaccounttype(itemValue)
                             }>
-                            <Picker.Item label={t('strings:account_type:placeholder')} value='' />
+                            <Picker.Item label={t('strings:account_type:placeholder')} value="" />
                             <Picker.Item label={t('strings:account_type:current')} value="Current" />
                             <Picker.Item label={t('strings:account_type:saving')} value="Saving" />
 
@@ -523,18 +532,18 @@ const NomineePage = ({ navigation, route }) => {
 
 
                         />
-                        {/* <Text style={{ color: 'black', marginLeft: 20, }}>{t('auth:newuser:NomineeeDob')}</Text>
+                        <Text style={{ color: 'black', marginLeft: 20, }}>Nomiee DOB</Text>
                         <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
 
                             <DatePicker
-                                date={nomineeselectedDate}
+                                date={selectedDatenominee}
                                 onDateChange={handleDateChange}
                                 showDatePicker={showDatePicker}
                                 onShowDatePicker={handleShowDatePicker}
                             />
 
-                        </View> */}
+                        </View>
 
 
                         <FloatingLabelInput
@@ -664,7 +673,7 @@ const styles = StyleSheet.create({
     input: {
 
         padding: 5,
-        height: height / 14,
+        height: height / 12,
 
         margin: 20,
         marginTop: 5,

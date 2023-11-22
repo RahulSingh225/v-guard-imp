@@ -102,16 +102,35 @@ const PreviewUserRegistration = ({ navigation, route }) => {
     const [nomineemobileno, setnomineemobileno] = useState('');
     const [nomineeemail, setnomineeemail] = useState('');
     const [nomineeaddress, setnomineeaddress] = useState('');
-    const [nomineedate, setnomineedate] = useState('');
+    const [selectedDatenominee, setSelectedDatenominee] = useState();
+    const [nomineedate, setnomineedate] = useState();
     const [previewData, setPreviewData] = useState(null);
     const [relationwithyou, setrelationwithyou] = useState('');
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [schemes, setSchemes] = useState([{ schmename: '', resonforlikingschme: '' }]);
+    const [schemeData, setSchemeData] = useState({
+        1: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+        2: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+        3: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+        4: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+        5: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+    });
     // const { PreviewSummaryData } = route.params;
     // console.log('==================%%%=PREVIEW SUMMARY=================', PreviewSummaryData);
 
+    const handleInputChangeschemes = (schemeNumber, field, value) => {
+        setSchemeData((prevData) => ({
+            ...prevData,
+            [schemeNumber]: {
+                ...prevData[schemeNumber],
+                [field]: value,
+            },
 
+        }));
+        console.log('Updated schemeData:', schemeData);
+    };
 
     // console.log(KycData);
     // console.log('===============^^^^=====================', Userdata);
@@ -132,6 +151,32 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     // Parse the JSON string back into an object
 
                     const retrievedData = JSON.parse(data);
+                    const retrievedSchemeData = retrievedData.fullData.NewUserKycData.schemeData;
+                    console.log("??????????????????", retrievedSchemeData);
+                    const updatedSchemeData = {
+                        1: {
+                            otherSchemeBrand: retrievedSchemeData[1]?.otherSchemeBrand,
+                            abtOtherSchemeLiked: retrievedSchemeData[1]?.abtOtherSchemeLiked,
+                        },
+                        2: {
+                            otherSchemeBrand: retrievedSchemeData[2]?.otherSchemeBrand1,
+                            abtOtherSchemeLiked: retrievedSchemeData[2]?.abtOtherSchemeLiked1,
+                        },
+                        3: {
+                            otherSchemeBrand: retrievedSchemeData[3]?.otherSchemeBrand2,
+                            abtOtherSchemeLiked: retrievedSchemeData[3]?.abtOtherSchemeLiked2,
+                        },
+                        4: {
+                            otherSchemeBrand: retrievedSchemeData[4]?.otherSchemeBrand3,
+                            abtOtherSchemeLiked: retrievedSchemeData[4]?.abtOtherSchemeLiked3,
+                        },
+                        5: {
+                            otherSchemeBrand: retrievedSchemeData[5]?.otherSchemeBrand4,
+                            abtOtherSchemeLiked: retrievedSchemeData[5]?.abtOtherSchemeLiked4,
+                        },
+                    };
+                    console.log("??????????????????", updatedSchemeData);
+                    setSchemeData(updatedSchemeData);
                     console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData);
                     // console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.userData.permananetsateid);
                     // console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.userData.permananetcityid);
@@ -148,7 +193,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     setaddress(retrievedData.fullData.userData.address);
                     setstreet(retrievedData.fullData.userData.street);
                     setlandmark(retrievedData.fullData.userData.landmark);
-                    setSelectedDate(retrievedData.fullData.userData.selectedDate);
+                    setSelectedDate(retrievedData.fullData.userData.selectedDate.substring(0, 10));
                     setname(retrievedData.fullData.userData.name);
                     setPincode(retrievedData.fullData.userData.pincode);
                     setSelectedState(retrievedData.fullData.userData.selectedState);
@@ -187,9 +232,10 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     setnomineeemail(retrievedData.BankDetailsAndNominee.nomineeemail);
                     setnomineeaddress(retrievedData.BankDetailsAndNominee.nomineeaddress);
                     setrelationwithyou(retrievedData.BankDetailsAndNominee.relationship);
-                    setnomineedate(retrievedData.BankDetailsAndNominee.nomineeselectedDate);
-                    setnomineedate(retrievedData.BankDetailsAndNominee.nomineeselectedDate);
-                    // console.log("><><><><><><<><><", retrievedData.fullData.userData.selectedDate);
+
+                    setSelectedDatenominee(retrievedData.BankDetailsAndNominee.selectedDatenominee);
+                    setnomineedate(retrievedData.BankDetailsAndNominee.selectedDatenominee.substring(0, 10))
+
                     if (retrievedData.fullData.NewUserKycData.currentaddres == "yes") {
                         setpermananrstateid(retrievedData.fullData.userData.permananetsateid);
                         setpermantdistrictid(retrievedData.fullData.userData.permananetdistrictId);
@@ -209,15 +255,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                 }
 
-                if (selectedDate) {
-                    const date = selectedDate;
-                    if (!isNaN(date)) {
-                        const dateWithoutTime = date.toISOString().split('T')[0];
-                        setSelectedDate(dateWithoutTime);
-                    } else {
-                        console.error('Invalid date:', selectedDate);
-                    }
-                }
+
             } catch (error) {
                 console.error('Error retrieving data: ', error);
             } finally {
@@ -243,6 +281,13 @@ const PreviewUserRegistration = ({ navigation, route }) => {
         navigation.navigate("newUser");
     };
 
+    const handleIconButtonPress = () => {
+        // Add a new set of text inputs
+        if (schemes.length < 5) {
+            setSchemes([...schemes, { schmename: '', resonforlikingschme: '' }]);
+        }
+    };
+
     const userbody = {
         "welcomePointsErrorCode": 0,
         // "userId": number,
@@ -251,7 +296,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
         "emailId": email,
         "enrolledOtherScheme": 0,
         "maritalStatus": maritialStatus,
-        "maritalStatusId": null,
+        "maritalStatusId": maritialStatusid,
         "distId": permantdistrictid,
         "cityId": permanentcityid,
         "addDiff": 1,
@@ -294,16 +339,16 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
         // "otherCity": null,
         // "otherCurrCity": null,
-        "otherSchemeBrand": "",
-        "abtOtherSchemeLiked": "",
-        "otherSchemeBrand2": "",
-        "abtOtherSchemeLiked2": "",
-        "otherSchemeBrand3": "",
-        "abtOtherSchemeLiked3": "",
-        "otherSchemeBrand4": "",
-        "abtOtherSchemeLiked4": "",
-        "otherSchemeBrand5": "",
-        "abtOtherSchemeLiked5": "",
+        "otherSchemeBrand": schemeData[1].otherSchemeBrand,
+        "abtOtherSchemeLiked": schemeData[1].abtOtherSchemeLiked,
+        "otherSchemeBrand2": schemeData[2].otherSchemeBrand,
+        "abtOtherSchemeLiked2": schemeData[2].abtOtherSchemeLiked,
+        "otherSchemeBrand3": schemeData[3].otherSchemeBrand,
+        "abtOtherSchemeLiked3": schemeData[3].abtOtherSchemeLiked,
+        "otherSchemeBrand4": schemeData[4].otherSchemeBrand,
+        "abtOtherSchemeLiked4": schemeData[4].abtOtherSchemeLiked,
+        "otherSchemeBrand5": schemeData[5].otherSchemeBrand,
+        "abtOtherSchemeLiked5": schemeData[5].abtOtherSchemeLiked,
         "annualBusinessPotential": annualincome,
         "bankDetail": {
             "bankId": bankid,
@@ -315,7 +360,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
             // "branchAddress": "",
             "bankIfsc": IFSC,
             "nomineeName": nomineename,
-            "nomineeDob": nomineedate,
+            "nomineeDob": selectedDatenominee,
             "checkPhoto": chequeImageuuid,
             "nomineeMobileNo": nomineemobileno,
             "nomineeEmail": nomineeemail,
@@ -326,11 +371,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
         "kycDetails": {
             "kycFlag": "0",
-            // "userId": null,
+            //"userId": null,
             "kycIdName": "",
             "kycId": 1,
             "selfie": selfieeuuid,
-            "aadharOrVoterOrDLFront": aadharbackuuid,
+            "aadharOrVoterOrDLFront": aadharfrontuuid,
             "aadharOrVoterOrDlBack": aadharbackuuid,
             "aadharOrVoterOrDlNo": aadharcardno,
             "panCardFront": pancarduuid,
@@ -415,6 +460,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     }
 
                 });
+                console.log("aadharfrontuuid:", aadharfrontuuid);
+                console.log("aadharbackuuid:", aadharbackuuid);
+                console.log("pancarduuid:", pancarduuid);
+                console.log("chequeimageuuid:", chequeImageuuid);
+                console.log("selfieeuuid:", selfieeuuid);
 
 
                 if (aadharfrontuuid != null && aadharfrontuuid != 'undefined' && aadharbackuuid != null && aadharbackuuid != 'undefined' && selfieeuuid != 'undefined' && selfieeuuid != null) {
@@ -424,7 +474,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", chequeImageuuid);
                     // console.log("%%%%%%%%%%%%%%%%%%%%%%", selfieeuuid);
                     // console.log("================================================");
-                    // console.log(">><><<><>><><><><><><><><><><><><><", userbody);
+                    console.log(">><><<><>><><><>PREVIEW SUMMARY<><><><><><><><><><", userbody);
                     // console.log("================================================");
                     registernewuser(userbody);
                 }
@@ -455,7 +505,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                 //  navigation.navigate('login');
                 setTimeout(() => {
                     navigation.navigate('login');
-                }, 2500);
+                }, 1500);
             } else {
                 setIsPopupVisible(true);
                 setPopupMessage(response.message);
@@ -517,7 +567,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         <View style={{ marginLeft: 40, flexDirection: 'column', backgroundColor: "transparent", width: width / 2.7 }}>
                             <Text style={{ color: 'grey' }}>PreviewSummaryData</Text>
                             <Text style={{ color: 'grey' }}>Rishta ID</Text>
-                            <Text style={{ color: 'grey' }}>Mobile No.</Text>
+                            <Text style={{ color: 'grey' }}>{number}</Text>
                         </View>
 
                     </View>
@@ -748,14 +798,14 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
 
                     <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:lbl_state')}</Text>
-                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
 
                         <Text style={{ color: 'black', margin: 15 }}>{selectedCity}</Text>
                     </View>
 
                     <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:district')}</Text>
 
-                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
 
                         <Text style={{ color: 'black', margin: 15 }}>{selectedDistrict}</Text>
 
@@ -764,14 +814,14 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>  {t('strings:city')}</Text>
 
-                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
 
                         <Text style={{ color: 'black', margin: 15 }}>{selectedState}</Text>
                     </View>
 
                     <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_profession')}</Text>
 
-                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
 
 
                         <Picker
@@ -809,19 +859,22 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:select_marital_status')}</Text>
 
-                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
 
 
                         <Picker
                             mode='dropdown'
                             style={{ color: 'black' }}
                             selectedValue={maritialStatus}
-                            onValueChange={(itemValue, itemIndex) =>
+                            onValueChange={(itemValue, itemIndex) => {
+                                const maritialStatusId = itemValue === 'Married' ? '1' : '2';
+                                setmaritialStatusid(maritialStatusId)
                                 setmaritialStatus(itemValue)
+                            }
                             }>
-                            <Picker.Item label="Select" value="Select" />
-                            <Picker.Item label="Married" value="1" />
-                            <Picker.Item label=" Unmarried" value="0" />
+                            <Picker.Item label="Select" value="0" />
+                            <Picker.Item label="Married" value="Married" />
+                            <Picker.Item label=" Unmarried" value="Unmarried" />
 
 
                         </Picker>
@@ -829,7 +882,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     </View>
 
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:enrolled_into_loyalty_scheme')}</Text>
-                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
 
 
                         <Picker
@@ -847,6 +900,43 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         </Picker>
 
                     </View>
+                    {loyalty == 'Yes' ?
+                        <View>
+                            {loyalty === 'Yes' &&
+                                schemes.map((scheme, index) => (
+                                    <View key={index} style={styles.schemeContainer}>
+                                        <FloatingLabelInput
+                                            label={`Scheme ${index + 1} Brand Name`}
+                                            value={schemeData[index + 1].otherSchemeBrand}
+                                            onChangeText={(text) => handleInputChangeschemes(index + 1, `otherSchemeBrand`, text)}
+                                            keyboardType="default"
+                                            containerStyles={styles.input}
+                                            staticLabel
+                                            labelStyles={styles.labelStyles}
+                                            inputStyles={{
+                                                color: 'black',
+                                                paddingHorizontal: 10,
+                                            }}
+                                        />
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <FloatingLabelInput
+                                                label={`Reason for liking Scheme ${index + 1}`}
+                                                value={schemeData[index + 1].abtOtherSchemeLiked}
+                                                onChangeText={(text) => handleInputChangeschemes(index + 1, `abtOtherSchemeLiked`, text)}
+                                                keyboardType="default"
+                                                containerStyles={styles.input}
+                                                staticLabel
+                                                labelStyles={styles.labelStyles}
+                                                inputStyles={{
+                                                    color: 'black',
+                                                    paddingHorizontal: 10,
+                                                }}
+                                            />
+                                            <IconButton style={styles.iconButton} icon="plus" size={20} onPress={handleIconButtonPress} />
+                                        </View>
+                                    </View>
+                                ))}
+                        </View> : null}
 
                     <FloatingLabelInput
                         containerStyles={styles.input}
@@ -868,7 +958,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>{t('strings:selfie')}</Text>
 
 
-                    <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
+                    <View style={{ backgroundColor: '#fff', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15, borderColor: "#D3D3D3" }}>
 
 
                         {selfieData != null ? <Text style={{ color: 'black', right: width / 2 }}>{selfieData.name.substring(0, 10)}</Text> : null}
@@ -904,7 +994,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:id_proof_front')}</Text>
 
 
-                    <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
+                    <View style={{ backgroundColor: '#fff', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15, borderColor: "#D3D3D3" }}>
                         {idProofFrontData != null ? <Text style={{ color: 'black', right: width / 2 }}>{idProofFrontData.name.substring(0, 10)}</Text> : null}
                         {idProofFrontData != null ? <ImageWithModal imageUri={idProofFrontData.uri} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
 
@@ -914,7 +1004,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:id_proof_back')}</Text>
 
 
-                    <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
+                    <View style={{ backgroundColor: '#fff', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15, borderColor: "#D3D3D3" }}>
                         {idProofBackData != null ? <Text style={{ color: 'black', right: width / 2 }}>{idProofBackData.name.substring(0, 10)}</Text> : null}
                         {idProofBackData != null ? <ImageWithModal imageUri={idProofBackData.uri} /> : <Image resizeMode="contain" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, borderRadius: 5, margin: 5 }} />}
 
@@ -942,7 +1032,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>{t('strings:pan_card_front')}</Text>
 
 
-                    <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
+                    <View style={{ backgroundColor: '#fff', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15, borderColor: "#D3D3D3" }}>
                         {panData != null ? <Text style={{ color: 'black', right: width / 2 }}>{panData.name.substring(0, 10)}</Text> : null}
                         {panData != null ? <ImageWithModal imageUri={panData.uri} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
 
@@ -1129,6 +1219,26 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     />
 
+                    <FloatingLabelInput
+                        containerStyles={styles.input}
+
+                        label=" Selected Nominee DOB"
+
+
+                        editable={false}
+                        keyboardType='default'
+                        value={nomineedate}
+                        // onChangeText={(text) => setnomineedate(text)}
+                        staticLabel
+                        labelStyles={styles.labelStyles}
+                        inputStyles={{
+                            color: 'black',
+                            paddingHorizontal: 10,
+                        }}
+
+
+                    />
+
 
                     <FloatingLabelInput
                         containerStyles={styles.input}
@@ -1264,9 +1374,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    iconButton: {
+        backgroundColor: 'yellow', // Replace 'yourBackgroundColor' with the desired color
+        borderRadius: 50,
+        alignSelf: 'center',
+    },
     input: {
         padding: 5,
-        height: height / 14,
+        height: height / 13.5,
         margin: 25,
         marginTop: 0,
         color: 'black',
