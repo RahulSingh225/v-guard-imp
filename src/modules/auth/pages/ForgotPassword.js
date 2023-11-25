@@ -28,19 +28,19 @@ const ForgotPassword = ({ navigation }) => {
             source={require('../../../assets/images/group_907.png')}
             style={styles.imageSaathi}
           />
-          <Text style={styles.mainHeader}>{t('auth:forgot:heading')}</Text>
-          <Text style={styles.textHeader}>{t('auth:forgot:subHeading')}</Text>
+          <Text style={styles.mainHeader}>{t('strings:lbl_forgot_password')}</Text>
+          <Text style={styles.textHeader}>{t('strings:enter_registered_mobile_no_rishta_id')}</Text>
           <View style={styles.formContainer}>
             <TextInput
               style={styles.input}
-              placeholder={t('auth:forgot:input')}
+              placeholder={t('strings:lbl_registered_mobile_number_login')}
               placeholderTextColor={placeholderColor}
               value={number}
               onChangeText={(text) => setNumber(text)}
             />
             <View style={styles.buttonContainer}>
               <Buttons
-                label={t('auth:forgot:submit')}
+                label={t('strings:submit')}
                 variant="filled"
                 onPress={handleSubmit}
                 width="100%"
@@ -54,7 +54,7 @@ const ForgotPassword = ({ navigation }) => {
         </View>
         <View style={styles.footer}>
           <View style={styles.footerContainer}>
-            <Text style={styles.footergreyText}>{t('auth:login:poweredBy')}</Text>
+            <Text style={styles.footergreyText}>{t('strings:powered_by_v_guard')}</Text>
             <Image
               source={require('../../../assets/images/group_910.png')}
               style={styles.imageVguard}

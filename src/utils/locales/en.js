@@ -146,7 +146,7 @@ export default {
     login_via_otp: 'Login via OTP',
     log_in: 'Log In',
     enter_registered_mobile_no_rishta_id:
-      'Please  enter your registered\nMobile No./Rishta ID',
+      'Please enter your registered\nMobile No./Rishta ID',
     number_of_scans: 'Number Of Scans',
     scan_code: 'Scan Code',
     info_desk: 'Info Desk',

@@ -121,7 +121,7 @@ const LoginScreen = ({ navigation }) => {
                 onPress={() => navigation.navigate('forgotPassword')}
                 style={styles.forgotPasswordContainer}>
                 <Text style={[styles.forgotPassword]}>
-                  {t('strings:lbl_forgot_password')}
+                  {t('strings:forgot_password_question')}
                 </Text>
               </TouchableOpacity>
             </View>
