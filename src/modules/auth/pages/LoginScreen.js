@@ -18,6 +18,8 @@ import Popup from '../../../components/Popup';
 import Snackbar from 'react-native-snackbar';
 import Loader from '../../../components/Loader';
 import { Linking } from 'react-native';
+import selectedTickImage from '../../../assets/images/tick_1.png';
+import notSelectedTickImage from '../../../assets/images/tick_1_notSelected.png';
 
 const LoginScreen = ({ navigation }) => {
   const showSnackbar = message => {
@@ -34,9 +36,14 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const { login } = useAuth();
   const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(true);
 
-
+  const handleTermsPress = () => {
+    setSelectedOption(!selectedOption);
+  }
   const openTermsAndConditions = () => {
+    
+
     const url = 'https://vguardrishta.com/tnc_retailer.html';
 
     Linking.openURL(url)
@@ -49,10 +56,15 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const handleLogin = async () => {
+    if(selectedOption === false) {
+      showSnackbar(t('strings:please_accept_terms'));
+      return;
+    }
     if (username === '' || password === '') {
       showSnackbar('Please enter a username and password.');
       return;
     }
+    
     showLoader(true)
     try {
       const response = await loginWithPassword(username, password);
@@ -152,9 +164,9 @@ const LoginScreen = ({ navigation }) => {
           </View>
         </View>
         <View style={styles.footer}>
-          <View style={styles.footerTextContainer}>
+          <TouchableOpacity onPress={()=>handleTermsPress()} style={styles.footerTextContainer}>
             <Image
-              source={require('../../../assets/images/tick_1.png')}
+              source={selectedOption === true ? selectedTickImage : notSelectedTickImage}
               style={styles.tick}
             />
 
@@ -163,7 +175,7 @@ const LoginScreen = ({ navigation }) => {
                 {t('strings:lbl_accept_terms')}
               </Text>
             </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
           <View style={styles.footerContainer}>
             <Text style={styles.footergreyText}>
               {t('strings:powered_by_v_guard')}
