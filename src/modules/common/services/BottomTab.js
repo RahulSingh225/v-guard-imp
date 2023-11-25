@@ -107,10 +107,10 @@ const BottomTab = () => {
         style={styles.modal}
       >
         <View style={styles.languagePickerContainer}>
-          <LanguagePicker />
-          <TouchableOpacity onPress={handleCloseLanguagePicker}>
+          <LanguagePicker onCloseModal={handleCloseLanguagePicker} />
+          {/* <TouchableOpacity onPress={handleCloseLanguagePicker}>
             <Text style={styles.closeText}>Close</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </Modal>
     </>
