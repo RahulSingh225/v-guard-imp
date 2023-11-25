@@ -7,18 +7,19 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import React, {useState} from 'react';
-import {useTranslation} from 'react-i18next';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import colors from '../../../../colors';
 import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
-import {loginWithPassword} from '../AuthApiService';
-import {useAuth} from '../../../components/AuthContext';
+import { loginWithPassword } from '../AuthApiService';
+import { useAuth } from '../../../components/AuthContext';
 import Popup from '../../../components/Popup';
 import Snackbar from 'react-native-snackbar';
 import Loader from '../../../components/Loader';
+import { Linking } from 'react-native';
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({ navigation }) => {
   const showSnackbar = message => {
     Snackbar.show({
       text: message,
@@ -27,12 +28,21 @@ const LoginScreen = ({navigation}) => {
   };
   const [loader, showLoader] = useState(false);
   const yellow = colors.yellow;
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const placeholderColor = colors.grey;
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const {login} = useAuth();
+  const { login } = useAuth();
   const [isPopupVisible, setIsPopupVisible] = useState(false);
+
+
+  const openTermsAndConditions = () => {
+    const url = 'https://vguardrishta.com/tnc_retailer.html';
+
+    Linking.openURL(url)
+      .catch((error) => console.error('Error opening URL:', error));
+  };
+
 
   const togglePopup = () => {
     setIsPopupVisible(!isPopupVisible);
@@ -148,9 +158,11 @@ const LoginScreen = ({navigation}) => {
               style={styles.tick}
             />
 
-            <Text style={styles.footerText}>
-              {t('strings:lbl_accept_terms')}
-            </Text>
+            <TouchableOpacity onPress={() => openTermsAndConditions()}>
+              <Text style={styles.footerText}>
+                {t('strings:lbl_accept_terms')}
+              </Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.footerContainer}>
             <Text style={styles.footergreyText}>
@@ -165,7 +177,7 @@ const LoginScreen = ({navigation}) => {
         </View>
         {isPopupVisible && (
           <Popup isVisible={isPopupVisible} onClose={togglePopup}>
-            <Text style={{fontWeight: 'bold'}}>
+            <Text style={{ fontWeight: 'bold' }}>
               Incorrect Username or Password
             </Text>
           </Popup>
