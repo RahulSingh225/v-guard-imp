@@ -13,20 +13,20 @@ import LanguagePicker from '../../../components/LanguagePicker';
 
 const CategorySelection = ({ navigation }) => {
     const { t, i18n } = useTranslation();
-  const [showLanguagePicker, setShowLanguagePicker] = useState(false);
+    const [showLanguagePicker, setShowLanguagePicker] = useState(false);
 
-  const handleLanguageButtonPress = () => {
-    setShowLanguagePicker(true);
-  };
+    const handleLanguageButtonPress = () => {
+        setShowLanguagePicker(true);
+    };
 
-  const handleCloseLanguagePicker = () => {
-    setShowLanguagePicker(false);
-  };
+    const handleCloseLanguagePicker = () => {
+        setShowLanguagePicker(false);
+    };
 
-  useEffect(() => {
-    // Re-render the component when the language changes
-    console.log('Language changed:', i18n.language);
-  }, [i18n.language]);
+    useEffect(() => {
+        // Re-render the component when the language changes
+        console.log('Language changed:', i18n.language);
+    }, [i18n.language]);
 
     const [selectedOption, setSelectedOption] = useState('retailer');
 
@@ -69,7 +69,7 @@ const CategorySelection = ({ navigation }) => {
 
                     />
                     <Text style={styles.categoryText}>
-                    {t('strings:electrical_amp_plumbing_expert')}
+                        {t('strings:electrical_amp_plumbing_expert')}
                     </Text>
                     <View style={styles.radioButtons}>
                         <Image
@@ -90,7 +90,7 @@ const CategorySelection = ({ navigation }) => {
                         resizeMode="contain"
                     />
                     <Text style={styles.categoryText}>
-                    {t('strings:ac_service_engineer')}
+                        {t('strings:ac_service_engineer')}
                     </Text>
                     <View style={styles.radioButtons}>
                         <Image
@@ -110,19 +110,19 @@ const CategorySelection = ({ navigation }) => {
                 />
             </View>
             <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showLanguagePicker}
-        onRequestClose={handleCloseLanguagePicker}
-        style={styles.modal}
-      >
-        <View style={styles.languagePickerContainer}>
-        <LanguagePicker onCloseModal={handleCloseLanguagePicker} />
-          {/* <TouchableOpacity onPress={handleCloseLanguagePicker}>
-            <Text style={styles.closeText}>Close</Text>
-          </TouchableOpacity> */}
-        </View>
-      </Modal>
+                animationType="slide"
+                transparent={true}
+                visible={showLanguagePicker}
+                onRequestClose={handleCloseLanguagePicker}
+                style={styles.modal}
+            >
+                <View style={styles.languagePickerContainer}>
+                    <LanguagePicker onCloseModal={handleCloseLanguagePicker} />
+                    <TouchableOpacity onPress={handleCloseLanguagePicker}>
+                        <Text style={styles.closeText}>Close</Text>
+                    </TouchableOpacity>
+                </View>
+            </Modal>
         </ScrollView>
     );
 };
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
         marginBottom: responsiveHeight(5)
     },
     startButtonContainer: {
-        marginTop:50,
+        marginTop: 50,
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
@@ -219,11 +219,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: colors.white
-      },
-      closeText: {
+    },
+    closeText: {
         marginTop: 20,
         color: colors.black,
-      },
+        backgroundColor: colors.yellow,
+        paddingHorizontal: 15,
+        paddingVertical: 5,
+        borderRadius: 5,
+        fontWeight: 'bold'
+    },
 });
 
 export default CategorySelection;

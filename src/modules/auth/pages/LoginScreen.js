@@ -6,8 +6,9 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  Modal
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import colors from '../../../../colors';
 import Buttons from '../../../components/Buttons';
@@ -20,8 +21,23 @@ import Loader from '../../../components/Loader';
 import { Linking } from 'react-native';
 import selectedTickImage from '../../../assets/images/tick_1.png';
 import notSelectedTickImage from '../../../assets/images/tick_1_notSelected.png';
+import LanguagePicker from '../../../components/LanguagePicker';
+import language from '../../../assets/images/language.png';
 
 const LoginScreen = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
+  const [showLanguagePicker, setShowLanguagePicker] = useState(false);
+
+  const handleLanguageButtonPress = () => {
+    setShowLanguagePicker(true);
+  };
+
+  const handleCloseLanguagePicker = () => {
+    setShowLanguagePicker(false);
+  };
+  useEffect(() => {
+    console.log('Language changed:', i18n.language);
+  }, [i18n.language]);
   const showSnackbar = message => {
     Snackbar.show({
       text: message,
@@ -30,7 +46,6 @@ const LoginScreen = ({ navigation }) => {
   };
   const [loader, showLoader] = useState(false);
   const yellow = colors.yellow;
-  const { t } = useTranslation();
   const placeholderColor = colors.grey;
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -42,7 +57,7 @@ const LoginScreen = ({ navigation }) => {
     setSelectedOption(!selectedOption);
   }
   const openTermsAndConditions = () => {
-    
+
 
     const url = 'https://vguardrishta.com/tnc_retailer.html';
 
@@ -60,7 +75,7 @@ const LoginScreen = ({ navigation }) => {
       showSnackbar('Please enter a username and password.');
       return;
     }
-    if(selectedOption === false) {
+    if (selectedOption === false) {
       showSnackbar(t('strings:please_accept_terms'));
       return;
     }
@@ -83,8 +98,22 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
+      
       <View style={styles.loginScreen}>
+
         <View style={styles.mainWrapper}>
+        <View style={styles.buttonLanguageContainer}>
+        <Buttons
+          style={styles.button}
+          label=""
+          variant="outlined"
+          onPress={handleLanguageButtonPress}
+          iconHeight={30}
+          iconWidth={30}
+          iconGap={0}
+          icon={language}
+        />
+      </View>
           {loader && <Loader />}
           <Image
             source={require('../../../assets/images/group_907.png')}
@@ -163,7 +192,7 @@ const LoginScreen = ({ navigation }) => {
           </View>
         </View>
         <View style={styles.footer}>
-          <TouchableOpacity onPress={()=>handleTermsPress()} style={styles.footerTextContainer}>
+          <TouchableOpacity onPress={() => handleTermsPress()} style={styles.footerTextContainer}>
             <Image
               source={selectedOption === true ? selectedTickImage : notSelectedTickImage}
               style={styles.tick}
@@ -193,7 +222,22 @@ const LoginScreen = ({ navigation }) => {
             </Text>
           </Popup>
         )}
+        <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showLanguagePicker}
+        onRequestClose={handleCloseLanguagePicker}
+        style={styles.modal}
+      >
+        <View style={styles.languagePickerContainer}>
+          <LanguagePicker onCloseModal={handleCloseLanguagePicker} />
+          <TouchableOpacity onPress={handleCloseLanguagePicker}>
+            <Text style={styles.closeText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
       </View>
+      
     </ScrollView>
   );
 };
@@ -324,6 +368,30 @@ const styles = StyleSheet.create({
     color: colors.black,
     fontWeight: 'bold',
   },
+  buttonLanguageContainer: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+  },
+  button: {
+    alignSelf: 'right',
+  },
+  languagePickerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.white
+  },
+  closeText: {
+    marginTop: 20,
+    color: colors.black,
+    backgroundColor: colors.yellow,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 5,
+    fontWeight: 'bold'
+},
 });
 
 export default LoginScreen;

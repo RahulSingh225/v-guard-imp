@@ -123,9 +123,9 @@ const BottomTab = () => {
       >
         <View style={styles.languagePickerContainer}>
           <LanguagePicker onCloseModal={handleCloseLanguagePicker} />
-          {/* <TouchableOpacity onPress={handleCloseLanguagePicker}>
+          <TouchableOpacity onPress={handleCloseLanguagePicker}>
             <Text style={styles.closeText}>Close</Text>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
         </View>
       </Modal>
     </>
@@ -151,6 +151,11 @@ const styles = StyleSheet.create({
   closeText: {
     marginTop: 20,
     color: colors.black,
+    backgroundColor: colors.yellow,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 5,
+    fontWeight: 'bold'
   },
 })
 
