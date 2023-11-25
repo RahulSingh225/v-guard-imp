@@ -5,7 +5,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import i18n from '../utils/i18n';
 import { Picker } from '@react-native-picker/picker';
 import colors from '../../colors';
-import { black } from 'react-native-paper/lib/typescript/styles/colors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LanguagePicker = ({ onCloseModal }) => {
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
@@ -13,6 +13,7 @@ const LanguagePicker = ({ onCloseModal }) => {
   const changeLanguage = (language) => {
     i18n.changeLanguage(language);
     setSelectedLanguage(language);
+    AsyncStorage.setItem("language", language)
     onCloseModal();
   };
 

@@ -14,10 +14,12 @@ import { View, Text, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity,
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import { useTranslation } from 'react-i18next';
 import LanguagePicker from '../../../components/LanguagePicker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const BottomTab = () => {
   const { t, i18n } = useTranslation();
   const [showLanguagePicker, setShowLanguagePicker] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
 
   const handleLanguageButtonPress = () => {
     setShowLanguagePicker(true);
@@ -28,9 +30,22 @@ const BottomTab = () => {
   };
 
   useEffect(() => {
-    // Re-render the component when the language changes
-    console.log('Language changed:', i18n.language);
-  }, [i18n.language]);
+    const fetchStoredLanguage = async () => {
+      try {
+        const storedLanguage = await AsyncStorage.getItem('language') || i18n.language;
+        setSelectedLanguage(storedLanguage);
+        i18n.changeLanguage(storedLanguage);
+        console.log('Language changed:', storedLanguage);
+      } catch (error) {
+        console.error('Error fetching language from AsyncStorage:', error);
+      }
+    };
+
+    fetchStoredLanguage();
+  }, []);
+
+
+
   const Tab = createBottomTabNavigator();
   const [isLogoutPopupVisible, setLogoutPopupVisible] = useState(false);
   const { logout } = useAuth();
