@@ -4,16 +4,21 @@ import { useTranslation } from 'react-i18next';
 import colors from '../../../../colors';
 import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
-import { NewusermobileNumberValidation } from '../../../utils/apiservice';
+import { NewusermobileNumberValidation, otpviacall } from '../../../utils/apiservice';
 import Message from "../../../components/Message";
 import Loader from '../../../components/Loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Popup from '../../../components/Popup';
+import { width, height } from '../../../utils/dimensions';
+import { Colors } from '../../../utils/constants';
+import { responsiveFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
 // import vguardristuser from '../../../modules/common/Model/Vguardristauser';
 const RegisterUser = ({ navigation }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [number, setNumber] = useState('');
     const [preferedLanguage, setpreferedLanguage] = useState(1);
+    const [countdown, setCounter] = useState(null);
+    const [otpsentflag, setotpsentflag] = useState(false);
     const { t } = useTranslation();
     const [selectedOption, setSelectedOption] = useState('Retailer');
     const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -37,6 +42,9 @@ const RegisterUser = ({ navigation }) => {
                         AsyncStorage.setItem("preferedLanguage", preferedLanguage.toString());
                         navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption, preferedLanguage: preferedLanguage });
                     }, 150);
+                } else {
+                    setIsPopupVisible(true);
+                    showPopupMessage(successMessage);
                 }
 
             }
@@ -84,11 +92,44 @@ const RegisterUser = ({ navigation }) => {
 
     };
 
+
+    const calltogetopt = async () => {
+        try {
+            let userCredentials = {
+                loginOtpUserName: number,
+                otpType: "voice"
+
+            };
+
+            let response = await otpviacall(userCredentials);
+            let message = response.message;
+            if (response.code === 200) {
+                // setCounter(60);
+                // setotpsentflag(true);
+                setIsPopupVisible(true);
+                setPopupMessage(message);
+                AsyncStorage.setItem("userno", number);
+                AsyncStorage.setItem("preferedLanguage", preferedLanguage.toString());
+                navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption, preferedLanguage: preferedLanguage });
+            } else {
+                setIsPopupVisible(true);
+                setPopupMessage(message);
+            }
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        }
+    };
     useEffect(() => {
+        let intervalId;
+        if (countdown > 0) {
+            intervalId = setInterval(() => {
+                setCounter(prevCounter => prevCounter - 1);
+            }, 1000);
+        }
 
-
-
-    }, [selectedOption, preferedLanguage])
+        return () => clearInterval(intervalId);
+    }, [selectedOption, preferedLanguage, countdown])
 
 
 
@@ -160,10 +201,38 @@ const RegisterUser = ({ navigation }) => {
                             />
                         </View>
                         <Text style={styles.or}>{t('strings:or')}</Text>
-                        <View style={styles.otpPhone}>
-                            <Image source={require('../../../assets/images/group_501.png')} style={styles.phone} />
-                            <Text style={styles.greyText}>{t('strings:call_to_get_otp')}</Text>
+                        <TouchableOpacity onPress={() => calltogetopt()}>
+                            <View style={styles.otpPhone}>
+                                <Image source={require('../../../assets/images/group_501.png')} style={styles.phone} />
+                                <Text style={styles.greyText}>Click Here to get OTP through phone call</Text>
+                            </View>
+                        </TouchableOpacity>
+
+                        {/* <View style={{ backgroundColor: 'transparent', height: height / 25, flexDirection: "row", justifyContent: "space-evenly", width: width / 1.3, marginTop: 20, marginLeft: 15 }}>
+                            <View>
+                                <Text>OTP Not Received ?</Text>
+                            </View>
+                            <TouchableOpacity onPress={() => countdown === 0 && handleValidation()}>
+                                <View style={{ right: 28 }}>
+                                    <Text style={{ color: Colors.yellow, fontSize: responsiveFontSize(1.5) }}>RESEND OTP</Text>
+                                </View>
+                            </TouchableOpacity>
                         </View>
+                        <View style={{ marginLeft: 15 }} >
+                            <Text style={{ color: "grey", fontSize: responsiveFontSize(2), alignSelf: "center", }}>or</Text>
+                        </View> */}
+                        {/* <View style={{ backgroundColor: 'transparent', height: 40, flexDirection: 'row', justifyContent: 'space-evenly', width: '80%', paddingTop: 10, alignSelf: 'center' }}>
+
+                            <TouchableOpacity>
+                                <View >
+                                    <Text style={{ color: Colors.yellow, fontSize: responsiveFontSize(1.8), left: 10 }}>GET OTP VIA CALL</Text>
+                                </View>
+                            </TouchableOpacity>
+                            {countdown > 0 && <Text style={{ fontSize: responsiveFontSize(1.8), paddingLeft: 5, paddingRight: 5 }}> in </Text>}
+                            {countdown > 0 && <View >
+                                <Text style={{ color: Colors.yellow, fontSize: responsiveFontSize(1.8), right: 15 }}>{countdown} s</Text>
+                            </View>}
+                        </View> */}
 
                     </View>
                 </View>
@@ -176,6 +245,7 @@ const RegisterUser = ({ navigation }) => {
                         />
                     </View>
                 </View>
+
             </View>
         </ScrollView>
 
@@ -273,6 +343,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         gap: 30,
         alignItems: 'center'
+    },
+    containter2: {
+
+
+        Bottom: 10,
+        gap: 5,
+        marginBottom: 20,
+
     },
     containter: {
         display: 'flex',

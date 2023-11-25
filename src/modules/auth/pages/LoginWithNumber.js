@@ -1,39 +1,140 @@
 import { View, Text, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity, Alert } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next';
 import colors from '../../../../colors';
 import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
 import Message from "../../../components/Message";
 import { sendloginWithOtp } from '../AuthApiService';
+import { loginwithotpApi, otpviacall } from "../../../utils/apiservice";
+import Popup from '../../../components/Popup';
+import { width, height } from '../../../utils/dimensions';
+import { Colors } from '../../../utils/constants';
+import { responsiveFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
 
 const LoginWithNumber = ({ navigation }) => {
     const [number, setNumber] = useState('');
     const [preferedLanguage, setpreferedLanguage] = useState(1);
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [popupMessage, setPopupMessage] = useState('');
+
+    const [selectedOption, setSelectedOption] = useState('retailer');
+    const [countdown, setCounter] = useState(null);
+    const [otpsentflag, setotpsentflag] = useState(false);
+    const [otp, setOtp] = useState('');
+    useEffect(() => {
+        let intervalId;
+        if (countdown > 0) {
+            intervalId = setInterval(() => {
+                setCounter(prevCounter => prevCounter - 1);
+            }, 1000);
+        }
+
+        //    else if (countdown <= 0) {
+        //         intervalId = setInterval(() => {
+        //             setCounter(null);
+        //         }, 1000);
+        //     }
+
+        // // Return a cleanup function to stop the counter when the component is unmounted
+        return () => clearInterval(intervalId);
+    }, [countdown]);
+
+    const handleGetOtpViaCall = () => {
+        // Implement your logic for getting OTP via call
+        // This function will be called when the "GET OTP VIA CALL" button is pressed
+    };
+
 
     const handleValidation = async () => {
         try {
             let validationResponse = await sendloginWithOtp(number);
             validationResponse = await validationResponse.json();
-            console.log(validationResponse.code, "<><><><><")
+            //  console.log(validationResponse.code, "<><><><><")
             if (validationResponse.code === 200) {
+                setCounter(60);
+                setotpsentflag(true);
                 const successMessage = validationResponse.message;
-                navigation.navigate('loginwithotp', { usernumber: number });
-                Alert.alert(successMessage);
+                setIsPopupVisible(true);
+                setPopupMessage(successMessage);
+
+
+                // setTimeout(() => {
+                //     clearInterval(intervalId);
+                //     navigation.navigate('registerwithotp', { usernumber: number });
+                // }, 800);
+
+                // Alert.alert(successMessage);
             } else {
                 const errorMessage = validationResponse.message;
-                Alert.alert(errorMessage);
+                setIsPopupVisible(true);
+                setPopupMessage(errorMessage);
+                // Alert.alert(errorMessage);
             }
+            setTimeout(() => {
+                if (countdown > 0) {
+                    clearInterval(intervalId);
+                    Alert.alert('OTP not received within 60 seconds.');
+                }
+            }, 60000);
         } catch (error) {
             console.error('Error during validation:', error);
         }
     };
-    
+
+    const loginUserWithOtp = async () => {
+        try {
+            let userCredentials = {
+                number: number,
+                otp: otp,
+                authType: "otp",
+            };
+
+            let response = await loginwithotpApi(userCredentials);
+            let message = response.message;
+            if (response.code === 200) {
+                setIsPopupVisible(true);
+                setPopupMessage(message);
+            } else {
+                setIsPopupVisible(true);
+                setPopupMessage(message);
+            }
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const calltogetopt = async () => {
+        try {
+            let userCredentials = {
+                loginOtpUserName: number,
+                otpType: "voice"
+
+            };
+
+            let response = await otpviacall(userCredentials);
+            let message = response.message;
+            if (response.code === 200) {
+                setCounter(60);
+                setotpsentflag(true);
+                setIsPopupVisible(true);
+                setPopupMessage(message);
+            } else {
+                setIsPopupVisible(true);
+                setPopupMessage(message);
+            }
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
 
     const placeholderColor = colors.grey;
 
     const { t } = useTranslation();
-    const [selectedOption, setSelectedOption] = useState('retailer');
+
 
     const handleOptionSelect = (option) => {
         setSelectedOption(option);
@@ -44,6 +145,11 @@ const LoginWithNumber = ({ navigation }) => {
 
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
+            {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
+                <Text>{popupMessage}</Text>
+
+            </Popup>
+            )}
             <View style={styles.registerUser}>
                 <View style={styles.mainWrapper}>
                     <Image
@@ -53,7 +159,7 @@ const LoginWithNumber = ({ navigation }) => {
                     <Text style={styles.mainHeader}>{t('strings:lbl_welcome')}</Text>
                     <View style={styles.formContainer}>
                         <View style={styles.containter}>
-                            <Text style={styles.textHeader}>{t('strings:enter_registered_mobile_no')}</Text>
+                            <Text style={styles.textHeader}>{t('strings:enter_registered_mobile_no_to_continue')}</Text>
                             <TextInput
                                 style={styles.input}
                                 placeholder={t('strings:enter_your_mobile_number')}
@@ -64,7 +170,19 @@ const LoginWithNumber = ({ navigation }) => {
                                 maxLength={10}
                             />
                         </View>
-                        <View style={styles.buttonContainer}>
+                        {otpsentflag == true && <View style={styles.containter2}>
+
+                            <TextInput
+                                style={styles.input}
+                                placeholder={t('auth:register:enterOtp')}
+                                placeholderTextColor={placeholderColor}
+                                keyboardType='number-pad'
+                                value={otp}
+                                onChangeText={(text) => setOtp(text)}
+                                maxLength={4}
+                            />
+                        </View>}
+                        {countdown == null && <View style={styles.buttonContainer}>
                             <Buttons
                                 style={styles.button}
                                 label={t('strings:send_otp')}
@@ -77,11 +195,53 @@ const LoginWithNumber = ({ navigation }) => {
                                 iconGap={30}
                                 icon={arrowIcon}
                             />
-                        </View>
+                        </View>}
+                        {countdown != null && <View style={styles.buttonContainer2}>
+                            <Buttons
+                                style={styles.button}
+                                label={t('strings:login_with_otp')}
+                                variant="filled"
+                                //  onPress={() => navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption })}
+                                onPress={() => loginUserWithOtp()}
+                                width="100%"
+                                iconHeight={10}
+                                iconWidth={30}
+                                iconGap={30}
+                                icon={arrowIcon}
+                            />
+                        </View>}
                         <Text style={styles.or}>{t('strings:or')}</Text>
-                        <View style={styles.otpPhone}>
-                            <Image source={require('../../../assets/images/group_501.png')} style={styles.phone} />
-                            <Text style={styles.greyText}>{t('strings:call_to_get_otp')}</Text>
+                        <TouchableOpacity onPress={() => calltogetopt()}>
+                            <View style={styles.otpPhone}>
+                                <Image source={require('../../../assets/images/group_501.png')} style={styles.phone} />
+                                <Text style={styles.greyText}>Click Here to get OTP through phone call</Text>
+                            </View>
+                        </TouchableOpacity>
+
+                        <View style={{ backgroundColor: 'transparent', height: height / 25, flexDirection: "row", justifyContent: "space-evenly", width: width / 1.3, marginTop: 20, marginLeft: 15 }}>
+                            <View>
+                                <Text>OTP Not Received ?</Text>
+                            </View>
+                            <TouchableOpacity onPress={() => countdown === 0 && handleValidation()}>
+                                <View style={{ right: 28 }}>
+                                    <Text style={{ color: Colors.yellow, fontSize: responsiveFontSize(1.5) }}>RESEND OTP</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{ marginLeft: 15 }} >
+                            <Text style={{ color: "grey", fontSize: responsiveFontSize(2), alignSelf: "center", }}>or</Text>
+                        </View>
+                        <View style={{ backgroundColor: 'transparent', height: 40, flexDirection: 'row', justifyContent: 'space-evenly', width: '80%', paddingTop: 10, alignSelf: 'center' }}>
+
+                            <TouchableOpacity>
+                                <View >
+                                    <Text style={{ color: Colors.yellow, fontSize: responsiveFontSize(1.8), left: 10 }}>GET OTP VIA CALL</Text>
+                                </View>
+                            </TouchableOpacity>
+                            {countdown > 0 && <Text style={{ fontSize: responsiveFontSize(1.8), paddingLeft: 5, paddingRight: 5 }}> in </Text>}
+                            {countdown > 0 && <View >
+                                <Text style={{ color: Colors.yellow, fontSize: responsiveFontSize(1.8), right: 15 }}>{countdown} s</Text>
+                            </View>}
                         </View>
 
                     </View>
@@ -96,7 +256,7 @@ const LoginWithNumber = ({ navigation }) => {
                     </View>
                 </View>
             </View>
-        </ScrollView>
+        </ScrollView >
 
     )
 }
@@ -197,7 +357,15 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         gap: 20,
-        marginBottom: 50
+        marginBottom: 20,
+    },
+    containter2: {
+
+
+        Bottom: 10,
+        gap: 5,
+        marginBottom: 20,
+
     },
     phone: {
         height: 50,

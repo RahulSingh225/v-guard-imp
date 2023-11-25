@@ -17,6 +17,7 @@ import Popup from '../../../components/Popup';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useTranslation } from 'react-i18next';
 import NewUserKyc from './NewUserKyc';
+import { grey100 } from 'react-native-paper/lib/typescript/styles/colors';
 
 const NewUser = ({ navigation }) => {
   // console.log('====================================');
@@ -194,6 +195,7 @@ const NewUser = ({ navigation }) => {
         setSelectedState(retrievedData.fulldata.userData.selectedState);
         setSelectedDistrict(retrievedData.fulldata.userData.selectedDistrict);
         setSelectedCity(retrievedData.fulldata.userData.selectedCity);
+        const [focused, setfocused] = useState(false);
         console.log('====================================');
         console.log(retrievedData);
         console.log('====================================');
@@ -406,7 +408,7 @@ const NewUser = ({ navigation }) => {
           </Popup>
           )}
           <Avatar.Image size={84} source={require('../../../assets/images/ac_icon.png')} />
-          <View style={{ margin: 20, flexDirection: 'column', padding: 10, height: height / 10, Left: 10, }}>
+          <View style={{ margin: 20, flexDirection: 'column', padding: 10, height: height / 10, }}>
             <Text style={{ color: 'grey' }}>New User</Text>
             <Text style={{ color: 'grey' }}>Rishta ID</Text>
             <Text style={{ color: 'grey' }}> {number}</Text>
@@ -480,6 +482,8 @@ const NewUser = ({ navigation }) => {
 
           label={t('strings:contact_no')}
           value={number}
+          // colorFocused="red"
+          // onFocus={() => setFocused(true)}
 
           keyboardType='number-pad'
           editable={false}
@@ -523,7 +527,7 @@ const NewUser = ({ navigation }) => {
 
             }}>
             <Picker.Item label="Select WhatApp contact same as above ?" value="Select WhatApp contact same as above ?" />
-            <Picker.Item label="yes" value="yes" />
+            <Picker.Item label="Yes" value="yes" />
             <Picker.Item label="No" value="No" />
           </Picker>
 
@@ -629,6 +633,7 @@ const NewUser = ({ navigation }) => {
           mode="BADGE"
           showBadgeDot={true}
           searchable={true}
+          searchPlaceholder='Search Your Pincode'
           loading={isLoading}
           label={value}
           placeholder={pincode === null ? 'Search Pincode' : `Searched Pincode:${pincode}`}
@@ -672,10 +677,11 @@ const NewUser = ({ navigation }) => {
             width: width / 1.1,
             height: height / 5,
             padding: 10,
-            left: 20,
+            left: 18,
             top: 60,
             borderWidth: 0.5,
             borderTopWidth: 0,
+            borderColor: "#D3D3D3",
             justifyContent: 'center',
             elevation: 0,
             backgroundColor: "#D3D3D3"
@@ -693,6 +699,7 @@ const NewUser = ({ navigation }) => {
             bottom: 10,
             elevation: 0,
             margintop: 50,
+            borderColor: "#D3D3D3",
           }}
         />
 
@@ -795,10 +802,10 @@ const styles = StyleSheet.create({
 
     margin: 20,
     marginTop: 5,
-    color: 'black',
+    color: '#D3D3D3',
     borderRadius: 5,
     backgroundColor: '#fff',
-    borderColor: 'grey',
+    borderColor: '#D3D3D3',
     borderWidth: 0.8,
     bottom: -5
   },
@@ -820,7 +827,8 @@ const styles = StyleSheet.create({
   labelStyles: {
     backgroundColor: 'transparent',
     margin: 14,
-    color: 'grey',
+    color: '#D3D3D3',
+    colorFocused: '#D3D3D3',
   },
 });
 

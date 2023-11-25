@@ -18,6 +18,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { CurrentRenderContext } from '@react-navigation/native';
 import Popup from '../../../components/Popup';
 import Loader from '../../../components/Loader';
+import colors from '../../../../colors'
 const NewUserKyc = ({ navigation, route }) => {
     const { userData } = route.params;
     // console.log('==================%%%==================', userData.selectedCity);
@@ -243,12 +244,12 @@ const NewUserKyc = ({ navigation, route }) => {
             if (data) {
                 const retrievedData = JSON.parse(data);
 
-
                 // Set the state variables with the retrieved data
-                console.log('=============CCAME FROM THE PREVIOUS ONCE RUN=======================');
-                console.log("<><>STORED SCHEMA DATA<><>", retrievedData.fullData.NewUserKycData.schemeData[1].otherSchemeBrand);
+                console.log('=============CCAME FROM THE PREVIOUS ONCE RUN=======================', retrievedData.fullData.userData.number);
+                //  console.log("<><>STORED SCHEMA DATA<><>", retrievedData.fullData.NewUserKycData.schemeData[1].otherSchemeBrand);
                 const retrievedSchemeData = retrievedData.fullData.NewUserKycData.schemeData;
-                console.log("??????????????????", retrievedSchemeData);
+                // console.log("??????????????????", retrievedSchemeData);
+
                 const updatedSchemeData = {
                     1: {
                         otherSchemeBrand: retrievedSchemeData[1]?.otherSchemeBrand,
@@ -271,10 +272,10 @@ const NewUserKyc = ({ navigation, route }) => {
                         abtOtherSchemeLiked: retrievedSchemeData[5]?.abtOtherSchemeLiked4,
                     },
                 };
-                console.log("??????????????????", updatedSchemeData);
+                //  console.log("??????????????????", updatedSchemeData);
                 setSchemeData(updatedSchemeData);
                 // console.log("<><><><>", schemeData);
-                console.log('====================================', retrievedData.fullData.NewUserKycData.currentselectedCity);
+                // console.log('====================================', retrievedData.fullData.NewUserKycData.currentselectedCity);
                 if (retrievedData.fullData.NewUserKycData.currentaddres === null) {
                     setcurrentaddres('Select');
                 }
@@ -289,7 +290,9 @@ const NewUserKyc = ({ navigation, route }) => {
                     setmaritialStatus(retrievedData.fullData.NewUserKycData.maritialStatus);
                     setmaritialstatusId(retrievedData.fullData.NewUserKycData.maritialstatusId);
                     setloyalty(retrievedData.fullData.NewUserKycData.loyalty);
-                    setNumber(retrievedData.fullData.userData.number);
+                    setNumber(retrievedData.fullData.userData.number.tostring());
+
+
                     setSelfieData(retrievedData.fullData.NewUserKycData.selfieData);
                     setIdProofFrontData(retrievedData.fullData.NewUserKycData.idProofFrontData);
                     setIdProofBackData(retrievedData.fullData.NewUserKycData.idProofBackData);
@@ -324,7 +327,7 @@ const NewUserKyc = ({ navigation, route }) => {
                     setprofession(retrievedData.fullData.NewUserKycData.profession);
                     setmaritialStatus(retrievedData.fullData.NewUserKycData.maritialStatus);
                     setloyalty(retrievedData.fullData.NewUserKycData.loyalty);
-                    setNumber(retrievedData.fullData.userData.number);
+                    setNumber(retrievedData.fullData.userData.number.toString());
                     setSelfieData(retrievedData.fullData.NewUserKycData.selfieData);
                     setIdProofFrontData(retrievedData.fullData.NewUserKycData.idProofFrontData);
                     setIdProofBackData(retrievedData.fullData.NewUserKycData.idProofBackData);
@@ -359,7 +362,7 @@ const NewUserKyc = ({ navigation, route }) => {
                     setprofession(retrievedData.fullData.NewUserKycData.profession);
                     setmaritialStatus(retrievedData.fullData.NewUserKycData.maritialStatus);
                     setloyalty(retrievedData.fullData.NewUserKycData.loyalty);
-                    setNumber(retrievedData.fullData.NewUserKycData.Number);
+                    setNumber(retrievedData.fullData.NewUserKycData.number.toString());
                     setSelfieData(retrievedData.fullData.NewUserKycData.selfieData);
                     setIdProofFrontData(retrievedData.fullData.NewUserKycData.idProofFrontData);
                     setIdProofBackData(retrievedData.fullData.NewUserKycData.idProofBackData);
@@ -386,6 +389,7 @@ const NewUserKyc = ({ navigation, route }) => {
             }
 
         }
+
 
 
 
@@ -948,6 +952,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                     showBadgeDot={true}
                                     searchable={true}
                                     loading={isLoading}
+                                    searchPlaceholder='Type your pinocde'
                                     label={value}
                                     placeholder={pincode === null ? 'Search Pincode' : `Searched Pincode: ${pincode}`}
                                     searchablePlaceholder="Search Pincode"
@@ -991,13 +996,14 @@ const NewUserKyc = ({ navigation, route }) => {
                                         width: width / 1.1,
                                         height: height / 5,
                                         padding: 10,
-                                        left: 20,
+                                        left: 18.5,
                                         top: 60,
                                         borderWidth: 0.5,
                                         borderTopWidth: 0,
                                         justifyContent: 'center',
                                         elevation: 0,
-                                        backgroundColor: "#D3D3D3"
+                                        backgroundColor: "#D3D3D3",
+                                        borderColor: '#D3D3D3'
                                     }}
                                     style={{
                                         backgroundColor: 'white',
@@ -1011,6 +1017,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                         bottom: 10,
                                         elevation: 0,
                                         margintop: 50,
+                                        borderColor: '#D3D3D3'
                                     }}
                                 />
 
@@ -1235,8 +1242,8 @@ const NewUserKyc = ({ navigation, route }) => {
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_update_your_selfie')}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginBottom: 5, }}>
 
-                        <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.25, borderColor: 'grey', borderWidth: 0.8 }}>
-                            {selfieData != null ? <Text style={{ color: 'black', }}>{selfieData.name.substring(0, 30)}</Text> : null}
+                        <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'space-between', flexDirection: 'row', width: width / 1.25, borderColor: '#D3D3D3', borderWidth: 1 }}>
+                            {selfieData != null ? <Text style={{ color: 'black', paddingLeft: 10 }}>{selfieData.name.substring(0, 30)}</Text> : null}
                             {selfieData != null ? <TouchableOpacity onPress={() => openCamera('Selfie', (documentType, data) => {
                                 // Handle the captured data for the 'Selfie' document type here
                             })} >
@@ -1264,9 +1271,9 @@ const NewUserKyc = ({ navigation, route }) => {
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:update_aadhar_voter_id_dl_front')}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginBottom: 5, }}>
 
-                        <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.25, borderColor: 'grey', borderWidth: 0.8 }}>
+                        <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'space-between', flexDirection: 'row', width: width / 1.25, borderColor: '#D3D3D3', borderWidth: 1 }}>
 
-                            {idProofFrontData != null ? <Text style={{ color: 'black', }}>{idProofFrontData.name.substring(0, 30)}</Text> : null}
+                            {idProofFrontData != null ? <Text style={{ color: 'black', paddingLeft: 10 }}>{idProofFrontData.name.substring(0, 30)}</Text> : null}
                             {idProofFrontData != null ? <TouchableOpacity onPress={() => openCamera('IdProofFront', (documentType, data) => {
                                 // Handle the captured data for the 'Selfie' document type here
                             })} >
@@ -1297,8 +1304,8 @@ const NewUserKyc = ({ navigation, route }) => {
 
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginTop: 10, marginBottom: 5, }}>
 
-                        <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.25, borderColor: 'grey', borderWidth: 0.8 }}>
-                            {idProofBackData != null ? <Text style={{ color: 'black', }}>{idProofBackData.name.substring(0, 30)}</Text> : null}
+                        <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', justifyContent: 'space-between', flexDirection: 'row', width: width / 1.25, borderColor: '#D3D3D3', borderWidth: 1 }}>
+                            {idProofBackData != null ? <Text style={{ color: 'black', paddingLeft: 10 }}>{idProofBackData.name.substring(0, 30)}</Text> : null}
                             {idProofBackData != null ?
                                 <TouchableOpacity onPress={() => openCamera('IdProofBack', (documentType, data) => {
                                     // Handle the captured data for the 'Selfie' document type here
@@ -1352,8 +1359,8 @@ const NewUserKyc = ({ navigation, route }) => {
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 12 }}>{t('strings:update_pan_card_front')}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, }}>
 
-                        <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.25, bottom: 10, borderColor: 'grey', borderWidth: 0.8 }}>
-                            {panData != null ? <Text style={{ color: 'black', }}>{panData.name.substring(0, 30)}</Text> : null}
+                        <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', justifyContent: 'space-between', flexDirection: 'row', width: width / 1.25, bottom: 10, borderColor: '#D3D3D3', borderWidth: 1 }}>
+                            {panData != null ? <Text style={{ color: 'black', paddingLeft: 10, }}>{panData.name.substring(0, 30)}</Text> : null}
                             {panData != null ? <TouchableOpacity onPress={() => openCamera('Pan', (documentType, data) => {
                                 // Handle the captured data for the 'Selfie' document type here
                             })} >
@@ -1433,7 +1440,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
     },
     iconButton: {
-        backgroundColor: 'yellow', // Replace 'yourBackgroundColor' with the desired color
+        backgroundColor: colors.yellow, // Replace 'yourBackgroundColor' with the desired color
         borderRadius: 50,
         alignSelf: 'center',
     },
@@ -1447,8 +1454,9 @@ const styles = StyleSheet.create({
         color: 'black',
         borderRadius: 5,
         backgroundColor: '#fff',
-        borderColor: 'grey',
-        borderWidth: 0.8,
+        borderColor: '#D3D3D3',
+        borderWidth: 1,
+
         marginVertical: 10,
         bottom: -5
     },

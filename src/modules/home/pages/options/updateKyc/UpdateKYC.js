@@ -203,10 +203,10 @@ const UpdateKYC = ({ navigation }) => {
             await fetchAndSetImageData(response.data.kycDetails.aadharOrVoterOrDLFront, 'ID_CARD_FRONT', 1);
             await fetchAndSetImageData(response.data.kycDetails.aadharOrVoterOrDlBack, 'ID_CARD_BACK', 1);
             await fetchAndSetImageData(response.data.kycDetails.panCardFront, 'PAN_CARD_FRONT', 1);
-            console.log("%%%%%%%%%%%INSDE THE FETCH PROFILE UUID %%%%%%%%%%%%%%", response.data.kycDetails.aadharOrVoterOrDLFront,);
-            console.log("%%%%%%%%%%%INSDE THE FETCH PROFILE UUID %%%%%%%%%%%%%%", aadharbackuuid);
-            console.log("%%%%%%%%%%%INSDE THE FETCH PROFILE UUID %%%%%%%%%%%%%%", pancarduuid);
-            console.log("%%%%%%%%%%%INSDE THE FETCH PROFILE UUID %%%%%%%%%%%", selfieuuid);
+            // console.log("%%%%%%%%%%%INSDE THE FETCH PROFILE UUID %%%%%%%%%%%%%%", response.data.kycDetails.aadharOrVoterOrDLFront,);
+            // console.log("%%%%%%%%%%%INSDE THE FETCH PROFILE UUID %%%%%%%%%%%%%%", aadharbackuuid);
+            // console.log("%%%%%%%%%%%INSDE THE FETCH PROFILE UUID %%%%%%%%%%%%%%", pancarduuid);
+            // console.log("%%%%%%%%%%%INSDE THE FETCH PROFILE UUID %%%%%%%%%%%", selfieuuid);
 
 
 
@@ -320,22 +320,22 @@ const UpdateKYC = ({ navigation }) => {
                     }
 
                 });
-                console.log("$$$$$$$$", aadharbackuuidnew);
-                console.log("$$$$$$$$", aadharfrontuuidnew);
-                console.log("$$$$$$$$", selfieuuidnew);
-                console.log("$$$$$$$$", pancarduuidnew);
+                // console.log("$$$$$$$$", aadharbackuuidnew);
+                // console.log("$$$$$$$$", aadharfrontuuidnew);
+                // console.log("$$$$$$$$", selfieuuidnew);
+                // console.log("$$$$$$$$", pancarduuidnew);
 
 
                 if (aadharfrontuuidnew != null && aadharfrontuuidnew != 'undefined' && aadharbackuuidnew != null && aadharbackuuidnew != 'undefined' && selfieuuidnew != 'undefined' && selfieuuidnew != null) {
-                    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharfrontuuid,);
-                    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharbackuuid);
-                    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", pancarduuid);
-                    console.log("%%%%%%%%%%%%%%%%%%%%%%", selfieuuid);
+                    // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharfrontuuid,);
+                    // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharbackuuid);
+                    // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", pancarduuid);
+                    // console.log("%%%%%%%%%%%%%%%%%%%%%%", selfieuuid);
 
-                    console.log("$$$$$$$$", aadharbackuuidnew);
-                    console.log("$$$$$$$$", aadharfrontuuidnew);
-                    console.log("$$$$$$$$", selfieuuidnew);
-                    console.log("$$$$$$$$", pancarduuidnew);
+                    // console.log("$$$$$$$$", aadharbackuuidnew);
+                    // console.log("$$$$$$$$", aadharfrontuuidnew);
+                    // console.log("$$$$$$$$", selfieuuidnew);
+                    // console.log("$$$$$$$$", pancarduuidnew);
                     // console.log("================================================");
                     // console.log(">><><<><>><><><><><><><><><><><><><", userbody);
                     // console.log("================================================");
@@ -355,16 +355,17 @@ const UpdateKYC = ({ navigation }) => {
     };
 
     const handleKycUpdate = async () => {
+        setIsLoading(true)
         try {
-            console.log("%%%%%%%INSDE THE HANDLE KYC UPDATE %%%%%%%%%%%%%%%%%%", aadharfrontuuid,);
-            console.log("%%%%%%%INSDE THE HANDLE KYC UPDATE %%%%%%%%%%%%%%%%%%", aadharbackuuid);
-            console.log("%%%%%%%INSDE THE HANDLE KYC UPDATE %%%%%%%%%%%%%%%%%%", pancarduuid);
-            console.log("%%%%%%%INSDE THE HANDLE KYC UPDATE %%%%%%%%%%%%%%%", selfieuuid);
-            console.log("$$$INSIDE NEW UUID $$$$$", aadharbackuuidnew);
-            console.log("$$$INSIDE NEW UUID $$$$$", aadharfrontuuidnew);
-            console.log("$$$INSIDE NEW UUID $$$$$", selfieuuidnew);
-            console.log("$$$INSIDE NEW UUID $$$$$", pancarduuidnew);
-            setIsLoading(true)
+            // console.log("%%%%%%%INSDE THE HANDLE KYC UPDATE %%%%%%%%%%%%%%%%%%", aadharfrontuuid,);
+            // console.log("%%%%%%%INSDE THE HANDLE KYC UPDATE %%%%%%%%%%%%%%%%%%", aadharbackuuid);
+            // console.log("%%%%%%%INSDE THE HANDLE KYC UPDATE %%%%%%%%%%%%%%%%%%", pancarduuid);
+            // console.log("%%%%%%%INSDE THE HANDLE KYC UPDATE %%%%%%%%%%%%%%%", selfieuuid);
+            // console.log("$$$INSIDE NEW UUID $$$$$", aadharbackuuidnew);
+            // console.log("$$$INSIDE NEW UUID $$$$$", aadharfrontuuidnew);
+            // console.log("$$$INSIDE NEW UUID $$$$$", selfieuuidnew);
+            // console.log("$$$INSIDE NEW UUID $$$$$", pancarduuidnew);
+
             const kycData = {
                 kycFlag: kycflag,
                 userId: userId,
@@ -382,7 +383,7 @@ const UpdateKYC = ({ navigation }) => {
                 gstYesNo: "",
 
             };
-            console.log("<><><><><><<", kycData);
+            // console.log("<><><><><><<", kycData);
             const response = await reupdatekyc(kycData);
             setIsPopupVisible(true);
             setPopupMessage(response.message);

@@ -1,11 +1,51 @@
 import { View, Text, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next';
 import colors from '../../../../colors';
 import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { height, width } from '../../../utils/dimensions';
+import { NewusermobileNumberValidation, otpviacall } from '../../../utils/apiservice';
 
 const RegisterWithOtp = ({ navigation, route }) => {
+    const [countdown, setCounter] = useState(null);
+    const [otpsentflag, setotpsentflag] = useState(false);
+    useEffect(() => {
+        let intervalId;
+        if (countdown > 0) {
+            intervalId = setInterval(() => {
+                setCounter(prevCounter => prevCounter - 1);
+            }, 1000);
+        }
+
+        //    else if (countdown <= 0) {
+        //         intervalId = setInterval(() => {
+        //             setCounter(null);
+        //         }, 1000);
+        //     }
+
+        // // Return a cleanup function to stop the counter when the component is unmounted
+        return () => clearInterval(intervalId);
+
+        // const retrieveDataUserFromAsync = async () => {
+        //     try {
+        //         const data = await AsyncStorage.getItem("USER");
+        //         if (data !== null) {
+        //             console.log('Retrieved data:', data);
+        //         } else {
+        //             console.log('No data found in AsyncStorage for the specified key.');
+        //         }
+        //     } catch (error) {
+        //         console.error('Error retrieving data:', error);
+        //     }
+        // };
+
+        // retrieveDataUserFromAsync();
+
+
+    }, [])
+
 
     const { usernumber, jobprofession } = route.params;
     console.log("====>>>>", usernumber);
@@ -57,7 +97,9 @@ const RegisterWithOtp = ({ navigation, route }) => {
                             <Text style={styles.greyText}>{t('auth:register:getOtpPhone')}</Text>
                         </View>
 
+
                     </View>
+
                 </View>
                 <View style={styles.footer}>
                     <View style={styles.footerContainer}>
@@ -68,8 +110,9 @@ const RegisterWithOtp = ({ navigation, route }) => {
                         />
                     </View>
                 </View>
+
             </View>
-        </ScrollView>
+        </ScrollView >
 
     )
 }

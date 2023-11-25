@@ -293,7 +293,7 @@ export const RegisterNewUser = async userbody => {
 
 export const sendFile = async (formData) => {
     try {
-        console.log("INDE API SERVICE SEND FILE CJECLING FORM DATA ", formData);
+        //  console.log("INDE API SERVICE SEND FILE CJECLING FORM DATA ", formData);
         const response = await api.post('/vguard/api/file', formData,);
         return response;
     } catch (error) {
@@ -437,3 +437,42 @@ export const sendFileWithDigestAuth = async (formData) => {
         throw error;
     }
 };
+
+export const UpdateUserProfile = async (profilebody) => {
+    try {
+        const relativeUrl = "user/updateProfile";
+        const resposne = await createDigestPostRequest(relativeUrl, profilebody);
+        return resposne;
+
+    } catch (error) {
+        console.error('Error sending file with profile', error);
+        throw error;
+
+    }
+}
+
+export const loginwithotpApi = async (userCredentials) => {
+    try {
+        const relativeUrl = "user/validateLoginOtp";
+        const response = await createDigestPostRequest(relativeUrl, userCredentials);
+        return response.json();
+
+    } catch (error) {
+        console.error('Error validating login OTP', error);
+        throw error;
+
+    }
+}
+
+export const otpviacall = async (userCredentials) => {
+    try {
+        const relativeUrl = "user/generateOtpForLogin";
+        const response = await createDigestPostRequest(relativeUrl, userCredentials);
+        return response.json();
+
+    } catch (error) {
+        console.error('Error validating login OTP', error);
+        throw error;
+
+    }
+}

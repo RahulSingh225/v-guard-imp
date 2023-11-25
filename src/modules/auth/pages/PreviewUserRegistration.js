@@ -268,10 +268,10 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
         // GettingAppversion();
         Gettingprofession();
-        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharfrontuuid,);
-        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharbackuuid);
-        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", pancarduuid);
-        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", chequeImageuuid);
+        // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharfrontuuid,);
+        // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharbackuuid);
+        // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", pancarduuid);
+        // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", chequeImageuuid);
         // console.log("================================================");
         // console.log(">><><<><>><><><><><><><><><><><><", userbody);
         // console.log("================================================");
@@ -565,7 +565,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     <View style={{ backgroundColor: 'transparent', height: height / 8, margin: 25, flexDirection: 'row', width: width / 1.8, justifyContent: 'space-evenly', alignItems: 'center', padding: 20, }}>
                         <Avatar.Image size={84} source={require('../../../assets/images/ac_icon.png')} />
                         <View style={{ marginLeft: 40, flexDirection: 'column', backgroundColor: "transparent", width: width / 2.7 }}>
-                            <Text style={{ color: 'grey' }}>PreviewSummaryData</Text>
+                            <Text style={{ color: 'grey' }}>New User</Text>
                             <Text style={{ color: 'grey' }}>Rishta ID</Text>
                             <Text style={{ color: 'grey' }}>{number}</Text>
                         </View>
@@ -1321,7 +1321,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     />
 
-                    <View style={{ display: 'flex', width: width / 1, alignItems: 'center', marginVertical: 20, flexDirection: 'row', justifyContent: 'space-evenly', marginHorizontal: 10 }}>
+                    <View style={{ display: 'flex', width: width / 1, alignItems: 'center', marginVertical: 20, flexDirection: 'row', justifyContent: 'space-evenly', marginHorizontal: 5 }}>
                         <Buttons
                             label="Edit"
                             onPress={() => {

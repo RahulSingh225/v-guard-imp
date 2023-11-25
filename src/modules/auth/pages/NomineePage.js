@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, TouchableOpacity, PermissionsAndroid, Image, Alert, Linking } from 'react-native';
 import { height, width } from '../../../utils/dimensions';
-import { Avatar, Checkbox } from 'react-native-paper';
+import { Avatar, Checkbox, Colors } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Buttons from "../../../components/Buttons";
@@ -276,12 +276,12 @@ const NomineePage = ({ navigation, route }) => {
                     const retrievedData = JSON.parse(data);
                     const selectedDatenomineeDate = new Date(retrievedData.BankDetailsAndNominee.selectedDatenominee);
                     const formattedDate = selectedDatenomineeDate.toLocaleDateString();
-                    console.log('Formatted Date:', formattedDate);
+                    // console.log('Formatted Date:', formattedDate);
 
 
                     console.log('=============in nominee page=======================');
-                    console.log(retrievedData.fullData.userData.number);
-                    console.log('====================================');
+                    //  console.log(retrievedData.fullData.userData.number);
+                    //  console.log('====================================');
                     setnumber(retrievedData.fullData.userData.number)
                     setaccountnumber(retrievedData.BankDetailsAndNominee.accountnumber);
                     setaccountholdername(retrievedData.BankDetailsAndNominee.accountholdername);
@@ -605,7 +605,7 @@ const NomineePage = ({ navigation, route }) => {
                         />
                         <FloatingLabelInput
                             containerStyles={styles.input}
-                            label="Relatioship with you"
+                            label="Relationship with you"
                             keyboardType='default'
                             value={relationship}
                             onChangeText={(text) => setrelationship(text)}
@@ -621,6 +621,7 @@ const NomineePage = ({ navigation, route }) => {
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', left: 20 }}>
                         <Checkbox.Android
+                            color={colors.yellow}
                             status={checked ? 'checked' : 'unchecked'}
                             onPress={() => setChecked(!checked)}
                         />
