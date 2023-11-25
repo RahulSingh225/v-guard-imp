@@ -370,7 +370,7 @@ export default {
     bill_details: 'Bill Details*',
     warranty_photo_mandatory: 'Warranty Photo*',
     warranty_photo: 'Warranty Photo',
-    selling_price: 'Selling Price',
+    selling_price: 'Selling Price*',
     purchase_date_mandatory: 'Purchase Date*',
     purchase_date: 'Purchase Date',
     add_customer_details: 'Add Customer Details',

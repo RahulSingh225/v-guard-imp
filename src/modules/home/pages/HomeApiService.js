@@ -108,6 +108,15 @@ export function getBankNames() {
     return createDigestGetRequest(path);
 }
 
+export function getRetailerCategories() {
+    const path = "product/retailerCategories";
+    return createDigestGetRequest(path);
+}
+
+// export function productRegistration(data) {
+//     const path = "product/registerAirCoolerCustomer";
+//     return createDigestPostRequest(path, data);
+// }
 
 
 
