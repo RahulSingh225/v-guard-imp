@@ -30,6 +30,10 @@ const LanguagePicker = ({ onCloseModal }) => {
         <Picker.Item label="Hindi" value="hn" />
         <Picker.Item label="Bengali" value="bn" />
         <Picker.Item label="Kannada" value="kn" />
+        <Picker.Item label="Marathi" value="mr" />
+        <Picker.Item label="Malayalam" value="ml" />
+        <Picker.Item label="Tamil" value="ta" />
+        <Picker.Item label="Telugu" value="te" />
       </Picker>
       </View>
     </View>
