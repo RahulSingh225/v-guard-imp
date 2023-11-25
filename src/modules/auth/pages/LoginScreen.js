@@ -118,11 +118,11 @@ const LoginScreen = ({ navigation }) => {
               </TouchableOpacity>
 
               <TouchableOpacity
-                onPress={() => navigation.navigate('forgotPassword')}>
-                <Text style={styles.forgotPassword}>
+                onPress={() => navigation.navigate('forgotPassword')}
+                style={styles.forgotPasswordContainer}>
+                <Text style={[styles.forgotPassword]}>
                   {t('strings:lbl_forgot_password')}
                 </Text>
-
               </TouchableOpacity>
             </View>
             {/* <Text style={styles.or}>{t('auth:login:or')}</Text>
@@ -250,12 +250,15 @@ const styles = StyleSheet.create({
     shadowColor: 'rgba(0, 0, 0, 0.8)',
     elevation: 5,
   },
+  forgotPasswordContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   forgotPassword: {
     color: colors.grey,
     fontWeight: 'bold',
     fontSize: 12,
     textAlign: 'right',
-    marginBottom: 20,
   },
   or: {
     textAlign: 'center',
@@ -307,6 +310,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
+    alignItems: 'center'
   },
   button: {
     backgroundColor: colors.yellow,
