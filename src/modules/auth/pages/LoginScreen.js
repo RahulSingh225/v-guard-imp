@@ -56,15 +56,14 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const handleLogin = async () => {
-    if(selectedOption === false) {
-      showSnackbar(t('strings:please_accept_terms'));
-      return;
-    }
     if (username === '' || password === '') {
       showSnackbar('Please enter a username and password.');
       return;
     }
-    
+    if(selectedOption === false) {
+      showSnackbar(t('strings:please_accept_terms'));
+      return;
+    }
     showLoader(true)
     try {
       const response = await loginWithPassword(username, password);

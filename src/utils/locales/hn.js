@@ -85,7 +85,7 @@ export default {
   lbl_enter_mobile_number: '2. OTP के लीये अपना मोबाइल नंबर दर्ज करें',
   get_otp: 'OTP प्राप्त करें',
   or: 'या',
-  powered_by_v_guard: 'वी-गार्ड द्वारा संचालित',
+  powered_by_v_guard: 'द्वारा संचालित',
   lbl_otp_through_phone_call: 'कॉल के माध्यम से OTP प्राप्त करें',
   call: 'कॉल',
   enter_your_mobile_number: 'अपना मोबाइल नंबर दर्ज करें',
