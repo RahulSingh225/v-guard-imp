@@ -227,10 +227,10 @@ const Bank = () => {
       <View style={styles.mainWrapper}>
         <View style={styles.header}>
           <Text style={styles.textHeader}>
-            {t('dashboard:redeem:banktransfer:header')}
+            {t('strings:bank_details')}
           </Text>
           <Text style={styles.textSubHeader}>
-            {t('dashboard:redeem:banktransfer:subHeader')}
+            {t('strings:for_account_tranfer_only')}
           </Text>
         </View>
         <View style={styles.form}>
@@ -238,7 +238,7 @@ const Bank = () => {
             <TextInput
               style={styles.input}
               placeholder={t(
-                'dashboard:redeem:banktransfer:inputAccountNumber',
+                'strings:lbl_account_number',
               )}
               placeholderTextColor={colors.grey}
               value={accNo}
@@ -249,7 +249,7 @@ const Bank = () => {
             <TextInput
               style={styles.input}
               placeholder={t(
-                'dashboard:redeem:banktransfer:inputAccountHolder',
+                'strings:lbl_account_holder_name'
               )}
               value={accHolder}
               placeholderTextColor={colors.grey}
@@ -261,8 +261,8 @@ const Bank = () => {
               selectedValue={accType}
               onValueChange={itemValue => setAccType(itemValue)}
               style={styles.picker}>
-              <Picker.Item label={'Savings'} value={'savings'} />
-              <Picker.Item label={'Current'} value={'current'} />
+              <Picker.Item label={t('strings:account_type:saving')} value={'saving'} />
+              <Picker.Item label={t('strings:account_type:current')} value={'current'} />
             </Picker>
 
             <Image
@@ -293,7 +293,7 @@ const Bank = () => {
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
-              placeholder={t('dashboard:redeem:banktransfer:inputIfscCode')}
+              placeholder={t('strings:ifsc')}
               value={ifscCode}
               placeholderTextColor={colors.grey}
               onChangeText={ifscCode => setIfscCode(ifscCode)}
@@ -313,7 +313,7 @@ const Bank = () => {
               ) : (
                 <TextInput
                   style={styles.input}
-                  placeholder={t('dashboard:redeem:banktransfer:uploadCheque')}
+                  placeholder={t('strings:cancelled_cheque_copy')}
                   placeholderTextColor={colors.grey}
                   editable={false}
                 />
@@ -354,7 +354,7 @@ const Bank = () => {
         </View>
         <View style={styles.button}>
           <Buttons
-            label={'Proceed'}
+            label={t('strings:proceed')}
             variant="filled"
             onPress={() => handleProceed()}
             width="100%"

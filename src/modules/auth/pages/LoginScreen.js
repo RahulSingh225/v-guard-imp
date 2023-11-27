@@ -6,19 +6,38 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  Modal
 } from 'react-native';
-import React, {useState} from 'react';
-import {useTranslation} from 'react-i18next';
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import colors from '../../../../colors';
 import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
-import {loginWithPassword} from '../AuthApiService';
-import {useAuth} from '../../../components/AuthContext';
+import { loginWithPassword } from '../AuthApiService';
+import { useAuth } from '../../../components/AuthContext';
 import Popup from '../../../components/Popup';
 import Snackbar from 'react-native-snackbar';
 import Loader from '../../../components/Loader';
+import { Linking } from 'react-native';
+import selectedTickImage from '../../../assets/images/tick_1.png';
+import notSelectedTickImage from '../../../assets/images/tick_1_notSelected.png';
+import LanguagePicker from '../../../components/LanguagePicker';
+import language from '../../../assets/images/language.png';
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
+  const [showLanguagePicker, setShowLanguagePicker] = useState(false);
+
+  const handleLanguageButtonPress = () => {
+    setShowLanguagePicker(true);
+  };
+
+  const handleCloseLanguagePicker = () => {
+    setShowLanguagePicker(false);
+  };
+  useEffect(() => {
+    console.log('Language changed:', i18n.language);
+  }, [i18n.language]);
   const showSnackbar = message => {
     Snackbar.show({
       text: message,
@@ -27,12 +46,25 @@ const LoginScreen = ({navigation}) => {
   };
   const [loader, showLoader] = useState(false);
   const yellow = colors.yellow;
-  const {t} = useTranslation();
   const placeholderColor = colors.grey;
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const {login} = useAuth();
+  const { login } = useAuth();
   const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(true);
+
+  const handleTermsPress = () => {
+    setSelectedOption(!selectedOption);
+  }
+  const openTermsAndConditions = () => {
+
+
+    const url = 'https://vguardrishta.com/tnc_retailer.html';
+
+    Linking.openURL(url)
+      .catch((error) => console.error('Error opening URL:', error));
+  };
+
 
   const togglePopup = () => {
     setIsPopupVisible(!isPopupVisible);
@@ -41,6 +73,10 @@ const LoginScreen = ({navigation}) => {
   const handleLogin = async () => {
     if (username === '' || password === '') {
       showSnackbar('Please enter a username and password.');
+      return;
+    }
+    if (selectedOption === false) {
+      showSnackbar(t('strings:please_accept_terms'));
       return;
     }
     showLoader(true)
@@ -62,8 +98,22 @@ const LoginScreen = ({navigation}) => {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
+      
       <View style={styles.loginScreen}>
+
         <View style={styles.mainWrapper}>
+        <View style={styles.buttonLanguageContainer}>
+        <Buttons
+          style={styles.button}
+          label=""
+          variant="outlined"
+          onPress={handleLanguageButtonPress}
+          iconHeight={30}
+          iconWidth={30}
+          iconGap={0}
+          icon={language}
+        />
+      </View>
           {loader && <Loader />}
           <Image
             source={require('../../../assets/images/group_907.png')}
@@ -97,11 +147,11 @@ const LoginScreen = ({navigation}) => {
               </TouchableOpacity>
 
               <TouchableOpacity
-                onPress={() => navigation.navigate('forgotPassword')}>
-                <Text style={styles.forgotPassword}>
-                  {t('strings:lbl_forgot_password')}
+                onPress={() => navigation.navigate('forgotPassword')}
+                style={styles.forgotPasswordContainer}>
+                <Text style={[styles.forgotPassword]}>
+                  {t('strings:forgot_password_question')}
                 </Text>
-
               </TouchableOpacity>
             </View>
             {/* <Text style={styles.or}>{t('auth:login:or')}</Text>
@@ -142,16 +192,18 @@ const LoginScreen = ({navigation}) => {
           </View>
         </View>
         <View style={styles.footer}>
-          <View style={styles.footerTextContainer}>
+          <TouchableOpacity onPress={() => handleTermsPress()} style={styles.footerTextContainer}>
             <Image
-              source={require('../../../assets/images/tick_1.png')}
+              source={selectedOption === true ? selectedTickImage : notSelectedTickImage}
               style={styles.tick}
             />
 
-            <Text style={styles.footerText}>
-              {t('strings:lbl_accept_terms')}
-            </Text>
-          </View>
+            <TouchableOpacity onPress={() => openTermsAndConditions()}>
+              <Text style={styles.footerText}>
+                {t('strings:lbl_accept_terms')}
+              </Text>
+            </TouchableOpacity>
+          </TouchableOpacity>
           <View style={styles.footerContainer}>
             <Text style={styles.footergreyText}>
               {t('strings:powered_by_v_guard')}
@@ -165,12 +217,27 @@ const LoginScreen = ({navigation}) => {
         </View>
         {isPopupVisible && (
           <Popup isVisible={isPopupVisible} onClose={togglePopup}>
-            <Text style={{fontWeight: 'bold'}}>
+            <Text style={{ fontWeight: 'bold' }}>
               Incorrect Username or Password
             </Text>
           </Popup>
         )}
+        <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showLanguagePicker}
+        onRequestClose={handleCloseLanguagePicker}
+        style={styles.modal}
+      >
+        <View style={styles.languagePickerContainer}>
+          <LanguagePicker onCloseModal={handleCloseLanguagePicker} />
+          <TouchableOpacity onPress={handleCloseLanguagePicker}>
+            <Text style={styles.closeText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
       </View>
+      
     </ScrollView>
   );
 };
@@ -227,12 +294,15 @@ const styles = StyleSheet.create({
     shadowColor: 'rgba(0, 0, 0, 0.8)',
     elevation: 5,
   },
+  forgotPasswordContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   forgotPassword: {
     color: colors.grey,
     fontWeight: 'bold',
     fontSize: 12,
     textAlign: 'right',
-    marginBottom: 20,
   },
   or: {
     textAlign: 'center',
@@ -284,6 +354,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
+    alignItems: 'center'
   },
   button: {
     backgroundColor: colors.yellow,
@@ -297,6 +368,30 @@ const styles = StyleSheet.create({
     color: colors.black,
     fontWeight: 'bold',
   },
+  buttonLanguageContainer: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+  },
+  button: {
+    alignSelf: 'right',
+  },
+  languagePickerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.white
+  },
+  closeText: {
+    marginTop: 20,
+    color: colors.black,
+    backgroundColor: colors.yellow,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 5,
+    fontWeight: 'bold'
+},
 });
 
 export default LoginScreen;

@@ -48,10 +48,6 @@ const RedemptionHistory = () => {
   return (
     
     <ScrollView style={styles.mainWrapper}>
-    
-      <View style={styles.headerWrapper}>
-        <Text style={styles.header}>{t('strings:redemption_history')}</Text>
-      </View>
       {redemptionHistoryData.length === 0 ? (
         <View style={styles.middleText}>
         <Text style={styles.greyText}>No Data</Text>

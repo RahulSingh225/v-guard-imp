@@ -136,17 +136,17 @@ const Dashboard = () => {
         <CustomTouchableOption
           text="strings:product_wise_earning"
           iconSource={require('../../../../../assets/images/ic_bank_transfer.webp')}
-          screenName="productWiseEarning"
+          screenName="Product Wise Earning"
         />
         <CustomTouchableOption
           text="strings:scheme_wise_earning"
           iconSource={require('../../../../../assets/images/ic_paytm_transfer.webp')}
-          screenName="schemeWiseEarning"
+          screenName="Scheme Wise Earning"
         />
         <CustomTouchableOption
           text="strings:your_rewards"
           iconSource={require('../../../../../assets/images/ic_egift_cards.webp')}
-          screenName="yourRewards"
+          screenName="Your Rewards"
         />
       </View>
 

@@ -70,7 +70,7 @@ const SplashScreen = ({ navigation }) => {
         style={styles.modal}
       >
         <View style={styles.languagePickerContainer}>
-          <LanguagePicker />
+        <LanguagePicker onCloseModal={handleCloseLanguagePicker} />
           <TouchableOpacity onPress={handleCloseLanguagePicker}>
             <Text style={styles.closeText}>Close</Text>
           </TouchableOpacity>
@@ -127,6 +127,11 @@ const styles = StyleSheet.create({
   closeText: {
     marginTop: 20,
     color: colors.black,
+    backgroundColor: colors.yellow,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 5,
+    fontWeight: 'bold'
   },
 });
 

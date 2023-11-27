@@ -228,7 +228,7 @@ const Ticket = ({ navigation }) => {
         </View>
         <TouchableHighlight
           style={styles.button}
-          onPress={() => navigation.navigate('ticketHistory')}
+          onPress={() => navigation.navigate('Ticket History')}
         >
           <Text style={styles.buttonText}>{t('strings:ticket_history')}</Text>
         </TouchableHighlight>

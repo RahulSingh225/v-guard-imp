@@ -45,7 +45,6 @@ const ProductCatalogue = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{t('strings:v_guard_product_catalog')}</Text>
       <ScrollView>
         {data.map((item, index) => (
           <TouchableOpacity

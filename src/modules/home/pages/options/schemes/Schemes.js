@@ -23,17 +23,17 @@ const Schemes = () => {
       <CustomTouchableOption
               text="strings:product_wise_offers"
               iconSource={require('../../../../../assets/images/ic_product_wise_offers.webp')}
-              screenName="productWiseOffers"
+              screenName="Product Wise Offers"
             />
       <CustomTouchableOption
               text="strings:active_scheme_offers"
               iconSource={require('../../../../../assets/images/ic_active_offers.webp')}
-              screenName="activeScheme"
+              screenName="Active Schemes"
             />
       <CustomTouchableOption
               text="strings:special_combo_offers"
               iconSource={require('../../../../../assets/images/ic_special_combo_offers.webp')}
-              screenName="specialCombo"
+              screenName="Special Combo"
               disabled={true}
             />
       </View>

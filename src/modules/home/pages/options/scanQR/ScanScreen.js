@@ -52,7 +52,9 @@ const ScanScreen = ({ navigation, route }) => {
 
   async function sendBarcode() {
     const position = await getLocation();
-    const user = await AsyncStorage.getItem('USER');
+    const user = JSON.parse(await AsyncStorage.getItem('USER'));
+    const userRoleId = user && user.roleId ? user.roleId.toString() : '';
+    var apiResponse;
     var apiResponse;
     var CouponData = {
       userMobileNumber: '',
@@ -60,7 +62,7 @@ const ScanScreen = ({ navigation, route }) => {
       pin: '',
       smsText: '',
       from: '',
-      userType: USER.roleId.toString(),
+      userType: userRoleId,
       userId: 0,
       apmID: 0,
       retailerCoupon: false,
@@ -80,10 +82,16 @@ const ScanScreen = ({ navigation, route }) => {
     CouponData.from = 'APP';
     CouponData.userMobileNumber = user.mobileNo1;
     CouponData.geolocation = null;
+
+
     if (type == 'airCooler') {
       apiResponse = await isValidBarcode(CouponData, 1, '', 0, null);
       console.log(apiResponse.json());
-    } else {
+    }
+    else if (type == 'fan') {
+      navigation.navigate('Product Registration')
+    }
+    else {
       apiResponse = await isValidBarcode(CouponData, 0, '', 0, null);
 
       console.log(apiResponse);
@@ -165,7 +173,7 @@ const ScanScreen = ({ navigation, route }) => {
           </Text>
           <TouchableOpacity
             style={styles.scanImage}
-            onPress={() => navigation.navigate('uniqueCodeHistory')}>
+            onPress={() => navigation.navigate('Unique Code History')}>
             <Image
               style={{ width: 30, height: 30 }}
               source={require('../../../../../assets/images/ic_circle_right_arrow_yellow.webp')}
@@ -176,7 +184,7 @@ const ScanScreen = ({ navigation, route }) => {
           style={styles.button}
           label={t('strings:upload_scan_error_')}
           variant="blackButton"
-          onPress={() => navigation.navigate('uploadError')}
+          onPress={() => navigation.navigate('Upload Scanning Error')}
           width="100%"
         />
         <NeedHelp />

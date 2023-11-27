@@ -95,7 +95,7 @@ const HomeScreen = ({ navigation }) => {
             <Text style={styles.textDetail}>{userData.userName}</Text>
             <Text style={styles.textDetail}>{userData.userCode}</Text>
 
-            <TouchableOpacity onPress={() => navigation.navigate('profile')}>
+            <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
               <Text style={styles.viewProfile}>{t('strings:view_profile')}</Text>
             </TouchableOpacity>          
             </View>
@@ -123,24 +123,24 @@ const HomeScreen = ({ navigation }) => {
             <CustomTouchableOption
               text="strings:scan_code"
               iconSource={require('../../../assets/images/ic_scan_code.png')}
-              screenName="scanscreen"
+              screenName="Scan QR"
             />
             <CustomTouchableOption
               text="strings:redeem_points"
               iconSource={require('../../../assets/images/ic_redeem_points.webp')}
-              screenName="redeemscreen"
+              screenName="Redeem Products"
             />
             <CustomTouchableOption
               text="strings:dashboard"
               iconSource={require('../../../assets/images/ic_dashboard.webp')}
-              screenName="dashboard"
+              screenName="Dashboard"
             />
           </View>
           <View style={styles.row}>
             <CustomTouchableOption
               text="strings:update_kyc"
               iconSource={require('../../../assets/images/ic_update_kyc.webp')}
-              screenName="updateKyc"
+              screenName="Update KYC"
             />
             <CustomTouchableOption
               text="strings:scheme_offers"
@@ -157,7 +157,7 @@ const HomeScreen = ({ navigation }) => {
             <CustomTouchableOption
               text="strings:welfare"
               iconSource={require('../../../assets/images/ic_welfare.webp')}
-              screenName="welfare"
+              screenName="Welfare"
             />
             <CustomTouchableOption
               text="strings:what_s_new"
@@ -174,17 +174,17 @@ const HomeScreen = ({ navigation }) => {
             <CustomTouchableOption
               text="strings:update_bank"
               iconSource={require('../../../assets/images/ic_raise_ticket.webp')}
-              screenName="bank"
+              screenName="Update Bank"
             />
             <CustomTouchableOption
               text="strings:tds_certificate"
               iconSource={require('../../../assets/images/tds_ic.png')}
-              screenName="TDS"
+              screenName="TDS Certificate"
             />
             <CustomTouchableOption
               text="strings:engagement"
               iconSource={require('../../../assets/images/elink.png')}
-              screenName="engagement"
+              screenName="Engagement"
             />
           </View>
           <View style={styles.lastrow}>

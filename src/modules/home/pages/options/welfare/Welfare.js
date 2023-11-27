@@ -27,7 +27,6 @@ const Welfare = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welfare</Text>
       <ScrollView>
         {data && data.map && data.map((item, index) => (
           <TouchableOpacity
