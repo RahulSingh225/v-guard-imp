@@ -113,6 +113,11 @@ export function getRetailerCategories() {
     return createDigestGetRequest(path);
 }
 
+export function getUniqueCodeHistory() {
+    const path = "coupon/history";
+    return createDigestGetRequest(path);
+}
+
 // export function productRegistration(data) {
 //     const path = "product/registerAirCoolerCustomer";
 //     return createDigestPostRequest(path, data);
