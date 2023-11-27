@@ -263,7 +263,7 @@ const LoginWithOtp = ({ navigation, route }) => {
 
                         <View style={{ backgroundColor: 'transparent', height: height / 25, flexDirection: "row", justifyContent: "space-evenly", width: width / 1.3, marginTop: 20, marginLeft: 15 }}>
                             <View>
-                                <Text>OTP Not Received ?</Text>
+                                <Text style={{ color: "black" }}>OTP Not Received ?</Text>
                             </View>
                             <TouchableOpacity onPress={() => countdown === 0 && handleValidation()}>
                                 <View style={{ right: 28 }}>
@@ -281,7 +281,7 @@ const LoginWithOtp = ({ navigation, route }) => {
                                     <Text style={{ color: Colors.yellow, fontSize: responsiveFontSize(1.8), left: 10 }}>GET OTP VIA CALL</Text>
                                 </View>
                             </TouchableOpacity>
-                            {countdown > 0 && <Text style={{ fontSize: responsiveFontSize(1.8), paddingLeft: 5, paddingRight: 5 }}> in </Text>}
+                            {countdown > 0 && <Text style={{ fontSize: responsiveFontSize(1.8), paddingLeft: 5, paddingRight: 5, color: "black" }}> in </Text>}
                             {countdown > 0 && <View >
                                 <Text style={{ color: Colors.yellow, fontSize: responsiveFontSize(1.8), right: 15 }}>{countdown} s</Text>
                             </View>}

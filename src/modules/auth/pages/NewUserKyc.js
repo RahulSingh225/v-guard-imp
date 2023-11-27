@@ -31,7 +31,7 @@ const NewUserKyc = ({ navigation, route }) => {
     const [maritialStatus, setmaritialStatus] = useState('Select');
     const [maritialstatusId, setmaritialstatusId] = useState('');
     const [loyalty, setloyalty] = useState('Select');
-    const [Number, setNumber] = useState();
+    const [Number, setNumber] = useState('');
     const [selfieData, setSelfieData] = useState(null);
     const [idProofFrontData, setIdProofFrontData] = useState(null);
     const [idProofBackData, setIdProofBackData] = useState(null);
@@ -245,7 +245,7 @@ const NewUserKyc = ({ navigation, route }) => {
                 const retrievedData = JSON.parse(data);
 
                 // Set the state variables with the retrieved data
-                console.log('=============CCAME FROM THE PREVIOUS ONCE RUN=======================', retrievedData.fullData.userData.number);
+                console.log('=============CCAME FROM THE PREVIOUS ONCE RUN=======================', retrievedData);
                 //  console.log("<><>STORED SCHEMA DATA<><>", retrievedData.fullData.NewUserKycData.schemeData[1].otherSchemeBrand);
                 const retrievedSchemeData = retrievedData.fullData.NewUserKycData.schemeData;
                 // console.log("??????????????????", retrievedSchemeData);
@@ -290,7 +290,7 @@ const NewUserKyc = ({ navigation, route }) => {
                     setmaritialStatus(retrievedData.fullData.NewUserKycData.maritialStatus);
                     setmaritialstatusId(retrievedData.fullData.NewUserKycData.maritialstatusId);
                     setloyalty(retrievedData.fullData.NewUserKycData.loyalty);
-                    setNumber(retrievedData.fullData.userData.number.tostring());
+                    setNumber(retrievedData.fullData.userData.number);
 
 
                     setSelfieData(retrievedData.fullData.NewUserKycData.selfieData);
@@ -338,7 +338,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
                     securrenttcityid(retrievedData.fullData.userData.permananetcityid);
                     setcurrentdistrictId(retrievedData.fullData.userData.permananetdistrictId);
-                    setcurrentstateid(retrievedData.fullData.userData.permananetsateid);
+                    setcurrentstateid(retrievedData.fullData.userData.permananetsateid || "");
 
 
                 }
@@ -803,10 +803,10 @@ const NewUserKyc = ({ navigation, route }) => {
 
 
     return (
-        <SafeAreaView>
-            <ScrollView >
-                <View >
-                    <View style={{ backgroundColor: 'transparent', height: height / 8, margin: 20, flexDirection: 'row', width: width / 2.1, justifyContent: 'space-evenly', alignItems: 'center', padding: 20 }}>
+        <SafeAreaView style={{ baackgroundColor: "white" }}>
+            <ScrollView style={{ baackgroundColor: "white" }} >
+                <View style={{ baackgroundColor: "white" }} >
+                    <View style={{ backgroundColor: 'transparent', height: height / 8, margin: 20, flexDirection: 'row', width: width / 2.1, justifyContent: 'space-evenly', alignItems: 'center', padding: 20, }}>
                         <Avatar.Image size={84} source={require('../../../assets/images/ac_icon.png')} />
                         <View style={{ margin: 20, flexDirection: 'column', padding: 10, height: height / 10, Left: 10, }}>
                             <Text style={{ color: 'grey' }}>New User</Text>
@@ -825,12 +825,12 @@ const NewUserKyc = ({ navigation, route }) => {
                     </Popup>
                     )}
                     <Text style={{ color: 'black', marginLeft: 20, }}>{t('strings:is_current_address_different')}</Text>
-                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 3 }}>
+                    <View style={{ backgroundColor: 'transparent', height: height / 20, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 3, borderColor: "#D3D3D3", borderWidth: 1.5, width: width / 1.15 }}>
 
 
                         <Picker
                             mode='dropdown'
-                            style={{ color: 'black' }}
+                            style={{ color: 'black', bottom: 10 }}
                             selectedValue={currentaddres}
                             onValueChange={(itemValue, itemIndex) => {
                                 setcurrentaddres(itemValue);
@@ -877,76 +877,65 @@ const NewUserKyc = ({ navigation, route }) => {
                                 }
                             }}>
                             <Picker.Item label="Select" value="Select" />
-                            <Picker.Item label="yes" value="yes" />
-                            <Picker.Item label="no" value="no" />
+                            <Picker.Item label="Yes" value="yes" />
+                            <Picker.Item label="No" value="no" />
                         </Picker>
 
                     </View>
 
                     {currentaddres == 'Select' ? <></> : <>
-                        <FloatingLabelInput
-
-
-                            label="Current House Flat/block no"
-
-
-                            editable={currentaddres === 'no'}
-                            keyboardType='default'
-                            value={address}
-                            onChangeText={(text) => setaddress(text)}
-                            containerStyles={styles.input}
-                            staticLabel
-                            labelStyles={styles.labelStyles}
-                            inputStyles={{
-                                color: 'black',
-                                paddingHorizontal: 10
-                            }}
-
-
-
-                        />
-                        <FloatingLabelInput
-
-                            editable={currentaddres == 'no'}
-                            label="Current Street/ Colony/Locality Name *"
-
-
-                            keyboardType='default'
-                            value={street}
-                            onChangeText={(text) => setstreet(text)}
-                            containerStyles={styles.input}
-                            staticLabel
-                            labelStyles={styles.labelStyles}
-                            inputStyles={{
-                                color: 'black',
-                                paddingHorizontal: 10
-                            }}
-                        />
-                        <FloatingLabelInput
-
-                            editable={currentaddres == 'no'}
-                            label="Landmark"
-
-
-                            keyboardType='default'
-                            value={landmark}
-                            onChangeText={(text) => setlandmark(text)}
-                            containerStyles={styles.input}
-                            staticLabel
-                            labelStyles={styles.labelStyles}
-                            inputStyles={{
-                                color: 'black',
-                                paddingHorizontal: 10
-                            }}
-                        />
+                        <View style={styles.floatingcontainerstyle}>
+                            <FloatingLabelInput
+                                label="Current House Flat/block no"
+                                editable={currentaddres === 'no'}
+                                keyboardType='default'
+                                value={address}
+                                onChangeText={(text) => setaddress(text)}
+                                containerStyles={styles.input}
+                                staticLabel
+                                labelStyles={styles.labelStyles}
+                                inputStyles={{
+                                    color: 'black',
+                                    paddingHorizontal: 10
+                                }}
+                            />
+                        </View>
+                        <View style={styles.floatingcontainerstyle}>
+                            <FloatingLabelInput
+                                editable={currentaddres == 'no'}
+                                label="Current Street/ Colony/Locality Name *"
+                                keyboardType='default'
+                                value={street}
+                                onChangeText={(text) => setstreet(text)}
+                                containerStyles={styles.input}
+                                staticLabel
+                                labelStyles={styles.labelStyles}
+                                inputStyles={{
+                                    color: 'black',
+                                    paddingHorizontal: 10
+                                }}
+                            />
+                        </View>
+                        <View style={styles.floatingcontainerstyle}>
+                            <FloatingLabelInput
+                                editable={currentaddres == 'no'}
+                                label="Landmark"
+                                keyboardType='default'
+                                value={landmark}
+                                onChangeText={(text) => setlandmark(text)}
+                                containerStyles={styles.input}
+                                staticLabel
+                                labelStyles={styles.labelStyles}
+                                inputStyles={{
+                                    color: 'black',
+                                    paddingHorizontal: 10
+                                }}
+                            />
+                        </View>
                         <Text style={{ color: 'black', marginLeft: 23, }}>{t('strings:lbl_pin_code_mandatory')}</Text>
-                        {currentaddres === 'yes' ? <Text style={styles.input}>{userData.pincode}</Text>
-
-
+                        {currentaddres === 'yes' ? <View style={styles.floatingcontainerstyle}><Text style={styles.input}>{userData.pincode}</Text></View>
                             :
-
                             <>
-
                                 <DropDownPicker
                                     mode="BADGE"
                                     showBadgeDot={true}
@@ -1012,7 +1001,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                         borderWidth: 0.6,
                                         margin: 20,
                                         width: width / 1.1,
-                                        height: height / 15,
+                                        height: height / 1.05,
                                         alignSelf: 'center',
                                         bottom: 10,
                                         elevation: 0,
@@ -1020,13 +1009,10 @@ const NewUserKyc = ({ navigation, route }) => {
                                         borderColor: '#D3D3D3'
                                     }}
                                 />
-
-
-
                             </>}
 
                         <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_state')}</Text>
-                        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                        <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 2, borderColor: "#D3D3D3", elevation: 0, width: width / 1.15 }}>
                             {/* <Picker
                                 style={{ color: 'black' }}
                                 selectedValue={currentselectedState}
@@ -1046,7 +1032,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
                         </View>
                         <Text style={{ color: 'black', left: 20, marginBottom: 2 }}> {t('strings:select_district')}</Text>
-                        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                        <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 2, borderColor: "#D3D3D3", elevation: 0, width: width / 1.15 }}>
 
 
 
@@ -1056,7 +1042,7 @@ const NewUserKyc = ({ navigation, route }) => {
                         </View>
 
                         <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_city')}</Text>
-                        {currentaddres === 'no' || currentselectedCity === null ? <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                        {currentaddres === 'no' || currentselectedCity === null ? <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 2, borderColor: "#D3D3D3", elevation: 0, width: width / 1.15 }}>
                             <Picker
                                 mode='model'
                                 style={{ color: 'black' }}
@@ -1083,7 +1069,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                 )}
                             </Picker>
 
-                        </View> : <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                        </View> : <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 2, borderColor: "#D3D3D3", elevation: 0, width: width / 1.15 }}>
 
 
 
@@ -1095,7 +1081,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:select_profession')}</Text>
 
-                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 2, borderColor: "#D3D3D3", elevation: 0, width: width / 1.15 }}>
                         <Picker
                             mode='dropdown'
                             style={{ color: 'black' }}
@@ -1113,7 +1099,7 @@ const NewUserKyc = ({ navigation, route }) => {
                     </View>
 
 
-                    {/* <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                    {/* <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 2, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
 
                         <Picker
@@ -1133,7 +1119,7 @@ const NewUserKyc = ({ navigation, route }) => {
                     </View> */}
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:select_marital_status')}</Text>
 
-                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 2, borderColor: "#D3D3D3", elevation: 0, width: width / 1.15 }}>
 
 
                         <Picker
@@ -1151,7 +1137,7 @@ const NewUserKyc = ({ navigation, route }) => {
                             }>
                             <Picker.Item label="Select" value="0" />
                             <Picker.Item label="Married" value="Married" />
-                            <Picker.Item label=" Unmarried" value="Unmarried" />
+                            <Picker.Item label="Unmarried" value="Unmarried" />
 
 
                         </Picker>
@@ -1161,7 +1147,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:already_enrolled_into_loyalty_scheme')}</Text>
 
-                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 2, borderColor: "#D3D3D3", elevation: 0, width: width / 1.15 }}>
 
 
                         <Picker
@@ -1222,27 +1208,28 @@ const NewUserKyc = ({ navigation, route }) => {
                         </View> : null}
 
 
+                    <View style={styles.floatingcontainerstyle}>
+                        <FloatingLabelInput
 
-                    <FloatingLabelInput
-
-                        label={t('strings:annual_business_potential')}
-                        value={annualincome}
-                        onChangeText={(text) => setannualincome(text)}
-                        keyboardType='number-pad'
-                        containerStyles={styles.input}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-                    />
+                            label={t('strings:annual_business_potential')}
+                            value={annualincome}
+                            onChangeText={(text) => setannualincome(text)}
+                            keyboardType='number-pad'
+                            containerStyles={styles.input}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+                        />
+                    </View>
 
 
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_update_your_selfie')}</Text>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginBottom: 5, }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginBottom: 5, elevation: 2 }}>
 
-                        <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'space-between', flexDirection: 'row', width: width / 1.25, borderColor: '#D3D3D3', borderWidth: 1 }}>
+                        <View style={{ backgroundColor: 'transparent', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'space-between', flexDirection: 'row', width: width / 1.15, borderColor: '#D3D3D3', borderWidth: 2, elevation: 0 }}>
                             {selfieData != null ? <Text style={{ color: 'black', paddingLeft: 10 }}>{selfieData.name.substring(0, 30)}</Text> : null}
                             {selfieData != null ? <TouchableOpacity onPress={() => openCamera('Selfie', (documentType, data) => {
                                 // Handle the captured data for the 'Selfie' document type here
@@ -1256,6 +1243,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                 onPress={() => openCamera('Selfie', (documentType, data) => {
                                     // Handle the captured data for the 'Selfie' document type here
                                 })}
+                                style={{ left: width / 1.35 }}
                             />}
                         </View>
                         <IconButton
@@ -1265,13 +1253,14 @@ const NewUserKyc = ({ navigation, route }) => {
                             onPress={() => openImagePicker('Selfie', (documentType, data) => {
                                 // Handle the captured data for the 'Selfie' document type here
                             })}
+
                         />
 
                     </View>
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:update_aadhar_voter_id_dl_front')}</Text>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginBottom: 5, }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginBottom: 5, elevation: 2 }}>
 
-                        <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'space-between', flexDirection: 'row', width: width / 1.25, borderColor: '#D3D3D3', borderWidth: 1 }}>
+                        <View style={{ backgroundColor: 'transparent', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'space-between', flexDirection: 'row', width: width / 1.15, borderColor: '#D3D3D3', borderWidth: 2, elevation: 0 }}>
 
                             {idProofFrontData != null ? <Text style={{ color: 'black', paddingLeft: 10 }}>{idProofFrontData.name.substring(0, 30)}</Text> : null}
                             {idProofFrontData != null ? <TouchableOpacity onPress={() => openCamera('IdProofFront', (documentType, data) => {
@@ -1287,6 +1276,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                     onPress={() => openCamera('IdProofFront', (documentType, data) => {
                                         // Handle the captured data for the 'Selfie' document type here
                                     })}
+                                    style={{ left: width / 1.35 }}
                                 />}
                         </View>
                         <IconButton
@@ -1296,6 +1286,7 @@ const NewUserKyc = ({ navigation, route }) => {
                             onPress={() => openImagePicker('IdProofFront', (documentType, data) => {
                                 // Handle the captured data for the 'Selfie' document type here
                             })}
+
                         />
 
                     </View>
@@ -1304,7 +1295,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginTop: 10, marginBottom: 5, }}>
 
-                        <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', justifyContent: 'space-between', flexDirection: 'row', width: width / 1.25, borderColor: '#D3D3D3', borderWidth: 1 }}>
+                        <View style={{ backgroundColor: 'transparent', height: height / 15, borderRadius: 5, flexDirection: 'column', justifyContent: 'space-between', flexDirection: 'row', width: width / 1.15, borderColor: '#D3D3D3', borderWidth: 2, elevation: 0 }}>
                             {idProofBackData != null ? <Text style={{ color: 'black', paddingLeft: 10 }}>{idProofBackData.name.substring(0, 30)}</Text> : null}
                             {idProofBackData != null ?
                                 <TouchableOpacity onPress={() => openCamera('IdProofBack', (documentType, data) => {
@@ -1320,6 +1311,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                     onPress={() => openCamera('IdProofBack', (documentType, data) => {
                                         // Handle the captured data for the 'Selfie' document type here
                                     })}
+                                    style={{ left: width / 1.35 }}
                                 />}
                         </View>
                         <IconButton
@@ -1332,7 +1324,7 @@ const NewUserKyc = ({ navigation, route }) => {
                         />
 
                     </View>
-                    <View>
+                    <View style={styles.floatingcontainerstyle}>
 
                         <FloatingLabelInput
 
@@ -1359,7 +1351,7 @@ const NewUserKyc = ({ navigation, route }) => {
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 12 }}>{t('strings:update_pan_card_front')}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, }}>
 
-                        <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', justifyContent: 'space-between', flexDirection: 'row', width: width / 1.25, bottom: 10, borderColor: '#D3D3D3', borderWidth: 1 }}>
+                        <View style={{ backgroundColor: 'transparent', height: height / 15, borderRadius: 5, flexDirection: 'column', justifyContent: 'space-between', flexDirection: 'row', width: width / 1.15, bottom: 10, borderColor: '#D3D3D3', borderWidth: 2, elevation: 0 }}>
                             {panData != null ? <Text style={{ color: 'black', paddingLeft: 10, }}>{panData.name.substring(0, 30)}</Text> : null}
                             {panData != null ? <TouchableOpacity onPress={() => openCamera('Pan', (documentType, data) => {
                                 // Handle the captured data for the 'Selfie' document type here
@@ -1373,6 +1365,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                 onPress={() => openCamera('Pan', (documentType, data) => {
                                     // Handle the captured data for the 'Selfie' document type here
                                 })}
+                                style={{ left: width / 1.35 }}
                             />}
                         </View>
                         <IconButton
@@ -1385,7 +1378,7 @@ const NewUserKyc = ({ navigation, route }) => {
                         />
 
                     </View>
-                    <View>
+                    <View style={styles.floatingcontainerstyle}>
                         <FloatingLabelInput
 
                             label={t('strings:update_pan_number_manually')}
@@ -1393,7 +1386,7 @@ const NewUserKyc = ({ navigation, route }) => {
                             onChangeText={(text) => setpancardno(text)}
                             keyboardType='default'
 
-                            containerStyles={[styles.input,]}
+                            containerStyles={[styles.input]}
                             staticLabel
                             labelStyles={styles.labelStyles}
                             inputStyles={{
@@ -1438,6 +1431,7 @@ const styles = StyleSheet.create({
     },
     schemeContainer: {
         marginVertical: 10,
+        width: width / 1.05,
     },
     iconButton: {
         backgroundColor: colors.yellow, // Replace 'yourBackgroundColor' with the desired color
@@ -1447,15 +1441,17 @@ const styles = StyleSheet.create({
     input: {
 
         padding: 5,
-        height: height / 15,
+        height: height / 16,
 
         margin: 20,
         marginTop: 5,
         color: 'black',
         borderRadius: 5,
-        backgroundColor: '#fff',
+        backgroundColor: 'transparent',
         borderColor: '#D3D3D3',
-        borderWidth: 1,
+        borderWidth: 2,
+        elevation: 0,
+
 
         marginVertical: 10,
         bottom: -5
@@ -1464,4 +1460,5 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         margin: 14,
     },
+    floatingcontainerstyle: { width: width / 1.05, }
 })

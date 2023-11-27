@@ -297,15 +297,9 @@ const NomineePage = ({ navigation, route }) => {
                     setnomineeaddress(retrievedData.BankDetailsAndNominee.nomineeaddress);
                     setSelectedDatenominee(selectedDatenomineeDate);
                     setrelationship(retrievedData.BankDetailsAndNominee.relationship);
-
-
-
-
                     console.log('==============in nominee page======================');
                     console.log(selectedDatenominee);
                     console.log('====================================');
-
-
                 }
             } catch (error) {
                 console.error('Error retrieving data: ', error);
@@ -313,20 +307,11 @@ const NomineePage = ({ navigation, route }) => {
                 setIsLoading(false);
             }
         };
-
-
         retrieveData();
-
-
         if (allbankslist == null) {
             getallbanks();
 
         }
-
-
-
-
-
     }, [allbankslist])
 
 
@@ -334,10 +319,6 @@ const NomineePage = ({ navigation, route }) => {
         try {
             const getallbanks = await Getallbanks();
             setallbankslist(getallbanks);
-
-
-
-
         }
         catch (error) {
             console.error('Error fetching suggestions:', error);
@@ -346,10 +327,9 @@ const NomineePage = ({ navigation, route }) => {
 
         }
     }
-
     return (
         <SafeAreaView>
-            <ScrollView >
+            <ScrollView style={{ backgroundColor: "white" }} >
                 <View >
                     <View style={{ backgroundColor: 'transparent', height: height / 8, margin: 20, flexDirection: 'row', width: width / 2.1, justifyContent: 'space-evenly', alignItems: 'center', }}>
                         <Avatar.Image size={84} source={require('../../../assets/images/ac_icon.png')} />
@@ -358,7 +338,6 @@ const NomineePage = ({ navigation, route }) => {
                             <Text style={{ color: 'grey' }}>Rishta ID</Text>
                             <Text style={{ color: 'grey' }}>{number}</Text>
                         </View>
-
                     </View>
                     {isLoading == true ? <View style={{ flex: 1 }}>
 
@@ -369,33 +348,26 @@ const NomineePage = ({ navigation, route }) => {
                         {/* // <Text>ICORRECT OTP</Text> */}
                     </Popup>
                     )}
-
                     <Text style={{ color: 'black', marginLeft: 20, }}> {t('strings:lbl_bank_details')}</Text>
+                    <View styles={styles.floatingcontainerstyle}>
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:lbl_account_number')}
+                            keyboardType='number-pad'
+                            value={accountnumber}
+                            onChangeText={(text) => setaccountnumber(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+                        />
+                    </View>
                     <FloatingLabelInput
                         containerStyles={styles.input}
-
-                        label={t('strings:lbl_account_number')}
-
-
-                        keyboardType='number-pad'
-                        value={accountnumber}
-                        onChangeText={(text) => setaccountnumber(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-                    />
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
                         label={t('strings:lbl_account_holder_name')}
-
-
                         keyboardType='default'
                         value={accountholdername}
                         onChangeText={(text) => setaccountholdername(text)}
@@ -407,13 +379,8 @@ const NomineePage = ({ navigation, route }) => {
                         }}
                         maxLength={50}
                     />
-
-
-
                     <Text style={{ color: 'black', marginLeft: 23, }}>{t('strings:select_account_type')}</Text>
-                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
-
-
+                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 1.8, borderColor: "#D3D3D3", width: width / 1.15 }}>
                         <Picker
                             mode='dropdown'
                             style={{ color: 'black' }}
@@ -424,18 +391,12 @@ const NomineePage = ({ navigation, route }) => {
                             <Picker.Item label={t('strings:account_type:placeholder')} value="" />
                             <Picker.Item label={t('strings:account_type:current')} value="Current" />
                             <Picker.Item label={t('strings:account_type:saving')} value="Saving" />
-
-
-
                         </Picker>
 
                     </View>
 
-
-
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:bank_name')}</Text>
-
-                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 1.8, borderColor: "#D3D3D3", width: width / 1.15 }}>
                         <Picker
                             mode='model'
                             style={{ color: 'black' }}
@@ -444,7 +405,6 @@ const NomineePage = ({ navigation, route }) => {
                                 const selectedItem = allbankslist[itemIndex];
                                 setselectedbank(itemValue);
                                 setbankid(selectedItem.bankId);
-
                                 console.log("<><><><><><><><><>>", bankid);
                             }}>
                             <Picker.Item label="Select" value='' />
@@ -461,163 +421,147 @@ const NomineePage = ({ navigation, route }) => {
                             )}
                         </Picker>
                     </View>
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:ifsc')}
-
-
-                        keyboardType='default'
-                        value={IFSC}
-                        onChangeText={(text) => setIFSC(text)}
-                        borderColor="gray"
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-                        maxLength={20}
-                    />
+                    <View style={styles.floatingcontainerstyle}>
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:ifsc')}
+                            keyboardType='default'
+                            value={IFSC}
+                            onChangeText={(text) => setIFSC(text)}
+                            borderColor="gray"
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+                            maxLength={20}
+                        />
+                    </View>
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_upload_cancelled_cheque')}</Text>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginTop: 0, }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, }}>
 
-                        <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.25 }}>
-                            {chequeImage != null ? <Text style={{ color: 'black', }}>{chequeImage.name.substring(0, 30)}</Text> : null}
-                            {chequeImage != null ?
-                                <TouchableOpacity onPress={() => openCamera('cheque', (documentType, data) => {
+                        <View style={{ backgroundColor: 'transparent', height: height / 15, borderRadius: 5, flexDirection: 'column', justifyContent: 'space-between', flexDirection: 'row', width: width / 1.15, bottom: 10, borderColor: '#D3D3D3', borderWidth: 2, elevation: 0, marginTop: 10, }}>
+                            {chequeImage != null ? <Text style={{ color: 'black', paddingLeft: 10, }}>{chequeImage.name.substring(0, 30)}</Text> : null}
+                            {chequeImage != null ? <TouchableOpacity onPress={() => openCamera('Pan', (documentType, data) => {
+                                // Handle the captured data for the 'Selfie' document type here
+                            })} >
+                                <Image resizeMode="cover" source={{ uri: chequeImage.uri }} style={{ width: width / 8, height: height / 18, backgroundColor: 'transparent', borderRadius: 5, margin: 5 }} />
+                            </TouchableOpacity> : <IconButton
+                                icon="camera"
+                                animated='true'
 
-                                })} >
-                                    <Image resizeMode="cover" source={{ uri: chequeImage.uri }} style={{ width: width / 8, height: height / 18, backgroundColor: 'transparent', borderRadius: 5, margin: 5 }} />
-                                </TouchableOpacity> :
-                                <IconButton
-                                    icon="camera"
-                                    animated='true'
-
-                                    size={20}
-                                    onPress={() => openCamera('cheque', (documentType, data) => {
-
-                                    })}
-                                />}
+                                size={20}
+                                onPress={() => openCamera('Cheque', (documentType, data) => {
+                                    // Handle the captured data for the 'Selfie' document type here
+                                })}
+                                style={{ left: width / 1.35 }}
+                            />}
                         </View>
                         <IconButton
                             icon="link"
 
                             size={20}
                             onPress={() => openImagePicker('cheque', (documentType, data) => {
-
+                                // Handle the captured data for the 'Selfie' document type here
                             })}
                         />
 
                     </View>
-
-
-
                     <View style={{ marginTop: 30 }}>
                         <Text style={{ color: 'black', marginLeft: 20, fontSize: responsiveFontSize(2) }}>{t('strings:lbl_nominee_details')}</Text>
-                        <FloatingLabelInput
-                            containerStyles={styles.input}
+                        <View style={styles.floatingcontainerstyle}>
+                            <FloatingLabelInput
+                                containerStyles={styles.input}
 
-                            label={t('strings:lbl_name_of_nominee')}
-
-
-                            keyboardType='default'
-                            value={nomineename}
-                            onChangeText={(text) => setnomineename(text)}
-                            staticLabel
-                            labelStyles={styles.labelStyles}
-                            inputStyles={{
-                                color: 'black',
-                                paddingHorizontal: 10,
-                            }}
-
-
-                        />
+                                label={t('strings:lbl_name_of_nominee')}
+                                keyboardType='default'
+                                value={nomineename}
+                                onChangeText={(text) => setnomineename(text)}
+                                staticLabel
+                                labelStyles={styles.labelStyles}
+                                inputStyles={{
+                                    color: 'black',
+                                    paddingHorizontal: 10,
+                                }}
+                            />
+                        </View>
                         <Text style={{ color: 'black', marginLeft: 20, }}>Nomiee DOB</Text>
-                        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
-
-
+                        <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, width: width / 1.15, borderWidth: 1.8, borderColor: "#D3D3D3" }}>
                             <DatePicker
                                 date={selectedDatenominee}
                                 onDateChange={handleDateChange}
                                 showDatePicker={showDatePicker}
                                 onShowDatePicker={handleShowDatePicker}
                             />
-
                         </View>
+                        <View style={styles.floatingcontainerstyle}>
+                            <FloatingLabelInput
+                                containerStyles={styles.input}
+
+                                label={t('strings:lbl_mobile_number')}
 
 
-                        <FloatingLabelInput
-                            containerStyles={styles.input}
+                                keyboardType='number-pad'
+                                value={nomineemobileno}
+                                onChangeText={(text) => setnomineemobileno(text)}
+                                staticLabel
+                                labelStyles={styles.labelStyles}
+                                inputStyles={{
+                                    color: 'black',
+                                    paddingHorizontal: 10,
+                                }}
+                                maxLength={10}
+                            />
+                        </View>
+                        <View style={styles.floatingcontainerstyle}>
+                            <FloatingLabelInput
+                                containerStyles={styles.input}
 
-                            label={t('strings:lbl_mobile_number')}
+                                label={t('strings:lbl_email')}
 
+                                keyboardType='email-address'
+                                value={nomineeemail}
+                                onChangeText={(text) => setnomineeemail(text)}
+                                staticLabel
+                                labelStyles={styles.labelStyles}
+                                inputStyles={{
+                                    color: 'black',
+                                    paddingHorizontal: 10,
+                                }}
 
-                            keyboardType='number-pad'
-                            value={nomineemobileno}
-                            onChangeText={(text) => setnomineemobileno(text)}
-                            staticLabel
-                            labelStyles={styles.labelStyles}
-                            inputStyles={{
-                                color: 'black',
-                                paddingHorizontal: 10,
-                            }}
-                            maxLength={10}
-                        />
-
-
-
-
-                        <FloatingLabelInput
-                            containerStyles={styles.input}
-
-                            label={t('strings:lbl_email')}
-
-                            keyboardType='email-address'
-                            value={nomineeemail}
-                            onChangeText={(text) => setnomineeemail(text)}
-                            staticLabel
-                            labelStyles={styles.labelStyles}
-                            inputStyles={{
-                                color: 'black',
-                                paddingHorizontal: 10,
-                            }}
-
-                        />
-
-
-
-                        <FloatingLabelInput
-                            containerStyles={styles.input}
-
-                            label={t('strings:lbl_address')}
-
-
-                            keyboardType='email-address'
-                            value={nomineeaddress}
-                            onChangeText={(text) => setnomineeaddress(text)}
-                            staticLabel
-                            labelStyles={styles.labelStyles}
-                            inputStyles={{
-                                color: 'black',
-                                paddingHorizontal: 10,
-                            }}
-
-                        />
-                        <FloatingLabelInput
-                            containerStyles={styles.input}
-                            label="Relationship with you"
-                            keyboardType='default'
-                            value={relationship}
-                            onChangeText={(text) => setrelationship(text)}
-                            staticLabel
-                            labelStyles={styles.labelStyles}
-                            inputStyles={{
-                                color: 'black',
-                                paddingHorizontal: 10,
-                            }}
-
-
-                        />
+                            />
+                        </View>
+                        <View style={styles.floatingcontainerstyle}>
+                            <FloatingLabelInput
+                                containerStyles={styles.input}
+                                label={t('strings:lbl_address')}
+                                keyboardType='email-address'
+                                value={nomineeaddress}
+                                onChangeText={(text) => setnomineeaddress(text)}
+                                staticLabel
+                                labelStyles={styles.labelStyles}
+                                inputStyles={{
+                                    color: 'black',
+                                    paddingHorizontal: 10,
+                                }}
+                            />
+                        </View>
+                        <View style={styles.floatingcontainerstyle}>
+                            <FloatingLabelInput
+                                containerStyles={styles.input}
+                                label="Relationship with you"
+                                keyboardType='default'
+                                value={relationship}
+                                onChangeText={(text) => setrelationship(text)}
+                                staticLabel
+                                labelStyles={styles.labelStyles}
+                                inputStyles={{
+                                    color: 'black',
+                                    paddingHorizontal: 10,
+                                }}
+                            />
+                        </View>
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', left: 20 }}>
                         <Checkbox.Android
@@ -672,15 +616,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     input: {
-
         padding: 5,
-        height: height / 12,
-
+        height: height / 15,
+        width: width / 1.15,
+        borderWidth: 1.8,
+        borderColor: "#D3D3D3",
         margin: 20,
         marginTop: 5,
         color: 'black',
         borderRadius: 5,
-        backgroundColor: '#fff',
+        backgroundColor: 'transparent',
     },
     smallContainer: {
         backgroundColor: colors.white,
@@ -711,5 +656,9 @@ const styles = StyleSheet.create({
     greyDetail: {
         color: colors.grey,
         fontSize: 14
+    },
+    floatingcontainerstyle: {
+        width: width / 1.05,
+
     }
 })

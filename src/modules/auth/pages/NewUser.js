@@ -17,7 +17,7 @@ import Popup from '../../../components/Popup';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useTranslation } from 'react-i18next';
 import NewUserKyc from './NewUserKyc';
-import { grey100 } from 'react-native-paper/lib/typescript/styles/colors';
+import { grey100, white } from 'react-native-paper/lib/typescript/styles/colors';
 
 const NewUser = ({ navigation }) => {
   // console.log('====================================');
@@ -395,8 +395,8 @@ const NewUser = ({ navigation }) => {
     return true;
   }
   return (
-    <ScrollView >
-      <View >
+    <ScrollView style={{ backgroundColor: "white" }}>
+      <View style={{ backgroundColor: "white" }}>
         <View style={{ backgroundColor: 'transparent', height: height / 8, margin: 20, flexDirection: 'row', width: width / 2.1, justifyContent: 'space-evenly', alignItems: 'center', padding: 20 }}>
           {isLoading == true ? <View style={{ flex: 1 }}>
 
@@ -449,10 +449,10 @@ const NewUser = ({ navigation }) => {
         />
         <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_gender_mandatory')}</Text>
 
-        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 1.5, borderColor: "#D3D3D3" }}>
           <Picker
             mode='dropdown'
-            style={{ color: 'black' }}
+            style={{ color: 'black', borderWidth: 1.5, borderColor: "#D3D3D3" }}
             selectedValue={gender}
             onValueChange={(itemValue, itemIndex) => {
               console.log("Selected Value: ", itemValue)
@@ -468,7 +468,7 @@ const NewUser = ({ navigation }) => {
 
         <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_date_of_birth_mandatory')}</Text>
 
-        <View style={{ backgroundColor: 'fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+        <View style={{ backgroundColor: 'fff', height: height / 20, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 1.5, borderColor: "#D3D3D3" }}>
           <DatePicker
             date={selectedDate}
             onDateChange={handleDateChange}
@@ -500,11 +500,11 @@ const NewUser = ({ navigation }) => {
 
         />
         <Text style={{ color: 'black', marginLeft: 20, bottom: 5 }}>{t('strings:_is_what_s_app_contact_same_as_above')}</Text>
-        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 1.5, borderColor: "#D3D3D3" }}>
           <Picker
 
             mode='dropdown'
-            style={{ color: 'black' }}
+            style={{ color: 'black', backgroundColor: 'transparent' }}
             selectedValue={whatappyes}
             onValueChange={(itemValue, itemIndex) => {
               setwhatappyes(itemValue)
@@ -735,10 +735,10 @@ const NewUser = ({ navigation }) => {
 
         <Text style={{ color: 'black', left: 20, marginBottom: 2 }}> {t('strings:select_city')}</Text>
 
-        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+        <View style={{ backgroundColor: 'white', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 1.5, borderColor: "#D3D3D3" }}>
           <Picker
             mode='model'
-            style={{ color: 'black' }}
+            style={{ color: 'black', borderWidth: 1.5, borderColor: "#D3D3D3" }}
             selectedValue={selectedCity}
             onValueChange={(itemValue, itemIndex) => {
               const selectedItem = citylistpicker[itemIndex];
@@ -794,6 +794,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: "white"
   },
   input: {
 
@@ -804,10 +805,11 @@ const styles = StyleSheet.create({
     marginTop: 5,
     color: '#D3D3D3',
     borderRadius: 5,
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
     borderColor: '#D3D3D3',
-    borderWidth: 0.8,
-    bottom: -5
+    borderWidth: 1.5,
+    bottom: -5,
+    // elevation: 1,
   },
 
   dropdownContainer: {
@@ -827,7 +829,7 @@ const styles = StyleSheet.create({
   labelStyles: {
     backgroundColor: 'transparent',
     margin: 14,
-    color: '#D3D3D3',
+    color: 'red',
     colorFocused: '#D3D3D3',
   },
 });

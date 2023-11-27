@@ -32,7 +32,7 @@ const EditProfile = () => {
     const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(false);
 
-    const [gender, setGender] = useState("");
+    const [gender, setGender] = useState(" ");
     const [selectedDate, setSelectedDate] = useState();
     const [selectedDate1, setSelectedDate1] = useState();
     const [showDatePicker, setShowDatePicker] = useState(false);
@@ -312,11 +312,11 @@ const EditProfile = () => {
 
             setCurrentselectedDistrict(secondData.distName);
             setcurrentdistrictId(secondData.distId);
-            console.log('================INSDE FETCH PINCODE FUNCTION ====================');
-            console.log(currentdistrictId);
-            console.log(currentstateid);
-            console.log(currentcityid);
-            console.log('====================================');
+            // console.log('================INSDE FETCH PINCODE FUNCTION ====================');
+            // console.log(currentdistrictId);
+            // console.log(currentstateid);
+            // console.log(currentcityid);
+            // console.log('====================================');
         } catch (error) {
             console.error('Error in Page 1:', error);
         } finally {

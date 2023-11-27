@@ -559,370 +559,357 @@ const PreviewUserRegistration = ({ navigation, route }) => {
     // }
 
     return (
-        <ScrollView>
-            <KeyboardAvoidingView>
-                <View >
-                    <View style={{ backgroundColor: 'transparent', height: height / 8, margin: 25, flexDirection: 'row', width: width / 1.8, justifyContent: 'space-evenly', alignItems: 'center', padding: 20, }}>
-                        <Avatar.Image size={84} source={require('../../../assets/images/ac_icon.png')} />
-                        <View style={{ marginLeft: 40, flexDirection: 'column', backgroundColor: "transparent", width: width / 2.7 }}>
-                            <Text style={{ color: 'grey' }}>New User</Text>
-                            <Text style={{ color: 'grey' }}>Rishta ID</Text>
-                            <Text style={{ color: 'grey' }}>{number}</Text>
+        <SafeAreaView>
+            <ScrollView>
+                <KeyboardAvoidingView>
+                    <View style={{ backgroundColor: 'white' }} >
+                        <View style={{ backgroundColor: 'transparent', height: height / 8, margin: 25, flexDirection: 'row', width: width / 1.8, justifyContent: 'space-evenly', alignItems: 'center', padding: 20, }}>
+                            <Avatar.Image size={84} source={require('../../../assets/images/ac_icon.png')} />
+                            <View style={{ marginLeft: 40, flexDirection: 'column', backgroundColor: "transparent", width: width / 2.7 }}>
+                                <Text style={{ color: 'grey' }}>New User</Text>
+                                <Text style={{ color: 'grey' }}>Rishta ID</Text>
+                                <Text style={{ color: 'grey' }}>{number}</Text>
+                            </View>
+
+                        </View>
+                        {isLoading == true ? <View style={{ flex: 1 }}>
+
+                            <Loader isLoading={isLoading} />
+                        </View> : null}
+                        {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
+                            <Text>{popupMessage}</Text>
+
+                        </Popup>
+                        )}
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:lbl_preferred_language')}
+
+                            maxLength={30}
+                            editable={false}
+                            value={selectedLanguage}
+                            onChangeText={(text) => selectedLanguage(text)}
+                            keyboardType='default'
+
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+
+                        />
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:name')}
+
+                            maxLength={30}
+                            value={name}
+                            editable={false}
+                            onChangeText={(text) => setname(text)}
+                            keyboardType='default'
+
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+
+                        />
+
+
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:Gender')}
+
+                            maxLength={30}
+                            value={gender}
+                            editable={false}
+                            onChangeText={(text) => setGender(text)}
+                            keyboardType='default'
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+                        />
+
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:date_of_birth')}
+
+                            maxLength={30}
+                            value={selectedDate}
+                            editable={false}
+                            onChangeText={(text) => setSelectedDate(text)}
+                            keyboardType='default'
+
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+                        />
+                        {/* <TextcontainerStyles={styles.input}>{data.fullData.userData.selectedDate}</Text> */}
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:contact_no')}
+                            value={number}
+                            // onChangeText={(text) => setNumber(text)}
+                            keyboardType='number-pad'
+                            editable={false}
+
+                            maxLength={10}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+
+                        />
+
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:whatsapp_no')}
+                            maxLength={10}
+                            editable={false}
+                            value={whatapp}
+                            onChangeText={(text) => setwhatapp(text)}
+                            keyboardType='number-pad'
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+
+                        />
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:email')}
+
+
+                            keyboardType='email-address'
+                            value={email}
+                            editable={false}
+                            onChangeText={(text) => setemail(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+                        />
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:lbl_permanent_address_mandatory')}
+
+
+                            editable={false}
+                            keyboardType='default'
+                            maxLength={128}
+                            value={address}
+                            onChangeText={(text) => setaddress(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+                        />
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:lbl_street_locality')}
+                            editable={false}
+
+
+                            maxLength={128}
+                            keyboardType='default'
+                            value={street}
+                            onChangeText={(text) => setstreet(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+                        />
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:lbl_landmark')}
+                            editable={false}
+
+
+                            maxLength={60}
+                            keyboardType='default'
+                            value={landmark}
+                            onChangeText={(text) => setlandmark(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+                        />
+
+
+
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:lbl_pin_code_mandatory')}
+                            labelTextColor={"black"}
+                            editable={false}
+                            keyboardType="number-pad"
+                            value={pincode}
+                            onChangeText={(text) => setPincode(text)}
+                            maxLength={6}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+                        />
+
+
+
+                        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:lbl_state')}</Text>
+                        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
+
+                            <Text style={{ color: 'black', margin: 15 }}>{selectedState}</Text>
                         </View>
 
-                    </View>
-                    {isLoading == true ? <View style={{ flex: 1 }}>
+                        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:district')}</Text>
 
-                        <Loader isLoading={isLoading} />
-                    </View> : null}
-                    {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
-                        <Text>{popupMessage}</Text>
+                        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
 
-                    </Popup>
-                    )}
+                            <Text style={{ color: 'black', margin: 15 }}>{selectedDistrict}</Text>
 
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
 
-                        label={t('strings:lbl_preferred_language')}
+                        </View>
 
-                        maxLength={30}
-                        editable={false}
-                        value={selectedLanguage}
-                        onChangeText={(text) => selectedLanguage(text)}
-                        keyboardType='default'
+                        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>  {t('strings:city')}</Text>
 
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
+                        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
 
-
-                    />
+                            <Text style={{ color: 'black', margin: 15 }}>{selectedCity}</Text>
+                        </View>
 
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
+                        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_profession')}</Text>
 
-                        label={t('strings:name')}
+                        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
 
-                        maxLength={30}
-                        value={name}
-                        editable={false}
-                        onChangeText={(text) => setname(text)}
-                        keyboardType='default'
 
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-
-                    />
+                            <Picker
+                                mode='dropdown'
+                                style={{ color: 'black' }}
+                                selectedValue={profession}
+                                onValueChange={(itemValue, itemIndex) =>
+                                    setprofession(itemValue)
+                                }>
+                                {professiondata.map(item => (
+                                    <Picker.Item key={item.professionId} label={item.professionName} value={item.professionName} />
+                                ))}
 
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
+                            </Picker>
 
-                        label={t('strings:Gender')}
+                        </View>
 
-                        maxLength={30}
-                        value={gender}
-                        editable={false}
-                        onChangeText={(text) => setGender(text)}
-                        keyboardType='default'
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-                    />
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
-                        label={t('strings:date_of_birth')}
-
-                        maxLength={30}
-                        value={selectedDate}
-                        editable={false}
-                        onChangeText={(text) => setSelectedDate(text)}
-                        keyboardType='default'
-
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-                    />
-                    {/* <TextcontainerStyles={styles.input}>{data.fullData.userData.selectedDate}</Text> */}
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:contact_no')}
-                        value={number}
-                        // onChangeText={(text) => setNumber(text)}
-                        keyboardType='number-pad'
-                        editable={false}
-
-                        maxLength={10}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-
-                    />
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:whatsapp_no')}
-                        maxLength={10}
-                        editable={false}
-                        value={whatapp}
-                        onChangeText={(text) => setwhatapp(text)}
-                        keyboardType='number-pad'
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-
-                    />
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:email')}
-
-
-                        keyboardType='email-address'
-                        value={email}
-                        editable={false}
-                        onChangeText={(text) => setemail(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-                    />
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:lbl_permanent_address_mandatory')}
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:sub_profession_category')}
 
+                            maxLength={30}
+                            value={subprofession}
 
-                        editable={false}
-                        keyboardType='default'
-                        maxLength={128}
-                        value={address}
-                        onChangeText={(text) => setaddress(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-                    />
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:lbl_street_locality')}
-                        editable={false}
-
-
-                        maxLength={128}
-                        keyboardType='default'
-                        value={street}
-                        onChangeText={(text) => setstreet(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-                    />
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:lbl_landmark')}
-                        editable={false}
+                            onChangeText={(text) => setsubprofession(text)}
+                            keyboardType='default'
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
 
+                        />
 
-                        maxLength={60}
-                        keyboardType='default'
-                        value={landmark}
-                        onChangeText={(text) => setlandmark(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-                    />
-
-
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:lbl_pin_code_mandatory')}
-                        labelTextColor={"black"}
-                        editable={false}
-                        keyboardType="number-pad"
-                        value={pincode}
-                        onChangeText={(text) => setPincode(text)}
-                        maxLength={6}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-                    />
-
-
+                        <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:select_marital_status')}</Text>
 
-                    <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:lbl_state')}</Text>
-                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
+                        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
 
-                        <Text style={{ color: 'black', margin: 15 }}>{selectedCity}</Text>
-                    </View>
 
-                    <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:district')}</Text>
+                            <Picker
+                                mode='dropdown'
+                                style={{ color: 'black' }}
+                                selectedValue={maritialStatus}
+                                onValueChange={(itemValue, itemIndex) => {
+                                    const maritialStatusId = itemValue === 'Married' ? '1' : '2';
+                                    setmaritialStatusid(maritialStatusId)
+                                    setmaritialStatus(itemValue)
+                                }
+                                }>
+                                <Picker.Item label="Select" value="0" />
+                                <Picker.Item label="Married" value="Married" />
+                                <Picker.Item label=" Unmarried" value="Unmarried" />
 
-                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
 
-                        <Text style={{ color: 'black', margin: 15 }}>{selectedDistrict}</Text>
-
-
-                    </View>
-
-                    <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>  {t('strings:city')}</Text>
-
-                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
-
-                        <Text style={{ color: 'black', margin: 15 }}>{selectedState}</Text>
-                    </View>
-
-                    <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_profession')}</Text>
-
-                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
-
-
-                        <Picker
-                            mode='dropdown'
-                            style={{ color: 'black' }}
-                            selectedValue={profession}
-                            onValueChange={(itemValue, itemIndex) =>
-                                setprofession(itemValue)
-                            }>
-                            {professiondata.map(item => (
-                                <Picker.Item key={item.professionId} label={item.professionName} value={item.professionName} />
-                            ))}
-
-                        </Picker>
-
-                    </View>
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:sub_profession_category')}
-
-                        maxLength={30}
-                        value={subprofession}
-
-                        onChangeText={(text) => setsubprofession(text)}
-                        keyboardType='default'
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-                    />
-
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:select_marital_status')}</Text>
-
-                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
-
-
-                        <Picker
-                            mode='dropdown'
-                            style={{ color: 'black' }}
-                            selectedValue={maritialStatus}
-                            onValueChange={(itemValue, itemIndex) => {
-                                const maritialStatusId = itemValue === 'Married' ? '1' : '2';
-                                setmaritialStatusid(maritialStatusId)
-                                setmaritialStatus(itemValue)
-                            }
-                            }>
-                            <Picker.Item label="Select" value="0" />
-                            <Picker.Item label="Married" value="Married" />
-                            <Picker.Item label=" Unmarried" value="Unmarried" />
-
-
-                        </Picker>
-
-                    </View>
-
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:enrolled_into_loyalty_scheme')}</Text>
-                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
-
-
-                        <Picker
-                            mode='dropdown'
-                            style={{ color: 'black' }}
-                            selectedValue={loyalty}
-                            onValueChange={(itemValue, itemIndex) =>
-                                setloyalty(itemValue)}>
-                            <Picker.Item label="Select" value="Select" />
-                            <Picker.Item label="Yes" value="Yes" />
-                            <Picker.Item label=" No" value="No" />
-
-
-
-                        </Picker>
-
-                    </View>
-                    {loyalty == 'Yes' ?
-                        <View>
-                            {loyalty === 'Yes' &&
-                                schemes.map((scheme, index) => (
-                                    <View key={index} style={styles.schemeContainer}>
-                                        <FloatingLabelInput
-                                            label={`Scheme ${index + 1} Brand Name`}
-                                            value={schemeData[index + 1].otherSchemeBrand}
-                                            onChangeText={(text) => handleInputChangeschemes(index + 1, `otherSchemeBrand`, text)}
-                                            keyboardType="default"
-                                            containerStyles={styles.input}
-                                            staticLabel
-                                            labelStyles={styles.labelStyles}
-                                            inputStyles={{
-                                                color: 'black',
-                                                paddingHorizontal: 10,
-                                            }}
-                                        />
-                                        <View style={{ flexDirection: 'row' }}>
+                            </Picker>
+
+                        </View>
+
+                        <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:enrolled_into_loyalty_scheme')}</Text>
+                        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
+
+
+                            <Picker
+                                mode='dropdown'
+                                style={{ color: 'black' }}
+                                selectedValue={loyalty}
+                                onValueChange={(itemValue, itemIndex) =>
+                                    setloyalty(itemValue)}>
+                                <Picker.Item label="Select" value="Select" />
+                                <Picker.Item label="Yes" value="Yes" />
+                                <Picker.Item label=" No" value="No" />
+
+
+
+                            </Picker>
+
+                        </View>
+                        {loyalty == 'Yes' ?
+                            <View>
+                                {loyalty === 'Yes' &&
+                                    schemes.map((scheme, index) => (
+                                        <View key={index} style={styles.schemeContainer}>
                                             <FloatingLabelInput
-                                                label={`Reason for liking Scheme ${index + 1}`}
-                                                value={schemeData[index + 1].abtOtherSchemeLiked}
-                                                onChangeText={(text) => handleInputChangeschemes(index + 1, `abtOtherSchemeLiked`, text)}
+                                                label={`Scheme ${index + 1} Brand Name`}
+                                                value={schemeData[index + 1].otherSchemeBrand}
+                                                onChangeText={(text) => handleInputChangeschemes(index + 1, `otherSchemeBrand`, text)}
                                                 keyboardType="default"
                                                 containerStyles={styles.input}
                                                 staticLabel
@@ -932,436 +919,452 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                                                     paddingHorizontal: 10,
                                                 }}
                                             />
-                                            <IconButton style={styles.iconButton} icon="plus" size={20} onPress={handleIconButtonPress} />
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <FloatingLabelInput
+                                                    label={`Reason for liking Scheme ${index + 1}`}
+                                                    value={schemeData[index + 1].abtOtherSchemeLiked}
+                                                    onChangeText={(text) => handleInputChangeschemes(index + 1, `abtOtherSchemeLiked`, text)}
+                                                    keyboardType="default"
+                                                    containerStyles={styles.input}
+                                                    staticLabel
+                                                    labelStyles={styles.labelStyles}
+                                                    inputStyles={{
+                                                        color: 'black',
+                                                        paddingHorizontal: 10,
+                                                    }}
+                                                />
+                                                <IconButton style={styles.iconButton} icon="plus" size={20} onPress={handleIconButtonPress} />
+                                            </View>
                                         </View>
-                                    </View>
-                                ))}
-                        </View> : null}
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:annual_business_potential')}
-                        value={annualincome}
-                        onChangeText={(text) => setannualincome(text)}
-                        keyboardType='number-pad'
-
-
-
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-                    />
-
-                    <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>{t('strings:selfie')}</Text>
-
-
-                    <View style={{ backgroundColor: '#fff', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15, borderColor: "#D3D3D3" }}>
-
-
-                        {selfieData != null ? <Text style={{ color: 'black', right: width / 2 }}>{selfieData.name.substring(0, 10)}</Text> : null}
-                        {selfieData != null ?
-                            <ImageWithModal imageUri={selfieData.uri} name={selfieData.name} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
-
-
-
-
-                    </View>
-
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:select_kyc_type')}
-                        value={Idprooftype}
-                        onChangeText={(text) => setIdprooftype(text)}
-                        keyboardType='number-pad'
-                        placeholder='Aadhar Card'
-                        placeholderTextColor={'black'}
-
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-
-                    />
-
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:id_proof_front')}</Text>
-
-
-                    <View style={{ backgroundColor: '#fff', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15, borderColor: "#D3D3D3" }}>
-                        {idProofFrontData != null ? <Text style={{ color: 'black', right: width / 2 }}>{idProofFrontData.name.substring(0, 10)}</Text> : null}
-                        {idProofFrontData != null ? <ImageWithModal imageUri={idProofFrontData.uri} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
-
-
-                    </View>
-
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:id_proof_back')}</Text>
-
-
-                    <View style={{ backgroundColor: '#fff', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15, borderColor: "#D3D3D3" }}>
-                        {idProofBackData != null ? <Text style={{ color: 'black', right: width / 2 }}>{idProofBackData.name.substring(0, 10)}</Text> : null}
-                        {idProofBackData != null ? <ImageWithModal imageUri={idProofBackData.uri} /> : <Image resizeMode="contain" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, borderRadius: 5, margin: 5 }} />}
-
-
-                    </View>
-
-
-
-                    <FloatingLabelInput
-                        containerStyles={[styles.input]}
-                        label={t('strings:id_proof_no')}
-                        value={aadharcardno}
-                        onChangeText={(text) => setaadharcardno(text)}
-                        keyboardType='number-pad'
-
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-                        maxLength={12}
-                    />
-
-                    <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>{t('strings:pan_card_front')}</Text>
-
-
-                    <View style={{ backgroundColor: '#fff', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15, borderColor: "#D3D3D3" }}>
-                        {panData != null ? <Text style={{ color: 'black', right: width / 2 }}>{panData.name.substring(0, 10)}</Text> : null}
-                        {panData != null ? <ImageWithModal imageUri={panData.uri} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
-
-
-                    </View>
-
-
-
-                    <FloatingLabelInput
-                        containerStyles={[styles.input]}
-                        label={t('strings:pan_no')}
-
-
-                        value={pancardno}
-                        onChangeText={(text) => setpancardno(text)}
-                        keyboardType='default'
-
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-                        maxLength={10}
-                    />
-
-                    <Text style={{ color: 'black', marginLeft: 20, }}> {t('strings:lbl_bank_details')}</Text>
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
-                        label={t('strings:lbl_account_number')}
-
-
-                        editable={false}
-                        keyboardType='number-pad'
-                        value={accountnumber}
-                        onChangeText={(text) => setaccountnumber(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-
-                    />
-
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
-                        label={t('strings:lbl_account_holder_name')}
-                        editable={false}
-
-
-                        keyboardType='default'
-                        value={accountholdername}
-                        onChangeText={(text) => setaccountholdername(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-                        maxLength={50}
-                    />
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
-                        editable={false}
-                        label={t('strings:select_account_type')}
-
-                        keyboardType='default'
-                        value={accounttype}
-                        onChangeText={(text) => setaccounttype(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-
-                        maxLength={20}
-                    />
-
-
-
-
-                    {selectedbank == '' ? <FloatingLabelInput
-                        containerStyles={styles.input}
-                        editable={false}
-                        label={t('strings:bank_name')}
-
-
-                        keyboardType='default'
-
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-                        maxLength={20}
-                    /> : <FloatingLabelInput
-                        containerStyles={styles.input}
-                        editable={false}
-                        label={t('strings:bank_name')}
-
-
-                        keyboardType='default'
-
-                        value={selectedbank}
-                        onChangeText={(text) => setselectedbank(text)}
-                        borderColor="gray"
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-                        maxLength={20}
-                    />}
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:lbl_ifsc_code')}
-                        editable={false}
-
-
-                        keyboardType='default'
-                        value={IFSC}
-                        onChangeText={(text) => setIFSC(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-
-                        maxLength={20}
-                    />
-
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_upload_cancelled_cheque')}</Text>
-
-
-                    <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
-                        {chequeImage != null ? <Text style={{ color: 'black', right: width / 2 }}>{chequeImage.name.substring(0, 10)}</Text> : null}
-                        {chequeImage != null ?
-
-                            <ImageWithModal imageUri={chequeImage.uri} />
-                            : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />
-
-                        }
-                    </View>
-
-
-
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
-                        label={t('strings:lbl_nominee_details')}
-
-
-                        editable={false}
-                        keyboardType='default'
-                        value={nomineename}
-                        onChangeText={(text) => setnomineename(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-
-                    />
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
-                        label=" Selected Nominee DOB"
-
-
-                        editable={false}
-                        keyboardType='default'
-                        value={nomineedate}
-                        // onChangeText={(text) => setnomineedate(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-
-                    />
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
-                        label={t('strings:lbl_mobile_number')}
-                        editable={false}
-                        keyboardType='number-pad'
-                        value={nomineemobileno}
-                        onChangeText={(text) => setnomineemobileno(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-                    />
-
-
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
-                        label={t('strings:lbl_email')}
-                        editable={false}
-
-
-                        keyboardType='email-address'
-                        value={nomineeemail}
-                        onChangeText={(text) => setnomineeemail(text)}
-                        borderColor="gray"
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-                    />
-
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
-                        label={t('strings:lbl_address')}
-                        editable={false}
-
-
-                        keyboardType='email-address'
-                        value={nomineeaddress}
-                        onChangeText={(text) => setnomineeaddress(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-                    />
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
-                        label={t('strings:lbl_relationship_with_you')}
-                        editable={false}
-
-
-                        keyboardType='default'
-                        value={relationwithyou}
-                        onChangeText={(text) => setrelationwithyou(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-                    />
-
-                    <View style={{ display: 'flex', width: width / 1, alignItems: 'center', marginVertical: 20, flexDirection: 'row', justifyContent: 'space-evenly', marginHorizontal: 5 }}>
-                        <Buttons
-                            label="Edit"
-                            onPress={() => {
-                                // Check if the data is valid before navigating
-                                //  navigation.navigate('NewUserKyc', { userData: userData })
-                                // validateAndNavigate('male', email, number, address, street, pincode, selectedState, selectedDistrict, selectedCity,);
-                                //validateAndNavigate()
-                                updateDataInAsyncStorage();
+                                    ))}
+                            </View> : null}
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:annual_business_potential')}
+                            value={annualincome}
+                            onChangeText={(text) => setannualincome(text)}
+                            keyboardType='number-pad'
+
+
+
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
                             }}
-                            variant="filled" // or any other variant you want to use
-                            width={180} // specify the width
-                            icon={require('../../../assets/images/edit.png')} // provide the path to your icon
-                            iconWidth={40} // specify the icon width
-                            iconHeight={25} // specify the icon height
-                            iconGap={10}
-                        // specify the gap between the label and the icon
                         />
-                        <Buttons
-                            label="Submit"
-                            onPress={() => {
-                                // Check if the data is valid before navigating
-                                //  navigation.navigate('NewUserKyc', { userData: userData })
-                                // validateAndNavigate('male', email, number, address, street, pincode, selectedState, selectedDistrict, selectedCity,);
-                                //validateAndNavigate()
-                                callUploadAndThenAnotherFunction();
+
+                        <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>{t('strings:selfie')}</Text>
+
+
+                        <View style={{ backgroundColor: '#fff', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15, borderColor: "#D3D3D3" }}>
+
+
+                            {selfieData != null ? <Text style={{ color: 'black', right: width / 2 }}>{selfieData.name.substring(0, 10)}</Text> : null}
+                            {selfieData != null ?
+                                <ImageWithModal imageUri={selfieData.uri} name={selfieData.name} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
+
+
+
+
+                        </View>
+
+
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:select_kyc_type')}
+                            value={Idprooftype}
+                            onChangeText={(text) => setIdprooftype(text)}
+                            keyboardType='number-pad'
+                            placeholder='Aadhar Card'
+                            placeholderTextColor={'black'}
+
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
                             }}
-                            variant="filled" // or any other variant you want to use
-                            width={180} // specify the width
-                            icon={require('../../../assets/images/arrow.png')} // provide the path to your icon
-                            iconWidth={50} // specify the icon width
-                            iconHeight={20} // specify the icon height
-                            iconGap={10}
-                        // specify the gap between the label and the icon
+
+
+                        />
+
+                        <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:id_proof_front')}</Text>
+
+
+                        <View style={{ backgroundColor: '#fff', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15, borderColor: "#D3D3D3" }}>
+                            {idProofFrontData != null ? <Text style={{ color: 'black', right: width / 2 }}>{idProofFrontData.name.substring(0, 10)}</Text> : null}
+                            {idProofFrontData != null ? <ImageWithModal imageUri={idProofFrontData.uri} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
+
+
+                        </View>
+
+                        <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:id_proof_back')}</Text>
+
+
+                        <View style={{ backgroundColor: '#fff', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15, borderColor: "#D3D3D3" }}>
+                            {idProofBackData != null ? <Text style={{ color: 'black', right: width / 2 }}>{idProofBackData.name.substring(0, 10)}</Text> : null}
+                            {idProofBackData != null ? <ImageWithModal imageUri={idProofBackData.uri} /> : <Image resizeMode="contain" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, borderRadius: 5, margin: 5 }} />}
+
+
+                        </View>
+
+
+
+                        <FloatingLabelInput
+                            containerStyles={[styles.input]}
+                            label={t('strings:id_proof_no')}
+                            value={aadharcardno}
+                            onChangeText={(text) => setaadharcardno(text)}
+                            keyboardType='number-pad'
+
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+                            maxLength={12}
+                        />
+
+                        <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>{t('strings:pan_card_front')}</Text>
+
+
+                        <View style={{ backgroundColor: '#fff', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15, borderColor: "#D3D3D3" }}>
+                            {panData != null ? <Text style={{ color: 'black', right: width / 2 }}>{panData.name.substring(0, 10)}</Text> : null}
+                            {panData != null ? <ImageWithModal imageUri={panData.uri} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
+
+
+                        </View>
+
+
+
+                        <FloatingLabelInput
+                            containerStyles={[styles.input]}
+                            label={t('strings:pan_no')}
+
+
+                            value={pancardno}
+                            onChangeText={(text) => setpancardno(text)}
+                            keyboardType='default'
+
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+                            maxLength={10}
+                        />
+
+                        <Text style={{ color: 'black', marginLeft: 20, }}> {t('strings:lbl_bank_details')}</Text>
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:lbl_account_number')}
+
+
+                            editable={false}
+                            keyboardType='number-pad'
+                            value={accountnumber}
+                            onChangeText={(text) => setaccountnumber(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+
                         />
 
 
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:lbl_account_holder_name')}
+                            editable={false}
+
+
+                            keyboardType='default'
+                            value={accountholdername}
+                            onChangeText={(text) => setaccountholdername(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+                            maxLength={50}
+                        />
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            editable={false}
+                            label={t('strings:select_account_type')}
+
+                            keyboardType='default'
+                            value={accounttype}
+                            onChangeText={(text) => setaccounttype(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+
+                            maxLength={20}
+                        />
+
+
+
+
+                        {selectedbank == '' ? <FloatingLabelInput
+                            containerStyles={styles.input}
+                            editable={false}
+                            label={t('strings:bank_name')}
+
+
+                            keyboardType='default'
+
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+                            maxLength={20}
+                        /> : <FloatingLabelInput
+                            containerStyles={styles.input}
+                            editable={false}
+                            label={t('strings:bank_name')}
+
+
+                            keyboardType='default'
+
+                            value={selectedbank}
+                            onChangeText={(text) => setselectedbank(text)}
+                            borderColor="gray"
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+                            maxLength={20}
+                        />}
+
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:lbl_ifsc_code')}
+                            editable={false}
+
+
+                            keyboardType='default'
+                            value={IFSC}
+                            onChangeText={(text) => setIFSC(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+
+                            maxLength={20}
+                        />
+
+                        <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_upload_cancelled_cheque')}</Text>
+
+
+                        <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15, borderWidth: 1.8, borderColor: "#D3D3D3" }}>
+                            {chequeImage != null ? <Text style={{ color: 'black', right: width / 2 }}>{chequeImage.name.substring(0, 10)}</Text> : null}
+                            {chequeImage != null ?
+
+                                <ImageWithModal imageUri={chequeImage.uri} />
+                                : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />
+
+                            }
+                        </View>
+
+
+
+
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:lbl_nominee_details')}
+
+
+                            editable={false}
+                            keyboardType='default'
+                            value={nomineename}
+                            onChangeText={(text) => setnomineename(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+
+                        />
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label=" Selected Nominee DOB"
+
+
+                            editable={false}
+                            keyboardType='default'
+                            value={nomineedate}
+                            // onChangeText={(text) => setnomineedate(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+
+                        />
+
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:lbl_mobile_number')}
+                            editable={false}
+                            keyboardType='number-pad'
+                            value={nomineemobileno}
+                            onChangeText={(text) => setnomineemobileno(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+                        />
+
+
+
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:lbl_email')}
+                            editable={false}
+
+
+                            keyboardType='email-address'
+                            value={nomineeemail}
+                            onChangeText={(text) => setnomineeemail(text)}
+                            borderColor="gray"
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+                        />
+
+
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:lbl_address')}
+                            editable={false}
+
+
+
+                            keyboardType='email-address'
+                            value={nomineeaddress}
+                            onChangeText={(text) => setnomineeaddress(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+                        />
+
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:lbl_relationship_with_you')}
+                            editable={false}
+
+
+                            keyboardType='default'
+                            value={relationwithyou}
+                            onChangeText={(text) => setrelationwithyou(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+                        />
+
+                        <View style={{ display: 'flex', width: width / 1, alignItems: 'center', marginVertical: 20, flexDirection: 'row', justifyContent: 'space-evenly', marginHorizontal: 5 }}>
+                            <Buttons
+                                label="Edit"
+                                onPress={() => {
+                                    // Check if the data is valid before navigating
+                                    //  navigation.navigate('NewUserKyc', { userData: userData })
+                                    // validateAndNavigate('male', email, number, address, street, pincode, selectedState, selectedDistrict, selectedCity,);
+                                    //validateAndNavigate()
+                                    updateDataInAsyncStorage();
+                                }}
+                                variant="filled" // or any other variant you want to use
+                                width={180} // specify the width
+                                icon={require('../../../assets/images/edit.png')} // provide the path to your icon
+                                iconWidth={40} // specify the icon width
+                                iconHeight={25} // specify the icon height
+                                iconGap={10}
+                            // specify the gap between the label and the icon
+                            />
+                            <Buttons
+                                label="Submit"
+                                onPress={() => {
+                                    // Check if the data is valid before navigating
+                                    //  navigation.navigate('NewUserKyc', { userData: userData })
+                                    // validateAndNavigate('male', email, number, address, street, pincode, selectedState, selectedDistrict, selectedCity,);
+                                    //validateAndNavigate()
+                                    callUploadAndThenAnotherFunction();
+                                }}
+                                variant="filled" // or any other variant you want to use
+                                width={180} // specify the width
+                                icon={require('../../../assets/images/arrow.png')} // provide the path to your icon
+                                iconWidth={50} // specify the icon width
+                                iconHeight={20} // specify the icon height
+                                iconGap={10}
+                            // specify the gap between the label and the icon
+                            />
+
+
+                        </View>
                     </View>
-                </View>
-            </KeyboardAvoidingView>
-        </ScrollView >
+                </KeyboardAvoidingView>
+            </ScrollView >
+        </SafeAreaView>
         // <Text>Helo</Text>
     )
 }
@@ -1412,5 +1415,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         margin: 14,
         marginTop: 20,
+
     },
 })

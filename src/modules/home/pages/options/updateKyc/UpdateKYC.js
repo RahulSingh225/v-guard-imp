@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, PermissionsAndroid, Modal } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, PermissionsAndroid, Modal, SafeAreaView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 
 import colors from '../../../../../../colors'
@@ -460,421 +460,423 @@ const UpdateKYC = ({ navigation }) => {
 
 
     return (
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <SafeAreaView>
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
 
-            <View style={styles.mainWrapper}>
-                {/* <View style={styles.header}>
+                <View style={styles.mainWrapper}>
+                    {/* <View style={styles.header}>
                     <Text style={styles.textHeader}>{t('dashboard:updateKYC:header')}</Text>
                 </View> */}
-                {/* <View style={styles.form}> */}
-                {isLoading == true ? <View style={{ flex: 1 }}>
+                    {/* <View style={styles.form}> */}
+                    {isLoading == true ? <View style={{ flex: 1 }}>
 
-                    <Loader isLoading={isLoading} />
-                </View> : null}
-                {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
-                    <Text>{popupMessage}</Text>
+                        <Loader isLoading={isLoading} />
+                    </View> : null}
+                    {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
+                        <Text>{popupMessage}</Text>
 
-                </Popup>
-                )}
-                <View style={styles.pickercontainer}>
-                    <View
-                        style={styles.picker}
-                    >
+                    </Popup>
+                    )}
+                    <View style={styles.pickercontainer}>
+                        <View
+                            style={styles.picker}
+                        >
 
-                        {SelfieData === null ?
-                            <TouchableOpacity onPress={() => setselfieemodal(true)}>
-                                <><Text style={{ color: 'black' }}>Update your selfie*</Text></>
-                            </TouchableOpacity> :
-                            <TouchableOpacity mode="text" onPress={() => setselfieemodal(true)} color={'grey'}>
-                                <Text style={{ color: 'black', margin: 10 }}>Selfiee</Text>
-                            </TouchableOpacity>
-                        }
+                            {SelfieData === null ?
+                                <TouchableOpacity onPress={() => setselfieemodal(true)}>
+                                    <><Text style={{ color: 'black' }}>Update your selfie*</Text></>
+                                </TouchableOpacity> :
+                                <TouchableOpacity mode="text" onPress={() => setselfieemodal(true)} color={'grey'}>
+                                    <Text style={{ color: 'black', margin: 10, height: height / 25 }}> Upate your Selfie*</Text>
+                                </TouchableOpacity>
+                            }
 
-                        <Modal
-                            animationType="slide"
-                            transparent={true}
-                            visible={selfieemodal}
-                            style={styles.modalcontainer}
-                            hardwareAccelerated={true}
-                            opacity={0.3}>
-                            <View style={{
-                                width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
-                                margin: 20,
-                                backgroundColor: '#D3D3D3',
-                                borderRadius: 20,
-                                padding: 10,
-                                // alignItems: 'center',
-                                shadowColor: '#000',
-                                shadowOffset: {
-                                    width: 100,
-                                    height: 2,
-                                },
-                                shadowOpacity: 0.25,
-                                shadowRadius: 4,
-                                elevation: 5,
-                            }}>
-                                <Picker
-                                    mode="dropdown"
-                                    placeholder={'Update Your Selfie *'}
-                                    style={{ color: 'black' }}
-                                    selectedValue={select}
-                                    onValueChange={(itemValue, itemIndex) => {
-                                        if (itemValue === "Open camera") {
-                                            openCamera("Selfie", (documentType, newPhoto) => {
-                                                // Handle the captured selfie here
-                                                console.log('Captured selfie:', newPhoto);
+                            <Modal
+                                animationType="slide"
+                                transparent={true}
+                                visible={selfieemodal}
+                                style={styles.modalcontainer}
+                                hardwareAccelerated={true}
+                                opacity={0.3}>
+                                <View style={{
+                                    width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
+                                    margin: 20,
+                                    backgroundColor: '#D3D3D3',
+                                    borderRadius: 20,
+                                    padding: 10,
+                                    // alignItems: 'center',
+                                    shadowColor: '#000',
+                                    shadowOffset: {
+                                        width: 100,
+                                        height: 2,
+                                    },
+                                    shadowOpacity: 0.25,
+                                    shadowRadius: 4,
+                                    elevation: 5,
+                                }}>
+                                    <Picker
+                                        mode="dropdown"
+                                        placeholder={'Update Your Selfie *'}
+                                        style={{ color: 'black' }}
+                                        selectedValue={select}
+                                        onValueChange={(itemValue, itemIndex) => {
+                                            if (itemValue === "Open camera") {
+                                                openCamera("Selfie", (documentType, newPhoto) => {
+                                                    // Handle the captured selfie here
+                                                    console.log('Captured selfie:', newPhoto);
 
-                                                setselfieemodal(false)
-                                            });
-                                        } else if (itemValue === "Open Image picker") {
-                                            openImagePicker('Selfie', (documentType, newPhoto) => {
-                                                // Handle the selected selfie here
-                                                setselfieemodal(false)
-                                                console.log('Selected selfie:', newPhoto);
-                                            });
-                                        }
-                                    }}
-                                >
-                                    <Picker.Item label="Select Action" value="" />
-                                    <Picker.Item label="Select Photo from gallery" value="Open Image picker" />
-                                    <Picker.Item label="Capture Photo from camera" value="Open camera" />
+                                                    setselfieemodal(false)
+                                                });
+                                            } else if (itemValue === "Open Image picker") {
+                                                openImagePicker('Selfie', (documentType, newPhoto) => {
+                                                    // Handle the selected selfie here
+                                                    setselfieemodal(false)
+                                                    console.log('Selected selfie:', newPhoto);
+                                                });
+                                            }
+                                        }}
+                                    >
+                                        <Picker.Item label="Select Action" value="" />
+                                        <Picker.Item label="Select Photo from gallery" value="Open Image picker" />
+                                        <Picker.Item label="Capture Photo from camera" value="Open camera" />
 
-                                </Picker>
-                                <Button mode="text" onPress={() => setselfieemodal(false)}>
-                                    close
-                                </Button>
-                            </View>
-                        </Modal>
+                                    </Picker>
+                                    <Button mode="text" onPress={() => setselfieemodal(false)}>
+                                        close
+                                    </Button>
+                                </View>
+                            </Modal>
 
-                    </View>
-
-                    <ImageWithModal imageUri={SelfieData} style={styles.noimage} />
-
-
-
-
-
-
-
-                </View>
-
-                <View style={styles.pickercontainer}>
-                    <View
-                        style={styles.picker}
-                    >
-
-
-                        {IdProofFrontData === null ?
-                            <TouchableOpacity onPress={() => setIsModalVisible(true)}>
-                                <><Text style={{ color: 'black' }}>Aadhar Card (Front)*</Text></>
-                            </TouchableOpacity> :
-                            <TouchableOpacity mode="text" onPress={() => setIsModalVisible(true)} color={'grey'}>
-                                <Text style={{ color: 'black', margin: 10 }}>IdProof Image</Text>
-                            </TouchableOpacity>
-                        }
-
-
-                        <Modal
-                            animationType="slide"
-                            transparent={true}
-                            visible={isModalVisible}
-                            style={styles.modalcontainer}
-                            hardwareAccelerated={true}
-                            opacity={0.3}>
-                            <View style={{
-                                width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
-                                margin: 20,
-                                backgroundColor: '#D3D3D3',
-                                borderRadius: 20,
-                                padding: 10,
-                                // alignItems: 'center',
-                                shadowColor: '#000',
-                                shadowOffset: {
-                                    width: 100,
-                                    height: 2,
-                                },
-                                shadowOpacity: 0.25,
-                                shadowRadius: 4,
-                                elevation: 5,
-                            }}>
-                                <Picker
-                                    mode="dropdown"
-
-
-
-                                    style={{ color: 'black', backgroundColor: 'transparent', }}
-                                    selectedValue={select}
-                                    onValueChange={(itemValue, itemIndex) => {
-                                        if (itemValue === "Open camera") {
-                                            openCamera("IdProofFront", (documentType, newPhoto) => {
-                                                // Handle the captured selfie here
-                                                setIsModalVisible(false);
-                                                console.log('Captured selfie:', newPhoto);
-
-                                            });
-                                        } else if (itemValue === "Open Image picker") {
-                                            openImagePicker('IdProofFront', (documentType, newPhoto) => {
-                                                // Handle the selected selfie here
-                                                setIsModalVisible(false);
-                                                console.log('Selected selfie:', newPhoto);
-
-                                            });
-                                        }
-                                    }}
-                                >
-
-                                    <Picker.Item label="Select Action" value="" />
-                                    <Picker.Item label="Select Photo from gallery" value="Open Image picker" />
-                                    <Picker.Item label="Capture Photo from camera" value="Open camera" />
-
-                                </Picker>
-                                <Button mode="text" onPress={() => setIsModalVisible(false)}>
-                                    close
-                                </Button>
-                            </View>
-                        </Modal>
-
-                    </View>
-
-                    <ImageWithModal imageUri={IdProofFrontData} style={styles.noimage} />
-
-                </View>
-
-                <View style={styles.pickercontainer}>
-                    <View
-                        style={styles.picker}
-
-
-                    >
-
-
-                        {IdProofBackData === null ?
-                            <TouchableOpacity onPress={() => setIsModalVisible1(true)}>
-                                <><Text style={{ color: 'black' }}>Aadhar Card (Back)*</Text></>
-                            </TouchableOpacity> :
-                            <TouchableOpacity mode="text" onPress={() => setIsModalVisible1(true)} color={'grey'}>
-                                <Text style={{ color: 'black', margin: 10 }}>IdProof Back Image</Text>
-                            </TouchableOpacity>
-                        }
-                        <Modal
-                            animationType="slide"
-                            transparent={true}
-                            visible={IsModalVisible1}
-                            style={styles.modalcontainer}
-                            hardwareAccelerated={true}
-                            opacity={0.3}>
-                            <View style={{
-                                width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
-                                margin: 20,
-                                backgroundColor: '#D3D3D3',
-                                borderRadius: 20,
-                                padding: 10,
-                                // alignItems: 'center',
-                                shadowColor: '#000',
-                                shadowOffset: {
-                                    width: 100,
-                                    height: 2,
-                                },
-                                shadowOpacity: 0.25,
-                                shadowRadius: 4,
-                                elevation: 5,
-                            }}>
-                                <Picker
-                                    mode="dropdown"
-                                    style={{ color: 'black' }}
-                                    selectedValue={select}
-                                    onValueChange={(itemValue, itemIndex) => {
-                                        if (itemValue === "Open camera") {
-                                            openCamera("IdProofBack", (documentType, newPhoto) => {
-                                                // Handle the captured selfie here
-                                                setIsModalVisible1(false)
-                                                console.log('Captured Idprrofback:', newPhoto);
-                                            });
-                                        } else if (itemValue === "Open Image picker") {
-                                            openImagePicker('IdProofBack', (documentType, newPhoto) => {
-                                                // Handle the selected selfie here
-                                                setIsModalVisible1(false)
-                                                console.log('Selected Idprrofback:', newPhoto);
-                                            });
-                                        }
-                                    }}
-                                >
-                                    <Picker.Item label="Select Action" value="" />
-                                    <Picker.Item label="Select Photo from gallery" value="Open Image picker" />
-                                    <Picker.Item label="Capture Photo from camera" value="Open camera" />
-
-                                </Picker>
-                                <Button mode="text" onPress={() => setIsModalVisible1(false)}>
-                                    close
-                                </Button>
-                            </View>
-                        </Modal>
-                    </View>
-                    <ImageWithModal imageUri={IdProofBackData} style={styles.noimage} />
-                </View>
-                <View style={styles.pickercontainer}>
-                    <View
-                        style={styles.picker}
-                    >
-                        <View>
-
-                            <FloatingLabelInput
-
-                                label="Aadhar Card No*"
-                                value={aadharcardno}
-                                onChangeText={(text) => setaadharcardno(text)}
-                                keyboardType='number-pad'
-
-                                containerStyles={[styles.input]}
-                                staticLabel
-                                labelStyles={styles.labelStyles}
-                                inputStyles={{
-                                    color: isAadharValid ? 'black' : 'red',
-                                    paddingHorizontal: 20,
-                                    marginVertical: 10,
-
-                                    height: height / 23
-                                }}
-                                onBlur={handleAadharBlur}
-
-                                maxLength={12}
-                            />
-                            {!isAadharValid && (
-                                <Text style={{ color: 'red', marginTop: 5 }}>Please enter a valid Aadhar card number.</Text>
-                            )}
                         </View>
 
+                        <ImageWithModal imageUri={SelfieData} style={styles.noimage} />
+
+
+
+
+
+
 
                     </View>
-                    <Icon name="keyboard-o" size={25} color="grey" style={{ margin: 18, left: 18 }} />
 
-                </View>
+                    <View style={styles.pickercontainer}>
+                        <View
+                            style={styles.picker}
+                        >
 
-                <View style={styles.pickercontainer}>
-                    <View
-                        style={styles.picker}
-                    >
-                        {PanData === null ?
-                            <TouchableOpacity onPress={() => setpanmodal(true)}>
-                                <><Text style={{ color: 'black' }}>Update Your pan Card(FRONT*)</Text></>
-                            </TouchableOpacity> :
-                            <TouchableOpacity mode="text" onPress={() => setpanmodal(true)} color={'grey'}>
-                                <Text style={{ margin: 10, color: "black" }}>Pan Front Image</Text>
-                            </TouchableOpacity>
-                        }
-                        <Modal
-                            animationType="slide"
-                            transparent={true}
-                            visible={panmodal}
-                            style={styles.modalcontainer}
-                            hardwareAccelerated={true}
-                            opacity={0.3}>
-                            <View style={{
-                                width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
-                                margin: 20,
-                                backgroundColor: '#D3D3D3',
-                                borderRadius: 20,
-                                padding: 10,
-                                // alignItems: 'center',
-                                shadowColor: '#000',
-                                shadowOffset: {
-                                    width: 100,
-                                    height: 2,
-                                },
-                                shadowOpacity: 0.25,
-                                shadowRadius: 4,
-                                elevation: 5,
-                            }}>
-                                <Picker
-                                    mode="dropdown"
-                                    style={{ color: 'black' }}
-                                    selectedValue={select}
-                                    onValueChange={(itemValue, itemIndex) => {
-                                        if (itemValue === "Open camera") {
-                                            openCamera("Pan", (documentType, newPhoto) => {
-                                                // Handle the captured selfie here
-                                                setpanmodal(false)
-                                                console.log('Captured selfie:', newPhoto);
-                                            });
-                                        } else if (itemValue === "Open Image picker") {
-                                            openImagePicker('Pan', (documentType, newPhoto) => {
-                                                // Handle the selected selfie here
-                                                setpanmodal(false)
-                                                console.log('Selected selfie:', newPhoto);
-                                            });
-                                        }
-                                    }}
-                                >
-                                    <Picker.Item label="Select Action" value="" />
-                                    <Picker.Item label="Select Photo from gallery" value="Open Image picker" />
-                                    <Picker.Item label="Capture Photo from camera" value="Open camera" />
 
-                                </Picker>
-                                <Button mode="text" onPress={() => setpanmodal(false)}>
-                                    close
-                                </Button>
-                            </View>
-                        </Modal>
-                    </View>
-                    <ImageWithModal imageUri={PanData} style={styles.noimage} />
-                </View>
-                <View style={styles.pickercontainer}>
-                    <View
-                        style={styles.picker}
-                    >
-                        <View>
+                            {IdProofFrontData === null ?
+                                <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+                                    <><Text style={{ color: 'black' }}>Aadhar Card (Front)*</Text></>
+                                </TouchableOpacity> :
+                                <TouchableOpacity mode="text" onPress={() => setIsModalVisible(true)} color={'grey'}>
+                                    <Text style={{ color: 'black', margin: 10, height: height / 25 }}>IdProof Image</Text>
+                                </TouchableOpacity>
+                            }
 
-                            <FloatingLabelInput
 
-                                label="Update Pan Number manually*"
-                                value={pancardno}
-                                onChangeText={(text) => setpancardno(text)}
-                                keyboardType='default'
+                            <Modal
+                                animationType="slide"
+                                transparent={true}
+                                visible={isModalVisible}
+                                style={styles.modalcontainer}
+                                hardwareAccelerated={true}
+                                opacity={0.3}>
+                                <View style={{
+                                    width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
+                                    margin: 20,
+                                    backgroundColor: '#D3D3D3',
+                                    borderRadius: 20,
+                                    padding: 10,
+                                    // alignItems: 'center',
+                                    shadowColor: '#000',
+                                    shadowOffset: {
+                                        width: 100,
+                                        height: 2,
+                                    },
+                                    shadowOpacity: 0.25,
+                                    shadowRadius: 4,
+                                    elevation: 5,
+                                }}>
+                                    <Picker
+                                        mode="dropdown"
 
-                                containerStyles={[styles.input]}
-                                staticLabel
-                                labelStyles={styles.labelStyles}
-                                inputStyles={{
-                                    color: isAadharValid ? 'black' : 'red',
 
-                                    paddingHorizontal: 20,
-                                    marginVertical: 10,
 
-                                    height: height / 23
-                                }}
-                                onBlur={handleAadharBlur}
+                                        style={{ color: 'black', backgroundColor: 'transparent', }}
+                                        selectedValue={select}
+                                        onValueChange={(itemValue, itemIndex) => {
+                                            if (itemValue === "Open camera") {
+                                                openCamera("IdProofFront", (documentType, newPhoto) => {
+                                                    // Handle the captured selfie here
+                                                    setIsModalVisible(false);
+                                                    console.log('Captured selfie:', newPhoto);
 
-                                maxLength={12}
-                            />
-                            {!isPanValid && (
-                                <Text style={{ color: 'red', marginTop: 5 }}>Please enter a valid Pan card number.</Text>
-                            )}
+                                                });
+                                            } else if (itemValue === "Open Image picker") {
+                                                openImagePicker('IdProofFront', (documentType, newPhoto) => {
+                                                    // Handle the selected selfie here
+                                                    setIsModalVisible(false);
+                                                    console.log('Selected selfie:', newPhoto);
+
+                                                });
+                                            }
+                                        }}
+                                    >
+
+                                        <Picker.Item label="Select Action" value="" />
+                                        <Picker.Item label="Select Photo from gallery" value="Open Image picker" />
+                                        <Picker.Item label="Capture Photo from camera" value="Open camera" />
+
+                                    </Picker>
+                                    <Button mode="text" onPress={() => setIsModalVisible(false)}>
+                                        close
+                                    </Button>
+                                </View>
+                            </Modal>
+
                         </View>
 
+                        <ImageWithModal imageUri={IdProofFrontData} style={styles.noimage} />
 
                     </View>
-                    <Icon name="keyboard-o" size={25} color="grey" style={{ margin: 18, left: 18 }} />
 
+                    <View style={styles.pickercontainer}>
+                        <View
+                            style={styles.picker}
+
+
+                        >
+
+
+                            {IdProofBackData === null ?
+                                <TouchableOpacity onPress={() => setIsModalVisible1(true)}>
+                                    <><Text style={{ color: 'black' }}>Aadhar Card (Back)*</Text></>
+                                </TouchableOpacity> :
+                                <TouchableOpacity mode="text" onPress={() => setIsModalVisible1(true)} color={'grey'}>
+                                    <Text style={{ color: 'black', margin: 10, height: height / 25 }}>IdProof Back Image</Text>
+                                </TouchableOpacity>
+                            }
+                            <Modal
+                                animationType="slide"
+                                transparent={true}
+                                visible={IsModalVisible1}
+                                style={styles.modalcontainer}
+                                hardwareAccelerated={true}
+                                opacity={0.3}>
+                                <View style={{
+                                    width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
+                                    margin: 20,
+                                    backgroundColor: '#D3D3D3',
+                                    borderRadius: 20,
+                                    padding: 10,
+                                    // alignItems: 'center',
+                                    shadowColor: '#000',
+                                    shadowOffset: {
+                                        width: 100,
+                                        height: 2,
+                                    },
+                                    shadowOpacity: 0.25,
+                                    shadowRadius: 4,
+                                    elevation: 5,
+                                }}>
+                                    <Picker
+                                        mode="dropdown"
+                                        style={{ color: 'black' }}
+                                        selectedValue={select}
+                                        onValueChange={(itemValue, itemIndex) => {
+                                            if (itemValue === "Open camera") {
+                                                openCamera("IdProofBack", (documentType, newPhoto) => {
+                                                    // Handle the captured selfie here
+                                                    setIsModalVisible1(false)
+                                                    console.log('Captured Idprrofback:', newPhoto);
+                                                });
+                                            } else if (itemValue === "Open Image picker") {
+                                                openImagePicker('IdProofBack', (documentType, newPhoto) => {
+                                                    // Handle the selected selfie here
+                                                    setIsModalVisible1(false)
+                                                    console.log('Selected Idprrofback:', newPhoto);
+                                                });
+                                            }
+                                        }}
+                                    >
+                                        <Picker.Item label="Select Action" value="" />
+                                        <Picker.Item label="Select Photo from gallery" value="Open Image picker" />
+                                        <Picker.Item label="Capture Photo from camera" value="Open camera" />
+
+                                    </Picker>
+                                    <Button mode="text" onPress={() => setIsModalVisible1(false)}>
+                                        close
+                                    </Button>
+                                </View>
+                            </Modal>
+                        </View>
+                        <ImageWithModal imageUri={IdProofBackData} style={styles.noimage} />
+                    </View>
+                    <View style={styles.pickercontainer}>
+                        <View
+                            style={styles.picker}
+                        >
+                            <View>
+
+                                <FloatingLabelInput
+
+                                    label="Aadhar Card No*"
+                                    value={aadharcardno}
+                                    onChangeText={(text) => setaadharcardno(text)}
+                                    keyboardType='number-pad'
+
+                                    containerStyles={[styles.input]}
+                                    staticLabel
+                                    labelStyles={styles.labelStyles}
+                                    inputStyles={{
+                                        color: isAadharValid ? 'black' : 'red',
+                                        paddingHorizontal: 20,
+                                        marginVertical: 10,
+
+                                        height: height / 23
+                                    }}
+                                    onBlur={handleAadharBlur}
+
+                                    maxLength={12}
+                                />
+                                {!isAadharValid && (
+                                    <Text style={{ color: 'red', marginTop: 5 }}>Please enter a valid Aadhar card number.</Text>
+                                )}
+                            </View>
+
+
+                        </View>
+                        <Icon name="keyboard-o" size={25} color="grey" style={{ margin: 10, left: 5 }} />
+
+                    </View>
+
+                    <View style={styles.pickercontainer}>
+                        <View
+                            style={styles.picker}
+                        >
+                            {PanData === null ?
+                                <TouchableOpacity onPress={() => setpanmodal(true)}>
+                                    <><Text style={{ color: 'black' }}>Update Your pan Card(FRONT*)</Text></>
+                                </TouchableOpacity> :
+                                <TouchableOpacity mode="text" onPress={() => setpanmodal(true)} color={'grey'}>
+                                    <Text style={{ margin: 10, color: "black", height: height / 25 }}>Pan Front Image</Text>
+                                </TouchableOpacity>
+                            }
+                            <Modal
+                                animationType="slide"
+                                transparent={true}
+                                visible={panmodal}
+                                style={styles.modalcontainer}
+                                hardwareAccelerated={true}
+                                opacity={0.3}>
+                                <View style={{
+                                    width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
+                                    margin: 20,
+                                    backgroundColor: '#D3D3D3',
+                                    borderRadius: 20,
+                                    padding: 10,
+                                    // alignItems: 'center',
+                                    shadowColor: '#000',
+                                    shadowOffset: {
+                                        width: 100,
+                                        height: 2,
+                                    },
+                                    shadowOpacity: 0.25,
+                                    shadowRadius: 4,
+                                    elevation: 5,
+                                }}>
+                                    <Picker
+                                        mode="dropdown"
+                                        style={{ color: 'black' }}
+                                        selectedValue={select}
+                                        onValueChange={(itemValue, itemIndex) => {
+                                            if (itemValue === "Open camera") {
+                                                openCamera("Pan", (documentType, newPhoto) => {
+                                                    // Handle the captured selfie here
+                                                    setpanmodal(false)
+                                                    console.log('Captured selfie:', newPhoto);
+                                                });
+                                            } else if (itemValue === "Open Image picker") {
+                                                openImagePicker('Pan', (documentType, newPhoto) => {
+                                                    // Handle the selected selfie here
+                                                    setpanmodal(false)
+                                                    console.log('Selected selfie:', newPhoto);
+                                                });
+                                            }
+                                        }}
+                                    >
+                                        <Picker.Item label="Select Action" value="" />
+                                        <Picker.Item label="Select Photo from gallery" value="Open Image picker" />
+                                        <Picker.Item label="Capture Photo from camera" value="Open camera" />
+
+                                    </Picker>
+                                    <Button mode="text" onPress={() => setpanmodal(false)}>
+                                        close
+                                    </Button>
+                                </View>
+                            </Modal>
+                        </View>
+                        <ImageWithModal imageUri={PanData} style={styles.noimage} />
+                    </View>
+                    <View style={styles.pickercontainer}>
+                        <View
+                            style={styles.picker}
+                        >
+                            <View>
+
+                                <FloatingLabelInput
+
+                                    label="Update Pan Number manually*"
+                                    value={pancardno}
+                                    onChangeText={(text) => setpancardno(text)}
+                                    keyboardType='default'
+
+                                    containerStyles={[styles.input]}
+                                    staticLabel
+                                    labelStyles={styles.labelStyles}
+                                    inputStyles={{
+                                        color: isAadharValid ? 'black' : 'red',
+
+                                        paddingHorizontal: 20,
+                                        marginVertical: 10,
+
+                                        height: height / 23
+                                    }}
+                                    onBlur={handleAadharBlur}
+
+                                    maxLength={12}
+                                />
+                                {!isPanValid && (
+                                    <Text style={{ color: 'red', marginTop: 5 }}>Please enter a valid Pan card number.</Text>
+                                )}
+                            </View>
+
+
+                        </View>
+                        <Icon name="keyboard-o" size={25} color="grey" style={{ margin: 10, left: 5 }} />
+
+                    </View>
+
+
+
+
+                    <Buttons
+                        style={styles.button}
+                        label={'Submit'}
+                        variant="filled"
+                        onPress={() => triggerApiWithImageupdatekyc()}
+                        width="100%"
+                        iconHeight={10}
+                        iconWidth={30}
+                        iconGap={30}
+                        icon={arrowIcon}
+                    />
+                    {/* </View> */}
+                    <NeedHelp />
                 </View>
-
-
-
-
-                <Buttons
-                    style={styles.button}
-                    label={'Submit'}
-                    variant="filled"
-                    onPress={() => triggerApiWithImageupdatekyc()}
-                    width="100%"
-                    iconHeight={10}
-                    iconWidth={30}
-                    iconGap={30}
-                    icon={arrowIcon}
-                />
-                {/* </View> */}
-                <NeedHelp />
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </SafeAreaView>
     )
 }
 
@@ -936,7 +938,8 @@ const styles = StyleSheet.create({
         marginTop: 0,
         width: width / 1.75,
         marginTop: 5,
-        paddingBottom: 5
+        paddingBottom: 5,
+
 
     },
     pickercontainer: {
@@ -947,10 +950,12 @@ const styles = StyleSheet.create({
 
         borderColor: '#D3D3D3',
         borderRadius: 10,
-        height: height / 13.5,
+        height: height / 14,
 
         margin: 10,
         justifycontent: 'Space-between',
+        // justifyContent: "center",
+        //  backgroundColor: "red",
 
 
     },
@@ -959,6 +964,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#D3D3D3',
         borderRadius: 5,
         margin: 5,
+        marginLeft: 20,
+        paddingleft: 50,
+
 
 
     },
