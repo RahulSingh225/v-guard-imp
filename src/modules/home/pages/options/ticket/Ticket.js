@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableHighlight, Modal, Image, Button, TextInput, ScrollView, TouchableOpacity, Linking } from 'react-native'
+import { View, Text, StyleSheet, TouchableHighlight, Modal, Image, TextInput, ScrollView, TouchableOpacity, Linking } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
@@ -11,6 +11,8 @@ import { Picker } from '@react-native-picker/picker';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { getFile, sendFile } from '../../../../../utils/apiservice';
 import Snackbar from 'react-native-snackbar';
+import { height, width } from '../../../../../utils/dimensions';
+import { Button } from 'react-native-paper';
 
 
 
@@ -24,6 +26,8 @@ const Ticket = ({ navigation }) => {
   // const [userCode, setUserCode] = useState('');
   // const [userRole, setUserRole] = useState('');
   // const [userImage, setUserImage] = useState('');
+  const [select, setselect] = useState();
+
   const [userData, setUserData] = useState({
     userName: '',
     userId: '',
@@ -279,17 +283,50 @@ const Ticket = ({ navigation }) => {
 
       {/* Modal for selecting camera or gallery */}
       <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showImagePickerModal}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Button title="Launch Camera" onPress={handleCameraUpload} />
-            <Button title="Choose from Gallery" onPress={handleGalleryUpload} />
-          </View>
-        </View>
-      </Modal>
+              animationType="slide"
+              transparent={true}
+              visible={showImagePickerModal}
+              style={styles.modalcontainer}
+              hardwareAccelerated={true}
+              opacity={0.3}>
+              <View style={{
+                width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
+                margin: 20,
+                backgroundColor: '#D3D3D3',
+                borderRadius: 20,
+                padding: 10,
+                shadowColor: '#000',
+                shadowOffset: {
+                  width: 100,
+                  height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 5,
+              }}>
+                <Picker
+                  mode="dropdown"
+                  placeholder={'Update Your Selfie *'}
+                  style={{ color: 'black' }}
+                  selectedValue={select}
+                  onValueChange={(itemValue, itemIndex) => {
+                    if (itemValue === "Open camera") {
+                      handleCameraUpload()
+                    } else if (itemValue === "Open Image picker") {
+                      handleGalleryUpload();
+                    }
+                  }}
+                >
+                  <Picker.Item label="Select Action" value="" />
+                  <Picker.Item label="Select Photo from gallery" value="Open Image picker" />
+                  <Picker.Item label="Capture Photo from camera" value="Open camera" />
+
+                </Picker>
+                <Button mode="text" onPress={() => setShowImagePickerModal(false)}>
+                  Close
+                </Button>
+              </View>
+            </Modal>
 
       <Text style={styles.blackText}>{t('strings:description')}</Text>
       <TextInput
@@ -443,6 +480,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
   },
+  modalcontainer: { alignSelf: 'center', backgroundColor: 'rgba(0,0,0,0.7)' },
+
 })
 
 export default Ticket
