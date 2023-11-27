@@ -15,6 +15,7 @@ import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import { useTranslation } from 'react-i18next';
 import LanguagePicker from '../../../components/LanguagePicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
 const CustomTabHeader = ({ route, handleLanguageButtonPress  }) => {
   const { t, i18n } = useTranslation();
@@ -73,13 +74,17 @@ const BottomTab = () => {
     setLogoutPopupVisible(true);
   };
 
+  const navigation = useNavigation();
+
   const hideLogoutPopup = () => {
     setLogoutPopupVisible(false);
+    navigation.goBack();
+
   };
 
   const confirmLogout = () => {
     logout();
-    hideLogoutPopup();
+    hideLogoutPopup();  
   };
 
   
