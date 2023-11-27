@@ -24,29 +24,16 @@ const ProductCatalogue = () => {
         console.error('Error fetching data:', error);
       });
   }, []); 
-  // const data = [
-  //   {
-  //     message: 'Link 1',
-  //     link: 'https://www.youtube.com/',
-  //   },
-  //   {
-  //     message: 'Link 2',
-  //     link: 'https://www.youtube.com/',
-  //   },
-  //   {
-  //     message: 'Link 3',
-  //     link: 'https://www.youtube.com/',
-  //   },
-  //   {
-  //     message: 'Link 4',
-  //     link: 'https://www.youtube.com/',
-  //   },
-  // ];
 
   return (
     <View style={styles.container}>
       <ScrollView>
-        {data.map((item, index) => (
+      {data.length === 0 ? (
+        <View style={styles.noDataContainer}>
+          <Text style={styles.noDataText}>{t('strings:no_data')}</Text>
+        </View>
+      ) : (
+        data.map((item, index) => (
           <TouchableOpacity
             key={index}
             style={styles.listItem}
@@ -57,8 +44,9 @@ const ProductCatalogue = () => {
             </View>
             <Text style={styles.openLinkText}>View</Text>
           </TouchableOpacity>
-        ))}
-      </ScrollView>
+        ))
+      )}
+    </ScrollView>
     </View>
   );
 };
@@ -94,6 +82,17 @@ const styles = StyleSheet.create({
     color: colors.yellow,
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  noDataContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  noDataText: {
+    fontSize: responsiveFontSize(2),
+    color: colors.grey,
+    fontWeight: 'bold'
   },
 });
 
