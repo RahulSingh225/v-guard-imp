@@ -424,7 +424,7 @@ const UpdateKYC = ({ navigation }) => {
 
     const fetchAndSetImageData = async (uuid, imageRelated, userRole) => {
         try {
-            setIsLoading(true)
+            // setIsLoading(true)
             const response = await getFile(uuid, imageRelated, userRole);
             const imageUrl = response.url;
 
@@ -454,7 +454,7 @@ const UpdateKYC = ({ navigation }) => {
             console.error(`Error getting file for ${imageRelated} (${uuid}):`, error);
             throw error;
         } finally {
-            setIsLoading(false);
+            // setIsLoading(false);
         }
     };
 
