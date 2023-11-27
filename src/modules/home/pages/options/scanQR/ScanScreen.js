@@ -89,7 +89,7 @@ const ScanScreen = ({ navigation, route }) => {
       console.log(apiResponse.json());
     }
     else if (type == 'fan') {
-      navigation.navigate('productRegistration')
+      navigation.navigate('Product Registration')
     }
     else {
       apiResponse = await isValidBarcode(CouponData, 0, '', 0, null);
@@ -173,7 +173,7 @@ const ScanScreen = ({ navigation, route }) => {
           </Text>
           <TouchableOpacity
             style={styles.scanImage}
-            onPress={() => navigation.navigate('uniqueCodeHistory')}>
+            onPress={() => navigation.navigate('Unique Code History')}>
             <Image
               style={{ width: 30, height: 30 }}
               source={require('../../../../../assets/images/ic_circle_right_arrow_yellow.webp')}
@@ -184,7 +184,7 @@ const ScanScreen = ({ navigation, route }) => {
           style={styles.button}
           label={t('strings:upload_scan_error_')}
           variant="blackButton"
-          onPress={() => navigation.navigate('uploadError')}
+          onPress={() => navigation.navigate('Upload Scanning Error')}
           width="100%"
         />
         <NeedHelp />

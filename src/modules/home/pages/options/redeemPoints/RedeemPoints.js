@@ -72,36 +72,36 @@ const RedeemPoints = ({navigation}) => {
             <CustomTouchableOption
               text="strings:bank_transfer"
               iconSource={require('../../../../../assets/images/ic_bank_transfer.webp')}
-              screenName="banktransfer"
+              screenName="Bank Transfer"
             />
             <CustomTouchableOption
               text="strings:paytm_transfer"
               iconSource={require('../../../../../assets/images/ic_paytm_transfer.webp')}
-              screenName="paytmtransfer"
+              screenName="Paytm Transfer"
             />
             <CustomTouchableOption
               text="UPI Transfer"
               iconSource={require('../../../../../assets/images/upi_transfer.webp')}
-              screenName="upitransfer"
+              screenName="UPI Transfer"
             />
           </View>
           <View style={styles.row}>
             <CustomTouchableOption
               text="strings:e_gift_cards"
               iconSource={require('../../../../../assets/images/ic_egift_cards.webp')}
-              screenName="giftvoucher"
+              screenName="Gift Voucher"
               disabled={true}
             />
             <CustomTouchableOption
               text="strings:track_your_redemption"
               iconSource={require('../../../../../assets/images/ic_track_your_redemption.webp')}
-              screenName="trackredemption"
+              screenName="Track Redemption"
               disabled={true}
             />
             <CustomTouchableOption
               text="strings:redemption_history"
               iconSource={require('../../../../../assets/images/ic_redemption_history.webp')}
-              screenName="redemptionhistory"
+              screenName="Redemption History"
             />
           </View>
         </View>

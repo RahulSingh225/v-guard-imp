@@ -46,7 +46,6 @@ const VGuardInfo = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{t('strings:v_guard_info')}</Text>
       <ScrollView>
         {data.map((item, index) => (
           <TouchableOpacity

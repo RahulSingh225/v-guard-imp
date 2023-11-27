@@ -40,7 +40,7 @@ const AddAddress = ({ navigation }) => {
 
         saveAddress(newAddress);
 
-        navigation.navigate('viewcart');
+        navigation.navigate('View Cart');
     };
 
     const saveAddress = (newAddress) => {

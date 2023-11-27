@@ -10,6 +10,7 @@ import RedemptionHistory from '../RedemptionHistory';
 import ViewCart from '../ViewCart';
 import AddAddress from '../AddAddress';
 import UpiTransfer from '../UpiTransfer';
+import colors from '../../../../../../../colors';
 
 const RedeemStack = () => {
   const Stack = createNativeStackNavigator();
@@ -17,18 +18,59 @@ const RedeemStack = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
-      }}>
-      <Stack.Screen name="redeemscreen" component={RedeemPoints} />                
-      <Stack.Screen name="banktransfer" component={InstantBankTransfer} />                
-      <Stack.Screen name="paytmtransfer" component={PaytmTransfer} />                
-      <Stack.Screen name="redeemproducts" component={RedeemProducts} />                
-      <Stack.Screen name="giftvoucher" component={ElectronicGiftVoucher} />                
-      <Stack.Screen name="trackredemption" component={TrackRedemption} />                
-      <Stack.Screen name="redemptionhistory" component={RedemptionHistory} />                
-      <Stack.Screen name="viewcart" component={ViewCart} />                
-      <Stack.Screen name="addAddress" component={AddAddress} />                
-      <Stack.Screen name="upitransfer" component={UpiTransfer} />                
+          headerStyle: {
+            backgroundColor: colors.yellow
+          },
+          headerShown: false
+        }}>
+      <Stack.Screen name="Redeem Products" component={RedeemPoints}
+      options={{
+          headerShown: true
+        }} />                
+      <Stack.Screen name="Bank Transfer" component={InstantBankTransfer}
+      options={{
+          headerShown: true
+        }} />                
+      <Stack.Screen name="Paytm Transfer" component={PaytmTransfer} 
+        options={{
+          headerShown: true
+        }}
+      />                
+      <Stack.Screen name="redeemproducts" component={RedeemProducts} 
+        options={{
+          headerShown: true
+        }}
+      />                
+      <Stack.Screen name="Gift Voucher" component={ElectronicGiftVoucher} 
+        options={{
+          headerShown: true
+        }}
+      />                
+      <Stack.Screen name="Track Redemption" component={TrackRedemption} 
+        options={{
+          headerShown: true
+        }}
+      />                
+      <Stack.Screen name="Redemption History" component={RedemptionHistory} 
+        options={{
+          headerShown: true
+        }}
+      />                
+      <Stack.Screen name="View Cart" component={ViewCart} 
+        options={{
+          headerShown: true
+        }}
+      />                
+      <Stack.Screen name="Add Address" component={AddAddress} 
+        options={{
+          headerShown: true
+        }}
+      />                
+      <Stack.Screen name="UPI Transfer" component={UpiTransfer} 
+        options={{
+          headerShown: true
+        }}
+      />                
     </Stack.Navigator>
   );
 };

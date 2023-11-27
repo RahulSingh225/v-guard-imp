@@ -168,7 +168,7 @@ import {
             </Text>
             <TouchableOpacity
               style={styles.scanImage}
-              onPress={() => navigation.navigate('uniqueCodeHistory')}>
+              onPress={() => navigation.navigate('Unique Code History')}>
               <Image
                 style={{ width: 30, height: 30 }}
                 source={require('../../../../../assets/images/ic_circle_right_arrow_yellow.webp')}
@@ -179,7 +179,7 @@ import {
             style={styles.button}
             label={t('strings:upload_scan_error_')}
             variant="blackButton"
-            onPress={() => navigation.navigate('uploadError')}
+            onPress={() => navigation.navigate('Upload Scanning Error')}
             width="100%"
           />
           <NeedHelp />

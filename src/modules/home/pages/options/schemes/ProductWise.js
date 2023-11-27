@@ -34,7 +34,7 @@ const ProductWise = ({navigation}) => {
   const handleCategoryPress = categoryId => {
     const category = data.find(item => item.categoryId === categoryId);
     console.log('category id:', categoryId);
-    navigation.navigate('ProductWiseOfferTable', {categoryId});
+    navigation.navigate('Product Wise Offers Table', {categoryId});
   };
 
   return (

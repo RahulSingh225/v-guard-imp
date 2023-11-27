@@ -28,7 +28,6 @@ const Downloads = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{t('strings:downloads_small')}</Text>
       <ScrollView>
         {data.map((item, index) => (
           <TouchableOpacity
