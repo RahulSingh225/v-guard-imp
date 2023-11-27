@@ -1,25 +1,70 @@
-import { View, Text, StyleSheet, ScrollView, TextInput, Image } from 'react-native'
-import React, {useState, useEffect} from 'react'
-import colors from '../../../../../../colors'
+import { View, Text, StyleSheet, ScrollView, TextInput, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import colors from '../../../../../../colors';
 import { useTranslation } from 'react-i18next';
-import { responsiveFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
+import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import Buttons from '../../../../../components/Buttons';
 import arrowIcon from '../../../../../assets/images/arrow.png';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { paytmTransfer } from '../../HomeApiService';
+import Popup from '../../../../../components/Popup';
 const PaytmTransfer = () => {
+  const [isPopupVisible, setPopupVisible] = useState(false);
+  const [popupContent, setPopupContent] = useState('');
+
   const { t } = useTranslation();
-  const handleProceed = () =>{
-    console.log('Pressed')
-  }
+  const validateMobileNumber = () => {
+    return /^[0-9]{10}$/.test(mobileNumber);
+  };
+  const handleProceed = () => {
+    if (!validateMobileNumber()) {
+      setPopupContent("Enter Valid Mobile Number");
+      setPopupVisible(true);
+      return;
+    }
+    const transferData = {
+      mobileNo: mobileNumber,
+      points: points,
+    };
+  
+    paytmTransfer(transferData)
+      .then(response => {
+        return response.json();
+      })
+      .then(jsonData => {
+        console.log('API Response:', jsonData.message);
+        setPopupContent(jsonData.message);
+            setPopupVisible(true);
+      })
+      .catch(error => {
+        if (error.response && error.response.data) {
+          console.error('API Error:', error.response.data.message);
+          setPopupContent(error.response.data.message);
+          setPopupVisible(true);
+        } else {
+          console.error('API Error:', error.message);
+        }
+      });
+  };
   const [pointData, setPointData] = useState({
     pointsBalance: '',
     redeemedPoints: '',
     numberOfScan: '',
   });
 
+  const [mobileNumber, setMobileNumber] = useState('');
+  const [points, setPoints] = useState('');
+
+  const handleMobileNumberChange = (text) => {
+    setMobileNumber(text);
+  };
+
+  const handlePointsChange = (text) => {
+    setPoints(text);
+  };
+
   useEffect(() => {
-    AsyncStorage.getItem('USER').then(r => {
+    AsyncStorage.getItem('USER').then((r) => {
       const user = JSON.parse(r);
       const data = {
         pointsBalance: user.pointsSummary.pointsBalance,
@@ -57,6 +102,7 @@ const PaytmTransfer = () => {
               placeholder={t('strings:mobile_number')}
               placeholderTextColor={colors.grey}
               textAlign="center"
+              onChangeText={handleMobileNumberChange}
             />
           </View>
         </View>
@@ -72,6 +118,7 @@ const PaytmTransfer = () => {
               placeholder={t('strings:enter_points')}
               placeholderTextColor={colors.grey}
               textAlign="center"
+              onChangeText={handlePointsChange}
             />
           </View>
         </View>
@@ -92,6 +139,11 @@ const PaytmTransfer = () => {
           icon={arrowIcon}
         />
       </View>
+      {isPopupVisible && (
+                <Popup isVisible={isPopupVisible} onClose={() => setPopupVisible(false)}>
+                    {popupContent}
+                </Popup>
+            )}
     </ScrollView>
   )
 }

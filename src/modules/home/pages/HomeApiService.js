@@ -123,6 +123,12 @@ export function getUniqueCodeHistory() {
 //     return createDigestPostRequest(path, data);
 // }
 
+export function paytmTransfer(data) {
+    const path = "order/paytmTransfer";
+    const body = { data }
+    return createDigestPostRequest(path, body);
+}
+
 
 
 
