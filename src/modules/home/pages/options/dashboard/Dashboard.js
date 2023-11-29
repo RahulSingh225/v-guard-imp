@@ -19,6 +19,7 @@ import {
 import {useTranslation} from 'react-i18next';
 import NeedHelp from '../../../../../components/NeedHelp';
 import CustomTouchableOption from '../../../../../components/CustomTouchableOption';
+import { getFile } from '../../../../../utils/apiservice';
 
 const Dashboard = () => {
   const baseURL = 'https://www.vguardrishta.com/img/appImages/Profile/';
@@ -27,6 +28,7 @@ const Dashboard = () => {
 
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
+  const [profileImage, setProfileImage] = useState('');
 
   const [userData, setUserData] = useState({
     userName: '',
@@ -34,6 +36,7 @@ const Dashboard = () => {
     pointsBalance: '',
     redeemedPoints: '',
     userImage: '',
+    userRole: ''
   });
 
   const showPicker = useCallback(value => setShow(value), []);
@@ -58,17 +61,35 @@ const Dashboard = () => {
         pointsBalance: user.pointsSummary.pointsBalance,
         redeemedPoints: user.pointsSummary.redeemedPoints,
         userImage: user.kycDetails.selfie,
+        userRole: user.professionId      
       };
       setUserData(data);
     });
   }, []);
+
+  useEffect(() => {
+    console.log("<><><><><><")
+    if (userData.userRole && userData.userImage) {
+      
+      const getImage = async () => {
+        try {
+          const profileImage = await getFile(userData.userImage, 'PROFILE', userData.userRole);
+          setProfileImage(profileImage.url);
+        } catch (error) {
+          console.log('Error while fetching profile image:', error);
+        }
+      };
+  
+      getImage();
+    }
+  }, [userData.userRole, userData.userImage]);
 
   return (
     <View style={styles.mainWrapper}>
       <View style={styles.profileDetails}>
         <View style={styles.ImageProfile}>
           <Image
-            source={{uri: baseURL + userData.userImage}}
+            source={{uri: profileImage}}
             style={{width: '100%', height: '100%', borderRadius: 100}}
             resizeMode="contain"
           />
@@ -102,11 +123,11 @@ const Dashboard = () => {
         <View style={styles.leftPoint}>
           <Text style={styles.greyText}>{t('strings:points_balance')}</Text>
 
-          <Text style={styles.point}>{userData.pointsBalance}</Text>
+          <Text style={styles.point}>{userData.pointsBalance ? userData.pointsBalance : 0}</Text>
         </View>
         <View style={styles.rightPoint}>
           <Text style={styles.greyText}>{t('strings:points_redeemed')}</Text>
-          <Text style={styles.point}>{userData.redeemedPoints}</Text>
+          <Text style={styles.point}>{userData.redeemedPoints ? userData.redeemedPoints : 0}</Text>
 
         </View>
       </View>
@@ -115,17 +136,17 @@ const Dashboard = () => {
         <CustomTouchableOption
           text="strings:product_wise_earning"
           iconSource={require('../../../../../assets/images/ic_bank_transfer.webp')}
-          screenName="productWiseEarning"
+          screenName="Product Wise Earning"
         />
         <CustomTouchableOption
           text="strings:scheme_wise_earning"
           iconSource={require('../../../../../assets/images/ic_paytm_transfer.webp')}
-          screenName="schemeWiseEarning"
+          screenName="Scheme Wise Earning"
         />
         <CustomTouchableOption
           text="strings:your_rewards"
           iconSource={require('../../../../../assets/images/ic_egift_cards.webp')}
-          screenName="yourRewards"
+          screenName="Your Rewards"
         />
       </View>
 

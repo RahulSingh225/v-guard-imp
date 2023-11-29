@@ -28,22 +28,25 @@ const YourRewards = () => {
 
     return (
         <ScrollView contentContainerStyle={styles.mainWrapper}>
-            <Text style={styles.header}>{t('strings:your_rewards')}</Text>
             <View style={styles.subWrapper}>
-                {pairedRewards.map((pair, rowIndex) => (
-                    <View key={rowIndex} style={styles.rowContainer}>
-                        {pair.map((reward, index) => (
-                            <View key={index} style={styles.card}>
-                                <Image
-                                    style={{ flex: 1, width: '100%', height: '100%' }}
-                                    resizeMode="contain"
-                                    source={require('../../../../../assets/images/ic_rewards_gift.png')}
-                                />
-                                <Text style={styles.cardText}>You have won {reward.promotionPoints} points</Text>
-                            </View>
-                        ))}
-                    </View>
-                ))}
+                {rewards.length === 0 ? (
+                    <Text style={styles.noDataText}>{t('strings:no_data')}</Text>
+                ) : (
+                    pairedRewards.map((pair, rowIndex) => (
+                        <View key={rowIndex} style={styles.rowContainer}>
+                            {pair.map((reward, index) => (
+                                <View key={index} style={styles.card}>
+                                    <Image
+                                        style={{ flex: 1, width: '100%', height: '100%' }}
+                                        resizeMode="contain"
+                                        source={require('../../../../../assets/images/ic_rewards_gift.png')}
+                                    />
+                                    <Text style={styles.cardText}>You have won {reward.promotionPoints} points</Text>
+                                </View>
+                            ))}
+                        </View>
+                    ))
+                )}
             </View>
         </ScrollView>
     );
@@ -51,6 +54,7 @@ const YourRewards = () => {
 
 const styles = StyleSheet.create({
     mainWrapper: {
+        flex: 1,
         padding: 15,
         backgroundColor: colors.white,
     },
@@ -85,6 +89,12 @@ const styles = StyleSheet.create({
         color: colors.black,
         textAlign: 'center',
     },
+    noDataText: {
+        color: colors.grey,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        fontSize: responsiveFontSize(2)
+    }
 });
 
 export default YourRewards;

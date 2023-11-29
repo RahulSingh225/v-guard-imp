@@ -58,7 +58,7 @@ const ElectronicGiftVoucher = ({ navigation }) => {
   );
 
   const handleViewCart = () => {
-    navigation.navigate("viewcart");
+    navigation.navigate("View Cart");
   };
 
   return (

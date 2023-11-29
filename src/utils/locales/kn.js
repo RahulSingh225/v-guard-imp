@@ -85,7 +85,7 @@ export default {
     lbl_enter_mobile_number: '2.  OTP ಪಡೆಯಲು ನಿಮ್ಮ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ ',
     get_otp: 'OTP ಪಡೆಯಿರಿ',
     or: 'ಅಥವಾ',
-    powered_by_v_guard: 'ವಿ-ಗಾರ್ಡ್\u200cನಿಂದ ನಡೆಸಲ್ಪಡುತ್ತಿದೆ',
+    powered_by_v_guard: 'ಮೂಲಕ ನಡೆಸಲ್ಪಡುತ್ತಿದೆ',
     lbl_otp_through_phone_call: 'ದೂರವಾಣಿ ಕರೆ ಮೂಲಕ OTP ಪಡೆಯಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ',
     call: 'ಕರೆ ಮಾಡಿ',
     enter_your_mobile_number: 'ನಿಮ್ಮ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ',

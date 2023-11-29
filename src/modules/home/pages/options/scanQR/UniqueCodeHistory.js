@@ -1,42 +1,39 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import colors from '../../../../../../colors';
+import { getUniqueCodeHistory } from '../../HomeApiService';
 
 const UniqueCodeHistory = () => {
   const { t } = useTranslation();
-  const redemptionHistoryData = [
-    {
-      date: '2023-10-15',
-      code: '7890123456',
-      status: 'Failed',
-    },
-    {
-      date: '2023-10-10',
-      code: '3214567890',
-      status: 'Failed',
-    },
-    {
-      date: '2023-10-05',
-      code: '1234567890',
-      status: 'Failed',
-    },
-  ];
+  const [redemptionHistoryData, setRedemptionHistoryData] = useState([]);
+
+  useEffect(() => {
+    fetchRedemptionHistory();
+  }, []);
+
+  const fetchRedemptionHistory = async () => {
+    try {
+      const response = await getUniqueCodeHistory();
+      const responseData = await response.json();
+
+      setRedemptionHistoryData(responseData);
+    } catch (error) {
+      console.error('Error fetching redemption history data:', error);
+    }
+  };
 
   const renderItem = ({ item }) => (
     <View style={[styles.item]}>
-      <Text style={styles.text}>{item.date}</Text>
-      <Text style={styles.text}>{item.code}</Text>
-      <Text style={styles.status}>{item.status}</Text>
+      <Text style={styles.text}>{item.scanDate}</Text>
+      <Text style={styles.text}>{item.copuonCode}</Text>
+      <Text style={styles.status}>{item.scanStatus}</Text>
     </View>
   );
 
   return (
     <View style={styles.mainWrapper}>
-      <View style={styles.headerWrapper}>
-        <Text style={styles.header}>{t('strings:uniquie_code_history')}</Text>
-      </View>
       <FlatList
         data={redemptionHistoryData}
         renderItem={renderItem}

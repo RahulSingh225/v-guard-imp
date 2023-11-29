@@ -3,6 +3,9 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import ScanScreen from '../ScanScreen';
 import UploadError from '../UploadError';
 import UniqueCodeHistory from '../UniqueCodeHistory';
+import ProductRegistration from '../ProductRegistration';
+import { CustomTabHeader } from '../../../../../common/services/BottomTab';
+import colors from '../../../../../../../colors';
 
 const ScanStack = () => {
   const Stack = createNativeStackNavigator();
@@ -10,11 +13,31 @@ const ScanStack = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
-      }}>
-      <Stack.Screen name="scanscreen" component={ScanScreen} />         
-      <Stack.Screen name="uploadError" component={UploadError} />         
-      <Stack.Screen name="uniqueCodeHistory" component={UniqueCodeHistory} />         
+          headerStyle: {
+            backgroundColor: colors.yellow
+          },
+          headerShown: false
+        }}>
+      <Stack.Screen name="Scan QR" component={ScanScreen} 
+        options={{
+          headerShown: true
+        }}
+      />         
+      <Stack.Screen name="Upload Scanning Error" component={UploadError} 
+        options={{
+          headerShown: true
+        }}
+      />         
+      <Stack.Screen name="Unique Code History" component={UniqueCodeHistory} 
+        options={{
+          headerShown: true
+        }}
+      />         
+      <Stack.Screen name="Product Registration" component={ProductRegistration} 
+        options={{
+          headerShown: true
+        }}
+      />         
     </Stack.Navigator>
   );
 };

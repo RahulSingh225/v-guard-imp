@@ -7,10 +7,10 @@ import {
   TouchableOpacity,
   Linking,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import colors from '../../../../colors';
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import AuthNavigator from '../../auth/stack/AuthNavigator';
 import CustomTouchableOption from '../../../components/CustomTouchableOption';
 import {
@@ -19,11 +19,14 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import NeedHelp from '../../../components/NeedHelp';
+import { getFile } from '../../../utils/apiservice';
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({ navigation }) => {
   const baseURL = 'https://www.vguardrishta.com/img/appImages/Profile/';
 
-  const {t} = useTranslation();
+  const { t } = useTranslation();
+  const [profileImage, setProfileImage] = useState('');
+
   // const [userName, setUserName] = useState('');
   // const [userCode, setUserCode] = useState('');
   // const [pointsBalance, setPointsBalance] = useState('');
@@ -37,6 +40,7 @@ const HomeScreen = ({navigation}) => {
     redeemedPoints: 0,
     numberOfScan: 0,
     userImage: null,
+    userRole: 0
   });
   const [LoggedInUser, setLoggedInUser] = useState(null);
 
@@ -52,11 +56,28 @@ const HomeScreen = ({navigation}) => {
           redeemedPoints: value.pointsSummary.redeemedPoints,
           numberOfScan: value.pointsSummary.numberOfScan,
           userImage: value.kycDetails.selfie,
+          userRole: value.professionId
         };
         setUserData(user);
       });
     }
   }, [LoggedInUser]);
+
+  useEffect(() => {
+    console.log(userData, "userData=================")
+    if (userData.userRole && userData.userImage) {
+      const getImage = async () => {
+        try {
+          const profileImage = await getFile(userData.userImage, 'PROFILE', userData.userRole);
+          setProfileImage(profileImage.url);
+        } catch (error) {
+          console.log('Error while fetching profile image:', error);
+        }
+      };
+
+      getImage();
+    }
+  }, [userData.userRole, userData.userImage]);
 
   console.log(LoggedInUser);
   return (
@@ -65,8 +86,8 @@ const HomeScreen = ({navigation}) => {
         <View style={styles.profileDetails}>
           <View style={styles.ImageProfile}>
             <Image
-              source={{uri: baseURL + userData.userImage}}
-              style={{width: '100%', height: '100%', borderRadius: 100}}
+              source={{ uri: profileImage }}
+              style={{ width: '100%', height: '100%', borderRadius: 100 }}
               resizeMode="contain"
             />
           </View>
@@ -74,14 +95,16 @@ const HomeScreen = ({navigation}) => {
             <Text style={styles.textDetail}>{userData.userName}</Text>
             <Text style={styles.textDetail}>{userData.userCode}</Text>
 
-            <Text style={styles.viewProfile}>{t('strings:view_profile')}</Text>
-          </View>
+            <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+              <Text style={styles.viewProfile}>{t('strings:view_profile')}</Text>
+            </TouchableOpacity>          
+            </View>
         </View>
         <View style={styles.points}>
           <View style={styles.leftPoint}>
             <Text style={styles.greyText}>{t('strings:points_balance')}</Text>
 
-            <Text style={styles.point}>{userData.pointsBalance}</Text>
+            <Text style={styles.point}>{userData.pointsBalance ? userData.pointsBalance : 0}</Text>
           </View>
           <View style={styles.middlePoint}>
             <Text style={styles.greyText}>{t('strings:points_redeemed')}</Text>
@@ -100,24 +123,24 @@ const HomeScreen = ({navigation}) => {
             <CustomTouchableOption
               text="strings:scan_code"
               iconSource={require('../../../assets/images/ic_scan_code.png')}
-              screenName="scanscreen"
+              screenName="Scan QR"
             />
             <CustomTouchableOption
               text="strings:redeem_points"
               iconSource={require('../../../assets/images/ic_redeem_points.webp')}
-              screenName="redeemscreen"
+              screenName="Redeem Products"
             />
             <CustomTouchableOption
               text="strings:dashboard"
               iconSource={require('../../../assets/images/ic_dashboard.webp')}
-              screenName="dashboard"
+              screenName="Dashboard"
             />
           </View>
           <View style={styles.row}>
             <CustomTouchableOption
               text="strings:update_kyc"
               iconSource={require('../../../assets/images/ic_update_kyc.webp')}
-              screenName="updateKyc"
+              screenName="Update KYC"
             />
             <CustomTouchableOption
               text="strings:scheme_offers"
@@ -134,7 +157,7 @@ const HomeScreen = ({navigation}) => {
             <CustomTouchableOption
               text="strings:welfare"
               iconSource={require('../../../assets/images/ic_welfare.webp')}
-              screenName="welfare"
+              screenName="Welfare"
             />
             <CustomTouchableOption
               text="strings:what_s_new"
@@ -151,17 +174,17 @@ const HomeScreen = ({navigation}) => {
             <CustomTouchableOption
               text="strings:update_bank"
               iconSource={require('../../../assets/images/ic_raise_ticket.webp')}
-              screenName="bank"
+              screenName="Update Bank"
             />
             <CustomTouchableOption
               text="strings:tds_certificate"
               iconSource={require('../../../assets/images/tds_ic.png')}
-              screenName="TDS"
+              screenName="TDS Certificate"
             />
             <CustomTouchableOption
               text="strings:engagement"
               iconSource={require('../../../assets/images/elink.png')}
-              screenName="engagement"
+              screenName="Engagement"
             />
           </View>
           <View style={styles.lastrow}>
@@ -175,7 +198,7 @@ const HomeScreen = ({navigation}) => {
               <View style={[styles.optionIcon]}>
                 <Image
                   source={require('../../../assets/images/ic_instruction_manual.jpeg')}
-                  style={[{flex: 1, width: '100%', height: '100%'}]}
+                  style={[{ flex: 1, width: '100%', height: '100%' }]}
                   resizeMode="contain"
                 />
               </View>

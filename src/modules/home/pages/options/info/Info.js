@@ -26,17 +26,17 @@ const Info = () => {
       <CustomTouchableOption
               text="strings:v_guard_info"
               iconSource={require('../../../../../assets/images/ic_vguard_info.webp')}
-              screenName="vGuardInfo"
+              screenName="V-Guard Info"
             />
       <CustomTouchableOption
               text="strings:downloads_small"
               iconSource={require('../../../../../assets/images/ic_downloads_.webp')}
-              screenName="downloads"
+              screenName="Downloads"
             />
       <CustomTouchableOption
               text="strings:v_guard_product_catalog"
               iconSource={require('../../../../../assets/images/ic_vguard_product_catalog.webp')}
-              screenName="productCatalogue"
+              screenName="Product Catalogue"
             />
       </View>
       <NeedHelp />
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white
   },
   carousel: {
-    backgroundColor: colors.black
+    backgroundColor: colors.white
   },
   options: {
     display: 'flex',

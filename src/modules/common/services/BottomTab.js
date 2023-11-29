@@ -14,10 +14,32 @@ import { View, Text, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity,
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import { useTranslation } from 'react-i18next';
 import LanguagePicker from '../../../components/LanguagePicker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+
+const CustomTabHeader = ({ route, handleLanguageButtonPress  }) => {
+  const { t, i18n } = useTranslation();
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '97%' }}>
+      <View style={{ flexDirection: 'row', gap: 10 }}>
+        <Text style={{ color: colors.black, fontSize: responsiveFontSize(2.5), fontWeight: 'bold' }}>{route.name}</Text>
+        <TouchableOpacity style={styles.languageContainer} onPress={handleLanguageButtonPress}>
+          <Text style={{ color: colors.black }}>{t('strings:language')}</Text>
+          <Image style={{ width: 15, height: 15, marginLeft: 5 }} source={require('../../../assets/images/down_yellow_arrow.png')} />
+        </TouchableOpacity>
+      </View>
+      <Image
+        source={require('../../../assets/images/group_910.png')}
+        style={{ width: 83, height: 30, marginLeft: 10 }}
+      />
+    </View>
+  );
+}
 
 const BottomTab = () => {
   const { t, i18n } = useTranslation();
   const [showLanguagePicker, setShowLanguagePicker] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
 
   const handleLanguageButtonPress = () => {
     setShowLanguagePicker(true);
@@ -28,9 +50,22 @@ const BottomTab = () => {
   };
 
   useEffect(() => {
-    // Re-render the component when the language changes
-    console.log('Language changed:', i18n.language);
-  }, [i18n.language]);
+    const fetchStoredLanguage = async () => {
+      try {
+        const storedLanguage = await AsyncStorage.getItem('language') || i18n.language;
+        setSelectedLanguage(storedLanguage);
+        i18n.changeLanguage(storedLanguage);
+        console.log('Language changed:', storedLanguage);
+      } catch (error) {
+        console.error('Error fetching language from AsyncStorage:', error);
+      }
+    };
+
+    fetchStoredLanguage();
+  }, []);
+
+
+
   const Tab = createBottomTabNavigator();
   const [isLogoutPopupVisible, setLogoutPopupVisible] = useState(false);
   const { logout } = useAuth();
@@ -39,30 +74,21 @@ const BottomTab = () => {
     setLogoutPopupVisible(true);
   };
 
+  const navigation = useNavigation();
+
   const hideLogoutPopup = () => {
     setLogoutPopupVisible(false);
+    navigation.goBack();
+
   };
 
   const confirmLogout = () => {
     logout();
-    hideLogoutPopup();
+    hideLogoutPopup();  
   };
 
-  const CustomTabHeader = ({ route }) => (
-    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-      <View style={{flexDirection: 'row', gap: 10}}>
-      <Text style={{color: colors.black, fontSize: responsiveFontSize(2.5), fontWeight: 'bold'}}>{route.name}</Text>
-      <TouchableOpacity style = {styles.languageContainer} onPress={handleLanguageButtonPress}>
-        <Text style = {{color: colors.black}}>{t('strings:language')}</Text>
-        <Image style={{ width: 15, height: 15, marginLeft: 5}} source={require('../../../assets/images/down_yellow_arrow.png')} />
-      </TouchableOpacity>
-      </View>
-      <Image
-        source={require('../../../assets/images/group_910.png')}
-        style={{ width: 83, height: 30, marginLeft: 10 }}
-      />
-    </View>
-  );
+  
+  
 
   return (
     <>
@@ -76,19 +102,21 @@ const BottomTab = () => {
           headerTitleStyle: {
             color: colors.black,
           },
+          headerShown: false,
         }}>
-        <Tab.Screen name="Home" component={HomeStack} options={({ route }) => ({
-          headerTitle: () => <CustomTabHeader route={route} />,
-        })} />
+        <Tab.Screen name="Home" component={HomeStack} screenOptions={{ headerShown: false }} />
         <Tab.Screen name="Notification" component={Notification} options={({ route }) => ({
-    headerTitle: () => <CustomTabHeader route={route} />,
-  })} />
+          headerTitle: () => <CustomTabHeader handleLanguageButtonPress={handleLanguageButtonPress} route={route} />,
+          headerShown: true
+        })} />
         <Tab.Screen name="Profile" component={ProfileStack} options={({ route }) => ({
-    headerTitle: () => <CustomTabHeader route={route} />,
-  })} />
+          headerTitle: () => <CustomTabHeader handleLanguageButtonPress={handleLanguageButtonPress} route={route} />,
+          headerShown: true
+        })} />
         <Tab.Screen name="Support" component={ContactPage} options={({ route }) => ({
-    headerTitle: () => <CustomTabHeader route={route} />,
-  })} />
+          headerTitle: () => <CustomTabHeader handleLanguageButtonPress={handleLanguageButtonPress} route={route} />,
+          headerShown: true
+        })} />
         <Tab.Screen name="Logout" listeners={{ tabPress: showLogoutPopup }} component={({ route }) => {
           return route.state ? route.state.routes[route.state.index].route.params.getComponent() : null;
         }} />
@@ -107,7 +135,7 @@ const BottomTab = () => {
         style={styles.modal}
       >
         <View style={styles.languagePickerContainer}>
-          <LanguagePicker />
+          <LanguagePicker onCloseModal={handleCloseLanguagePicker} />
           <TouchableOpacity onPress={handleCloseLanguagePicker}>
             <Text style={styles.closeText}>Close</Text>
           </TouchableOpacity>
@@ -136,7 +164,13 @@ const styles = StyleSheet.create({
   closeText: {
     marginTop: 20,
     color: colors.black,
+    backgroundColor: colors.yellow,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 5,
+    fontWeight: 'bold'
   },
 })
-
+export { CustomTabHeader };
 export default BottomTab;
+

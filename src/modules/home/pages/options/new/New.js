@@ -30,7 +30,7 @@ const New = ({ navigation }) => {
   const handleLinkPress = (item) => {
     if (item.imagePath === "daily_winner") {
       // Navigate to the "daily_winner" screen
-      navigation.navigate("daily_winner");
+      navigation.navigate("Daily Winner");
     } else {
       // Open the URL in the browser for other cases
       Linking.openURL(item.imagePath);
@@ -39,7 +39,6 @@ const New = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{t('strings:what_s_new')}?</Text>
       <ScrollView>
         {data && data.map && data.map((item, index) => (
           <TouchableOpacity
