@@ -2,7 +2,7 @@ import axios from 'axios';
 import digestFetch from 'react-native-digest-fetch';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_LINK = 'http://34.100.133.239:18092'; // Replace with your API base URL
+const API_LINK = 'http://34.100.133.239:18092';
 
 const imageURL = 'https://vguardrishta.com/';
 
@@ -291,11 +291,23 @@ export const RegisterNewUser = async userbody => {
     }
 };
 
-export const sendFile = async formData => {
+export const sendFile = async (formData) => {
     try {
-        const response = await api.post('/vguard/api/file', formData);
+        //  console.log("INDE API SERVICE SEND FILE CJECLING FORM DATA ", formData);
+        const response = await api.post('/vguard/api/file', formData,);
         return response;
     } catch (error) {
+        if (error && error.response?.data) console.log('asdadsa', error.response.data)
+        console.error('Error sending file:', error);
+        throw error;
+    }
+};
+export const sendFileAfterLogin = async (formData1) => {
+    try {
+        const response = await api.post("/vguard/api/file", formData1);
+        return response;
+    } catch (error) {
+        if (error && error.response?.data) console.log('asdadsa', error.response.data)
         console.error('Error sending file:', error);
         throw error;
     }
@@ -411,3 +423,56 @@ export const reupdatekyc = async (data) => {
 //     console.log(path)
 //     return createDigestGetRequest(path);
 // }
+
+export const sendFileWithDigestAuth = async (formData) => {
+    try {
+
+
+        const relativeUrl = 'file'; // Replace with the actual relative URL
+        const response = await createDigestPostRequest(relativeUrl, formData);
+
+        return response;
+    } catch (error) {
+        console.error('Error sending file with digest auth:', error);
+        throw error;
+    }
+};
+
+export const UpdateUserProfile = async (profilebody) => {
+    try {
+        const relativeUrl = "user/updateProfile";
+        const resposne = await createDigestPostRequest(relativeUrl, profilebody);
+        return resposne;
+
+    } catch (error) {
+        console.error('Error sending file with profile', error);
+        throw error;
+
+    }
+}
+
+export const loginwithotpApi = async (userCredentials) => {
+    try {
+        const relativeUrl = "user/validateLoginOtp";
+        const response = await createDigestPostRequest(relativeUrl, userCredentials);
+        return response.json();
+
+    } catch (error) {
+        console.error('Error validating login OTP', error);
+        throw error;
+
+    }
+}
+
+export const otpviacall = async (userCredentials) => {
+    try {
+        const relativeUrl = "user/generateOtpForLogin";
+        const response = await createDigestPostRequest(relativeUrl, userCredentials);
+        return response.json();
+
+    } catch (error) {
+        console.error('Error validating login OTP', error);
+        throw error;
+
+    }
+}

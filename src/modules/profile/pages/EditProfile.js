@@ -8,6 +8,7 @@ import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Buttons from "../../../components/Buttons";
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { IconButton, } from 'react-native-paper';
 
 
 import DatePicker from '../../../components/DatePicker';
@@ -19,7 +20,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { useTranslation } from 'react-i18next';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ImageWithModal from '../../../components/ImageWithModal';
-import { fetchPinCodeData, PincodedetailList, GetProfession, Citylist, Getsubprofession, getUserProfile, sendFile, getFile } from '../../../utils/apiservice';
+import { fetchPinCodeData, PincodedetailList, GetProfession, Citylist, Getsubprofession, getUserProfile, sendFile, getFile, UpdateUserProfile } from '../../../utils/apiservice';
 // import Popup from '../../../components/Popup';
 // import Loader from '../../../components/Loader';
 
@@ -31,12 +32,15 @@ const EditProfile = () => {
     const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(false);
 
-    const [gender, setGender] = useState('Select Gender*');
+    const [gender, setGender] = useState(" ");
     const [selectedDate, setSelectedDate] = useState();
+    const [selectedDate1, setSelectedDate1] = useState();
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showDatePicker1, setShowDatePicker1] = useState(false);
+    const [pincode, setpincode] = useState('');
 
     const [SelfieData, setSelfieData] = useState(null);
+    const [selfieuuidnew, setselfieuuidnew] = useState(null);
     const [Idcardfront, setIdcardfront] = useState(null);
     const [Idcardback, setIdcardback] = useState(null);
     const [pancarddata, setpancarddata] = useState(null);
@@ -52,10 +56,10 @@ const EditProfile = () => {
     const [userName, setUserName] = useState('');
     const [userCode, setUserCode] = useState('');
     const [userImage, setUserImage] = useState('');
+    const [loyalty, setloyalty] = useState('Select');
     const [form1, setform1] = useState({
         "preferedLanguage": "",
         "name": "",
-        "gender": " ",
         "dateofbirth": "",
         "number": "",
         "WhatappNo": "",
@@ -71,11 +75,8 @@ const EditProfile = () => {
         "permanantdistrictId": "",
         "permanantstateId": "",
         "pincode": "",
-
-
+        "gender": "",
     })
-
-
 
     const [form2, setform2] = useState({
 
@@ -97,6 +98,8 @@ const EditProfile = () => {
         "IdProoftype": "",
         "idproofnumber": "",
         "pancard": "",
+        "userprofession": "",
+
     })
 
     const [nominee, setnominee] = useState({
@@ -128,6 +131,33 @@ const EditProfile = () => {
 
         }));
     }
+    const [schemes, setSchemes] = useState([{ schmename: '', resonforlikingschme: '' }]);
+    const [schemeData, setSchemeData] = useState({
+        1: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+        2: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+        3: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+        4: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+        5: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+    });
+
+    const handleInputChangeschemes = (schemeNumber, field, value) => {
+        setSchemeData((prevData) => ({
+            ...prevData,
+            [schemeNumber]: {
+                ...prevData[schemeNumber],
+                [field]: value,
+            },
+
+        }));
+        console.log('Updated schemeData:', schemeData);
+    };
+
+    const handleIconButtonPress = () => {
+        // Add a new set of text inputs
+        if (schemes.length < 5) {
+            setSchemes([...schemes, { schmename: '', resonforlikingschme: '' }]);
+        }
+    };
     async function Gettingprofession(params) {
 
         try {
@@ -147,11 +177,11 @@ const EditProfile = () => {
 
     const handleDateChange = (event, selectedDate) => {
         if (event.type === 'set') {
-            //  setSelectedDate(selectedDate);
+            // setSelectedDate(selectedDate);
             // handleFieldChange("dateofbirth", selectedDate)}
             handleFieldChange("dateofbirth", selectedDate);
 
-            //setShowDatePicker(false);
+            setShowDatePicker(false);
         }
         setShowDatePicker(false);
     };
@@ -268,28 +298,38 @@ const EditProfile = () => {
 
             const secondData = await PincodedetailList(pincodeid);
             console.log("<><><><><>IF NO HAPPENING THIS ", secondData.distId);
-            securrenttcityid(secondData.cityId);
+            handlefiledChangeform2("currentcityid", secondData.cityId);
             // setcurrentdistrictId(secondData.distId);
-            setcurrentstateid(secondData.stateId);
+            handlefiledChangeform2("cuurentstateid", secondData.stateId);
 
 
             const cityData = await getCityDataForDistrict(secondData.distId);
             // console.log('City Data:', cityData);
             setcitylistpicker(cityData);
-            setCurrentselectedState(secondData.stateName);
+            handlefiledChangeform2("currentstate", secondData.stateName);
 
 
-            setCurrentselectedDistrict(secondData.distName);
-            setcurrentdistrictId(secondData.distId);
-            console.log('================INSDE FETCH PINCODE FUNCTION ====================');
-            console.log(currentdistrictId);
-            console.log(currentstateid);
-            console.log(currentcityid);
-            console.log('====================================');
+            handlefiledChangeform2("currentdistrict", secondData.distName);
+            handlefiledChangeform2("currentdistrictId", secondData.distId);
+            // console.log('================INSDE FETCH PINCODE FUNCTION ====================');
+            // console.log(currentdistrictId);
+            // console.log(currentstateid);
+            // console.log(currentcityid);
+            // console.log('====================================');
         } catch (error) {
             console.error('Error in Page 1:', error);
         } finally {
             setIsLoading(false);
+        }
+    }
+
+    async function getCityDataForDistrict(districtId) {
+        try {
+            const cityData = await Citylist(districtId);
+            return cityData;
+        } catch (error) {
+            console.error('Error fetching city data for district:', error);
+            throw error;
         }
     }
     //========================eND OF FUNCTION========GETTTING DISTRICT AND STATE NAME WITH PINCODEID ========================//
@@ -322,14 +362,15 @@ const EditProfile = () => {
 
     function pincodefunction(text) {
 
-
         if (text.length >= 2) {
+
+
+            setpincode(text);
+            handlefiledChangeform2("currentpincode", text)
 
             fetchPincodeSuggestions(text);
             setOpen(true);
         }
-        handlefiledChangeform2("currentaddresspincode", text)
-
     }
     useEffect(() => {
 
@@ -346,16 +387,53 @@ const EditProfile = () => {
         getUserProfile()
             .then(response => response.json())
             .then(responseData => {
+                console.log("<><><Inise the edit profile", responseData);
                 setData(responseData);
                 setUserName(responseData.name);
                 setUserCode(responseData.userCode);
-                // console.log("?????????????????????", data);
+                setGender(responseData.gender);
+                console.log("##############", gender);
+
+                const parseDate = (dateString) => {
+                    const months = {
+                        Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+                        Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11
+                    };
+
+                    const [day, month, year] = dateString.split(' ');
+                    return new Date(year, months[month], day);
+                };
+                const nomineeDate = parseDate(responseData.bankDetail.nomineeDob)
+                const dobDate = parseDate(responseData.dob);
+                setSelectedDate(dobDate);
+                if (responseData.bankDetail.nomineeDob != null || "undefined") {
+                    setSelectedDate1(" ");
+                } else {
+                    setSelectedDate1(nomineeDate);
+                }
+
+
+                if (responseData.currPinCode == responseData.pinCode) {
+
+                    setform2(prevForm2 => ({
+                        ...prevForm2,
+                        currentaddressselections: "yes" || "",
+                    }))
+
+                } else {
+                    setform2(prevForm2 => ({
+                        ...prevForm2,
+                        currentaddressselections: "no" || "",
+                    }))
+
+                }
+                // console.log("?????????????????????", nomineeDate);
                 setform1(prevForm1 => ({
                     ...prevForm1,
                     preferedLanguage: responseData.preferredLanguage || "",
                     name: responseData.name || "",
                     gender: responseData.gender || "",
-                    // dateofbirth: responseData.dob || "",
+                    dateofbirth: dobDate || "",
                     number: responseData.contactNo || "",
                     WhatappNo: responseData.whatsappNo || "",
                     parmanentaddress: responseData.permanentAddress || "",
@@ -369,8 +447,6 @@ const EditProfile = () => {
                     permananetcityid: responseData.cityId || "",
                     permanantdistrictId: responseData.distId || "",
                     permanantstateId: responseData.stateId || "",
-
-
                 }));
                 setform2(prevform2 => ({
                     ...prevform2,
@@ -390,11 +466,55 @@ const EditProfile = () => {
                     annualbusiness: responseData.annualBusinessPotential || "",
                     //IdProoftype: responseData.
                     pancard: responseData.kycDetails.panCardNo || "",
-
-
-
+                    currentaddressselections: responseData.currPinCode == responseData.pinCode ? "Yes" : "No" || " ",
+                    userprofession: responseData.userProfession || "",
+                    idproofnumber: responseData.kycDetails.aadharOrVoterOrDlNo || "",
 
                 }))
+
+                // if (currentaddressselections == "No") {
+                //     setform2(prevform2 => ({
+                //         ...prevform2,
+                //         curremtaddress: responseData.currentAddress || "",
+                //         curretnstreet: responseData.currStreetAndLocality || "",
+                //         currentlandmark: responseData.currLandmark || "",
+                //         currentpincode: "",
+                //         currentCity: responseData.currCity || "",
+                //         currentdistrict: responseData.currDist || "",
+                //         currentstate: responseData.currState || "",
+                //         currentcityid: responseData.currCityId || "",
+                //         currentdistrictId: responseData.currDistId || "",
+                //         cuurentstateid: responseData.currStateId || "",
+                //         profession: responseData.profession || "",
+                //         martialStatus: responseData.maritalStatus || "",
+                //         alreadyenrolled: responseData.enrolledOtherSchemeYesNo || "",
+
+                //         annualbusiness: responseData.annualBusinessPotential || "",
+                //         IdProoftype: responseData.aadharOrVoterOrDLFront || "",
+                //         pancard: responseData.kycDetails.panCardNo || "",
+                //         currentaddressselections: responseData.currPinCode == responseData.pinCode ? "Yes" : "No" || " ",
+                //         userprofession: responseData.userProfession || "",
+
+
+
+                //     }))
+
+
+                // }
+
+                // if (currentaddressselections == 'No') {
+                //     handlefiledChangeform2("currentaddressselections", itemValue);
+                //     handlefiledChangeform2("curretnstreet", "");
+                //     handlefiledChangeform2("currentlandmark", "");
+                //     handlefiledChangeform2("currentpincode", "");
+                //     handlefiledChangeform2("currentCity", "");
+                //     handlefiledChangeform2("currentdistrict", "");
+                //     handlefiledChangeform2("currentstate", "");
+                // }
+
+                setloyalty(responseData.enrolledOtherSchemeYesNo == "Yes" ? "Yes" : "No")
+
+                console.log("Business Potential", loyalty);
 
 
                 setnominee(nomineform => ({
@@ -402,12 +522,9 @@ const EditProfile = () => {
                     nomineename: responseData.bankDetail.nomineeName || "",
                     nomineemail: responseData.bankDetail.nomineeEmail || "",
                     nomineenumber: responseData.bankDetail.nomineeMobileNo || "",
-                    // nomineedateofbirth: responseData.bankDetail.nomineeDob || "",
+                    nomineedateofbirth: nomineeDate || "",
                     nomineeaddress: responseData.bankDetail.nomineeAdd || "",
                     nomineerealtionship: responseData.bankDetail.nomineeRelation || "",
-
-
-
                 }))
                 fetchAndSetImageData(responseData.kycDetails.selfie, 'PROFILE', 1);
                 fetchAndSetImageData(responseData.kycDetails.aadharOrVoterOrDlBack, 'ID_CARD_FRONT', 1);
@@ -416,19 +533,20 @@ const EditProfile = () => {
 
 
 
-                console.log("<><><", SelfieData);
-                console.log("<><<><<><>><", responseData, "<><<<><><><><><><<><");
+                // console.log("<><><", SelfieData);
+                // console.log("<><<><<><>><", responseData, "<><<<><><><><><><<><");
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
             });
+        Gettingprofession();
 
 
 
     }, [])
     const fetchAndSetImageData = async (uuid, imageRelated, userRole) => {
         try {
-            setIsLoading(true)
+            // setIsLoading(true)
             const response = await getFile(uuid, imageRelated, userRole);
             const imageUrl = response.url;
 
@@ -451,22 +569,283 @@ const EditProfile = () => {
                     console.warn(`Unhandled imageRelated value: ${imageRelated}`);
             }
 
-            console.log(`Data set for ${imageRelated} (${uuid}):`, imageUrl);
+            // console.log(`Data set for ${imageRelated} (${uuid}):`, imageUrl);
             return response;
         } catch (error) {
             console.error(`Error getting file for ${imageRelated} (${uuid}):`, error);
             throw error;
         } finally {
+            // setIsLoading(false);
+        }
+    };
+    const uploadFiles = async (fileDataArray) => {
+
+        // console.log("", IdProofFrontData);
+        // console.log("", IdProofFrontData);
+        // console.log("", SelfieData);
+        // console.log("", PanData);
+
+        // console.log("$$$$$$$$", aadharbackuuid);
+        // console.log("$$$$$$$$", aadharfrontuuid);
+        // console.log("$$$$$$$$", selfieuuid);
+        // console.log("$$$$$$$$", pancarduuid);
+
+        try {
+            const responses = [];
+            for (const fileData of fileDataArray) {
+                const { imageRelated, file } = fileData;
+                console.log("inside api uplode files", file);
+
+                if (file) {
+                    const formData = new FormData();
+
+
+                    formData.append('file', {
+                        uri: file,
+                        type: 'image/' + file.split('/').pop().split('.').pop(),
+                        name: file.split('/').pop().split('.').pop(),
+
+                    });
+                    formData.append('image_related', imageRelated);
+                    formData.append('USER_ROLE', "1");
+
+                    //   console.log("<><><><><FROM DATA  ><><><", formData);
+
+                    const response = await sendFile(formData);
+                    console.log("<><><><><FROM API GET FILE  ><><><", response);
+                    responses.push(response.data);
+                }
+            }
+
+            return responses;
+        } catch (error) {
+
+
+            console.error('Error sending files:', error);
+            throw error;
+        }
+    };
+
+    const triggerupdateprofile = async () => {
+        try {
+            setIsLoading(true);
+            const filesToUpload = [
+
+                { imageRelated: 'PROFILE', file: SelfieData },
+
+            ];
+
+            // Filter out files with null data
+            const validFilesToUpload = filesToUpload.filter(fileData => fileData.file !== null);
+
+            if (validFilesToUpload.length >= 0) {
+                const responses = await uploadFiles(validFilesToUpload);
+
+                // Extract and store entityUid values in separate state variables
+                responses.forEach((response, index) => {
+                    switch (validFilesToUpload[index].imageRelated) {
+
+                        case 'PROFILE':
+                            setselfieuuidnew(response.entityUid);
+                            console.log("just going insde ", selfieuuidnew);
+                            break;
+                        default:
+                            break;
+                    }
+
+                });
+
+                if (selfieuuidnew != 'undefined' && selfieuuidnew != null) {
+                    updateuseprofile();
+                }
+                else {
+
+                }
+            } else {
+                console.log('No valid files to upload.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        } finally {
             setIsLoading(false);
         }
     };
 
-    const baseurl = 'https://www.vguardrishta.com/img/appImages/Profile/';
+
+    const updateuseprofile = async () => {
+        const profilebody = {
+            "appVersionCode": "",
+            "retailerAppVersionCode": "",
+            "egvEnabled": "",
+            "otpType": "",
+            "welcomePointsMsg": "0",
+            "ecardPath": "E-Card_Unavailable.pdf",
+            "userId": "1",
+            "password": "",
+            "inAllow": "",
+            "userCode": userCode,
+            "emailId": form1.email,
+            "enrolledOtherScheme": "",
+            "enrolledOtherSchemeYesNo": form2.alreadyenrolled,
+            "maritalStatus": form2.martialStatus,
+            "maritalStatusId": "",
+            "distId": form1.permanantdistrictId,
+            "cityId": form1.permananetcityid,
+            "addDiff": "",
+            "houseFlatNo": form1.parmanentaddress,
+            "userProfession": form2.userprofession,
+            "professionId": "",
+            "subProfessionId": "",
+            "profession": form2.profession,
+            "loginOtpUserName": "",
+            "mobileNo": form1.number,
+            "otp": "",
+            "preferredLanguage": form1.preferedLanguage,
+            "preferredLanguagePos": "",
+            "referralCode": "",
+            "nameOfReferee": "",
+            "name": form1.name,
+            "gender": form2.gender,
+            "genderPos": "",
+            "dob": form1.dateofbirth,
+            "contactNo": form1.number,
+            "whatsappNo": form1.WhatappNo,
+            "permanentAddress": form1.parmanentaddress,
+            "streetAndLocality": form1.permanantStreet,
+            "landmark": form1.permanantlandmark,
+            "city": form1.permanantcity,
+            "dist": form1.permanentdistrict,
+            "state": form1.permanentstate,
+            "stateId": form1.permanantstateId,
+            "pinCode": form1.pincode,
+            "currentAddress": form2.curremtaddress,
+            "currStreetAndLocality": form2.curretnstreet,
+            "currLandmark": form2.currentlandmark,
+            "currCity": form2.currentCity,
+            "currCityId": form2.currentcityid,
+            "currDistId": form2.currentdistrictId,
+            "currDist": form2.currentdistrict,
+            "currState": form2.currentstate,
+            "currStateId": form2.cuurentstateid,
+            "currPinCode": form2.currentpincode,
+            "otherCity": "",
+            "otherCurrCity": "",
+            "otherSchemeBrand": "",
+            "abtOtherSchemeLiked": "",
+            "otherSchemeBrand2": "",
+            "abtOtherSchemeLiked2": "",
+            "otherSchemeBrand3": "",
+            "abtOtherSchemeLiked3": "",
+            "otherSchemeBrand4": "",
+            "abtOtherSchemeLiked4": "",
+            "otherSchemeBrand5": "",
+            "abtOtherSchemeLiked5": "",
+            "annualBusinessPotential": form2.annualBusinessPotential,
+
+
+
+            "bankDetail": {
+                "errorMessage": "",
+                "bankId": "",
+                "bankAccNo": "",
+                "bankAccHolderName": "",
+                "bankAccType": "",
+                "bankAccTypePos": "",
+                "bankNameAndBranch": "",
+                "branchAddress": "",
+                "bankIfsc": "",
+                "nomineeName": nominee.nomineename,
+                "nomineeDob": nominee.nomineedateofbirth,
+                "checkPhoto": "",
+                "nomineeMobileNo": nominee.nomineenumber,
+                "nomineeEmail": nominee.nomineemail,
+                "nomineeAdd": nominee.nomineeaddress,
+                "nomineeRelation": nominee.nomineerealtionship,
+                "nomineeAccNo": "",
+                "bankDataPresent": "",
+
+            },
+
+            "pointsSummary": {
+                "pointsBalance": "",
+                "redeemedPoints": "",
+                "numberOfScan": "",
+                "tdsPoints": "",
+                "schemePoints": "",
+                "totalPointsRedeemed": "",
+                "totalPointsEarned": "",
+
+            },
+
+            "kycDetails": {
+                "kycFlag": "",
+                "userId": "",
+                "kycIdName": "",
+                "kycId": "",
+                "selfie": selfieuuidnew,
+                "aadharOrVoterOrDLFront": "",
+                "aadharOrVoterOrDlBack": "",
+                "aadharOrVoterOrDlNo": "",
+                "panCardFront": "",
+                "panCardBack": "",
+                "panCardNo": "",
+                "gstFront": "",
+                "gstNo": "",
+                "gstYesNo": "",
+
+            },
+
+            "rejectedReasonsStr": "",
+            "roleId": "",
+            "gstNo": "",
+            "gstYesNo": "",
+            "gstPic": "",
+            "categoryDealInID": "",
+            "categoryDealIn": "",
+            "aspireGift": "",
+            "firmName": "",
+            "tierFlag": "",
+            "fcmToken": "",
+            "active": "",
+            "airCoolerEnabled": "",
+
+
+            "welcomeBanner": {
+                "code": "",
+                "textMessage": "",
+                "videoPath": "",
+                "imgPath": "",
+                "vdoText": "",
+
+            },
+
+            "updateAccount": "",
+            "islead": "",
+            "diffAcc": ""
+
+        };
+
+        try {
+            console.log("@@@@@@@@@@@@@@@@@@", profilebody);
+            const resposne = await UpdateUserProfile(profilebody);
+            console.log("@@@@@@@@@@@@@@@@@@", resposne);
+
+
+
+        } catch (error) {
+            console.log("Error in updating user profile ", error);
+
+        } finally {
+
+        }
+    }
+
+    //  const baseurl = 'https://www.vguardrishta.com/img/appImages/Profile/';
     return (
         <><ScrollView style={styles.mainWrapper}>
             <View style={styles.flexBox}>
                 <View style={styles.ImageProfile}>
-                    <Image source={{ uri: SelfieData }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
+                    <Image source={{ uri: SelfieData }} style={{ width: '100%', height: '100%', borderRadius: 50 }} resizeMode='cover' />
                 </View>
                 <View style={{ margin: 10, backgroundColor: 'yellow' }}></View>
                 <View style={styles.profileText}>
@@ -487,10 +866,8 @@ const EditProfile = () => {
 
                     containerStyles={styles.input}
                     labelStyles={styles.labelStyles}
-                    inputStyles={{
-                        color: 'black',
-                        paddingHorizontal: 15,
-                    }} />
+                    inputStyles={styles.inputStyle}
+                />
                 <FloatingLabelInput
                     label={t('strings:name')}
                     value={form1.name}
@@ -511,12 +888,12 @@ const EditProfile = () => {
                     <Picker
                         mode='dropdown'
                         style={{ color: 'black' }}
-                        selectedValue={form1.gender}
+                        selectedValue={gender}
                         onValueChange={(itemValue, itemIndex) => {
                             // console.log("Selected Value: ", itemValue)
-                            handleFieldChange("gender", itemValue)
+                            setGender(itemValue)
                         }}>
-                        <Picker.Item label="Select Gender*" value="Select Gender*" />
+                        <Picker.Item label="Select Gender*" value=" " />
                         <Picker.Item label="Male" value="Male " />
                         <Picker.Item label="Female" value="Female " />
                         <Picker.Item label="Other" value="Other" />
@@ -544,7 +921,7 @@ const EditProfile = () => {
                         onDateChange={handleDateChange}
                         showDatePicker={showDatePicker}
                         onShowDatePicker={handleShowDatePicker} />
-                    <Icon name="keyboard-o" size={25} color="grey" style={{ margin: 18, left: width / 2.1 }} />
+                    <Icon name="keyboard-o" size={25} color="grey" style={{ margin: 18, left: width / 2.5, postion: 'relative' }} />
 
 
                 </View>
@@ -560,10 +937,7 @@ const EditProfile = () => {
                     staticLabel
                     containerStyles={styles.input}
                     labelStyles={styles.labelStyles}
-                    inputStyles={{
-                        color: 'black',
-                        paddingHorizontal: 15,
-                    }} />
+                    inputStyles={styles.inputStyle} />
                 <FloatingLabelInput
                     label={t('strings:_is_what_s_app_contact_same_as_above')}
                     maxLength={10}
@@ -573,10 +947,7 @@ const EditProfile = () => {
                     staticLabel
                     containerStyles={styles.input}
                     labelStyles={styles.labelStyles}
-                    inputStyles={{
-                        color: 'black',
-                        paddingHorizontal: 15,
-                    }} />
+                    inputStyles={styles.inputStyle} />
                 <FloatingLabelInput
                     label={t('strings:email')}
                     keyboardType='email-address'
@@ -585,10 +956,7 @@ const EditProfile = () => {
                     staticLabel
                     containerStyles={styles.input}
                     labelStyles={styles.labelStyles}
-                    inputStyles={{
-                        color: 'black',
-                        paddingHorizontal: 15,
-                    }} />
+                    inputStyles={styles.inputStyle} />
                 <Text>Permanent Address</Text>
                 <FloatingLabelInput
 
@@ -602,10 +970,7 @@ const EditProfile = () => {
                     // onChangeText={(text) => setaddress(text)}
                     containerStyles={styles.input}
                     labelStyles={styles.labelStyles}
-                    inputStyles={{
-                        color: 'black',
-                        paddingHorizontal: 15,
-                    }} />
+                    inputStyles={styles.inputStyle} />
                 <FloatingLabelInput
                     label={t('strings:lbl_street_locality')}
                     maxLength={128}
@@ -615,10 +980,8 @@ const EditProfile = () => {
                     containerStyles={styles.input}
                     staticLabel
                     labelStyles={styles.labelStyles}
-                    inputStyles={{
-                        color: 'black',
-                        paddingHorizontal: 16,
-                    }} />
+                    inputStyles={styles.inputStyle}
+                />
                 <FloatingLabelInput
                     label={t('strings:lbl_landmark')}
 
@@ -630,11 +993,8 @@ const EditProfile = () => {
                     // onChangeText={(text) => setlandmark(text)}
                     containerStyles={styles.input}
                     labelStyles={styles.labelStyles}
-                    inputStyles={{
-                        color: 'black',
-                        paddingHorizontal: 15,
-
-                    }} />
+                    inputStyles={styles.inputStyle}
+                />
 
                 <FloatingLabelInput
                     containerStyles={styles.input}
@@ -646,10 +1006,8 @@ const EditProfile = () => {
                     //   setOpen(true)]}
                     staticLabel
                     labelStyles={styles.labelStyles}
-                    inputStyles={{
-                        color: 'grey',
-                        paddingHorizontal: 15,
-                    }} />
+                    inputStyles={styles.inputStyle}
+                />
 
                 <FloatingLabelInput
                     containerStyles={styles.input}
@@ -660,10 +1018,8 @@ const EditProfile = () => {
                     //   setOpen(true)]}
                     staticLabel
                     labelStyles={styles.labelStyles}
-                    inputStyles={{
-                        color: 'grey',
-                        paddingHorizontal: 15,
-                    }} />
+                    inputStyles={styles.inputStyle}
+                />
                 <FloatingLabelInput
                     containerStyles={styles.input}
                     label={t('strings:select_state')}
@@ -688,10 +1044,8 @@ const EditProfile = () => {
                     //   setOpen(true)]}
                     staticLabel
                     labelStyles={styles.labelStyles}
-                    inputStyles={{
-                        color: 'grey',
-                        paddingHorizontal: 15,
-                    }} />
+                    inputStyles={styles.inputStyle}
+                />
 
                 <Text style={{ color: 'black', marginLeft: 15, margin: 5, color: "grey", fontSize: responsiveFontSize(1.8) }}>{t('strings:is_current_address_different')}</Text>
 
@@ -705,86 +1059,74 @@ const EditProfile = () => {
                         onValueChange={(itemValue, itemIndex) => {
                             handlefiledChangeform2("currentaddressselections", itemValue)
 
-                            // if (itemValue == 'no') {
-                            //     handlefiledChangeform2("currentaddressselections", itemValue);
-                            // }
-                            // if (itemValue == 'yes') {
-                            //     handlefiledChangeform2("form2.currentaddressselections", form1.parmanentaddress);
-                            //     handlefiledChangeform2("curretnstreet", form1.permanantStreet);
-                            //     handlefiledChangeform2("currentlandmark", form1.permanantlandmark);
-                            //     handlefiledChangeform2("currentpincode", form1.permanentpincode);
-                            //     handlefiledChangeform2("currentCity", form1.permanantcity);
-                            //     handlefiledChangeform2("currentdistrict", form1.permanentdistrict);
-                            //     handlefiledChangeform2("currentstate", form1.permanentstate);
-                            // }
+                            if (itemValue == 'No') {
+                                handlefiledChangeform2("currentaddressselections", itemValue);
+                                handlefiledChangeform2("curremtaddress", "");
+                                handlefiledChangeform2("curretnstreet", "");
+                                handlefiledChangeform2("currentlandmark", "");
+                                handlefiledChangeform2("currentpincode", "");
+                                handlefiledChangeform2("currentCity", "");
+                                handlefiledChangeform2("currentdistrict", "");
+                                handlefiledChangeform2("currentstate", "");
+                            }
+                            if (itemValue == 'Yes') {
+                                handlefiledChangeform2("form2.currentaddressselections", form2.currentaddressselections);
+                                handlefiledChangeform2("curremtaddress", form1.parmanentaddress);
+                                handlefiledChangeform2("curretnstreet", form1.permanantStreet);
+                                handlefiledChangeform2("currentlandmark", form1.permanantlandmark);
+                                handlefiledChangeform2("currentpincode", form1.permanentpincode);
+                                handlefiledChangeform2("currentCity", form1.permanantcity);
+                                handlefiledChangeform2("currentdistrict", form1.permanentdistrict);
+                                handlefiledChangeform2("currentstate", form1.permanentstate);
+                            }
                         }}
                     >
                         <Picker.Item label="Select" value="Select" />
-                        <Picker.Item label="yes" value="yes" />
-                        <Picker.Item label="no" value="no" />
+                        <Picker.Item label="Yes" value="Yes" />
+                        <Picker.Item label="No" value="No" />
                     </Picker>
                 </View>
 
-                {form2.currentaddressselections == 'select' || form2.currentaddressselections == 'yes' ? <></> : <>
+                {form2.currentaddressselections == 'select' || form2.currentaddressselections == 'Yes' ? <></> : <>
                     <FloatingLabelInput
-
-
                         label="Current House Flat/block no"
-
-
-                        editable={form2.currentaddressselections === 'no'}
+                        editable={form2.currentaddressselections === 'No'}
                         keyboardType='default'
                         value={form2.curremtaddress}
                         onChangeText={(text) => handlefiledChangeform2("curremtaddress", text)}
                         containerStyles={styles.input}
                         staticLabel
                         labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10
-                        }} />
+                        inputStyles={styles.inputStyle}
+                    />
                     <FloatingLabelInput
-
-                        editable={form2.currentaddressselections == 'no'}
+                        editable={form2.currentaddressselections == 'No'}
                         label="Current Street/ Colony/Locality Name *"
-
-
                         keyboardType='default'
                         value={form2.curretnstreet}
                         onChangeText={(text) => handlefiledChangeform2("curretnstreet", text)}
                         containerStyles={styles.input}
                         staticLabel
                         labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10
-                        }} />
+                        inputStyles={styles.inputStyle}
+
+                    />
                     <FloatingLabelInput
 
-                        editable={form2.currentaddressselections == 'no'}
+                        editable={form2.currentaddressselections == 'No'}
                         label="Landmark"
-
-
                         keyboardType='default'
                         value={form2.currentlandmark}
                         onChangeText={(text) => handlefiledChangeform2("currentlandmark", text)}
                         containerStyles={styles.input}
                         staticLabel
                         labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10
-                        }} />
+                        inputStyles={styles.inputStyle}
+                    />
                 </>}
-
-
-                {form2.currentaddressselections === 'no' ? <></>
-
-
+                {form2.currentaddressselections == 'Yes' ? <></>
                     :
-
                     <>
-
                         <DropDownPicker
                             mode="BADGE"
                             showBadgeDot={true}
@@ -794,7 +1136,6 @@ const EditProfile = () => {
                             placeholder={form2.currentpincode == "" ? 'Search Pincode' : `Searched Pincode: ${form2.currentpincode}`}
                             searchablePlaceholder="Search Pincode"
                             translation={t('auth:newuser:Secondpagepincode')}
-
                             // placeholder={value}
                             searchTextInputProps={{
                                 maxLength: 6
@@ -815,25 +1156,25 @@ const EditProfile = () => {
                             listMode="SCROLLVIEW"
                             scrollViewProps={{ nestedScrollEnabled: true, decelerationRate: "fast" }}
                             open={open}
+                            value={form2.currentpincode}
                             items={suggestions.map((item) => ({
                                 label: item.pinCode,
                                 value: item.pinCode,
                             }))}
                             setOpen={setOpen}
-                            value={form2.currentpincode}
-                            onChangeItem={(item) => {
+                            // value={form2.currentpincode}
+                            onchangeItem={(item) => {
+                                //  handlefiledChangeform2("currentpincode", item.value)
+                                setpincode(item)
 
-                                setpincode(item.value)
                             }}
                             onChangeSearchText={(text) => pincodefunction(text)}
                             dropDownContainerStyle={{
                                 width: width / 1.2,
-
                                 height: height / 5,
                                 padding: 10,
                                 left: 14,
                                 borderRadius: 5,
-
                                 borderWidth: 0,
                                 elevation: 0,
                                 backgroundColor: '#D3D3D3'
@@ -853,11 +1194,64 @@ const EditProfile = () => {
                                 margin: 20,
                             }} />
 
+                        <FloatingLabelInput
+
+                            editable={form2.currentaddressselections == 'No'}
+                            label="District"
+                            keyboardType='default'
+                            value={form2.currentdistrict}
+                            onChangeText={(text) => handlefiledChangeform2("currentdistrict", text)}
+                            containerStyles={styles.input}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={styles.inputStyle}
+                        />
+                        <FloatingLabelInput
+
+                            editable={form2.currentaddressselections == 'No'}
+                            label="State Name"
+                            keyboardType='default'
+                            value={form2.currentstate}
+                            onChangeText={(text) => handlefiledChangeform2("currentstate", text)}
+                            containerStyles={styles.input}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={styles.inputStyle}
+                        />
+
+                        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_city')}</Text>
+                        <View style={{ backgroundColor: 'transparent', height: height / 15, margin: 20, borderRadius: 10, flexDirection: 'column', marginTop: 0, borderWidth: 2, borderColor: "#D3D3D3", elevation: 0, width: width / 1.15, alignSelf: "center" }}>
+                            <Picker
+                                mode='model'
+                                style={{ color: 'black' }}
+                                selectedValue={form2.currentCity}
+                                onValueChange={(itemValue, itemIndex) => {
+                                    const selectedItem = citylistpicker[itemIndex];
+                                    handlefiledChangeform2("currentCity", itemValue);
+                                    handlefiledChangeform2("currentcityid", selectedItem.id);
+                                }}>
+
+                                {Array.isArray(citylistpicker) && citylistpicker.length >= 0 ? (
+                                    citylistpicker.map(item => (
+                                        <Picker.Item
+                                            key={item.id}
+                                            label={item.cityName}
+                                            value={item.cityName}
+                                        />
+                                    ))
+                                ) : (
+
+                                    <Picker.Item label={form2.currentCity} value={form2.currentCity} />
 
 
-                    </>}
+                                )}
+                            </Picker>
+                        </View>
+
+                    </>
 
 
+                }
                 <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:select_profession')}</Text>
                 <View style={{
                     backgroundColor: '#fff', height: height / 17, margin: 10, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 1.8, borderColor: '#D3D3D3', borderRadius: 10,
@@ -889,31 +1283,22 @@ const EditProfile = () => {
                         onValueChange={(itemValue, itemIndex) => handlefiledChangeform2("martialStatus", itemValue)}
                     >
                         <Picker.Item label="Select" value="" />
-                        <Picker.Item label="Married" value="1" />
-                        <Picker.Item label=" Unmarried" value="0" />
+                        <Picker.Item label="Married" value="Married" />
+                        <Picker.Item label=" Unmarried" value="Unmarried" />
 
 
                     </Picker>
-
-
-
                 </View>
 
                 <FloatingLabelInput
-
                     label="Annual business potential*"
-                    value={form2.annualbusiness}
+                    value={form2.annualbusiness.toString()}
                     onChangeText={(text) => handlefiledChangeform2("annualbusiness", text)}
                     keyboardType='number-pad'
-
-
                     containerStyles={[styles.input]}
                     staticLabel
                     labelStyles={styles.labelStyles}
-                    inputStyles={{
-                        // color: isAadharValid ? 'black' : 'red',
-                        paddingHorizontal: 15,
-                    }}
+                    inputStyles={styles.inputStyle}
                     // onBlur={handleAadharBlur}
                     maxLength={12} />
 
@@ -923,7 +1308,6 @@ const EditProfile = () => {
                     <View
                         style={styles.imagepicker}
                     >
-
                         {SelfieData === null ?
                             <TouchableOpacity onPress={() => setselfieemodal(true)}>
                                 <><Text style={{ color: 'black', top: 15 }}>Update your selfie*</Text></>
@@ -934,7 +1318,6 @@ const EditProfile = () => {
                                 </View>
 
                             </TouchableOpacity>}
-
                         <Modal
                             animationType="slide"
                             transparent={true}
@@ -1011,8 +1394,9 @@ const EditProfile = () => {
 
 
                     <Picker
-                        mode='dropdown'
                         style={{ color: 'black' }}
+                        selectedValue={form2.alreadyenrolled}
+                        onValueChange={(itemValue, itemIndex) => handlefiledChangeform2("alreadyenrolled", itemValue)}
                     >
                         <Picker.Item label="Select" value="Select" />
                         <Picker.Item label="Yes" value="Yes" />
@@ -1023,6 +1407,46 @@ const EditProfile = () => {
                     </Picker>
 
                 </View>
+
+                {form2.alreadyenrolled == "Yes" ?
+                    <View>
+                        {form2.alreadyenrolled == "Yes" &&
+                            schemes.map((scheme, index) => (
+                                <View key={index} style={styles.schemeContainer}>
+                                    <FloatingLabelInput
+                                        label={`Scheme ${index + 1} Brand Name`}
+                                        value={schemeData[index + 1].otherSchemeBrand}
+                                        onChangeText={(text) => handleInputChangeschemes(index + 1, `otherSchemeBrand`, text)}
+                                        keyboardType="default"
+                                        containerStyles={styles.input}
+                                        staticLabel
+                                        labelStyles={styles.labelStyles}
+                                        inputStyles={{
+                                            color: 'black',
+                                            paddingHorizontal: 10,
+                                        }}
+                                    />
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <FloatingLabelInput
+                                            label={`Reason for liking Scheme ${index + 1}`}
+                                            value={schemeData[index + 1].abtOtherSchemeLiked}
+                                            onChangeText={(text) => handleInputChangeschemes(index + 1, `abtOtherSchemeLiked`, text)}
+                                            keyboardType="default"
+                                            containerStyles={styles.input}
+                                            staticLabel
+                                            labelStyles={styles.labelStyles}
+                                            inputStyles={{
+                                                color: 'black',
+                                                paddingHorizontal: 10,
+                                            }}
+                                        />
+                                        <IconButton style={styles.iconButton} icon="plus" size={20} onPress={handleIconButtonPress} />
+                                    </View>
+                                </View>
+                            ))}
+                    </View> : null}
+
+
                 <FloatingLabelInput
 
                     label="ID Proof type"
@@ -1051,15 +1475,14 @@ const EditProfile = () => {
                     <Text style={{ color: '#D3D3D3', }}>IdProof*(Front)</Text>
                     {Idcardback != null ? <ImageWithModal imageUri={Idcardback} style={styles.noimagepicker} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={styles.noimagepicker} />}
                 </View>
+
                 <FloatingLabelInput
 
                     label={t('strings:update_aadhar_voter_id_dl_manually')}
-
-                    // value={aadharcardno}
-                    // onChangeText={(text) => setaadharcardno(text)}
+                    value={form2.idproofnumber}
+                    onChangeText={(text) => handlefiledChangeform2("idproofnumber", text)}
                     keyboardType='number-pad'
                     editable={false}
-
                     containerStyles={[styles.input]}
                     staticLabel
                     labelStyles={styles.labelStyles}
@@ -1074,15 +1497,15 @@ const EditProfile = () => {
                 <Text style={{ color: 'black', marginLeft: 24, marginBottom: 12 }}>{t('strings:update_pan_card_front')}</Text>
                 <View style={styles.imagecontainereditprofile}>
                     <Text style={{ color: '#D3D3D3', }}>Pan Card(Front)</Text>
-                    {pancarddata != null ? <ImageWithModal imageUri={pancarddata} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={styles.noimagepicker} />}
+                    {pancarddata != null ? <ImageWithModal imageUri={pancarddata} style={{ marginBottom: 10 }} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={styles.noimagepicker} />}
                 </View>
 
                 <FloatingLabelInput
 
                     label={t('strings:update_pan_number_manually')}
 
-                    // value={aadharcardno}
-                    // onChangeText={(text) => setaadharcardno(text)}
+                    value={form2.pancard}
+                    onChangeText={(text) => handlefiledChangeform2("pancard", text)}
                     keyboardType='number-pad'
 
                     containerStyles={[styles.input]}
@@ -1133,7 +1556,7 @@ const EditProfile = () => {
                             onDateChange={handleDateChange2}
                             showDatePicker={showDatePicker1}
                             onShowDatePicker={handleShowDatePicker1} />
-                        <Icon name="keyboard-o" size={25} color="grey" style={{ margin: 18, left: width / 2.1, postion: 'absolute' }} />
+                        <Icon name="keyboard-o" size={20} color="grey" style={{ margin: 18, left: width / 2.5, postion: 'relative' }} />
 
                     </View>
 
@@ -1192,10 +1615,7 @@ const EditProfile = () => {
                         onChangeText={(text) => handlefiledchnage3("nomineerealtionship", text)}
                         staticLabel
                         labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 15,
-                        }} />
+                        inputStyles={styles.inputStyle} />
                     <View style={{ height: height / 15 }}></View>
                 </View>
 
@@ -1230,6 +1650,7 @@ const EditProfile = () => {
                     onPress={() => {
 
                         // callUploadAndThenAnotherFunction();
+                        triggerupdateprofile();
                     }}
                     variant="filled"
                     width={width / 1.05}
@@ -1255,6 +1676,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
 
     },
+    iconButton: {
+        backgroundColor: colors.yellow, // Replace 'yourBackgroundColor' with the desired color
+        borderRadius: 50,
+        alignSelf: 'center',
+    },
     viewProfile: {
         color: colors.yellow,
         fontWeight: 'bold',
@@ -1271,7 +1697,7 @@ const styles = StyleSheet.create({
     textDetail: {
         color: colors.black,
         fontWeight: 'bold',
-        fontSize: responsiveFontSize(2)
+        fontSize: responsiveFontSize(2),
     },
 
     button: {
@@ -1290,11 +1716,12 @@ const styles = StyleSheet.create({
     labelStyles: {
         backgroundColor: 'transparent',
         margin: 14,
+
         color: '#D3D3D3',
     },
     input: {
         padding: 5,
-        height: height / 15,
+        height: height / 13.5,
         margin: 10,
         marginTop: 5,
         color: 'black',
@@ -1347,6 +1774,14 @@ const styles = StyleSheet.create({
         width: width / 1.75,
 
     },
+    inputStyle: {
+
+        paddingHorizontal: 20,
+        paddingTop: 20,
+        height: height / 15,
+        color: "black",
+
+    },
     picker: {
         backgroundColor: '#fff',
         height: height / 20,
@@ -1376,7 +1811,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row', padding: 5,
         height: height / 15,
         margin: 10,
-        marginTop: 5,
+        marginBottom: 10,
+        paddingVertical: 1,
+
         color: 'black',
         borderRadius: 5,
         backgroundColor: '#fff',

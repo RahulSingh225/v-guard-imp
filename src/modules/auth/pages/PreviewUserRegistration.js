@@ -102,16 +102,35 @@ const PreviewUserRegistration = ({ navigation, route }) => {
     const [nomineemobileno, setnomineemobileno] = useState('');
     const [nomineeemail, setnomineeemail] = useState('');
     const [nomineeaddress, setnomineeaddress] = useState('');
-    const [nomineedate, setnomineedate] = useState('');
+    const [selectedDatenominee, setSelectedDatenominee] = useState();
+    const [nomineedate, setnomineedate] = useState();
     const [previewData, setPreviewData] = useState(null);
     const [relationwithyou, setrelationwithyou] = useState('');
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [schemes, setSchemes] = useState([{ schmename: '', resonforlikingschme: '' }]);
+    const [schemeData, setSchemeData] = useState({
+        1: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+        2: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+        3: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+        4: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+        5: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+    });
     // const { PreviewSummaryData } = route.params;
     // console.log('==================%%%=PREVIEW SUMMARY=================', PreviewSummaryData);
 
+    const handleInputChangeschemes = (schemeNumber, field, value) => {
+        setSchemeData((prevData) => ({
+            ...prevData,
+            [schemeNumber]: {
+                ...prevData[schemeNumber],
+                [field]: value,
+            },
 
+        }));
+        console.log('Updated schemeData:', schemeData);
+    };
 
     // console.log(KycData);
     // console.log('===============^^^^=====================', Userdata);
@@ -132,6 +151,32 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     // Parse the JSON string back into an object
 
                     const retrievedData = JSON.parse(data);
+                    const retrievedSchemeData = retrievedData.fullData.NewUserKycData.schemeData;
+                    console.log("??????????????????", retrievedSchemeData);
+                    const updatedSchemeData = {
+                        1: {
+                            otherSchemeBrand: retrievedSchemeData[1]?.otherSchemeBrand,
+                            abtOtherSchemeLiked: retrievedSchemeData[1]?.abtOtherSchemeLiked,
+                        },
+                        2: {
+                            otherSchemeBrand: retrievedSchemeData[2]?.otherSchemeBrand1,
+                            abtOtherSchemeLiked: retrievedSchemeData[2]?.abtOtherSchemeLiked1,
+                        },
+                        3: {
+                            otherSchemeBrand: retrievedSchemeData[3]?.otherSchemeBrand2,
+                            abtOtherSchemeLiked: retrievedSchemeData[3]?.abtOtherSchemeLiked2,
+                        },
+                        4: {
+                            otherSchemeBrand: retrievedSchemeData[4]?.otherSchemeBrand3,
+                            abtOtherSchemeLiked: retrievedSchemeData[4]?.abtOtherSchemeLiked3,
+                        },
+                        5: {
+                            otherSchemeBrand: retrievedSchemeData[5]?.otherSchemeBrand4,
+                            abtOtherSchemeLiked: retrievedSchemeData[5]?.abtOtherSchemeLiked4,
+                        },
+                    };
+                    console.log("??????????????????", updatedSchemeData);
+                    setSchemeData(updatedSchemeData);
                     console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData);
                     // console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.userData.permananetsateid);
                     // console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.userData.permananetcityid);
@@ -148,7 +193,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     setaddress(retrievedData.fullData.userData.address);
                     setstreet(retrievedData.fullData.userData.street);
                     setlandmark(retrievedData.fullData.userData.landmark);
-                    setSelectedDate(retrievedData.fullData.userData.selectedDate);
+                    setSelectedDate(retrievedData.fullData.userData.selectedDate.substring(0, 10));
                     setname(retrievedData.fullData.userData.name);
                     setPincode(retrievedData.fullData.userData.pincode);
                     setSelectedState(retrievedData.fullData.userData.selectedState);
@@ -187,9 +232,10 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     setnomineeemail(retrievedData.BankDetailsAndNominee.nomineeemail);
                     setnomineeaddress(retrievedData.BankDetailsAndNominee.nomineeaddress);
                     setrelationwithyou(retrievedData.BankDetailsAndNominee.relationship);
-                    setnomineedate(retrievedData.BankDetailsAndNominee.nomineeselectedDate);
-                    setnomineedate(retrievedData.BankDetailsAndNominee.nomineeselectedDate);
-                    // console.log("><><><><><><<><><", retrievedData.fullData.userData.selectedDate);
+
+                    setSelectedDatenominee(retrievedData.BankDetailsAndNominee.selectedDatenominee);
+                    setnomineedate(retrievedData.BankDetailsAndNominee.selectedDatenominee.substring(0, 10))
+
                     if (retrievedData.fullData.NewUserKycData.currentaddres == "yes") {
                         setpermananrstateid(retrievedData.fullData.userData.permananetsateid);
                         setpermantdistrictid(retrievedData.fullData.userData.permananetdistrictId);
@@ -209,15 +255,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                 }
 
-                if (selectedDate) {
-                    const date = selectedDate;
-                    if (!isNaN(date)) {
-                        const dateWithoutTime = date.toISOString().split('T')[0];
-                        setSelectedDate(dateWithoutTime);
-                    } else {
-                        console.error('Invalid date:', selectedDate);
-                    }
-                }
+
             } catch (error) {
                 console.error('Error retrieving data: ', error);
             } finally {
@@ -230,17 +268,24 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
         // GettingAppversion();
         Gettingprofession();
-        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharfrontuuid,);
-        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharbackuuid);
-        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", pancarduuid);
-        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", chequeImageuuid);
+        // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharfrontuuid,);
+        // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharbackuuid);
+        // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", pancarduuid);
+        // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", chequeImageuuid);
         // console.log("================================================");
         // console.log(">><><<><>><><><><><><><><><><><><", userbody);
         // console.log("================================================");
-    }, []);
+    }, [aadharfrontuuid, aadharbackuuid, pancarduuid, chequeImageuuid, selfieeuuid]);
 
     const updateDataInAsyncStorage = async () => {
         navigation.navigate("newUser");
+    };
+
+    const handleIconButtonPress = () => {
+        // Add a new set of text inputs
+        if (schemes.length < 5) {
+            setSchemes([...schemes, { schmename: '', resonforlikingschme: '' }]);
+        }
     };
 
     const userbody = {
@@ -251,7 +296,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
         "emailId": email,
         "enrolledOtherScheme": 0,
         "maritalStatus": maritialStatus,
-        "maritalStatusId": null,
+        "maritalStatusId": maritialStatusid,
         "distId": permantdistrictid,
         "cityId": permanentcityid,
         "addDiff": 1,
@@ -294,16 +339,16 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
         // "otherCity": null,
         // "otherCurrCity": null,
-        "otherSchemeBrand": "",
-        "abtOtherSchemeLiked": "",
-        "otherSchemeBrand2": "",
-        "abtOtherSchemeLiked2": "",
-        "otherSchemeBrand3": "",
-        "abtOtherSchemeLiked3": "",
-        "otherSchemeBrand4": "",
-        "abtOtherSchemeLiked4": "",
-        "otherSchemeBrand5": "",
-        "abtOtherSchemeLiked5": "",
+        "otherSchemeBrand": schemeData[1].otherSchemeBrand,
+        "abtOtherSchemeLiked": schemeData[1].abtOtherSchemeLiked,
+        "otherSchemeBrand2": schemeData[2].otherSchemeBrand,
+        "abtOtherSchemeLiked2": schemeData[2].abtOtherSchemeLiked,
+        "otherSchemeBrand3": schemeData[3].otherSchemeBrand,
+        "abtOtherSchemeLiked3": schemeData[3].abtOtherSchemeLiked,
+        "otherSchemeBrand4": schemeData[4].otherSchemeBrand,
+        "abtOtherSchemeLiked4": schemeData[4].abtOtherSchemeLiked,
+        "otherSchemeBrand5": schemeData[5].otherSchemeBrand,
+        "abtOtherSchemeLiked5": schemeData[5].abtOtherSchemeLiked,
         "annualBusinessPotential": annualincome,
         "bankDetail": {
             "bankId": bankid,
@@ -315,7 +360,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
             // "branchAddress": "",
             "bankIfsc": IFSC,
             "nomineeName": nomineename,
-            "nomineeDob": nomineedate,
+            "nomineeDob": selectedDatenominee,
             "checkPhoto": chequeImageuuid,
             "nomineeMobileNo": nomineemobileno,
             "nomineeEmail": nomineeemail,
@@ -326,11 +371,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
         "kycDetails": {
             "kycFlag": "0",
-            // "userId": null,
+            //"userId": null,
             "kycIdName": "",
             "kycId": 1,
             "selfie": selfieeuuid,
-            "aadharOrVoterOrDLFront": aadharbackuuid,
+            "aadharOrVoterOrDLFront": aadharfrontuuid,
             "aadharOrVoterOrDlBack": aadharbackuuid,
             "aadharOrVoterOrDlNo": aadharcardno,
             "panCardFront": pancarduuid,
@@ -358,7 +403,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         type: file.type,
                         name: file.name,
                     });
-
+                    console.log("inside upload files ", formData);
                     const response = await sendFile(formData);
                     responses.push(response.data);
                 }
@@ -415,7 +460,18 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     }
 
                 });
-
+                console.log("aadharfrontuuid:", aadharfrontuuid);
+                console.log("aadharbackuuid:", aadharbackuuid);
+                console.log("pancarduuid:", pancarduuid);
+                console.log("chequeimageuuid:", chequeImageuuid);
+                console.log("selfieeuuid:", selfieeuuid);
+                // setAllUUIDs(() => ({
+                //     aadharfrontuuid,
+                //     aadharbackuuid,
+                //     pancarduuid,
+                //     chequeImageuuid,
+                //     selfieeuuid,
+                // }));
 
                 if (aadharfrontuuid != null && aadharfrontuuid != 'undefined' && aadharbackuuid != null && aadharbackuuid != 'undefined' && selfieeuuid != 'undefined' && selfieeuuid != null) {
                     // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharfrontuuid,);
@@ -424,12 +480,14 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", chequeImageuuid);
                     // console.log("%%%%%%%%%%%%%%%%%%%%%%", selfieeuuid);
                     // console.log("================================================");
-                    // console.log(">><><<><>><><><><><><><><><><><><><", userbody);
+                    console.log(">><><<><>><><><>PREVIEW SUMMARY<><><><><><><><><><", userbody);
                     // console.log("================================================");
                     registernewuser(userbody);
                 }
                 else {
 
+                    // callUploadAndThenAnotherFunction();
+                    // registernewuser(userbody);
                 }
             } else {
                 console.log('No valid files to upload.');
@@ -446,7 +504,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
             console.log("+++++++++++++++++++++", userbody)
             setIsLoading(true);
-            const response = await RegisterNewUser(userbody);
+            // const response = await RegisterNewUser(userbody);
 
             if (response.message === 'Member registered successfully') {
                 setIsPopupVisible(true);
@@ -455,7 +513,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                 //  navigation.navigate('login');
                 setTimeout(() => {
                     navigation.navigate('login');
-                }, 2500);
+                }, 1200);
             } else {
                 setIsPopupVisible(true);
                 setPopupMessage(response.message);
@@ -509,749 +567,812 @@ const PreviewUserRegistration = ({ navigation, route }) => {
     // }
 
     return (
-        <ScrollView>
-            <KeyboardAvoidingView>
-                <View >
-                    <View style={{ backgroundColor: 'transparent', height: height / 8, margin: 25, flexDirection: 'row', width: width / 1.8, justifyContent: 'space-evenly', alignItems: 'center', padding: 20, }}>
-                        <Avatar.Image size={84} source={require('../../../assets/images/ac_icon.png')} />
-                        <View style={{ marginLeft: 40, flexDirection: 'column', backgroundColor: "transparent", width: width / 2.7 }}>
-                            <Text style={{ color: 'grey' }}>PreviewSummaryData</Text>
-                            <Text style={{ color: 'grey' }}>Rishta ID</Text>
-                            <Text style={{ color: 'grey' }}>Mobile No.</Text>
+        <SafeAreaView>
+            <ScrollView>
+                <KeyboardAvoidingView>
+                    <View style={{ backgroundColor: 'white' }} >
+                        <View style={{ backgroundColor: 'transparent', height: height / 8, margin: 25, flexDirection: 'row', width: width / 1.8, justifyContent: 'space-evenly', alignItems: 'center', padding: 20, }}>
+                            <Avatar.Image size={84} source={require('../../../assets/images/ac_icon.png')} />
+                            <View style={{ marginLeft: 40, flexDirection: 'column', backgroundColor: "transparent", width: width / 2.7 }}>
+                                <Text style={{ color: 'grey' }}>New User</Text>
+                                <Text style={{ color: 'grey' }}>Rishta ID</Text>
+                                <Text style={{ color: 'grey' }}>{number}</Text>
+                            </View>
+
+                        </View>
+                        {isLoading == true ? <View style={{ flex: 1 }}>
+
+                            <Loader isLoading={isLoading} />
+                        </View> : null}
+                        {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
+                            <Text>{popupMessage}</Text>
+
+                        </Popup>
+                        )}
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:lbl_preferred_language')}
+
+                            maxLength={30}
+                            editable={false}
+                            value={selectedLanguage}
+                            onChangeText={(text) => selectedLanguage(text)}
+                            keyboardType='default'
+
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+
+                        />
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:name')}
+
+                            maxLength={30}
+                            value={name}
+                            editable={false}
+                            onChangeText={(text) => setname(text)}
+                            keyboardType='default'
+
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+
+                        />
+
+
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:Gender')}
+
+                            maxLength={30}
+                            value={gender}
+                            editable={false}
+                            onChangeText={(text) => setGender(text)}
+                            keyboardType='default'
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+                        />
+
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:date_of_birth')}
+
+                            maxLength={30}
+                            value={selectedDate}
+                            editable={false}
+                            onChangeText={(text) => setSelectedDate(text)}
+                            keyboardType='default'
+
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+                        />
+                        {/* <TextcontainerStyles={styles.input}>{data.fullData.userData.selectedDate}</Text> */}
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:contact_no')}
+                            value={number}
+                            // onChangeText={(text) => setNumber(text)}
+                            keyboardType='number-pad'
+                            editable={false}
+
+                            maxLength={10}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+
+                        />
+
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:whatsapp_no')}
+                            maxLength={10}
+                            editable={false}
+                            value={whatapp}
+                            onChangeText={(text) => setwhatapp(text)}
+                            keyboardType='number-pad'
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+
+                        />
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:email')}
+
+
+                            keyboardType='email-address'
+                            value={email}
+                            editable={false}
+                            onChangeText={(text) => setemail(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+                        />
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:lbl_permanent_address_mandatory')}
+
+
+                            editable={false}
+                            keyboardType='default'
+                            maxLength={128}
+                            value={address}
+                            onChangeText={(text) => setaddress(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+                        />
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:lbl_street_locality')}
+                            editable={false}
+
+
+                            maxLength={128}
+                            keyboardType='default'
+                            value={street}
+                            onChangeText={(text) => setstreet(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+                        />
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:lbl_landmark')}
+                            editable={false}
+
+
+                            maxLength={60}
+                            keyboardType='default'
+                            value={landmark}
+                            onChangeText={(text) => setlandmark(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+                        />
+
+
+
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:lbl_pin_code_mandatory')}
+                            labelTextColor={"black"}
+                            editable={false}
+                            keyboardType="number-pad"
+                            value={pincode}
+                            onChangeText={(text) => setPincode(text)}
+                            maxLength={6}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+                        />
+
+
+
+                        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:lbl_state')}</Text>
+                        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
+
+                            <Text style={{ color: 'black', margin: 15 }}>{selectedState}</Text>
                         </View>
 
-                    </View>
-                    {isLoading == true ? <View style={{ flex: 1 }}>
+                        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:district')}</Text>
 
-                        <Loader isLoading={isLoading} />
-                    </View> : null}
-                    {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
-                        <Text>{popupMessage}</Text>
+                        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
 
-                    </Popup>
-                    )}
+                            <Text style={{ color: 'black', margin: 15 }}>{selectedDistrict}</Text>
 
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
 
-                        label={t('strings:lbl_preferred_language')}
+                        </View>
 
-                        maxLength={30}
-                        editable={false}
-                        value={selectedLanguage}
-                        onChangeText={(text) => selectedLanguage(text)}
-                        keyboardType='default'
+                        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>  {t('strings:city')}</Text>
 
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
+                        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
 
+                            <Text style={{ color: 'black', margin: 15 }}>{selectedCity}</Text>
+                        </View>
 
-                    />
+                        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_profession')}</Text>
 
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
+                        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
 
-                        label={t('strings:name')}
 
-                        maxLength={30}
-                        value={name}
-                        editable={false}
-                        onChangeText={(text) => setname(text)}
-                        keyboardType='default'
+                            <Picker
+                                mode='dropdown'
+                                style={{ color: 'black' }}
+                                selectedValue={profession}
+                                onValueChange={(itemValue, itemIndex) =>
+                                    setprofession(itemValue)
+                                }>
+                                {professiondata.map(item => (
+                                    <Picker.Item key={item.professionId} label={item.professionName} value={item.professionName} />
+                                ))}
 
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
+                            </Picker>
 
+                        </View>
 
-                    />
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:sub_profession_category')}
 
+                            maxLength={30}
+                            value={subprofession}
 
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
-                        label={t('strings:Gender')}
-
-                        maxLength={30}
-                        value={gender}
-                        editable={false}
-                        onChangeText={(text) => setGender(text)}
-                        keyboardType='default'
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-                    />
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
-                        label={t('strings:date_of_birth')}
-
-                        maxLength={30}
-                        value={selectedDate}
-                        editable={false}
-                        onChangeText={(text) => setSelectedDate(text)}
-                        keyboardType='default'
-
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-                    />
-                    {/* <TextcontainerStyles={styles.input}>{data.fullData.userData.selectedDate}</Text> */}
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:contact_no')}
-                        value={number}
-                        // onChangeText={(text) => setNumber(text)}
-                        keyboardType='number-pad'
-                        editable={false}
-
-                        maxLength={10}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-
-                    />
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:whatsapp_no')}
-                        maxLength={10}
-                        editable={false}
-                        value={whatapp}
-                        onChangeText={(text) => setwhatapp(text)}
-                        keyboardType='number-pad'
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-
-                    />
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:email')}
-
-
-                        keyboardType='email-address'
-                        value={email}
-                        editable={false}
-                        onChangeText={(text) => setemail(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-                    />
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:lbl_permanent_address_mandatory')}
-
-
-                        editable={false}
-                        keyboardType='default'
-                        maxLength={128}
-                        value={address}
-                        onChangeText={(text) => setaddress(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-                    />
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:lbl_street_locality')}
-                        editable={false}
-
-
-                        maxLength={128}
-                        keyboardType='default'
-                        value={street}
-                        onChangeText={(text) => setstreet(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-                    />
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:lbl_landmark')}
-                        editable={false}
-
-
-                        maxLength={60}
-                        keyboardType='default'
-                        value={landmark}
-                        onChangeText={(text) => setlandmark(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-                    />
-
-
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:lbl_pin_code_mandatory')}
-                        labelTextColor={"black"}
-                        editable={false}
-                        keyboardType="number-pad"
-                        value={pincode}
-                        onChangeText={(text) => setPincode(text)}
-                        maxLength={6}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-                    />
-
-
-
-                    <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:lbl_state')}</Text>
-                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
-
-                        <Text style={{ color: 'black', margin: 15 }}>{selectedCity}</Text>
-                    </View>
-
-                    <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:district')}</Text>
-
-                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
-
-                        <Text style={{ color: 'black', margin: 15 }}>{selectedDistrict}</Text>
-
-
-                    </View>
-
-                    <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>  {t('strings:city')}</Text>
-
-                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
-
-                        <Text style={{ color: 'black', margin: 15 }}>{selectedState}</Text>
-                    </View>
-
-                    <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_profession')}</Text>
-
-                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
-
-
-                        <Picker
-                            mode='dropdown'
-                            style={{ color: 'black' }}
-                            selectedValue={profession}
-                            onValueChange={(itemValue, itemIndex) =>
-                                setprofession(itemValue)
-                            }>
-                            {professiondata.map(item => (
-                                <Picker.Item key={item.professionId} label={item.professionName} value={item.professionName} />
-                            ))}
-
-                        </Picker>
-
-                    </View>
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:sub_profession_category')}
-
-                        maxLength={30}
-                        value={subprofession}
-
-                        onChangeText={(text) => setsubprofession(text)}
-                        keyboardType='default'
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-                    />
-
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:select_marital_status')}</Text>
-
-                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
-
-
-                        <Picker
-                            mode='dropdown'
-                            style={{ color: 'black' }}
-                            selectedValue={maritialStatus}
-                            onValueChange={(itemValue, itemIndex) =>
-                                setmaritialStatus(itemValue)
-                            }>
-                            <Picker.Item label="Select" value="Select" />
-                            <Picker.Item label="Married" value="1" />
-                            <Picker.Item label=" Unmarried" value="0" />
-
-
-                        </Picker>
-
-                    </View>
-
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:enrolled_into_loyalty_scheme')}</Text>
-                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
-
-
-                        <Picker
-                            mode='dropdown'
-                            style={{ color: 'black' }}
-                            selectedValue={loyalty}
-                            onValueChange={(itemValue, itemIndex) =>
-                                setloyalty(itemValue)}>
-                            <Picker.Item label="Select" value="Select" />
-                            <Picker.Item label="Yes" value="Yes" />
-                            <Picker.Item label=" No" value="No" />
-
-
-
-                        </Picker>
-
-                    </View>
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:annual_business_potential')}
-                        value={annualincome}
-                        onChangeText={(text) => setannualincome(text)}
-                        keyboardType='number-pad'
-
-
-
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-                    />
-
-                    <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>{t('strings:selfie')}</Text>
-
-
-                    <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
-
-
-                        {selfieData != null ? <Text style={{ color: 'black', right: width / 2 }}>{selfieData.name.substring(0, 10)}</Text> : null}
-                        {selfieData != null ?
-                            <ImageWithModal imageUri={selfieData.uri} name={selfieData.name} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
-
-
-
-
-                    </View>
-
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:select_kyc_type')}
-                        value={Idprooftype}
-                        onChangeText={(text) => setIdprooftype(text)}
-                        keyboardType='number-pad'
-                        placeholder='Aadhar Card'
-                        placeholderTextColor={'black'}
-
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-
-                    />
-
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:id_proof_front')}</Text>
-
-
-                    <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
-                        {idProofFrontData != null ? <Text style={{ color: 'black', right: width / 2 }}>{idProofFrontData.name.substring(0, 10)}</Text> : null}
-                        {idProofFrontData != null ? <ImageWithModal imageUri={idProofFrontData.uri} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
-
-
-                    </View>
-
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:id_proof_back')}</Text>
-
-
-                    <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
-                        {idProofBackData != null ? <Text style={{ color: 'black', right: width / 2 }}>{idProofBackData.name.substring(0, 10)}</Text> : null}
-                        {idProofBackData != null ? <ImageWithModal imageUri={idProofBackData.uri} /> : <Image resizeMode="contain" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, borderRadius: 5, margin: 5 }} />}
-
-
-                    </View>
-
-
-
-                    <FloatingLabelInput
-                        containerStyles={[styles.input]}
-                        label={t('strings:id_proof_no')}
-                        value={aadharcardno}
-                        onChangeText={(text) => setaadharcardno(text)}
-                        keyboardType='number-pad'
-
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-                        maxLength={12}
-                    />
-
-                    <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>{t('strings:pan_card_front')}</Text>
-
-
-                    <View style={{ backgroundColor: 'transparent', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
-                        {panData != null ? <Text style={{ color: 'black', right: width / 2 }}>{panData.name.substring(0, 10)}</Text> : null}
-                        {panData != null ? <ImageWithModal imageUri={panData.uri} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
-
-
-                    </View>
-
-
-
-                    <FloatingLabelInput
-                        containerStyles={[styles.input]}
-                        label={t('strings:pan_no')}
-
-
-                        value={pancardno}
-                        onChangeText={(text) => setpancardno(text)}
-                        keyboardType='default'
-
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-                        maxLength={10}
-                    />
-
-                    <Text style={{ color: 'black', marginLeft: 20, }}> {t('strings:lbl_bank_details')}</Text>
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
-                        label={t('strings:lbl_account_number')}
-
-
-                        editable={false}
-                        keyboardType='number-pad'
-                        value={accountnumber}
-                        onChangeText={(text) => setaccountnumber(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-
-                    />
-
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
-                        label={t('strings:lbl_account_holder_name')}
-                        editable={false}
-
-
-                        keyboardType='default'
-                        value={accountholdername}
-                        onChangeText={(text) => setaccountholdername(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-                        maxLength={50}
-                    />
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
-                        editable={false}
-                        label={t('strings:select_account_type')}
-
-                        keyboardType='default'
-                        value={accounttype}
-                        onChangeText={(text) => setaccounttype(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-
-                        maxLength={20}
-                    />
-
-
-
-
-                    {selectedbank == '' ? <FloatingLabelInput
-                        containerStyles={styles.input}
-                        editable={false}
-                        label={t('strings:bank_name')}
-
-
-                        keyboardType='default'
-
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-                        maxLength={20}
-                    /> : <FloatingLabelInput
-                        containerStyles={styles.input}
-                        editable={false}
-                        label={t('strings:bank_name')}
-
-
-                        keyboardType='default'
-
-                        value={selectedbank}
-                        onChangeText={(text) => setselectedbank(text)}
-                        borderColor="gray"
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-                        maxLength={20}
-                    />}
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:lbl_ifsc_code')}
-                        editable={false}
-
-
-                        keyboardType='default'
-                        value={IFSC}
-                        onChangeText={(text) => setIFSC(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-
-                        maxLength={20}
-                    />
-
-                    <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_upload_cancelled_cheque')}</Text>
-
-
-                    <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15 }}>
-                        {chequeImage != null ? <Text style={{ color: 'black', right: width / 2 }}>{chequeImage.name.substring(0, 10)}</Text> : null}
-                        {chequeImage != null ?
-
-                            <ImageWithModal imageUri={chequeImage.uri} />
-                            : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />
-
-                        }
-                    </View>
-
-
-
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
-                        label={t('strings:lbl_nominee_details')}
-
-
-                        editable={false}
-                        keyboardType='default'
-                        value={nomineename}
-                        onChangeText={(text) => setnomineename(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-
-                    />
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
-                        label={t('strings:lbl_mobile_number')}
-                        editable={false}
-                        keyboardType='number-pad'
-                        value={nomineemobileno}
-                        onChangeText={(text) => setnomineemobileno(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-                    />
-
-
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
-                        label={t('strings:lbl_email')}
-                        editable={false}
-
-
-                        keyboardType='email-address'
-                        value={nomineeemail}
-                        onChangeText={(text) => setnomineeemail(text)}
-                        borderColor="gray"
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-                    />
-
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
-                        label={t('strings:lbl_address')}
-                        editable={false}
-
-
-                        keyboardType='email-address'
-                        value={nomineeaddress}
-                        onChangeText={(text) => setnomineeaddress(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-                    />
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
-                        label={t('strings:lbl_relationship_with_you')}
-                        editable={false}
-
-
-                        keyboardType='default'
-                        value={relationwithyou}
-                        onChangeText={(text) => setrelationwithyou(text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-
-                    />
-
-                    <View style={{ display: 'flex', width: width / 1, alignItems: 'center', marginVertical: 20, flexDirection: 'row', justifyContent: 'space-evenly', marginHorizontal: 10 }}>
-                        <Buttons
-                            label="Edit"
-                            onPress={() => {
-                                // Check if the data is valid before navigating
-                                //  navigation.navigate('NewUserKyc', { userData: userData })
-                                // validateAndNavigate('male', email, number, address, street, pincode, selectedState, selectedDistrict, selectedCity,);
-                                //validateAndNavigate()
-                                updateDataInAsyncStorage();
+                            onChangeText={(text) => setsubprofession(text)}
+                            keyboardType='default'
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
                             }}
-                            variant="filled" // or any other variant you want to use
-                            width={180} // specify the width
-                            icon={require('../../../assets/images/edit.png')} // provide the path to your icon
-                            iconWidth={40} // specify the icon width
-                            iconHeight={25} // specify the icon height
-                            iconGap={10}
-                        // specify the gap between the label and the icon
+
                         />
-                        <Buttons
-                            label="Submit"
-                            onPress={() => {
-                                // Check if the data is valid before navigating
-                                //  navigation.navigate('NewUserKyc', { userData: userData })
-                                // validateAndNavigate('male', email, number, address, street, pincode, selectedState, selectedDistrict, selectedCity,);
-                                //validateAndNavigate()
-                                callUploadAndThenAnotherFunction();
+
+                        <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:select_marital_status')}</Text>
+
+                        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
+
+
+                            <Picker
+                                mode='dropdown'
+                                style={{ color: 'black' }}
+                                selectedValue={maritialStatus}
+                                onValueChange={(itemValue, itemIndex) => {
+                                    const maritialStatusId = itemValue === 'Married' ? '1' : '2';
+                                    setmaritialStatusid(maritialStatusId)
+                                    setmaritialStatus(itemValue)
+                                }
+                                }>
+                                <Picker.Item label="Select" value="0" />
+                                <Picker.Item label="Married" value="Married" />
+                                <Picker.Item label=" Unmarried" value="Unmarried" />
+
+
+                            </Picker>
+
+                        </View>
+
+                        <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:enrolled_into_loyalty_scheme')}</Text>
+                        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderColor: "#D3D3D3" }}>
+
+
+                            <Picker
+                                mode='dropdown'
+                                style={{ color: 'black' }}
+                                selectedValue={loyalty}
+                                onValueChange={(itemValue, itemIndex) =>
+                                    setloyalty(itemValue)}>
+                                <Picker.Item label="Select" value="Select" />
+                                <Picker.Item label="Yes" value="Yes" />
+                                <Picker.Item label=" No" value="No" />
+
+
+
+                            </Picker>
+
+                        </View>
+                        {loyalty == 'Yes' ?
+                            <View>
+                                {loyalty === 'Yes' &&
+                                    schemes.map((scheme, index) => (
+                                        <View key={index} style={styles.schemeContainer}>
+                                            <FloatingLabelInput
+                                                label={`Scheme ${index + 1} Brand Name`}
+                                                value={schemeData[index + 1].otherSchemeBrand}
+                                                onChangeText={(text) => handleInputChangeschemes(index + 1, `otherSchemeBrand`, text)}
+                                                keyboardType="default"
+                                                containerStyles={styles.input}
+                                                staticLabel
+                                                labelStyles={styles.labelStyles}
+                                                inputStyles={{
+                                                    color: 'black',
+                                                    paddingHorizontal: 10,
+                                                }}
+                                            />
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <FloatingLabelInput
+                                                    label={`Reason for liking Scheme ${index + 1}`}
+                                                    value={schemeData[index + 1].abtOtherSchemeLiked}
+                                                    onChangeText={(text) => handleInputChangeschemes(index + 1, `abtOtherSchemeLiked`, text)}
+                                                    keyboardType="default"
+                                                    containerStyles={styles.input}
+                                                    staticLabel
+                                                    labelStyles={styles.labelStyles}
+                                                    inputStyles={{
+                                                        color: 'black',
+                                                        paddingHorizontal: 10,
+                                                    }}
+                                                />
+                                                <IconButton style={styles.iconButton} icon="plus" size={20} onPress={handleIconButtonPress} />
+                                            </View>
+                                        </View>
+                                    ))}
+                            </View> : null}
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:annual_business_potential')}
+                            value={annualincome}
+                            onChangeText={(text) => setannualincome(text)}
+                            keyboardType='number-pad'
+
+
+
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
                             }}
-                            variant="filled" // or any other variant you want to use
-                            width={180} // specify the width
-                            icon={require('../../../assets/images/arrow.png')} // provide the path to your icon
-                            iconWidth={50} // specify the icon width
-                            iconHeight={20} // specify the icon height
-                            iconGap={10}
-                        // specify the gap between the label and the icon
+                        />
+
+                        <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>{t('strings:selfie')}</Text>
+
+
+                        <View style={{ backgroundColor: '#fff', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15, borderColor: "#D3D3D3" }}>
+
+
+                            {selfieData != null ? <Text style={{ color: 'black', right: width / 2 }}>{selfieData.name.substring(0, 10)}</Text> : null}
+                            {selfieData != null ?
+                                <ImageWithModal imageUri={selfieData.uri} name={selfieData.name} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
+
+
+
+
+                        </View>
+
+
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:select_kyc_type')}
+                            value={Idprooftype}
+                            onChangeText={(text) => setIdprooftype(text)}
+                            keyboardType='number-pad'
+                            placeholder='Aadhar Card'
+                            placeholderTextColor={'black'}
+
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+
+                        />
+
+                        <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:id_proof_front')}</Text>
+
+
+                        <View style={{ backgroundColor: '#fff', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15, borderColor: "#D3D3D3" }}>
+                            {idProofFrontData != null ? <Text style={{ color: 'black', right: width / 2 }}>{idProofFrontData.name.substring(0, 10)}</Text> : null}
+                            {idProofFrontData != null ? <ImageWithModal imageUri={idProofFrontData.uri} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
+
+
+                        </View>
+
+                        <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:id_proof_back')}</Text>
+
+
+                        <View style={{ backgroundColor: '#fff', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15, borderColor: "#D3D3D3" }}>
+                            {idProofBackData != null ? <Text style={{ color: 'black', right: width / 2 }}>{idProofBackData.name.substring(0, 10)}</Text> : null}
+                            {idProofBackData != null ? <ImageWithModal imageUri={idProofBackData.uri} /> : <Image resizeMode="contain" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, borderRadius: 5, margin: 5 }} />}
+
+
+                        </View>
+
+
+
+                        <FloatingLabelInput
+                            containerStyles={[styles.input]}
+                            label={t('strings:id_proof_no')}
+                            value={aadharcardno}
+                            onChangeText={(text) => setaadharcardno(text)}
+                            keyboardType='number-pad'
+
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+                            maxLength={12}
+                        />
+
+                        <Text style={{ color: 'black', marginBottom: 2, marginLeft: 25 }}>{t('strings:pan_card_front')}</Text>
+
+
+                        <View style={{ backgroundColor: '#fff', height: height / 15, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15, borderColor: "#D3D3D3" }}>
+                            {panData != null ? <Text style={{ color: 'black', right: width / 2 }}>{panData.name.substring(0, 10)}</Text> : null}
+                            {panData != null ? <ImageWithModal imageUri={panData.uri} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />}
+
+
+                        </View>
+
+
+
+                        <FloatingLabelInput
+                            containerStyles={[styles.input]}
+                            label={t('strings:pan_no')}
+
+
+                            value={pancardno}
+                            onChangeText={(text) => setpancardno(text)}
+                            keyboardType='default'
+
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+                            maxLength={10}
+                        />
+
+                        <Text style={{ color: 'black', marginLeft: 20, }}> {t('strings:lbl_bank_details')}</Text>
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:lbl_account_number')}
+
+
+                            editable={false}
+                            keyboardType='number-pad'
+                            value={accountnumber}
+                            onChangeText={(text) => setaccountnumber(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+
                         />
 
 
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:lbl_account_holder_name')}
+                            editable={false}
+
+
+                            keyboardType='default'
+                            value={accountholdername}
+                            onChangeText={(text) => setaccountholdername(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+                            maxLength={50}
+                        />
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            editable={false}
+                            label={t('strings:select_account_type')}
+
+                            keyboardType='default'
+                            value={accounttype}
+                            onChangeText={(text) => setaccounttype(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+
+                            maxLength={20}
+                        />
+
+
+
+
+                        {selectedbank == '' ? <FloatingLabelInput
+                            containerStyles={styles.input}
+                            editable={false}
+                            label={t('strings:bank_name')}
+
+
+                            keyboardType='default'
+
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+                            maxLength={20}
+                        /> : <FloatingLabelInput
+                            containerStyles={styles.input}
+                            editable={false}
+                            label={t('strings:bank_name')}
+
+
+                            keyboardType='default'
+
+                            value={selectedbank}
+                            onChangeText={(text) => setselectedbank(text)}
+                            borderColor="gray"
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+                            maxLength={20}
+                        />}
+
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+                            label={t('strings:lbl_ifsc_code')}
+                            editable={false}
+
+
+                            keyboardType='default'
+                            value={IFSC}
+                            onChangeText={(text) => setIFSC(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+
+                            maxLength={20}
+                        />
+
+                        <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_upload_cancelled_cheque')}</Text>
+
+
+                        <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.1, marginLeft: 20, margin: 15, borderWidth: 1.8, borderColor: "#D3D3D3" }}>
+                            {chequeImage != null ? <Text style={{ color: 'black', right: width / 2 }}>{chequeImage.name.substring(0, 10)}</Text> : null}
+                            {chequeImage != null ?
+
+                                <ImageWithModal imageUri={chequeImage.uri} />
+                                : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={{ width: width / 8, height: height / 18, backgroundColor: 'red', borderRadius: 5, margin: 5 }} />
+
+                            }
+                        </View>
+
+
+
+
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:lbl_nominee_details')}
+
+
+                            editable={false}
+                            keyboardType='default'
+                            value={nomineename}
+                            onChangeText={(text) => setnomineename(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+
+                        />
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label=" Selected Nominee DOB"
+
+
+                            editable={false}
+                            keyboardType='default'
+                            value={nomineedate}
+                            // onChangeText={(text) => setnomineedate(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+
+                        />
+
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:lbl_mobile_number')}
+                            editable={false}
+                            keyboardType='number-pad'
+                            value={nomineemobileno}
+                            onChangeText={(text) => setnomineemobileno(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+                        />
+
+
+
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:lbl_email')}
+                            editable={false}
+
+
+                            keyboardType='email-address'
+                            value={nomineeemail}
+                            onChangeText={(text) => setnomineeemail(text)}
+                            borderColor="gray"
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+                        />
+
+
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:lbl_address')}
+                            editable={false}
+
+
+
+                            keyboardType='email-address'
+                            value={nomineeaddress}
+                            onChangeText={(text) => setnomineeaddress(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+                        />
+
+
+                        <FloatingLabelInput
+                            containerStyles={styles.input}
+
+                            label={t('strings:lbl_relationship_with_you')}
+                            editable={false}
+
+
+                            keyboardType='default'
+                            value={relationwithyou}
+                            onChangeText={(text) => setrelationwithyou(text)}
+                            staticLabel
+                            labelStyles={styles.labelStyles}
+                            inputStyles={{
+                                color: 'black',
+                                paddingHorizontal: 10,
+                            }}
+
+                        />
+
+                        <View style={{ display: 'flex', width: width / 1, alignItems: 'center', marginVertical: 20, flexDirection: 'row', justifyContent: 'space-evenly', marginHorizontal: 5 }}>
+                            <Buttons
+                                label="Edit"
+                                onPress={() => {
+                                    // Check if the data is valid before navigating
+                                    //  navigation.navigate('NewUserKyc', { userData: userData })
+                                    // validateAndNavigate('male', email, number, address, street, pincode, selectedState, selectedDistrict, selectedCity,);
+                                    //validateAndNavigate()
+                                    updateDataInAsyncStorage();
+                                }}
+                                variant="filled" // or any other variant you want to use
+                                width={180} // specify the width
+                                icon={require('../../../assets/images/edit.png')} // provide the path to your icon
+                                iconWidth={40} // specify the icon width
+                                iconHeight={25} // specify the icon height
+                                iconGap={10}
+                            // specify the gap between the label and the icon
+                            />
+                            <Buttons
+                                label="Submit"
+                                onPress={() => {
+                                    // Check if the data is valid before navigating
+                                    //  navigation.navigate('NewUserKyc', { userData: userData })
+                                    // validateAndNavigate('male', email, number, address, street, pincode, selectedState, selectedDistrict, selectedCity,);
+                                    //validateAndNavigate()
+                                    callUploadAndThenAnotherFunction();
+                                }}
+                                variant="filled" // or any other variant you want to use
+                                width={180} // specify the width
+                                icon={require('../../../assets/images/arrow.png')} // provide the path to your icon
+                                iconWidth={50} // specify the icon width
+                                iconHeight={20} // specify the icon height
+                                iconGap={10}
+                            // specify the gap between the label and the icon
+                            />
+
+
+                        </View>
                     </View>
-                </View>
-            </KeyboardAvoidingView>
-        </ScrollView >
+                </KeyboardAvoidingView>
+            </ScrollView >
+        </SafeAreaView>
         // <Text>Helo</Text>
     )
 }
@@ -1264,10 +1385,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    iconButton: {
+        backgroundColor: 'yellow', // Replace 'yourBackgroundColor' with the desired color
+        borderRadius: 50,
+        alignSelf: 'center',
+    },
     input: {
         padding: 5,
-        height: height / 13,
-        margin: 20,
+        height: height / 13.5,
+        margin: 25,
         marginTop: 0,
         color: 'black',
         borderRadius: 5,
@@ -1297,5 +1423,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         margin: 14,
         marginTop: 20,
+
     },
 })

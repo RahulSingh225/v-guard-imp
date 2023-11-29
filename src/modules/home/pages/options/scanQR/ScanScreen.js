@@ -35,6 +35,7 @@ const ScanScreen = ({ navigation, route }) => {
   const [scratchCard, showScratchCard] = React.useState(false);
   var USER = null;
 
+
   React.useEffect(() => {
 
     AsyncStorage.getItem("USER").then(r => {

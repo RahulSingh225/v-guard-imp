@@ -17,6 +17,7 @@ import Popup from '../../../components/Popup';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useTranslation } from 'react-i18next';
 import NewUserKyc from './NewUserKyc';
+import { grey100, white } from 'react-native-paper/lib/typescript/styles/colors';
 
 const NewUser = ({ navigation }) => {
   // console.log('====================================');
@@ -41,6 +42,7 @@ const NewUser = ({ navigation }) => {
   const [landmark, setlandmark] = useState('');
   const [name, setname] = useState('');
   const [pincode, setPincode] = useState('');
+  const [serchedpinocode, setserchedpinocode] = useState()
   const [selectedState, setSelectedState] = useState();
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
@@ -51,16 +53,17 @@ const NewUser = ({ navigation }) => {
   const [permananetcityid, setpermananetcityid] = useState('');
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
+  const [items, setItems] = useState([
+    { label: 'Apple', value: 'apple' },
+    { label: 'Banana', value: 'banana' }
+  ]);
 
 
 
 
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState();
-  // const [items, setItems] = useState([
-  //   { label: 'Apple', value: 'apple' },
-  //   { label: 'Banana', value: 'banana' }
-  // ]);
+
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState();
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -78,39 +81,74 @@ const NewUser = ({ navigation }) => {
   };
 
   //=============== FUNCTION FOR GETTING THE  DISTRIC ID STATE ID UPIN SELECTING THE ID AND DETAILED PINCODE DATA  
-  async function fetchDataForPinCode1(pincode) {
+  // async function fetchDataForPinCode1(pincode) {
+
+  //   // setLoading(true);
+  //   try {
+  //     setLoading(true);
+  //     const data = await fetchPinCodeData(pincode);
+  //     //console.log("???????", pincode);
+  //     const pincodeid = data[0].pinCodeId;
+  //     console.log('Pin Code Data:', pincodeid);
+
+  //     const secondData = await PincodedetailList(pincodeid);
+  //     setdistrictid(secondData.distId);
+  //     setSelectedState(secondData.stateName);
+  //     setSelectedDistrict(secondData.distName);
+  //     setpermananetdistrictId(secondData.distId);
+  //     setpermananetsatedid(secondData.stateId);
+  //     setpermananetcityid(secondData.cityId);
+
+
+  //     const cityData = await getCityDataForDistrict(secondData.distId);
+
+
+  //     setcitylistpicker(cityData);
+
+
+  //     console.log('Second API call:', secondData);
+  //     console.log('District ID:', secondData.distId);
+
+  //     setIsLoading(false);
+  //   } catch (error) {
+  //     console.error('Error in Page 1:', error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
+
+  function fetchDataForPinCode1(pincode) {
     setLoading(true);
-    try {
-      setLoading(true);
-      const data = await fetchPinCodeData(pincode);
-      const pincodeid = data[0].pinCodeId;
-      console.log('Pin Code Data:', pincodeid);
 
-      const secondData = await PincodedetailList(pincodeid);
-      setdistrictid(secondData.distId);
-      setSelectedState(secondData.stateName);
-      setSelectedDistrict(secondData.distName);
-      setpermananetdistrictId(secondData.distId);
-      setpermananetsatedid(secondData.stateId);
-      setpermananetcityid(secondData.cityId);
+    fetchPinCodeData(pincode)
+      .then(data => {
+        const pincodeid = data[0].pinCodeId;
+        console.log('Pin Code Data:', pincodeid);
+        return PincodedetailList(pincodeid);
+      })
+      .then(secondData => {
+        setdistrictid(secondData.distId);
+        setSelectedState(secondData.stateName);
+        setSelectedDistrict(secondData.distName);
+        setpermananetdistrictId(secondData.distId);
+        setpermananetsatedid(secondData.stateId);
+        setpermananetcityid(secondData.cityId);
 
-
-      const cityData = await getCityDataForDistrict(secondData.distId);
-
-
-      setcitylistpicker(cityData);
-
-
-      console.log('Second API call:', secondData);
-      console.log('District ID:', secondData.distId);
-
-      setIsLoading(false);
-    } catch (error) {
-      console.error('Error in Page 1:', error);
-    } finally {
-      setLoading(false);
-    }
+        return getCityDataForDistrict(secondData.distId);
+      })
+      .then(cityData => {
+        setcitylistpicker(cityData);
+        console.log('Second API call:', cityData);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error('Error in Page 1:', error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }
+
   ///============================= END OF ABOVE  FUNCTION =============================//
 
   //=========== FUNCTION FOR GETTING THE  CITY LIST ON USING THE DISTRICT ID =================================//
@@ -168,13 +206,7 @@ const NewUser = ({ navigation }) => {
     return () => clearTimeout(timeout);
   }, [])
 
-  function pinocdefeting(text) {
-    if (text.length >= 3) {
-      fetchPincodeSuggestions(text);
-      setOpen(true)
-    }
-    setPincode(text);
-  }
+
   const retrieveData = async () => {
     try {
       setIsLoading(true);
@@ -196,6 +228,7 @@ const NewUser = ({ navigation }) => {
         setSelectedState(retrievedData.fulldata.userData.selectedState);
         setSelectedDistrict(retrievedData.fulldata.userData.selectedDistrict);
         setSelectedCity(retrievedData.fulldata.userData.selectedCity);
+        const [focused, setfocused] = useState(false);
         console.log('====================================');
         console.log(retrievedData);
         console.log('====================================');
@@ -209,10 +242,23 @@ const NewUser = ({ navigation }) => {
     }
   };
 
+  function pinocdefeting(text) {
+
+    if (text.length == 6) {
+
+
+      fetchPincodeSuggestions(text);
+
+      setOpen(true)
+    }
+    setPincode(text);
+  }
+
   // ===============================================GETTING SUGGESTION=====/// FOR PINCODE======================//
   const fetchPincodeSuggestions = async (pincode) => {
 
     try {
+
       const suggestionData = await fetchPinCodeData(pincode);
 
       if (Array.isArray(suggestionData) && suggestionData.length > 0) {
@@ -222,9 +268,12 @@ const NewUser = ({ navigation }) => {
         ));
         setSuggestions(filteredSuggestions);
 
-        console.log("*********************", pincode);
-        setIsLoading(true);
-        fetchDataForPinCode1(pincode);
+        console.log("********IN FETCHPINCODESUGGESTION*************", pincode);
+        // setPincode(pincode);
+        //setIsLoading(true);
+        if (pincode.length == 6) {
+          fetchDataForPinCode1(pincode);
+        }
 
 
 
@@ -324,6 +373,7 @@ const NewUser = ({ navigation }) => {
       return false;
     }
     if (!whatappyes || whatappyes === "Select WhatApp contact same as above ?") {
+      setIsPopupVisible(true);
       setPopupMessage('Please specify your WhatsApp no same or not. ');
       return false;
     }
@@ -378,8 +428,8 @@ const NewUser = ({ navigation }) => {
     return true;
   }
   return (
-    <ScrollView >
-      <View >
+    <ScrollView style={{ backgroundColor: "white" }}>
+      <View style={{ backgroundColor: "white" }}>
         <View style={{ backgroundColor: 'transparent', height: height / 8, margin: 20, flexDirection: 'row', width: width / 2.1, justifyContent: 'space-evenly', alignItems: 'center', padding: 20 }}>
           {isLoading == true ? <View style={{ flex: 1 }}>
 
@@ -391,10 +441,10 @@ const NewUser = ({ navigation }) => {
           </Popup>
           )}
           <Avatar.Image size={84} source={require('../../../assets/images/ac_icon.png')} />
-          <View style={{ margin: 20, flexDirection: 'column', padding: 10, height: height / 10, Left: 10, }}>
+          <View style={{ margin: 20, flexDirection: 'column', padding: 10, height: height / 10, }}>
             <Text style={{ color: 'grey' }}>New User</Text>
             <Text style={{ color: 'grey' }}>Rishta ID</Text>
-            <Text style={{ color: 'grey' }}>Mobile No.</Text>
+            <Text style={{ color: 'grey' }}> {number}</Text>
           </View>
 
         </View>
@@ -432,10 +482,10 @@ const NewUser = ({ navigation }) => {
         />
         <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_gender_mandatory')}</Text>
 
-        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 1.5, borderColor: "#D3D3D3" }}>
           <Picker
             mode='dropdown'
-            style={{ color: 'black' }}
+            style={{ color: 'black', borderWidth: 1.5, borderColor: "#D3D3D3" }}
             selectedValue={gender}
             onValueChange={(itemValue, itemIndex) => {
               console.log("Selected Value: ", itemValue)
@@ -451,7 +501,7 @@ const NewUser = ({ navigation }) => {
 
         <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_date_of_birth_mandatory')}</Text>
 
-        <View style={{ backgroundColor: 'fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+        <View style={{ backgroundColor: 'fff', height: height / 20, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 1.5, borderColor: "#D3D3D3" }}>
           <DatePicker
             date={selectedDate}
             onDateChange={handleDateChange}
@@ -465,6 +515,8 @@ const NewUser = ({ navigation }) => {
 
           label={t('strings:contact_no')}
           value={number}
+          // colorFocused="red"
+          // onFocus={() => setFocused(true)}
 
           keyboardType='number-pad'
           editable={false}
@@ -481,11 +533,11 @@ const NewUser = ({ navigation }) => {
 
         />
         <Text style={{ color: 'black', marginLeft: 20, bottom: 5 }}>{t('strings:_is_what_s_app_contact_same_as_above')}</Text>
-        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 1.5, borderColor: "#D3D3D3" }}>
           <Picker
 
             mode='dropdown'
-            style={{ color: 'black' }}
+            style={{ color: 'black', backgroundColor: 'transparent' }}
             selectedValue={whatappyes}
             onValueChange={(itemValue, itemIndex) => {
               setwhatappyes(itemValue)
@@ -508,7 +560,7 @@ const NewUser = ({ navigation }) => {
 
             }}>
             <Picker.Item label="Select WhatApp contact same as above ?" value="Select WhatApp contact same as above ?" />
-            <Picker.Item label="yes" value="yes" />
+            <Picker.Item label="Yes" value="yes" />
             <Picker.Item label="No" value="No" />
           </Picker>
 
@@ -614,6 +666,7 @@ const NewUser = ({ navigation }) => {
           mode="BADGE"
           showBadgeDot={true}
           searchable={true}
+          searchPlaceholder='Search Your Pincode'
           loading={isLoading}
           label={value}
           placeholder={pincode === null ? 'Search Pincode' : `Searched Pincode:${pincode}`}
@@ -623,44 +676,45 @@ const NewUser = ({ navigation }) => {
 
           // placeholder={value}
           searchTextInputProps={{
-            maxLength: 6
-          }}
-          badgeStyle={(item, index) => ({
-            padding: 5,
-            backgroundColor: item.value ? 'red' : 'grey',
+            maxLength: 6,
+            keyboardType: "number-pad"
 
-          })}
-          badgeProps={{
-            activeOpacity: 1.5
           }}
 
-          badgeSeparatorStyle={{
-            width: 30,
-          }}
-          badgeColors={['red']}
-          badgeDotColors={['red']}
           listMode="SCROLLVIEW"
           scrollViewProps={{ nestedScrollEnabled: true, decelerationRate: "fast" }}
           open={open}
           items={suggestions.map((item) => ({
             label: item.pinCode,
             value: item.pinCode,
-          }))}
+
+          }
+          ))}
           setOpen={setOpen}
           value={pincode}
           onChangeItem={(item) => {
-
             setPincode(item.value);
+            // pinocdefeting(item.value);
+            //console.log(value);
+
+
+
+
+
           }}
+
+
+
           onChangeSearchText={(text) => pinocdefeting(text)}
           dropDownContainerStyle={{
             width: width / 1.1,
             height: height / 5,
             padding: 10,
-            left: 20,
+            left: 18,
             top: 60,
             borderWidth: 0.5,
             borderTopWidth: 0,
+            borderColor: "#D3D3D3",
             justifyContent: 'center',
             elevation: 0,
             backgroundColor: "#D3D3D3"
@@ -678,6 +732,7 @@ const NewUser = ({ navigation }) => {
             bottom: 10,
             elevation: 0,
             margintop: 50,
+            borderColor: "#D3D3D3",
           }}
         />
 
@@ -713,10 +768,10 @@ const NewUser = ({ navigation }) => {
 
         <Text style={{ color: 'black', left: 20, marginBottom: 2 }}> {t('strings:select_city')}</Text>
 
-        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+        <View style={{ backgroundColor: 'white', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 1.5, borderColor: "#D3D3D3" }}>
           <Picker
             mode='model'
-            style={{ color: 'black' }}
+            style={{ color: 'black', borderWidth: 1.5, borderColor: "#D3D3D3" }}
             selectedValue={selectedCity}
             onValueChange={(itemValue, itemIndex) => {
               const selectedItem = citylistpicker[itemIndex];
@@ -727,7 +782,7 @@ const NewUser = ({ navigation }) => {
               console.log('====================================');
 
             }}>
-            <Picker.Item label="Select" value='' />
+
             {Array.isArray(citylistpicker) && citylistpicker.length > 0 ? (
               citylistpicker.map(item => (
 
@@ -772,6 +827,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: "white"
   },
   input: {
 
@@ -780,12 +836,13 @@ const styles = StyleSheet.create({
 
     margin: 20,
     marginTop: 5,
-    color: 'black',
+    color: '#D3D3D3',
     borderRadius: 5,
-    backgroundColor: '#fff',
-    borderColor: 'grey',
-    borderWidth: 0.8,
-    bottom: -5
+    backgroundColor: 'white',
+    borderColor: '#D3D3D3',
+    borderWidth: 1.5,
+    bottom: -5,
+    // elevation: 1,
   },
 
   dropdownContainer: {
@@ -805,7 +862,8 @@ const styles = StyleSheet.create({
   labelStyles: {
     backgroundColor: 'transparent',
     margin: 14,
-    color: 'grey',
+    color: 'red',
+    colorFocused: '#D3D3D3',
   },
 });
 

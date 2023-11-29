@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, TouchableOpacity, PermissionsAndroid, Image, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, TouchableOpacity, PermissionsAndroid, Image, ActivityIndicator, Alert, BackHandler } from 'react-native';
 import { height, width } from '../../../utils/dimensions';
 import { Avatar, Button, } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
@@ -18,6 +18,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { CurrentRenderContext } from '@react-navigation/native';
 import Popup from '../../../components/Popup';
 import Loader from '../../../components/Loader';
+import colors from '../../../../colors'
 const NewUserKyc = ({ navigation, route }) => {
     const { userData } = route.params;
     // console.log('==================%%%==================', userData.selectedCity);
@@ -30,7 +31,7 @@ const NewUserKyc = ({ navigation, route }) => {
     const [maritialStatus, setmaritialStatus] = useState('Select');
     const [maritialstatusId, setmaritialstatusId] = useState('');
     const [loyalty, setloyalty] = useState('Select');
-    const [Number, setNumber] = useState();
+    const [Number, setNumber] = useState('');
     const [selfieData, setSelfieData] = useState(null);
     const [idProofFrontData, setIdProofFrontData] = useState(null);
     const [idProofBackData, setIdProofBackData] = useState(null);
@@ -61,17 +62,29 @@ const NewUserKyc = ({ navigation, route }) => {
     const [showTextFields, setShowTextFields] = useState(false);
     const [schmename, setschmename] = useState('');
     const [resonforlikingschme, setresonforlikingschme] = useState('');
-    const [otherschemebrand2, setotherschemebrand2] = useState();
-    const [whatyouliked2, setwhatyouliked2] = useState();
-    const [otherschemebrand3, setotherschemebrand3] = useState();
-    const [whatyouliked3, setwhatyouliked3] = useState();
-    const [otherschemebrand4, setotherschemebrand4] = useState();
-    const [whatyouliked4, setwhatyouliked4] = useState();
-    const [otherschemebrand5, setotherschemebrand5] = useState();
-    const [whatyouliked5, setwhatyouliked5] = useState();
+
     const [schemes, setSchemes] = useState([{ schmename: '', resonforlikingschme: '' }]);
     const [addttextfield, setaddttextfield] = useState(false);
     const isInitialMount = useRef(true);
+    const [schemeData, setSchemeData] = useState({
+        1: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+        2: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+        3: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+        4: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+        5: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
+    });
+
+    const handleInputChangeschemes = (schemeNumber, field, value) => {
+        setSchemeData((prevData) => ({
+            ...prevData,
+            [schemeNumber]: {
+                ...prevData[schemeNumber],
+                [field]: value,
+            },
+
+        }));
+        console.log('Updated schemeData:', schemeData);
+    };
 
 
     const [open, setOpen] = useState(false);
@@ -97,6 +110,8 @@ const NewUserKyc = ({ navigation, route }) => {
     //     }
 
     // }
+
+
 
     const validateAadhar = (aadhar) => {
         // Use a regular expression to check if the Aadhar card number is valid.
@@ -145,23 +160,24 @@ const NewUserKyc = ({ navigation, route }) => {
         setLoading(true);
         try {
             const data = await fetchPinCodeData(pincode);
-            console.log('Fetching data for pincode API CALL:', typeof pincode);
+            // console.log('Fetching data for pincode API CALL:', typeof pincode);
             const pincodeid = data[0].pinCodeId; // Declare the variable using 'const'
-            console.log('Pin Code Data:', pincodeid);
+            // console.log('Pin Code Data:', pincodeid);
 
             const secondData = await PincodedetailList(pincodeid);
-            console.log("<><><><><>IF NO HAPPENING THIS ", secondData.distId);
-            securrenttcityid(secondData.cityId);
             setcurrentdistrictId(secondData.distId);
+            setcurrentdistrictId(secondData.distId)
+            // console.log("<><><><><>IF NO HAPPENING THIS ", currentdistrictId);
+            securrenttcityid(secondData.cityId);
+
             setcurrentstateid(secondData.stateId);
+            //  console.log("INSDE CURRENT DISTID", currentselectedCity);
 
 
             const cityData = await getCityDataForDistrict(secondData.distId);
             // console.log('City Data:', cityData);
             setcitylistpicker(cityData);
             setCurrentselectedState(secondData.stateName);
-
-
             setCurrentselectedDistrict(secondData.distName);
             setcurrentdistrictId(secondData.distId);
             console.log('================INSDE FETCH PINCODE FUNCTION ====================');
@@ -229,9 +245,37 @@ const NewUserKyc = ({ navigation, route }) => {
                 const retrievedData = JSON.parse(data);
 
                 // Set the state variables with the retrieved data
-                console.log('=============CCAME FROM THE PREVIOUS ONCE RUN=======================');
-                console.log(retrievedData.fullData.NewUserKycData.currentaddres);
-                console.log('====================================');
+                console.log('=============CCAME FROM THE PREVIOUS ONCE RUN=======================', retrievedData);
+                //  console.log("<><>STORED SCHEMA DATA<><>", retrievedData.fullData.NewUserKycData.schemeData[1].otherSchemeBrand);
+                const retrievedSchemeData = retrievedData.fullData.NewUserKycData.schemeData;
+                // console.log("??????????????????", retrievedSchemeData);
+
+                const updatedSchemeData = {
+                    1: {
+                        otherSchemeBrand: retrievedSchemeData[1]?.otherSchemeBrand,
+                        abtOtherSchemeLiked: retrievedSchemeData[1]?.abtOtherSchemeLiked,
+                    },
+                    2: {
+                        otherSchemeBrand: retrievedSchemeData[2]?.otherSchemeBrand1,
+                        abtOtherSchemeLiked: retrievedSchemeData[2]?.abtOtherSchemeLiked1,
+                    },
+                    3: {
+                        otherSchemeBrand: retrievedSchemeData[3]?.otherSchemeBrand2,
+                        abtOtherSchemeLiked: retrievedSchemeData[3]?.abtOtherSchemeLiked2,
+                    },
+                    4: {
+                        otherSchemeBrand: retrievedSchemeData[4]?.otherSchemeBrand3,
+                        abtOtherSchemeLiked: retrievedSchemeData[4]?.abtOtherSchemeLiked3,
+                    },
+                    5: {
+                        otherSchemeBrand: retrievedSchemeData[5]?.otherSchemeBrand4,
+                        abtOtherSchemeLiked: retrievedSchemeData[5]?.abtOtherSchemeLiked4,
+                    },
+                };
+                //  console.log("??????????????????", updatedSchemeData);
+                setSchemeData(updatedSchemeData);
+                // console.log("<><><><>", schemeData);
+                // console.log('====================================', retrievedData.fullData.NewUserKycData.currentselectedCity);
                 if (retrievedData.fullData.NewUserKycData.currentaddres === null) {
                     setcurrentaddres('Select');
                 }
@@ -244,8 +288,11 @@ const NewUserKyc = ({ navigation, route }) => {
                     setpincode(retrievedData.fullData.NewUserKycData.pinCode)
                     setprofession(retrievedData.fullData.NewUserKycData.profession);
                     setmaritialStatus(retrievedData.fullData.NewUserKycData.maritialStatus);
+                    setmaritialstatusId(retrievedData.fullData.NewUserKycData.maritialstatusId);
                     setloyalty(retrievedData.fullData.NewUserKycData.loyalty);
-                    setNumber(retrievedData.fullData.NewUserKycData.Number);
+                    setNumber(retrievedData.fullData.userData.number);
+
+
                     setSelfieData(retrievedData.fullData.NewUserKycData.selfieData);
                     setIdProofFrontData(retrievedData.fullData.NewUserKycData.idProofFrontData);
                     setIdProofBackData(retrievedData.fullData.NewUserKycData.idProofBackData);
@@ -257,7 +304,7 @@ const NewUserKyc = ({ navigation, route }) => {
                     setCurrentselectedDistrict(retrievedData.fullData.NewUserKycData.currentselectedDistrict);
                     setCurrentselectedState(retrievedData.fullData.NewUserKycData.currentselectedState);
                     securrenttcityid(retrievedData.fullData.NewUserKycData.currentcityid);
-                    setcurrentdistrictId(retrievedData.fullData.NewUserKycData.districtId);
+                    setcurrentdistrictId(retrievedData.fullData.NewUserKycData.currentdistrictId);
                     setcurrentstateid(retrievedData.fullData.NewUserKycData.currentstateid);
                     // setcitylistpicker(retrievedData.fullData.NewUserKycData.currentselectedCity);
 
@@ -280,7 +327,7 @@ const NewUserKyc = ({ navigation, route }) => {
                     setprofession(retrievedData.fullData.NewUserKycData.profession);
                     setmaritialStatus(retrievedData.fullData.NewUserKycData.maritialStatus);
                     setloyalty(retrievedData.fullData.NewUserKycData.loyalty);
-                    setNumber(retrievedData.fullData.NewUserKycData.Number);
+                    setNumber(retrievedData.fullData.userData.number.toString());
                     setSelfieData(retrievedData.fullData.NewUserKycData.selfieData);
                     setIdProofFrontData(retrievedData.fullData.NewUserKycData.idProofFrontData);
                     setIdProofBackData(retrievedData.fullData.NewUserKycData.idProofBackData);
@@ -291,7 +338,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
                     securrenttcityid(retrievedData.fullData.userData.permananetcityid);
                     setcurrentdistrictId(retrievedData.fullData.userData.permananetdistrictId);
-                    setcurrentstateid(retrievedData.fullData.userData.permananetsateid);
+                    setcurrentstateid(retrievedData.fullData.userData.permananetsateid || "");
 
 
                 }
@@ -315,7 +362,7 @@ const NewUserKyc = ({ navigation, route }) => {
                     setprofession(retrievedData.fullData.NewUserKycData.profession);
                     setmaritialStatus(retrievedData.fullData.NewUserKycData.maritialStatus);
                     setloyalty(retrievedData.fullData.NewUserKycData.loyalty);
-                    setNumber(retrievedData.fullData.NewUserKycData.Number);
+                    setNumber(retrievedData.fullData.NewUserKycData.number.toString());
                     setSelfieData(retrievedData.fullData.NewUserKycData.selfieData);
                     setIdProofFrontData(retrievedData.fullData.NewUserKycData.idProofFrontData);
                     setIdProofBackData(retrievedData.fullData.NewUserKycData.idProofBackData);
@@ -326,13 +373,16 @@ const NewUserKyc = ({ navigation, route }) => {
                     setCurrentselectedCity(retrievedData.fullData.NewUserKycData.currentselectedCity);
                     setCurrentselectedDistrict(retrievedData.fullData.NewUserKycData.currentselectedDistrict);
                     setCurrentselectedState(retrievedData.fullData.NewUserKycData.currentselectedState);
+                    setSchemeData(retrievedData.fullData.NewUserKyc.schemeData)
+
 
                 }
-                console.log("<><><><><><><><><><><><>", retrievedData.fullData.NewUserKycData.currentselectedCity);
-                console.log("<><><><><><><><><><><><>", retrievedData.fullData.NewUserKycData.pincode);
 
             }
-        } catch (error) {
+
+        }
+
+        catch (error) {
             console.error('Error retrieving data: ', error);
         } finally {
             setIsLoading(false);
@@ -342,7 +392,7 @@ const NewUserKyc = ({ navigation, route }) => {
     function pincodefunction(text) {
 
 
-        if (currentaddres === 'no' && text.length >= 2) {
+        if (currentaddres === 'no' && text.length >= 6) {
 
             fetchPincodeSuggestions(text);
             setOpen(true);
@@ -350,12 +400,37 @@ const NewUserKyc = ({ navigation, route }) => {
         setpincode(text)
 
     }
-    //===================END OF RETRIVING DATA FROM ASYNC STORAGE=======================================//
+    // const getSchemeDataFromStorage = async () => {
+    //     try {
+    //         const storedDataString = await AsyncStorage.getItem('previewSummaryData');
+    //         if (storedDataString) {
+    //             const storedData = JSON.parse(storedDataString);
+
+    //             // Assuming storedData.fullData.NewUserKyc.schemeData is an object
+    //             const storedSchemeData = storedData.fullData.NewUserKyc.schemeData;
+
+    //             // Set the state with the retrieved data
+    //             setSchemeData(storedSchemeData);
+    //             console.log(schemeData);
+    //         } else {
+    //             console.log('No stored scheme data found.');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error retrieving scheme data from AsyncStorage:', error);
+    //     }
+    // };
+
+
+
+
     useEffect(() => {
+
+
         retrieveData();
         Gettingprofession();
-        // getsubprofession();
+
     }, [])
+
 
 
     let options = {
@@ -371,44 +446,44 @@ const NewUserKyc = ({ navigation, route }) => {
         }
     };
     const openCamera = async (documentType, onCapture) => {
-        const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.CAMERA,
-        );
-        const granted1 = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        );
-        const granted2 = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            const result = await launchCamera(options);
-            const photo = result.assets[0];
-            const newPhoto = { uri: photo.uri, type: photo.type, name: photo.fileName };
+        // const granted = await PermissionsAndroid.request(
+        //     PermissionsAndroid.PERMISSIONS.CAMERA,
+        // );
+        // const granted1 = await PermissionsAndroid.request(
+        //     PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        // );
+        // const granted2 = await PermissionsAndroid.request(
+        //     PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        // );
+        // if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        const result = await launchCamera(options);
+        const photo = result.assets[0];
+        const newPhoto = { uri: photo.uri, type: photo.type, name: photo.fileName };
 
-            // Handle the captured data based on the document type
-            switch (documentType) {
-                case 'Selfie':
-                    setSelfieData(newPhoto);
-                    console.log(selfieData);
-                    break;
-                case 'IdProofFront':
-                    setIdProofFrontData(newPhoto);
-                    break;
-                case 'IdProofBack':
-                    setIdProofBackData(newPhoto);
-                    break;
-                case 'Pan':
-                    setPanData(newPhoto);
-                    break;
-                default:
-                    console.log('Unknown document type');
-            }
-
-            // Call the provided callback function to further process the data
-            if (typeof onCapture === 'function') {
-                onCapture(documentType, newPhoto);
-            }
+        // Handle the captured data based on the document type
+        switch (documentType) {
+            case 'Selfie':
+                setSelfieData(newPhoto);
+                console.log(selfieData);
+                break;
+            case 'IdProofFront':
+                setIdProofFrontData(newPhoto);
+                break;
+            case 'IdProofBack':
+                setIdProofBackData(newPhoto);
+                break;
+            case 'Pan':
+                setPanData(newPhoto);
+                break;
+            default:
+                console.log('Unknown document type');
         }
+
+        // Call the provided callback function to further process the data
+        if (typeof onCapture === 'function') {
+            onCapture(documentType, newPhoto);
+        }
+        //}
     };
 
     const NewUserKycData = {
@@ -435,6 +510,25 @@ const NewUserKyc = ({ navigation, route }) => {
         currentcityid,
         currentdistrictId,
         currentstateid,
+        schemeData: {
+            1: { otherSchemeBrand: schemeData[1]?.otherSchemeBrand || '', abtOtherSchemeLiked: schemeData[1]?.abtOtherSchemeLiked || '' },
+            2: { otherSchemeBrand1: schemeData[2]?.otherSchemeBrand || '', abtOtherSchemeLiked1: schemeData[2]?.abtOtherSchemeLiked || '' },
+            3: { otherSchemeBrand2: schemeData[3]?.otherSchemeBrand || '', abtOtherSchemeLiked2: schemeData[3]?.abtOtherSchemeLiked || '' },
+            4: { otherSchemeBrand3: schemeData[4]?.otherSchemeBrand || '', abtOtherSchemeLiked3: schemeData[4]?.abtOtherSchemeLiked || '' },
+            5: { otherSchemeBrand4: schemeData[5]?.otherSchemeBrand || '', abtOtherSchemeLiked4: schemeData[5]?.abtOtherSchemeLiked || '' },
+        },
+        //         otherSchemeBrand:schemeData[1]?.otherSchemeBrand,      
+        //         otherSchemeBrand2: schemeData[3]?.otherSchemeBrand,
+        //         otherSchemeBrand3: schemeData[4]?.otherSchemeBrand,
+        //         otherSchemeBrand4: schemeData[5]?.otherSchemeBrand,
+        //         abtOtherSchemeLiked: schemeData[1]?.abtOtherSchemeLiked ,
+        // abtOtherSchemeLiked1: schemeData[2]?.abtOtherSchemeLiked,
+        // abtOtherSchemeLiked2: schemeData[3]?.abtOtherSchemeLiked,
+        // abtOtherSchemeLiked3: schemeData[4]?.abtOtherSchemeLiked,
+        // abtOtherSchemeLiked4: schemeData[5]?.abtOtherSchemeLiked,
+
+
+
     };
 
     async function updateNewUserKycDataInPreviewSummary(NewUserKycData) {
@@ -459,6 +553,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
                 // Update the 'NewUserKycData' property directly with the provided 'newUserData'
                 previewSummaryData.fullData.NewUserKycData = NewUserKycData;
+
 
                 // Convert the updated object back to a JSON string
                 const updatedPreviewSummaryDataString = JSON.stringify(previewSummaryData);
@@ -511,7 +606,7 @@ const NewUserKyc = ({ navigation, route }) => {
             setPopupMessage('Profession field is empty. Please fill it.');
             return false;
         }
-        if (!maritialStatus || maritialStatus === '') {
+        if (!maritialStatus || maritialStatus === '0') {
             setIsPopupVisible(true);
             setPopupMessage('Marital Status field is empty. Please fill it.');
             return false;
@@ -598,8 +693,9 @@ const NewUserKyc = ({ navigation, route }) => {
             // await AsyncStorage.setItem("previewSummaryData", fullData);
             // log
             updateNewUserKycDataInPreviewSummary(NewUserKycData);
+            // updateNewUserKycDataInPreviewSummary(userData);
             const updatedValue = await AsyncStorage.getItem('previewSummaryData');
-            console.log('Updated Value in AsyncStorage (previewSummaryData +++++NEWUSERkYC++++++++++++):', updatedValue);
+            // console.log('Updated Value in AsyncStorage (previewSummaryData +++++NEWUSERkYC++++++++++++):', NewUserKycData);
             navigation.navigate('NomineePage', { fullData });
         }
         // Add validation checks for other fields
@@ -622,56 +718,56 @@ const NewUserKyc = ({ navigation, route }) => {
     }
     //=========== ***********************END OF THE ABOVE FUNCTION =================================//
     const openImagePicker = async (documentType, onCapture) => {
-        const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.CAMERA,
-        );
-        const granted1 = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        );
-        const granted2 = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            const options = {
-                mediaType: 'photo',
-                quality: 0.5,
-                cameraType: 'back',
-                saveToPhotos: true,
-            };
+        // const granted = await PermissionsAndroid.request(
+        //     PermissionsAndroid.PERMISSIONS.CAMERA,
+        // );
+        // const granted1 = await PermissionsAndroid.request(
+        //     PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        // );
+        // const granted2 = await PermissionsAndroid.request(
+        //     PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        // );
+        // if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        const options = {
+            mediaType: 'photo',
+            quality: 0.5,
+            cameraType: 'back',
+            saveToPhotos: true,
+        };
 
-            const result = await launchImageLibrary(options);
+        const result = await launchImageLibrary(options);
 
-            if (result.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (result.error) {
-                console.log('ImagePicker Error: ', result.error);
-            } else {
-                const photo = result.assets[0];
-                const newPhoto = { uri: photo.uri, type: photo.type, name: photo.fileName };
+        if (result.didCancel) {
+            console.log('User cancelled image picker');
+        } else if (result.error) {
+            console.log('ImagePicker Error: ', result.error);
+        } else {
+            const photo = result.assets[0];
+            const newPhoto = { uri: photo.uri, type: photo.type, name: photo.fileName };
 
-                // Handle the captured data based on the document type
-                switch (documentType) {
-                    case 'Selfie':
-                        setSelfieData(newPhoto);
-                        break;
-                    case 'IdProofFront':
-                        setIdProofFrontData(newPhoto);
-                        break;
-                    case 'IdProofBack':
-                        setIdProofBackData(newPhoto);
-                        break;
-                    case 'Pan':
-                        setPanData(newPhoto);
-                        break;
-                    default:
-                        console.log('Unknown document type');
-                }
-
-                // Call the provided callback function to further process the data
-                if (typeof onCapture === 'function') {
-                    onCapture(documentType, newPhoto);
-                }
+            // Handle the captured data based on the document type
+            switch (documentType) {
+                case 'Selfie':
+                    setSelfieData(newPhoto);
+                    break;
+                case 'IdProofFront':
+                    setIdProofFrontData(newPhoto);
+                    break;
+                case 'IdProofBack':
+                    setIdProofBackData(newPhoto);
+                    break;
+                case 'Pan':
+                    setPanData(newPhoto);
+                    break;
+                default:
+                    console.log('Unknown document type');
             }
+
+            // Call the provided callback function to further process the data
+            if (typeof onCapture === 'function') {
+                onCapture(documentType, newPhoto);
+            }
+            //}
         }
     };
     const handleButtonPress = () => {
@@ -697,15 +793,15 @@ const NewUserKyc = ({ navigation, route }) => {
 
 
     return (
-        <SafeAreaView>
-            <ScrollView >
-                <View >
-                    <View style={{ backgroundColor: 'transparent', height: height / 8, margin: 20, flexDirection: 'row', width: width / 2.1, justifyContent: 'space-evenly', alignItems: 'center', padding: 20 }}>
+        <SafeAreaView style={{ baackgroundColor: "white" }}>
+            <ScrollView style={{ baackgroundColor: "white" }} >
+                <View style={{ baackgroundColor: "white" }} >
+                    <View style={{ backgroundColor: 'transparent', height: height / 8, margin: 20, flexDirection: 'row', width: width / 2.1, justifyContent: 'space-evenly', alignItems: 'center', padding: 20, }}>
                         <Avatar.Image size={84} source={require('../../../assets/images/ac_icon.png')} />
                         <View style={{ margin: 20, flexDirection: 'column', padding: 10, height: height / 10, Left: 10, }}>
                             <Text style={{ color: 'grey' }}>New User</Text>
                             <Text style={{ color: 'grey' }}>Rishta ID</Text>
-                            <Text style={{ color: 'grey' }}>Mobile No.</Text>
+                            <Text style={{ color: 'grey' }}>{Number}</Text>
                         </View>
 
                     </View>
@@ -719,12 +815,12 @@ const NewUserKyc = ({ navigation, route }) => {
                     </Popup>
                     )}
                     <Text style={{ color: 'black', marginLeft: 20, }}>{t('strings:is_current_address_different')}</Text>
-                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 3 }}>
+                    <View style={{ backgroundColor: 'transparent', height: height / 20, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 3, borderColor: "#D3D3D3", borderWidth: 1.5, width: width / 1.15 }}>
 
 
                         <Picker
                             mode='dropdown'
-                            style={{ color: 'black' }}
+                            style={{ color: 'black', bottom: 10 }}
                             selectedValue={currentaddres}
                             onValueChange={(itemValue, itemIndex) => {
                                 setcurrentaddres(itemValue);
@@ -741,12 +837,8 @@ const NewUserKyc = ({ navigation, route }) => {
                                     setcurrentdistrictId('');
                                     securrenttcityid('');
                                     //setcitylistpicker('');
-
-
                                 }
                                 if (itemValue == 'yes') {
-
-
                                     setaddress(userData.address);
                                     setstreet(userData.street);
                                     setlandmark(userData.landmark);
@@ -760,92 +852,77 @@ const NewUserKyc = ({ navigation, route }) => {
                                     console.log('====================================');
                                     console.log(userData.pincode);
                                     console.log(pincode);
-
-
-
-
-
                                     // console.log('====================####================', currentselectedCity);
                                     //  console.log('====================####================', currentselectedDistrict);
                                     //  console.log('====================####================', currentselectedState);
                                 }
                             }}>
                             <Picker.Item label="Select" value="Select" />
-                            <Picker.Item label="yes" value="yes" />
-                            <Picker.Item label="no" value="no" />
+                            <Picker.Item label="Yes" value="yes" />
+                            <Picker.Item label="No" value="no" />
                         </Picker>
 
                     </View>
 
                     {currentaddres == 'Select' ? <></> : <>
-                        <FloatingLabelInput
-
-
-                            label="Current House Flat/block no"
-
-
-                            editable={currentaddres === 'no'}
-                            keyboardType='default'
-                            value={address}
-                            onChangeText={(text) => setaddress(text)}
-                            containerStyles={styles.input}
-                            staticLabel
-                            labelStyles={styles.labelStyles}
-                            inputStyles={{
-                                color: 'black',
-                                paddingHorizontal: 10
-                            }}
-
-
-
-                        />
-                        <FloatingLabelInput
-
-                            editable={currentaddres == 'no'}
-                            label="Current Street/ Colony/Locality Name *"
-
-
-                            keyboardType='default'
-                            value={street}
-                            onChangeText={(text) => setstreet(text)}
-                            containerStyles={styles.input}
-                            staticLabel
-                            labelStyles={styles.labelStyles}
-                            inputStyles={{
-                                color: 'black',
-                                paddingHorizontal: 10
-                            }}
-                        />
-                        <FloatingLabelInput
-
-                            editable={currentaddres == 'no'}
-                            label="Landmark"
-
-
-                            keyboardType='default'
-                            value={landmark}
-                            onChangeText={(text) => setlandmark(text)}
-                            containerStyles={styles.input}
-                            staticLabel
-                            labelStyles={styles.labelStyles}
-                            inputStyles={{
-                                color: 'black',
-                                paddingHorizontal: 10
-                            }}
-                        />
+                        <View style={styles.floatingcontainerstyle}>
+                            <FloatingLabelInput
+                                label="Current House Flat/block no"
+                                editable={currentaddres === 'no'}
+                                keyboardType='default'
+                                value={address}
+                                onChangeText={(text) => setaddress(text)}
+                                containerStyles={styles.input}
+                                staticLabel
+                                labelStyles={styles.labelStyles}
+                                inputStyles={{
+                                    color: 'black',
+                                    paddingHorizontal: 10
+                                }}
+                            />
+                        </View>
+                        <View style={styles.floatingcontainerstyle}>
+                            <FloatingLabelInput
+                                editable={currentaddres == 'no'}
+                                label="Current Street/ Colony/Locality Name *"
+                                keyboardType='default'
+                                value={street}
+                                onChangeText={(text) => setstreet(text)}
+                                containerStyles={styles.input}
+                                staticLabel
+                                labelStyles={styles.labelStyles}
+                                inputStyles={{
+                                    color: 'black',
+                                    paddingHorizontal: 10
+                                }}
+                            />
+                        </View>
+                        <View style={styles.floatingcontainerstyle}>
+                            <FloatingLabelInput
+                                editable={currentaddres == 'no'}
+                                label="Landmark"
+                                keyboardType='default'
+                                value={landmark}
+                                onChangeText={(text) => setlandmark(text)}
+                                containerStyles={styles.input}
+                                staticLabel
+                                labelStyles={styles.labelStyles}
+                                inputStyles={{
+                                    color: 'black',
+                                    paddingHorizontal: 10
+                                }}
+                            />
+                        </View>
                         <Text style={{ color: 'black', marginLeft: 23, }}>{t('strings:lbl_pin_code_mandatory')}</Text>
-                        {currentaddres === 'yes' ? <Text style={styles.input}>{userData.pincode}</Text>
-
-
+                        {currentaddres === 'yes' ? <View style={styles.floatingcontainerstyle}><Text style={styles.input}>{userData.pincode}</Text></View>
                             :
-
                             <>
-
                                 <DropDownPicker
                                     mode="BADGE"
                                     showBadgeDot={true}
                                     searchable={true}
                                     loading={isLoading}
+                                    searchPlaceholder='Type your pinocde'
                                     label={value}
                                     placeholder={pincode === null ? 'Search Pincode' : `Searched Pincode: ${pincode}`}
                                     searchablePlaceholder="Search Pincode"
@@ -854,7 +931,8 @@ const NewUserKyc = ({ navigation, route }) => {
 
                                     // placeholder={value}
                                     searchTextInputProps={{
-                                        maxLength: 6
+                                        maxLength: 6,
+                                        keyboardType: 'number-pad',
                                     }}
                                     badgeStyle={(item, index) => ({
                                         padding: 5,
@@ -888,35 +966,35 @@ const NewUserKyc = ({ navigation, route }) => {
                                         width: width / 1.1,
                                         height: height / 5,
                                         padding: 10,
-                                        left: 20,
+                                        left: 18.5,
                                         top: 60,
                                         borderWidth: 0.5,
                                         borderTopWidth: 0,
                                         justifyContent: 'center',
                                         elevation: 0,
-                                        backgroundColor: "#D3D3D3"
+                                        backgroundColor: "#D3D3D3",
+                                        borderColor: '#D3D3D3'
                                     }}
                                     style={{
-                                        backgroundColor: 'white',
+                                        backgroundColor: 'transparent',
                                         elevation: 50,
                                         opacity: 0.9,
-                                        borderWidth: 0.6,
+                                        borderWidth: 2.5,
                                         margin: 20,
-                                        width: width / 1.1,
-                                        height: height / 15,
+                                        width: width / 1.15,
+                                        height: height / 18,
                                         alignSelf: 'center',
                                         bottom: 10,
                                         elevation: 0,
                                         margintop: 50,
+                                        borderColor: '#D3D3D3',
+                                        alignSelf: 'flex-start'
                                     }}
                                 />
-
-
-
                             </>}
 
                         <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_state')}</Text>
-                        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                        <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 2, borderColor: "#D3D3D3", elevation: 0, width: width / 1.15 }}>
                             {/* <Picker
                                 style={{ color: 'black' }}
                                 selectedValue={currentselectedState}
@@ -925,10 +1003,7 @@ const NewUserKyc = ({ navigation, route }) => {
                             >
                                 {IndianStates.map((state, index) => (
                                     <Picker.Item key={index} label={state} value={state} />
-                                ))}
-
-
-                                
+                                ))}     
                             </Picker> */}
 
                             {currentaddres === 'yes' ? <Text style={{ color: 'black', margin: 15 }}>{userData.selectedState}</Text> :
@@ -936,7 +1011,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
                         </View>
                         <Text style={{ color: 'black', left: 20, marginBottom: 2 }}> {t('strings:select_district')}</Text>
-                        <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                        <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 2, borderColor: "#D3D3D3", elevation: 0, width: width / 1.15 }}>
 
 
 
@@ -946,7 +1021,7 @@ const NewUserKyc = ({ navigation, route }) => {
                         </View>
 
                         <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_city')}</Text>
-                        {currentaddres === 'no' || currentselectedCity === null ? <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                        {currentaddres === 'no' || currentselectedCity === null ? <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 2, borderColor: "#D3D3D3", elevation: 0, width: width / 1.15 }}>
                             <Picker
                                 mode='model'
                                 style={{ color: 'black' }}
@@ -956,7 +1031,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                     setCurrentselectedCity(itemValue);
                                     securrenttcityid(selectedItem.id);
                                 }}>
-                                <Picker.Item label="Select" value='' />
+
                                 {Array.isArray(citylistpicker) && citylistpicker.length >= 0 ? (
                                     citylistpicker.map(item => (
                                         <Picker.Item
@@ -967,13 +1042,13 @@ const NewUserKyc = ({ navigation, route }) => {
                                     ))
                                 ) : (
 
-                                    <Picker.Item label="Select City" value="" />
+                                    <Picker.Item label={currentselectedCity} value={currentselectedCity} />
 
 
                                 )}
                             </Picker>
 
-                        </View> : <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                        </View> : <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 2, borderColor: "#D3D3D3", elevation: 0, width: width / 1.15 }}>
 
 
 
@@ -985,7 +1060,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:select_profession')}</Text>
 
-                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 2, borderColor: "#D3D3D3", elevation: 0, width: width / 1.15 }}>
                         <Picker
                             mode='dropdown'
                             style={{ color: 'black' }}
@@ -1003,7 +1078,7 @@ const NewUserKyc = ({ navigation, route }) => {
                     </View>
 
 
-                    {/* <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 1, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                    {/* <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderWidth: 2, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
 
 
                         <Picker
@@ -1023,7 +1098,7 @@ const NewUserKyc = ({ navigation, route }) => {
                     </View> */}
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:select_marital_status')}</Text>
 
-                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 2, borderColor: "#D3D3D3", elevation: 0, width: width / 1.15 }}>
 
 
                         <Picker
@@ -1032,13 +1107,16 @@ const NewUserKyc = ({ navigation, route }) => {
                             selectedValue={maritialStatus}
                             onValueChange={(itemValue, itemIndex) => {
                                 // setmaritialstatusId(itemValue) 
+                                const maritialStatusId = itemValue === "Married" ? '1' : '2';
                                 setmaritialStatus(itemValue);
+                                setmaritialstatusId(maritialStatusId);
+
 
                             }
                             }>
-                            <Picker.Item label="Select" value="0" />
+                            <Picker.Item label="Select" value='0' />
                             <Picker.Item label="Married" value="Married" />
-                            <Picker.Item label=" Unmarried" value="Unmarried" />
+                            <Picker.Item label="Unmarried" value="Unmarried" />
 
 
                         </Picker>
@@ -1048,7 +1126,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:already_enrolled_into_loyalty_scheme')}</Text>
 
-                    <View style={{ backgroundColor: '#fff', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0 }}>
+                    <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 2, borderColor: "#D3D3D3", elevation: 0, width: width / 1.15 }}>
 
 
                         <Picker
@@ -1066,116 +1144,72 @@ const NewUserKyc = ({ navigation, route }) => {
                         </Picker>
 
                     </View>
+
+
+
+
                     {loyalty == 'Yes' ?
+                        <View>
+                            {loyalty === 'Yes' &&
+                                schemes.map((scheme, index) => (
+                                    <View key={index} style={styles.schemeContainer}>
+                                        <FloatingLabelInput
+                                            label={`Scheme ${index + 1} Brand Name`}
+                                            value={schemeData[index + 1].otherSchemeBrand}
+                                            onChangeText={(text) => handleInputChangeschemes(index + 1, `otherSchemeBrand`, text)}
+                                            keyboardType="default"
+                                            containerStyles={styles.input}
+                                            staticLabel
+                                            labelStyles={styles.labelStyles}
+                                            inputStyles={{
+                                                color: 'black',
+                                                paddingHorizontal: 10,
+                                            }}
+                                        />
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <FloatingLabelInput
+                                                label={`Reason for liking Scheme ${index + 1}`}
+                                                value={schemeData[index + 1].abtOtherSchemeLiked}
+                                                onChangeText={(text) => handleInputChangeschemes(index + 1, `abtOtherSchemeLiked`, text)}
+                                                keyboardType="default"
+                                                containerStyles={styles.input}
+                                                staticLabel
+                                                labelStyles={styles.labelStyles}
+                                                inputStyles={{
+                                                    color: 'black',
+                                                    paddingHorizontal: 10,
+                                                }}
+                                            />
+                                            <IconButton style={styles.iconButton} icon="plus" size={20} onPress={handleIconButtonPress} />
+                                        </View>
+                                    </View>
+                                ))}
+                        </View> : null}
+
+
+                    <View style={styles.floatingcontainerstyle}>
                         <FloatingLabelInput
 
-                            label="If yes please mention Scheme and brand name "
-                            value={schmename}
-                            onChangeText={(text) => setschmename(text)}
-                            keyboardType='default'
-
+                            label={t('strings:annual_business_potential')}
+                            value={annualincome}
+                            onChangeText={(text) => setannualincome(text)}
+                            keyboardType='number-pad'
                             containerStyles={styles.input}
                             staticLabel
                             labelStyles={styles.labelStyles}
                             inputStyles={{
                                 color: 'black',
-                                paddingHorizontal: 10
+                                paddingHorizontal: 10,
                             }}
-
-
                         />
-
-
-                        : null
-                    }
-
-                    {loyalty == 'Yes' ?
-                        <FloatingLabelInput
-
-                            label="If yes what you liked about the program *"
-                            value={resonforlikingschme}
-                            onChangeText={(text) => setresonforlikingschme(text)}
-                            keyboardType='default'
-                            containerStyles={styles.input}
-                            staticLabel
-                            labelStyles={styles.labelStyles}
-                            inputStyles={{
-                                color: 'black',
-                                paddingHorizontal: 10
-                            }}
-
-
-                        />
-
-
-                        : null
-                    }
-
-
-
-                    {/* <View>
-                        {loyalty == 'Yes' && schemes.map((scheme, index) => (
-                            <View key={index} style={styles.schemeContainer}>
-                                <FloatingLabelInput
-                                    label="If yes please mention Scheme and brand name"
-                                    value={scheme.schmename}
-                                    onChangeText={(text) => handleInputChange(index, 'schmename', text)}
-                                    keyboardType='default'
-                                    containerStyles={styles.input}
-                                    staticLabel
-                                    labelStyles={styles.labelStyles}
-                                    inputStyles={{
-                                        color: 'black',
-                                        paddingHorizontal: 10
-                                    }}
-                                />
-                                <View style={{ flexDirection: 'row' }}>
-                                    <FloatingLabelInput
-                                        label="If yes what you liked about the program *"
-                                        value={scheme.resonforlikingschme}
-                                        onChangeText={(text) => handleInputChange(index, 'resonforlikingschme', text)}
-                                        keyboardType='default'
-                                        containerStyles={styles.input}
-                                        staticLabel
-                                        labelStyles={styles.labelStyles}
-                                        inputStyles={{
-                                            color: 'black',
-                                            paddingHorizontal: 10
-                                        }}
-                                    />
-                                    <IconButton
-                                        icon="camera"
-                                        size={20}
-                                        onPress={handleIconButtonPress}
-                                    />
-                                </View>
-                            </View>
-                        ))}
-                    </View> */}
-
-
-
-                    <FloatingLabelInput
-
-                        label={t('strings:annual_business_potential')}
-                        value={annualincome}
-                        onChangeText={(text) => setannualincome(text)}
-                        keyboardType='number-pad'
-                        containerStyles={styles.input}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 10,
-                        }}
-                    />
+                    </View>
 
 
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_update_your_selfie')}</Text>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginBottom: 5, }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginBottom: 5, elevation: 2 }}>
 
-                        <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.25, borderColor: 'grey', borderWidth: 0.8 }}>
-                            {selfieData != null ? <Text style={{ color: 'black', }}>{selfieData.name.substring(0, 30)}</Text> : null}
+                        <View style={{ backgroundColor: 'transparent', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'space-between', flexDirection: 'row', width: width / 1.15, borderColor: '#D3D3D3', borderWidth: 2, elevation: 0 }}>
+                            {selfieData != null ? <Text style={{ color: 'black', paddingLeft: 10 }}>{selfieData.name.substring(0, 30)}</Text> : null}
                             {selfieData != null ? <TouchableOpacity onPress={() => openCamera('Selfie', (documentType, data) => {
                                 // Handle the captured data for the 'Selfie' document type here
                             })} >
@@ -1188,6 +1222,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                 onPress={() => openCamera('Selfie', (documentType, data) => {
                                     // Handle the captured data for the 'Selfie' document type here
                                 })}
+                                style={{ left: width / 1.35 }}
                             />}
                         </View>
                         <IconButton
@@ -1197,15 +1232,16 @@ const NewUserKyc = ({ navigation, route }) => {
                             onPress={() => openImagePicker('Selfie', (documentType, data) => {
                                 // Handle the captured data for the 'Selfie' document type here
                             })}
+
                         />
 
                     </View>
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:update_aadhar_voter_id_dl_front')}</Text>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginBottom: 5, }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginBottom: 5, elevation: 2 }}>
 
-                        <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.25, borderColor: 'grey', borderWidth: 0.8 }}>
+                        <View style={{ backgroundColor: 'transparent', height: height / 15, borderRadius: 5, flexDirection: 'column', marginTop: 0, justifyContent: 'space-between', flexDirection: 'row', width: width / 1.15, borderColor: '#D3D3D3', borderWidth: 2, elevation: 0 }}>
 
-                            {idProofFrontData != null ? <Text style={{ color: 'black', }}>{idProofFrontData.name.substring(0, 30)}</Text> : null}
+                            {idProofFrontData != null ? <Text style={{ color: 'black', paddingLeft: 10 }}>{idProofFrontData.name.substring(0, 30)}</Text> : null}
                             {idProofFrontData != null ? <TouchableOpacity onPress={() => openCamera('IdProofFront', (documentType, data) => {
                                 // Handle the captured data for the 'Selfie' document type here
                             })} >
@@ -1219,6 +1255,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                     onPress={() => openCamera('IdProofFront', (documentType, data) => {
                                         // Handle the captured data for the 'Selfie' document type here
                                     })}
+                                    style={{ left: width / 1.35 }}
                                 />}
                         </View>
                         <IconButton
@@ -1228,6 +1265,7 @@ const NewUserKyc = ({ navigation, route }) => {
                             onPress={() => openImagePicker('IdProofFront', (documentType, data) => {
                                 // Handle the captured data for the 'Selfie' document type here
                             })}
+
                         />
 
                     </View>
@@ -1236,8 +1274,8 @@ const NewUserKyc = ({ navigation, route }) => {
 
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, marginTop: 10, marginBottom: 5, }}>
 
-                        <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.25, borderColor: 'grey', borderWidth: 0.8 }}>
-                            {idProofBackData != null ? <Text style={{ color: 'black', }}>{idProofBackData.name.substring(0, 30)}</Text> : null}
+                        <View style={{ backgroundColor: 'transparent', height: height / 15, borderRadius: 5, flexDirection: 'column', justifyContent: 'space-between', flexDirection: 'row', width: width / 1.15, borderColor: '#D3D3D3', borderWidth: 2, elevation: 0 }}>
+                            {idProofBackData != null ? <Text style={{ color: 'black', paddingLeft: 10 }}>{idProofBackData.name.substring(0, 30)}</Text> : null}
                             {idProofBackData != null ?
                                 <TouchableOpacity onPress={() => openCamera('IdProofBack', (documentType, data) => {
                                     // Handle the captured data for the 'Selfie' document type here
@@ -1252,6 +1290,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                     onPress={() => openCamera('IdProofBack', (documentType, data) => {
                                         // Handle the captured data for the 'Selfie' document type here
                                     })}
+                                    style={{ left: width / 1.35 }}
                                 />}
                         </View>
                         <IconButton
@@ -1264,7 +1303,7 @@ const NewUserKyc = ({ navigation, route }) => {
                         />
 
                     </View>
-                    <View>
+                    <View style={styles.floatingcontainerstyle}>
 
                         <FloatingLabelInput
 
@@ -1291,8 +1330,8 @@ const NewUserKyc = ({ navigation, route }) => {
                     <Text style={{ color: 'black', marginLeft: 24, marginBottom: 12 }}>{t('strings:update_pan_card_front')}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: width / 1.05, marginLeft: 20, }}>
 
-                        <View style={{ backgroundColor: '#fff', height: height / 15, borderRadius: 5, flexDirection: 'column', justifyContent: 'flex-end', flexDirection: 'row', width: width / 1.25, bottom: 10, borderColor: 'grey', borderWidth: 0.8 }}>
-                            {panData != null ? <Text style={{ color: 'black', }}>{panData.name.substring(0, 30)}</Text> : null}
+                        <View style={{ backgroundColor: 'transparent', height: height / 15, borderRadius: 5, flexDirection: 'column', justifyContent: 'space-between', flexDirection: 'row', width: width / 1.15, bottom: 10, borderColor: '#D3D3D3', borderWidth: 2, elevation: 0 }}>
+                            {panData != null ? <Text style={{ color: 'black', paddingLeft: 10, }}>{panData.name.substring(0, 30)}</Text> : null}
                             {panData != null ? <TouchableOpacity onPress={() => openCamera('Pan', (documentType, data) => {
                                 // Handle the captured data for the 'Selfie' document type here
                             })} >
@@ -1305,6 +1344,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                 onPress={() => openCamera('Pan', (documentType, data) => {
                                     // Handle the captured data for the 'Selfie' document type here
                                 })}
+                                style={{ left: width / 1.35 }}
                             />}
                         </View>
                         <IconButton
@@ -1317,7 +1357,7 @@ const NewUserKyc = ({ navigation, route }) => {
                         />
 
                     </View>
-                    <View>
+                    <View style={styles.floatingcontainerstyle}>
                         <FloatingLabelInput
 
                             label={t('strings:update_pan_number_manually')}
@@ -1325,7 +1365,7 @@ const NewUserKyc = ({ navigation, route }) => {
                             onChangeText={(text) => setpancardno(text)}
                             keyboardType='default'
 
-                            containerStyles={[styles.input,]}
+                            containerStyles={[styles.input]}
                             staticLabel
                             labelStyles={styles.labelStyles}
                             inputStyles={{
@@ -1370,19 +1410,28 @@ const styles = StyleSheet.create({
     },
     schemeContainer: {
         marginVertical: 10,
+        width: width / 1.05,
+    },
+    iconButton: {
+        backgroundColor: colors.yellow, // Replace 'yourBackgroundColor' with the desired color
+        borderRadius: 50,
+        alignSelf: 'center',
     },
     input: {
 
         padding: 5,
-        height: height / 15,
+        height: height / 16,
 
         margin: 20,
         marginTop: 5,
         color: 'black',
         borderRadius: 5,
-        backgroundColor: '#fff',
-        borderColor: 'grey',
-        borderWidth: 0.8,
+        backgroundColor: 'transparent',
+        borderColor: '#D3D3D3',
+        borderWidth: 2.5,
+        elevation: 0,
+
+
         marginVertical: 10,
         bottom: -5
     },
@@ -1390,4 +1439,5 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         margin: 14,
     },
+    floatingcontainerstyle: { width: width / 1.05, }
 })

@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Modal
 } from 'react-native';
+
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import colors from '../../../../colors';
@@ -25,6 +26,7 @@ import LanguagePicker from '../../../components/LanguagePicker';
 import language from '../../../assets/images/language.png';
 
 const LoginScreen = ({ navigation }) => {
+
   const { t, i18n } = useTranslation();
   const [showLanguagePicker, setShowLanguagePicker] = useState(false);
 
@@ -38,6 +40,7 @@ const LoginScreen = ({ navigation }) => {
   useEffect(() => {
     console.log('Language changed:', i18n.language);
   }, [i18n.language]);
+
   const showSnackbar = message => {
     Snackbar.show({
       text: message,
@@ -46,9 +49,13 @@ const LoginScreen = ({ navigation }) => {
   };
   const [loader, showLoader] = useState(false);
   const yellow = colors.yellow;
+
+  const { t } = useTranslation();
   const placeholderColor = colors.grey;
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isValidMobile, setIsValidMobile] = useState(true);
+
   const { login } = useAuth();
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState(true);
@@ -96,6 +103,16 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
+  const handleMobileNumberChange = (text) => {
+    // Validate mobile number here
+    // Allow only numeric characters and check if it starts with "3"
+    const isValidMobileNumber = /^[3-9][0-9]*$/.test(text);
+
+    if (isValidMobileNumber || text === '') {
+      setPassword(text);
+    }
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       
@@ -135,12 +152,16 @@ const LoginScreen = ({ navigation }) => {
             />
             <TextInput
               style={styles.input}
+
               placeholder={t('strings:password')}
               placeholderTextColor={placeholderColor}
               secureTextEntry={true}
               value={password}
-              onChangeText={text => setPassword(text)}
+              onChangeText={handleMobileNumberChange}
             />
+            {!isValidMobile && (
+              <Text style={styles.validationMessage}>Invalid mobile number</Text>
+            )}
             <View style={styles.updateAndForgot}>
               <TouchableOpacity style={styles.button}>
                 <Text style={styles.buttonText}>{t('strings:update_kyc')}</Text>
@@ -284,6 +305,12 @@ const styles = StyleSheet.create({
     padding: 16,
     flex: 2,
   },
+  validationMessage: {
+    color: 'red',
+    fontSize: 14,
+    marginTop: 5,
+  },
+
   input: {
     height: 40,
     marginBottom: 20,
