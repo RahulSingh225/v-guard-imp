@@ -275,11 +275,11 @@ const NomineePage = ({ navigation, route }) => {
                 if (data) {
                     const retrievedData = JSON.parse(data);
                     const selectedDatenomineeDate = new Date(retrievedData.BankDetailsAndNominee.selectedDatenominee);
-                    const formattedDate = selectedDatenomineeDate.toLocaleDateString();
+                    // const formattedDate = typeof selectedDatenomineeDate.toLocaleDateString();
                     // console.log('Formatted Date:', formattedDate);
 
 
-                    console.log('=============in nominee page=======================');
+                    console.log('=============in nominee page=======================', retrievedData);
                     //  console.log(retrievedData.fullData.userData.number);
                     //  console.log('====================================');
                     setnumber(retrievedData.fullData.userData.number)
@@ -289,13 +289,13 @@ const NomineePage = ({ navigation, route }) => {
                     setIFSC(retrievedData.BankDetailsAndNominee.IFSC);
                     setaccounttype(retrievedData.BankDetailsAndNominee.accounttype);
                     setselectedbank(retrievedData.BankDetailsAndNominee.selectedbank);
-                    // setSelectedDatenominee(retrievedData.BankDetailsAndNominee.selectedDatenominee.tolocalDateString());
+                    //setSelectedDatenominee(retrievedData.BankDetailsAndNominee.selectedDatenominee.tolocalDateString());
 
                     setnomineename(retrievedData.BankDetailsAndNominee.nomineename);
                     setnomineemobileno(retrievedData.BankDetailsAndNominee.nomineemobileno);
                     setnomineeemail(retrievedData.BankDetailsAndNominee.nomineeemail);
                     setnomineeaddress(retrievedData.BankDetailsAndNominee.nomineeaddress);
-                    setSelectedDatenominee(selectedDatenomineeDate);
+                    setSelectedDatenominee(new Date(retrievedData.BankDetailsAndNominee.selectedDatenominee));
                     setrelationship(retrievedData.BankDetailsAndNominee.relationship);
                     console.log('==============in nominee page======================');
                     console.log(selectedDatenominee);
@@ -405,13 +405,13 @@ const NomineePage = ({ navigation, route }) => {
                                 const selectedItem = allbankslist[itemIndex];
                                 setselectedbank(itemValue);
                                 setbankid(selectedItem.bankId);
-                                console.log("<><><><><><><><><>>", bankid);
+                                console.log("<><><><><><><><><>>", selectedbank);
                             }}>
                             <Picker.Item label="Select" value='' />
                             {Array.isArray(allbankslist) && allbankslist.length > 0 ? (
                                 allbankslist.map(item => (
                                     <Picker.Item
-                                        key={item.bankId}
+                                        key={item.bankNameAndBranch}
                                         label={item.bankNameAndBranch}
                                         value={item.bankNameAndBranch}
                                     />

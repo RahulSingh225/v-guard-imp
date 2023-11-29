@@ -199,7 +199,7 @@ export default {
     update_pan_card_back: 'Update Pan Card(Back)',
     update_pan_card_front: 'Update Pan Card(Front)*',
     update_pan_card_front_non_man: 'Update Pan Card(Front)',
-    update_aadhar_voter_id_dl_manually: 'Update Id No manually*',
+    update_aadhar_voter_id_dl_manually: 'Aadhar card No*',
     enter_points_to_be_redeemed: 'Enter Points to be redeemed',
     choose_wallet: 'Choose Wallet',
     proceed: 'Proceed',

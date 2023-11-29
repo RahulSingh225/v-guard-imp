@@ -11,7 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Popup from '../../../components/Popup';
 import { width, height } from '../../../utils/dimensions';
 import { Colors } from '../../../utils/constants';
-import { responsiveFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
+import { responsiveFontSize, responsiveScreenFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
 // import vguardristuser from '../../../modules/common/Model/Vguardristauser';
 const RegisterUser = ({ navigation }) => {
     const [isLoading, setIsLoading] = useState(false);
@@ -23,6 +23,18 @@ const RegisterUser = ({ navigation }) => {
     const [selectedOption, setSelectedOption] = useState('Retailer');
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
+    const [validationResult, setValidationResult] = useState({ isValid: true, errorMessage: '' });
+
+    const handleNumberChange = (text) => {
+
+
+        // Validate the mobile number
+        const isValidNumber = /^[3-9]\d{9}$/.test(text);
+        const errorMessage = isValidNumber ? '' : 'Invalid mobile number';
+        setNumber(text);
+
+        setValidationResult({ isValid: isValidNumber, errorMessage });
+    };
     const handleValidation = async () => {
         try {
             if (!number || number === null || number.trim() === '' || number.length !== 10) {
@@ -31,7 +43,7 @@ const RegisterUser = ({ navigation }) => {
                 showPopupMessage("Please select a Job Profession");
             } else {
                 setIsLoading(true);
-
+                console.log("in first api ", number, preferedLanguage);
                 const validationResponse = await NewusermobileNumberValidation(number, preferedLanguage);
                 const successMessage = validationResponse.data.message;
                 if (successMessage === 'Please enter OTP to proceed with the registration process') {
@@ -181,10 +193,13 @@ const RegisterUser = ({ navigation }) => {
                                 placeholder={t('strings:enter_your_mobile_number')}
                                 placeholderTextColor={placeholderColor}
                                 value={number}
-                                keyboardType='number-pad'
-                                onChangeText={(text) => setNumber(text)}
+                                keyboardType='numeric'
+                                onChangeText={handleNumberChange}
                                 maxLength={10}
                             />
+                            {!validationResult.isValid && (
+                                <Text style={styles.errorText}>{validationResult.errorMessage}</Text>
+                            )}
                         </View>
                         <View style={styles.buttonContainer}>
                             <Buttons
@@ -260,6 +275,11 @@ const styles = StyleSheet.create({
         height: '100%',
         backgroundColor: colors.white,
         display: 'flex',
+    },
+    errorText: {
+        color: 'red',
+        fontSize: responsiveScreenFontSize(1.5),
+
     },
     mainWrapper: {
         padding: 30,

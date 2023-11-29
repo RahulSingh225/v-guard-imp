@@ -275,7 +275,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
         // console.log("================================================");
         // console.log(">><><<><>><><><><><><><><><><><><", userbody);
         // console.log("================================================");
-    }, []);
+    }, [aadharfrontuuid, aadharbackuuid, pancarduuid, chequeImageuuid, selfieeuuid]);
 
     const updateDataInAsyncStorage = async () => {
         navigation.navigate("newUser");
@@ -403,7 +403,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         type: file.type,
                         name: file.name,
                     });
-
+                    console.log("inside upload files ", formData);
                     const response = await sendFile(formData);
                     responses.push(response.data);
                 }
@@ -465,7 +465,13 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                 console.log("pancarduuid:", pancarduuid);
                 console.log("chequeimageuuid:", chequeImageuuid);
                 console.log("selfieeuuid:", selfieeuuid);
-
+                // setAllUUIDs(() => ({
+                //     aadharfrontuuid,
+                //     aadharbackuuid,
+                //     pancarduuid,
+                //     chequeImageuuid,
+                //     selfieeuuid,
+                // }));
 
                 if (aadharfrontuuid != null && aadharfrontuuid != 'undefined' && aadharbackuuid != null && aadharbackuuid != 'undefined' && selfieeuuid != 'undefined' && selfieeuuid != null) {
                     // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharfrontuuid,);
@@ -480,6 +486,8 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                 }
                 else {
 
+                    // callUploadAndThenAnotherFunction();
+                    // registernewuser(userbody);
                 }
             } else {
                 console.log('No valid files to upload.');
@@ -496,7 +504,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
             console.log("+++++++++++++++++++++", userbody)
             setIsLoading(true);
-            const response = await RegisterNewUser(userbody);
+            // const response = await RegisterNewUser(userbody);
 
             if (response.message === 'Member registered successfully') {
                 setIsPopupVisible(true);
@@ -505,7 +513,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                 //  navigation.navigate('login');
                 setTimeout(() => {
                     navigation.navigate('login');
-                }, 1500);
+                }, 1200);
             } else {
                 setIsPopupVisible(true);
                 setPopupMessage(response.message);

@@ -81,41 +81,74 @@ const NewUser = ({ navigation }) => {
   };
 
   //=============== FUNCTION FOR GETTING THE  DISTRIC ID STATE ID UPIN SELECTING THE ID AND DETAILED PINCODE DATA  
-  async function fetchDataForPinCode1(pincode) {
+  // async function fetchDataForPinCode1(pincode) {
 
-    // setLoading(true);
-    try {
-      setLoading(true);
-      const data = await fetchPinCodeData(pincode);
-      //console.log("???????", pincode);
-      const pincodeid = data[0].pinCodeId;
-      console.log('Pin Code Data:', pincodeid);
+  //   // setLoading(true);
+  //   try {
+  //     setLoading(true);
+  //     const data = await fetchPinCodeData(pincode);
+  //     //console.log("???????", pincode);
+  //     const pincodeid = data[0].pinCodeId;
+  //     console.log('Pin Code Data:', pincodeid);
 
-      const secondData = await PincodedetailList(pincodeid);
-      setdistrictid(secondData.distId);
-      setSelectedState(secondData.stateName);
-      setSelectedDistrict(secondData.distName);
-      setpermananetdistrictId(secondData.distId);
-      setpermananetsatedid(secondData.stateId);
-      setpermananetcityid(secondData.cityId);
-
-
-      const cityData = await getCityDataForDistrict(secondData.distId);
+  //     const secondData = await PincodedetailList(pincodeid);
+  //     setdistrictid(secondData.distId);
+  //     setSelectedState(secondData.stateName);
+  //     setSelectedDistrict(secondData.distName);
+  //     setpermananetdistrictId(secondData.distId);
+  //     setpermananetsatedid(secondData.stateId);
+  //     setpermananetcityid(secondData.cityId);
 
 
-      setcitylistpicker(cityData);
+  //     const cityData = await getCityDataForDistrict(secondData.distId);
 
 
-      console.log('Second API call:', secondData);
-      console.log('District ID:', secondData.distId);
+  //     setcitylistpicker(cityData);
 
-      setIsLoading(false);
-    } catch (error) {
-      console.error('Error in Page 1:', error);
-    } finally {
-      setLoading(false);
-    }
+
+  //     console.log('Second API call:', secondData);
+  //     console.log('District ID:', secondData.distId);
+
+  //     setIsLoading(false);
+  //   } catch (error) {
+  //     console.error('Error in Page 1:', error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
+
+  function fetchDataForPinCode1(pincode) {
+    setLoading(true);
+
+    fetchPinCodeData(pincode)
+      .then(data => {
+        const pincodeid = data[0].pinCodeId;
+        console.log('Pin Code Data:', pincodeid);
+        return PincodedetailList(pincodeid);
+      })
+      .then(secondData => {
+        setdistrictid(secondData.distId);
+        setSelectedState(secondData.stateName);
+        setSelectedDistrict(secondData.distName);
+        setpermananetdistrictId(secondData.distId);
+        setpermananetsatedid(secondData.stateId);
+        setpermananetcityid(secondData.cityId);
+
+        return getCityDataForDistrict(secondData.distId);
+      })
+      .then(cityData => {
+        setcitylistpicker(cityData);
+        console.log('Second API call:', cityData);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error('Error in Page 1:', error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }
+
   ///============================= END OF ABOVE  FUNCTION =============================//
 
   //=========== FUNCTION FOR GETTING THE  CITY LIST ON USING THE DISTRICT ID =================================//
@@ -749,7 +782,7 @@ const NewUser = ({ navigation }) => {
               console.log('====================================');
 
             }}>
-            <Picker.Item label="Select" value='' />
+
             {Array.isArray(citylistpicker) && citylistpicker.length > 0 ? (
               citylistpicker.map(item => (
 

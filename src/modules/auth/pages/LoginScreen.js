@@ -7,18 +7,18 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import React, {useState} from 'react';
-import {useTranslation} from 'react-i18next';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import colors from '../../../../colors';
 import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
-import {loginWithPassword} from '../AuthApiService';
-import {useAuth} from '../../../components/AuthContext';
+import { loginWithPassword } from '../AuthApiService';
+import { useAuth } from '../../../components/AuthContext';
 import Popup from '../../../components/Popup';
 import Snackbar from 'react-native-snackbar';
 import Loader from '../../../components/Loader';
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({ navigation }) => {
   const showSnackbar = message => {
     Snackbar.show({
       text: message,
@@ -27,11 +27,12 @@ const LoginScreen = ({navigation}) => {
   };
   const [loader, showLoader] = useState(false);
   const yellow = colors.yellow;
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const placeholderColor = colors.grey;
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const {login} = useAuth();
+  const [isValidMobile, setIsValidMobile] = useState(true);
+  const { login } = useAuth();
   const [isPopupVisible, setIsPopupVisible] = useState(false);
 
   const togglePopup = () => {
@@ -60,6 +61,16 @@ const LoginScreen = ({navigation}) => {
     }
   };
 
+  const handleMobileNumberChange = (text) => {
+    // Validate mobile number here
+    // Allow only numeric characters and check if it starts with "3"
+    const isValidMobileNumber = /^[3-9][0-9]*$/.test(text);
+
+    if (isValidMobileNumber || text === '') {
+      setPassword(text);
+    }
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.loginScreen}>
@@ -85,12 +96,16 @@ const LoginScreen = ({navigation}) => {
             />
             <TextInput
               style={styles.input}
+
               placeholder={t('strings:password')}
               placeholderTextColor={placeholderColor}
               secureTextEntry={true}
               value={password}
-              onChangeText={text => setPassword(text)}
+              onChangeText={handleMobileNumberChange}
             />
+            {!isValidMobile && (
+              <Text style={styles.validationMessage}>Invalid mobile number</Text>
+            )}
             <View style={styles.updateAndForgot}>
               <TouchableOpacity style={styles.button}>
                 <Text style={styles.buttonText}>{t('strings:update_kyc')}</Text>
@@ -165,7 +180,7 @@ const LoginScreen = ({navigation}) => {
         </View>
         {isPopupVisible && (
           <Popup isVisible={isPopupVisible} onClose={togglePopup}>
-            <Text style={{fontWeight: 'bold'}}>
+            <Text style={{ fontWeight: 'bold' }}>
               Incorrect Username or Password
             </Text>
           </Popup>
@@ -217,6 +232,12 @@ const styles = StyleSheet.create({
     padding: 16,
     flex: 2,
   },
+  validationMessage: {
+    color: 'red',
+    fontSize: 14,
+    marginTop: 5,
+  },
+
   input: {
     height: 40,
     marginBottom: 20,

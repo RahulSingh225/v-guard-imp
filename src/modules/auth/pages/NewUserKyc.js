@@ -376,22 +376,11 @@ const NewUserKyc = ({ navigation, route }) => {
                     setSchemeData(retrievedData.fullData.NewUserKyc.schemeData)
 
 
-
-
-
-
                 }
-
-
-
-
 
             }
 
         }
-
-
-
 
         catch (error) {
             console.error('Error retrieving data: ', error);
@@ -457,44 +446,44 @@ const NewUserKyc = ({ navigation, route }) => {
         }
     };
     const openCamera = async (documentType, onCapture) => {
-        const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.CAMERA,
-        );
-        const granted1 = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        );
-        const granted2 = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            const result = await launchCamera(options);
-            const photo = result.assets[0];
-            const newPhoto = { uri: photo.uri, type: photo.type, name: photo.fileName };
+        // const granted = await PermissionsAndroid.request(
+        //     PermissionsAndroid.PERMISSIONS.CAMERA,
+        // );
+        // const granted1 = await PermissionsAndroid.request(
+        //     PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        // );
+        // const granted2 = await PermissionsAndroid.request(
+        //     PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        // );
+        // if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        const result = await launchCamera(options);
+        const photo = result.assets[0];
+        const newPhoto = { uri: photo.uri, type: photo.type, name: photo.fileName };
 
-            // Handle the captured data based on the document type
-            switch (documentType) {
-                case 'Selfie':
-                    setSelfieData(newPhoto);
-                    console.log(selfieData);
-                    break;
-                case 'IdProofFront':
-                    setIdProofFrontData(newPhoto);
-                    break;
-                case 'IdProofBack':
-                    setIdProofBackData(newPhoto);
-                    break;
-                case 'Pan':
-                    setPanData(newPhoto);
-                    break;
-                default:
-                    console.log('Unknown document type');
-            }
-
-            // Call the provided callback function to further process the data
-            if (typeof onCapture === 'function') {
-                onCapture(documentType, newPhoto);
-            }
+        // Handle the captured data based on the document type
+        switch (documentType) {
+            case 'Selfie':
+                setSelfieData(newPhoto);
+                console.log(selfieData);
+                break;
+            case 'IdProofFront':
+                setIdProofFrontData(newPhoto);
+                break;
+            case 'IdProofBack':
+                setIdProofBackData(newPhoto);
+                break;
+            case 'Pan':
+                setPanData(newPhoto);
+                break;
+            default:
+                console.log('Unknown document type');
         }
+
+        // Call the provided callback function to further process the data
+        if (typeof onCapture === 'function') {
+            onCapture(documentType, newPhoto);
+        }
+        //}
     };
 
     const NewUserKycData = {
@@ -617,7 +606,7 @@ const NewUserKyc = ({ navigation, route }) => {
             setPopupMessage('Profession field is empty. Please fill it.');
             return false;
         }
-        if (!maritialStatus || maritialStatus === '') {
+        if (!maritialStatus || maritialStatus === '0') {
             setIsPopupVisible(true);
             setPopupMessage('Marital Status field is empty. Please fill it.');
             return false;
@@ -704,8 +693,9 @@ const NewUserKyc = ({ navigation, route }) => {
             // await AsyncStorage.setItem("previewSummaryData", fullData);
             // log
             updateNewUserKycDataInPreviewSummary(NewUserKycData);
+            // updateNewUserKycDataInPreviewSummary(userData);
             const updatedValue = await AsyncStorage.getItem('previewSummaryData');
-            console.log('Updated Value in AsyncStorage (previewSummaryData +++++NEWUSERkYC++++++++++++):', updatedValue);
+            // console.log('Updated Value in AsyncStorage (previewSummaryData +++++NEWUSERkYC++++++++++++):', NewUserKycData);
             navigation.navigate('NomineePage', { fullData });
         }
         // Add validation checks for other fields
@@ -728,56 +718,56 @@ const NewUserKyc = ({ navigation, route }) => {
     }
     //=========== ***********************END OF THE ABOVE FUNCTION =================================//
     const openImagePicker = async (documentType, onCapture) => {
-        const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.CAMERA,
-        );
-        const granted1 = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        );
-        const granted2 = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            const options = {
-                mediaType: 'photo',
-                quality: 0.5,
-                cameraType: 'back',
-                saveToPhotos: true,
-            };
+        // const granted = await PermissionsAndroid.request(
+        //     PermissionsAndroid.PERMISSIONS.CAMERA,
+        // );
+        // const granted1 = await PermissionsAndroid.request(
+        //     PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        // );
+        // const granted2 = await PermissionsAndroid.request(
+        //     PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        // );
+        // if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        const options = {
+            mediaType: 'photo',
+            quality: 0.5,
+            cameraType: 'back',
+            saveToPhotos: true,
+        };
 
-            const result = await launchImageLibrary(options);
+        const result = await launchImageLibrary(options);
 
-            if (result.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (result.error) {
-                console.log('ImagePicker Error: ', result.error);
-            } else {
-                const photo = result.assets[0];
-                const newPhoto = { uri: photo.uri, type: photo.type, name: photo.fileName };
+        if (result.didCancel) {
+            console.log('User cancelled image picker');
+        } else if (result.error) {
+            console.log('ImagePicker Error: ', result.error);
+        } else {
+            const photo = result.assets[0];
+            const newPhoto = { uri: photo.uri, type: photo.type, name: photo.fileName };
 
-                // Handle the captured data based on the document type
-                switch (documentType) {
-                    case 'Selfie':
-                        setSelfieData(newPhoto);
-                        break;
-                    case 'IdProofFront':
-                        setIdProofFrontData(newPhoto);
-                        break;
-                    case 'IdProofBack':
-                        setIdProofBackData(newPhoto);
-                        break;
-                    case 'Pan':
-                        setPanData(newPhoto);
-                        break;
-                    default:
-                        console.log('Unknown document type');
-                }
-
-                // Call the provided callback function to further process the data
-                if (typeof onCapture === 'function') {
-                    onCapture(documentType, newPhoto);
-                }
+            // Handle the captured data based on the document type
+            switch (documentType) {
+                case 'Selfie':
+                    setSelfieData(newPhoto);
+                    break;
+                case 'IdProofFront':
+                    setIdProofFrontData(newPhoto);
+                    break;
+                case 'IdProofBack':
+                    setIdProofBackData(newPhoto);
+                    break;
+                case 'Pan':
+                    setPanData(newPhoto);
+                    break;
+                default:
+                    console.log('Unknown document type');
             }
+
+            // Call the provided callback function to further process the data
+            if (typeof onCapture === 'function') {
+                onCapture(documentType, newPhoto);
+            }
+            //}
         }
     };
     const handleButtonPress = () => {
@@ -847,12 +837,8 @@ const NewUserKyc = ({ navigation, route }) => {
                                     setcurrentdistrictId('');
                                     securrenttcityid('');
                                     //setcitylistpicker('');
-
-
                                 }
                                 if (itemValue == 'yes') {
-
-
                                     setaddress(userData.address);
                                     setstreet(userData.street);
                                     setlandmark(userData.landmark);
@@ -866,11 +852,6 @@ const NewUserKyc = ({ navigation, route }) => {
                                     console.log('====================================');
                                     console.log(userData.pincode);
                                     console.log(pincode);
-
-
-
-
-
                                     // console.log('====================####================', currentselectedCity);
                                     //  console.log('====================####================', currentselectedDistrict);
                                     //  console.log('====================####================', currentselectedState);
@@ -995,18 +976,19 @@ const NewUserKyc = ({ navigation, route }) => {
                                         borderColor: '#D3D3D3'
                                     }}
                                     style={{
-                                        backgroundColor: 'white',
+                                        backgroundColor: 'transparent',
                                         elevation: 50,
                                         opacity: 0.9,
-                                        borderWidth: 0.6,
+                                        borderWidth: 2.5,
                                         margin: 20,
-                                        width: width / 1.1,
-                                        height: height / 1.05,
+                                        width: width / 1.15,
+                                        height: height / 18,
                                         alignSelf: 'center',
                                         bottom: 10,
                                         elevation: 0,
                                         margintop: 50,
-                                        borderColor: '#D3D3D3'
+                                        borderColor: '#D3D3D3',
+                                        alignSelf: 'flex-start'
                                     }}
                                 />
                             </>}
@@ -1021,10 +1003,7 @@ const NewUserKyc = ({ navigation, route }) => {
                             >
                                 {IndianStates.map((state, index) => (
                                     <Picker.Item key={index} label={state} value={state} />
-                                ))}
-
-
-                                
+                                ))}     
                             </Picker> */}
 
                             {currentaddres === 'yes' ? <Text style={{ color: 'black', margin: 15 }}>{userData.selectedState}</Text> :
@@ -1052,7 +1031,7 @@ const NewUserKyc = ({ navigation, route }) => {
                                     setCurrentselectedCity(itemValue);
                                     securrenttcityid(selectedItem.id);
                                 }}>
-                                <Picker.Item label="Select" value='' />
+
                                 {Array.isArray(citylistpicker) && citylistpicker.length >= 0 ? (
                                     citylistpicker.map(item => (
                                         <Picker.Item
@@ -1135,7 +1114,7 @@ const NewUserKyc = ({ navigation, route }) => {
 
                             }
                             }>
-                            <Picker.Item label="Select" value="0" />
+                            <Picker.Item label="Select" value='0' />
                             <Picker.Item label="Married" value="Married" />
                             <Picker.Item label="Unmarried" value="Unmarried" />
 
@@ -1449,7 +1428,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         backgroundColor: 'transparent',
         borderColor: '#D3D3D3',
-        borderWidth: 2,
+        borderWidth: 2.5,
         elevation: 0,
 
 
