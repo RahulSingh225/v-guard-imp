@@ -61,15 +61,15 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
-  const handleMobileNumberChange = (text) => {
-    // Validate mobile number here
-    // Allow only numeric characters and check if it starts with "3"
-    const isValidMobileNumber = /^[3-9][0-9]*$/.test(text);
+  // const handleMobileNumberChange = (text) => {
+  //   // Validate mobile number here
+  //   // Allow only numeric characters and check if it starts with "3"
+  //   const isValidMobileNumber = /^[3-9][0-9]*$/.test(text);
 
-    if (isValidMobileNumber || text === '') {
-      setPassword(text);
-    }
-  };
+  //   if (isValidMobileNumber || text === '') {
+  //     set(text);
+  //   }
+  // };
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -101,7 +101,7 @@ const LoginScreen = ({ navigation }) => {
               placeholderTextColor={placeholderColor}
               secureTextEntry={true}
               value={password}
-              onChangeText={handleMobileNumberChange}
+              onChangeText={(text) => setPassword(text)}
             />
             {!isValidMobile && (
               <Text style={styles.validationMessage}>Invalid mobile number</Text>
