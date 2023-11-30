@@ -4,18 +4,45 @@ import Schemes from '../Schemes';
 import ProductWise from '../ProductWise';
 import ActiveScheme from '../ActiveScheme';
 import SpecialCombo from '../SpecialCombo';
+import ProductWiseOfferTable from '../ProductWiseOfferTable';
+import colors from '../../../../../../../colors';
 const SchemesStack = () => {
   const Stack = createNativeStackNavigator();
 
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
-      }}>
-      <Stack.Screen name="schemeScreen" component={Schemes} />                                             
-      <Stack.Screen name="productWiseOffers" component={ProductWise} />                                             
-      <Stack.Screen name="activeScheme" component={ActiveScheme} />                                             
-      <Stack.Screen name="specialCombo" component={SpecialCombo} />                                             
+          headerStyle: {
+            backgroundColor: colors.yellow
+          },
+          headerShown: false
+        }}>
+      <Stack.Screen name="Schemes" component={Schemes} 
+        options={{
+          headerShown: true
+        }}
+      />                                             
+      <Stack.Screen name="Product Wise Offers" component={ProductWise} 
+        options={{
+          headerShown: true
+        }}
+      />                                             
+      <Stack.Screen name="Active Schemes" component={ActiveScheme} 
+        options={{
+          headerShown: true
+        }}
+      />                                             
+      <Stack.Screen name="Special Combo" component={SpecialCombo} 
+        options={{
+          headerShown: true
+        }}
+      />       
+      <Stack.Screen name="Product Wise Offers Table" component={ProductWiseOfferTable}
+        options={{
+          headerShown: true
+        }}
+      />
+                                      
     </Stack.Navigator>
   );
 };

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableHighlight, Modal, Image, Button, TextInput, ScrollView, TouchableOpacity, Linking } from 'react-native'
+import { View, Text, StyleSheet, TouchableHighlight, Modal, Image, TextInput, ScrollView, TouchableOpacity, Linking } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
@@ -9,8 +9,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage'; // Import 
 import { createTicket, fetchTicketOptions } from '../../HomeApiService';
 import { Picker } from '@react-native-picker/picker';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { sendFile } from '../../../../../utils/apiservice';
+import { getFile, sendFile } from '../../../../../utils/apiservice';
 import Snackbar from 'react-native-snackbar';
+import { height, width } from '../../../../../utils/dimensions';
+import { Button } from 'react-native-paper';
 
 
 
@@ -19,11 +21,23 @@ const Ticket = ({ navigation }) => {
   const baseURL = 'https://www.vguardrishta.com/img/appImages/Profile/';
 
   const { t } = useTranslation();
-  const [userName, setUserName] = useState('');
-  const [userId, setUserId] = useState('');
-  const [userCode, setUserCode] = useState('');
-  const [userRole, setUserRole] = useState('');
-  const [userImage, setUserImage] = useState('');
+  // const [userName, setUserName] = useState('');
+  // const [userId, setUserId] = useState('');
+  // const [userCode, setUserCode] = useState('');
+  // const [userRole, setUserRole] = useState('');
+  // const [userImage, setUserImage] = useState('');
+  const [select, setselect] = useState();
+
+  const [userData, setUserData] = useState({
+    userName: '',
+    userId: '',
+    userCode: '',
+    userImage: '',
+    userRole: ''
+  });
+  const [profileImage, setProfileImage] = useState('');
+
+  
   const [options, setOptions] = useState([]);
 
   const [selectedOption, setSelectedOption] = useState('');
@@ -111,20 +125,18 @@ const Ticket = ({ navigation }) => {
 
 
   useEffect(() => {
-    AsyncStorage.getItem('name').then((name) => {
-      setUserName(name);
-    });
-    AsyncStorage.getItem('username').then((username) => {
-      setUserId(username);
-    });
-    AsyncStorage.getItem('userCode').then((code) => {
-      setUserCode(code);
-    });
-    AsyncStorage.getItem('userRole').then((userRole) => {
-      setUserRole(userRole);
-    });
-    AsyncStorage.getItem('userImage').then((userimage) => {
-      setUserImage(userimage);
+    AsyncStorage.getItem('USER').then(r => {
+      const user = JSON.parse(r);
+      console.log(user);
+      const data = {
+        userName: user.name,
+        userCode: user.userCode,
+        pointsBalance: user.pointsSummary.pointsBalance,
+        redeemedPoints: user.pointsSummary.redeemedPoints,
+        userImage: user.kycDetails.selfie,
+        userRole: user.professionId      
+      };
+      setUserData(data);
     });
     fetchTicketOptions()
       .then(response => response.json())
@@ -137,6 +149,22 @@ const Ticket = ({ navigation }) => {
         setIsOptionsLoading(false);
       });
   }, []);
+  useEffect(() => {
+    console.log("<><><><><><")
+    if (userData.userRole && userData.userImage) {
+      
+      const getImage = async () => {
+        try {
+          const profileImage = await getFile(userData.userImage, 'PROFILE', userData.userRole);
+          setProfileImage(profileImage.url);
+        } catch (error) {
+          console.log('Error while fetching profile image:', error);
+        }
+      };
+  
+      getImage();
+    }
+  }, [userData.userRole, userData.userImage]);
 
   const handleOptionChange = (value) => {
     setSelectedOption(value);
@@ -188,23 +216,23 @@ const Ticket = ({ navigation }) => {
     });
   };
 
-  console.log(baseURL+userImage)
+  // console.log(baseURL+userImage)
   return (
     <ScrollView style={styles.mainWrapper}>
       <View style={styles.flexBox}>
 
         <View style={styles.profileDetails}>
           <View style={styles.ImageProfile}>
-          <Image source={{ uri: baseURL + userImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
+          <Image source={{ uri: profileImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
           </View>
           <View style={styles.profileText}>
-            <Text style={styles.textDetail}>{userName}</Text>
-            <Text style={styles.textDetail}>{userCode}</Text>
+            <Text style={styles.textDetail}>{userData.userName}</Text>
+            <Text style={styles.textDetail}>{userData.userCode}</Text>
           </View>
         </View>
         <TouchableHighlight
           style={styles.button}
-          onPress={() => navigation.navigate('ticketHistory')}
+          onPress={() => navigation.navigate('Ticket History')}
         >
           <Text style={styles.buttonText}>{t('strings:ticket_history')}</Text>
         </TouchableHighlight>
@@ -255,17 +283,50 @@ const Ticket = ({ navigation }) => {
 
       {/* Modal for selecting camera or gallery */}
       <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showImagePickerModal}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Button title="Launch Camera" onPress={handleCameraUpload} />
-            <Button title="Choose from Gallery" onPress={handleGalleryUpload} />
-          </View>
-        </View>
-      </Modal>
+              animationType="slide"
+              transparent={true}
+              visible={showImagePickerModal}
+              style={styles.modalcontainer}
+              hardwareAccelerated={true}
+              opacity={0.3}>
+              <View style={{
+                width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
+                margin: 20,
+                backgroundColor: '#D3D3D3',
+                borderRadius: 20,
+                padding: 10,
+                shadowColor: '#000',
+                shadowOffset: {
+                  width: 100,
+                  height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 5,
+              }}>
+                <Picker
+                  mode="dropdown"
+                  placeholder={'Update Your Selfie *'}
+                  style={{ color: 'black' }}
+                  selectedValue={select}
+                  onValueChange={(itemValue, itemIndex) => {
+                    if (itemValue === "Open camera") {
+                      handleCameraUpload()
+                    } else if (itemValue === "Open Image picker") {
+                      handleGalleryUpload();
+                    }
+                  }}
+                >
+                  <Picker.Item label="Select Action" value="" />
+                  <Picker.Item label="Select Photo from gallery" value="Open Image picker" />
+                  <Picker.Item label="Capture Photo from camera" value="Open camera" />
+
+                </Picker>
+                <Button mode="text" onPress={() => setShowImagePickerModal(false)}>
+                  Close
+                </Button>
+              </View>
+            </Modal>
 
       <Text style={styles.blackText}>{t('strings:description')}</Text>
       <TextInput
@@ -419,6 +480,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
   },
+  modalcontainer: { alignSelf: 'center', backgroundColor: 'rgba(0,0,0,0.7)' },
+
 })
 
 export default Ticket

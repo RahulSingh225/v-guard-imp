@@ -108,6 +108,26 @@ export function getBankNames() {
     return createDigestGetRequest(path);
 }
 
+export function getRetailerCategories() {
+    const path = "product/retailerCategories";
+    return createDigestGetRequest(path);
+}
+
+export function getUniqueCodeHistory() {
+    const path = "coupon/history";
+    return createDigestGetRequest(path);
+}
+
+// export function productRegistration(data) {
+//     const path = "product/registerAirCoolerCustomer";
+//     return createDigestPostRequest(path, data);
+// }
+
+export function paytmTransfer(data) {
+    const path = "order/paytmTransfer";
+    const body = { data }
+    return createDigestPostRequest(path, body);
+}
 
 
 

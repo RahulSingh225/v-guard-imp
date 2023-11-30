@@ -42,7 +42,7 @@ const ViewCart = ({navigation}) => {
             return;
         }
         if (label === 'Others') {
-            navigation.navigate('addAddress');
+            navigation.navigate('Add Address');
         } else {
             setSelectedOption(label);
         }

@@ -15,13 +15,17 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import NeedHelp from '../../../../../components/NeedHelp';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import ReusableCarousel from '../../../../../components/ReusableCarousel'
+
 
 const RedeemPoints = ({navigation}) => {
   const {t} = useTranslation();
-  const [pointsBalance, setPointsBalance] = useState('');
-  const [redeemedPoints, setRedeemedPoints] = useState('');
-  const [numberOfScan, setNumberOfScan] = useState('');
+  const carouselData = [
+    { imageUrl: require('../../../../../assets/images/banner_redeem_ppoints.webp') },
+    { imageUrl: require('../../../../../assets/images/banner.webp') },
+    { imageUrl: require('../../../../../assets/images/banner_redeem_ppoints.webp') },
+  ];
   const [pointData, setPointData] = useState({
     pointsBalance: '',
     redeemedPoints: '',
@@ -42,11 +46,14 @@ const RedeemPoints = ({navigation}) => {
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       <View style={styles.mainWrapper}>
+      <View style={styles.carousel}>
+        <ReusableCarousel data={carouselData} />
+      </View>
         <View style={styles.points}>
           <View style={styles.leftPoint}>
             <Text style={styles.greyText}>{t('strings:points_balance')}</Text>
 
-            <Text style={styles.point}>{pointData.pointsBalance}</Text>
+            <Text style={styles.point}>{pointData.pointsBalance ? pointData.pointsBalance : 0}</Text>
           </View>
           <View style={styles.middlePoint}>
             <Text style={styles.greyText}>{t('strings:points_redeemed')}</Text>
@@ -65,37 +72,36 @@ const RedeemPoints = ({navigation}) => {
             <CustomTouchableOption
               text="strings:bank_transfer"
               iconSource={require('../../../../../assets/images/ic_bank_transfer.webp')}
-              screenName="banktransfer"
+              screenName="Bank Transfer"
             />
             <CustomTouchableOption
               text="strings:paytm_transfer"
               iconSource={require('../../../../../assets/images/ic_paytm_transfer.webp')}
-              screenName="paytmtransfer"
+              screenName="Paytm Transfer"
             />
             <CustomTouchableOption
-              text="strings:redeem_products"
-              iconSource={require('../../../../../assets/images/ic_redeem_products.webp')}
-              screenName="redeemproducts"
-              disabled={true}
+              text="UPI Transfer"
+              iconSource={require('../../../../../assets/images/upi_transfer.webp')}
+              screenName="UPI Transfer"
             />
           </View>
           <View style={styles.row}>
             <CustomTouchableOption
               text="strings:e_gift_cards"
               iconSource={require('../../../../../assets/images/ic_egift_cards.webp')}
-              screenName="giftvoucher"
+              screenName="Gift Voucher"
               disabled={true}
             />
             <CustomTouchableOption
               text="strings:track_your_redemption"
               iconSource={require('../../../../../assets/images/ic_track_your_redemption.webp')}
-              screenName="trackredemption"
+              screenName="Track Redemption"
               disabled={true}
             />
             <CustomTouchableOption
               text="strings:redemption_history"
               iconSource={require('../../../../../assets/images/ic_redemption_history.webp')}
-              screenName="redemptionhistory"
+              screenName="Redemption History"
             />
           </View>
         </View>
@@ -134,6 +140,9 @@ const styles = StyleSheet.create({
   textDetail: {
     color: colors.black,
     fontWeight: 'bold',
+  },
+  carousel: {
+    backgroundColor: colors.white
   },
   points: {
     width: '100%',

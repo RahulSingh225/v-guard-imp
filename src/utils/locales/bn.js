@@ -85,7 +85,7 @@ export default {
     lbl_enter_mobile_number: "2. OTP পেতে আপনার মোবাইল নম্বর এন্টার করুন",
     get_otp: "OTP পান",
     or: "অথবা",
-    powered_by_v_guard: "ভি-গার্ড দ্বারা সঞ্চালিত",
+    powered_by_v_guard: "দ্বারা সঞ্চালিত",
     lbl_otp_through_phone_call: "OTP পেতে এখানে ক্লিক করুন ফোন কলের মাধ্যমে",
     call: "কল করুন",
     enter_your_mobile_number: "আপনার মোবাইল নম্বর এন্টার করুন",

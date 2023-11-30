@@ -8,32 +8,34 @@ import {
   TouchableOpacity,
   Image,
   Modal,
-  Button,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import { Button } from 'react-native-paper';
+import React, { useState, useEffect } from 'react';
 import {
   responsiveFontSize,
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
 import colors from '../../../../../../colors';
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 // import { TextInput } from 'react-native-paper';
 import Buttons from '../../../../../components/Buttons';
 import arrowIcon from '../../../../../assets/images/arrow.png';
-import {getFile, sendFile} from '../../../../../utils/apiservice';
+import { getFile, sendFile } from '../../../../../utils/apiservice';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import {
   getBankDetails,
   getBankNames,
   updateBankDetails,
 } from '../../HomeApiService';
 import Snackbar from 'react-native-snackbar';
-import {Picker} from '@react-native-picker/picker';
-import {imageUrl} from '../../../../../utils/constants';
+import { Picker } from '@react-native-picker/picker';
+import { imageUrl } from '../../../../../utils/constants';
+import { width, height } from '../../../../../utils/dimensions';
 
 const Bank = () => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
+  const [select, setselect] = useState();
   const [accNo, setAccNo] = React.useState('');
   const [accHolder, setAccHolder] = React.useState('');
   const [accType, setAccType] = React.useState('');
@@ -52,7 +54,6 @@ const Bank = () => {
       setUserRole(userRole);
     };
 
-    // Define a function to get bank details and call getFileUri
     const getBankDetailsAndCallFileUri = async () => {
       try {
         await getUserRoleFromAsyncStorage();
@@ -72,7 +73,6 @@ const Bank = () => {
             setSelectedImageName(data.checkPhoto);
             setEntityUid(data.checkPhoto);
 
-            // Call getFileUri with the user role
             await getFileUri(data.checkPhoto);
           }
         } else {
@@ -227,10 +227,10 @@ const Bank = () => {
       <View style={styles.mainWrapper}>
         <View style={styles.header}>
           <Text style={styles.textHeader}>
-            {t('dashboard:redeem:banktransfer:header')}
+            {t('strings:bank_details')}
           </Text>
           <Text style={styles.textSubHeader}>
-            {t('dashboard:redeem:banktransfer:subHeader')}
+            {t('strings:for_account_tranfer_only')}
           </Text>
         </View>
         <View style={styles.form}>
@@ -238,7 +238,7 @@ const Bank = () => {
             <TextInput
               style={styles.input}
               placeholder={t(
-                'dashboard:redeem:banktransfer:inputAccountNumber',
+                'strings:lbl_account_number',
               )}
               placeholderTextColor={colors.grey}
               value={accNo}
@@ -249,7 +249,7 @@ const Bank = () => {
             <TextInput
               style={styles.input}
               placeholder={t(
-                'dashboard:redeem:banktransfer:inputAccountHolder',
+                'strings:lbl_account_holder_name'
               )}
               value={accHolder}
               placeholderTextColor={colors.grey}
@@ -261,13 +261,13 @@ const Bank = () => {
               selectedValue={accType}
               onValueChange={itemValue => setAccType(itemValue)}
               style={styles.picker}>
-              <Picker.Item label={'Savings'} value={'savings'} />
-              <Picker.Item label={'Current'} value={'current'} />
+              <Picker.Item label={t('strings:account_type:saving')} value={'saving'} />
+              <Picker.Item label={t('strings:account_type:current')} value={'current'} />
             </Picker>
 
             <Image
               source={require('../../../../../assets/images/ic_ticket_drop_down2.png')}
-              style={{width: '5%', height: '100%', marginRight: 5}}
+              style={{ width: '5%', height: '100%', marginRight: 5 }}
               resizeMode="contain"
             />
           </View>
@@ -286,14 +286,14 @@ const Bank = () => {
             </Picker>
             <Image
               source={require('../../../../../assets/images/ic_ticket_drop_down2.png')}
-              style={{width: '5%', height: '100%', marginRight: 5}}
+              style={{ width: '5%', height: '100%', marginRight: 5 }}
               resizeMode="contain"
             />
           </View>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
-              placeholder={t('dashboard:redeem:banktransfer:inputIfscCode')}
+              placeholder={t('strings:ifsc')}
               value={ifscCode}
               placeholderTextColor={colors.grey}
               onChangeText={ifscCode => setIfscCode(ifscCode)}
@@ -313,7 +313,7 @@ const Bank = () => {
               ) : (
                 <TextInput
                   style={styles.input}
-                  placeholder={t('dashboard:redeem:banktransfer:uploadCheque')}
+                  placeholder={t('strings:cancelled_cheque_copy')}
                   placeholderTextColor={colors.grey}
                   editable={false}
                 />
@@ -321,14 +321,14 @@ const Bank = () => {
               <View style={styles.inputImage}>
                 {selectedImage ? (
                   <Image
-                    source={{uri: selectedImage}}
-                    style={{width: '100%', height: '100%'}}
+                    source={{ uri: selectedImage }}
+                    style={{ width: '100%', height: '100%' }}
                     resizeMode="cover"
                   />
                 ) : (
                   <Image
                     source={require('../../../../../assets/images/photo_camera.png')}
-                    style={{width: '100%', height: '100%'}}
+                    style={{ width: '100%', height: '100%' }}
                     resizeMode="contain"
                   />
                 )}
@@ -339,22 +339,53 @@ const Bank = () => {
             <Modal
               animationType="slide"
               transparent={true}
-              visible={showImagePickerModal}>
-              <View style={styles.modalContainer}>
-                <View style={styles.modalContent}>
-                  <Button title="Launch Camera" onPress={handleCameraUpload} />
-                  <Button
-                    title="Choose from Gallery"
-                    onPress={handleGalleryUpload}
-                  />
-                </View>
+              visible={showImagePickerModal}
+              style={styles.modalcontainer}
+              hardwareAccelerated={true}
+              opacity={0.3}>
+              <View style={{
+                width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
+                margin: 20,
+                backgroundColor: '#D3D3D3',
+                borderRadius: 20,
+                padding: 10,
+                shadowColor: '#000',
+                shadowOffset: {
+                  width: 100,
+                  height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 5,
+              }}>
+                <Picker
+                  mode="dropdown"
+                  placeholder={'Update Your Selfie *'}
+                  style={{ color: 'black' }}
+                  selectedValue={select}
+                  onValueChange={(itemValue, itemIndex) => {
+                    if (itemValue === "Open camera") {
+                      handleCameraUpload()
+                    } else if (itemValue === "Open Image picker") {
+                      handleGalleryUpload();
+                    }
+                  }}
+                >
+                  <Picker.Item label="Select Action" value="" />
+                  <Picker.Item label="Select Photo from gallery" value="Open Image picker" />
+                  <Picker.Item label="Capture Photo from camera" value="Open camera" />
+
+                </Picker>
+                <Button mode="text" onPress={() => setShowImagePickerModal(false)}>
+                  Close
+                </Button>
               </View>
             </Modal>
           </View>
         </View>
         <View style={styles.button}>
           <Buttons
-            label={'Proceed'}
+            label={t('strings:submit')}
             variant="filled"
             onPress={() => handleProceed()}
             width="100%"
@@ -461,5 +492,7 @@ const styles = StyleSheet.create({
     color: colors.grey,
     fontWeight: 'bold',
   },
+  modalcontainer: { alignSelf: 'center', backgroundColor: 'rgba(0,0,0,0.7)' },
+
 });
 export default Bank;

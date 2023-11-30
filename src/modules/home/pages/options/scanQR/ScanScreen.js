@@ -33,6 +33,17 @@ const ScanScreen = ({ navigation, route }) => {
   const { t } = useTranslation();
   const [qrCode, setQrcode] = React.useState('');
   const [scratchCard, showScratchCard] = React.useState(false);
+  var USER = null;
+
+
+  React.useEffect(() => {
+
+    AsyncStorage.getItem("USER").then(r => {
+      USER = JSON.parse(r);
+    })
+
+
+  }, []);
 
   // async function scan() {
   //   scanQR()
@@ -42,7 +53,9 @@ const ScanScreen = ({ navigation, route }) => {
 
   async function sendBarcode() {
     const position = await getLocation();
-    const user = await AsyncStorage.getItem('USER');
+    const user = JSON.parse(await AsyncStorage.getItem('USER'));
+    const userRoleId = user && user.roleId ? user.roleId.toString() : '';
+    var apiResponse;
     var apiResponse;
     var CouponData = {
       userMobileNumber: '',
@@ -50,7 +63,7 @@ const ScanScreen = ({ navigation, route }) => {
       pin: '',
       smsText: '',
       from: '',
-      userType: '',
+      userType: userRoleId,
       userId: 0,
       apmID: 0,
       retailerCoupon: false,
@@ -70,10 +83,16 @@ const ScanScreen = ({ navigation, route }) => {
     CouponData.from = 'APP';
     CouponData.userMobileNumber = user.mobileNo1;
     CouponData.geolocation = null;
+
+
     if (type == 'airCooler') {
       apiResponse = await isValidBarcode(CouponData, 1, '', 0, null);
       console.log(apiResponse.json());
-    } else {
+    }
+    else if (type == 'fan') {
+      navigation.navigate('Product Registration')
+    }
+    else {
       apiResponse = await isValidBarcode(CouponData, 0, '', 0, null);
 
       console.log(apiResponse);
@@ -126,9 +145,7 @@ const ScanScreen = ({ navigation, route }) => {
         <Text style={styles.text}>{t('strings:or')}</Text>
         <View style={styles.enterCode}>
           <View style={styles.topContainer}>
-
             <Text style={styles.smallText}>{t('strings:enter_code')}</Text>
-
           </View>
           <View style={styles.bottomContainer}>
             <TextInput
@@ -152,25 +169,23 @@ const ScanScreen = ({ navigation, route }) => {
           icon={arrowIcon}
         />
         <View style={styles.rightText}>
-
           <Text style={styles.smallText}>
             {t('strings:go_to_unique_code_history')}
           </Text>
           <TouchableOpacity
             style={styles.scanImage}
-            onPress={() => navigation.navigate('uniqueCodeHistory')}>
+            onPress={() => navigation.navigate('Unique Code History')}>
             <Image
               style={{ width: 30, height: 30 }}
               source={require('../../../../../assets/images/ic_circle_right_arrow_yellow.webp')}
             />
-
           </TouchableOpacity>
         </View>
         <Buttons
           style={styles.button}
           label={t('strings:upload_scan_error_')}
           variant="blackButton"
-          onPress={() => navigation.navigate('uploadError')}
+          onPress={() => navigation.navigate('Upload Scanning Error')}
           width="100%"
         />
         <NeedHelp />

@@ -28,10 +28,15 @@ const ProductWiseEarning = () => {
 
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.title}>Product Wise Earning</Text>
             <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
-                <Row data={tableHead} style={styles.head} textStyle={styles.text} />
-                <Rows data={data} textStyle={styles.text} />
+                {data.length === 0 ? (
+                    <Rows data={[['No Data']]} textStyle={[styles.text, { color: colors.grey, fontWeight: 'bold', textAlign: 'center' }]} />
+                ) : (
+                    <>
+                        <Row data={tableHead} style={styles.head} textStyle={styles.text} />
+                        <Rows data={data} textStyle={styles.text} />
+                    </>
+                )}
             </Table>
         </ScrollView>
     );
@@ -40,7 +45,6 @@ const ProductWiseEarning = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: responsiveHeight(2),
         backgroundColor: colors.white
     },
     head: {
