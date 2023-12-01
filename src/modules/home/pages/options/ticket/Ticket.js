@@ -111,12 +111,15 @@ const Ticket = ({ navigation }) => {
 
   const triggerApiWithImage = async (fileData) => {
     const formData = new FormData();
-    formData.append('USER_ROLE', userRole);
+    formData.append('USER_ROLE', userData.userRole);
     formData.append('image_related', 'TICKET');
     formData.append('file', fileData);
 
+    console.log("formData=====", formData)
+
     try {
       const response = await sendFile(formData);
+      console.log("response-----------", response)
       setEntityUid(response.data.entityUid);
     } catch (error) {
       console.error('API Error:', error);
@@ -134,7 +137,8 @@ const Ticket = ({ navigation }) => {
         pointsBalance: user.pointsSummary.pointsBalance,
         redeemedPoints: user.pointsSummary.redeemedPoints,
         userImage: user.kycDetails.selfie,
-        userRole: user.professionId      
+        userRole: user.professionId,
+        userId: user.contactNo
       };
       setUserData(data);
     });
@@ -178,7 +182,7 @@ const Ticket = ({ navigation }) => {
   }
   const handleSubmission = async () => {
     const postData = {
-      userId: userId,
+      userId: userData.userId,
       issueTypeId: selectedOption,
       imagePath: entityUid,
       description: descriptionInput,
