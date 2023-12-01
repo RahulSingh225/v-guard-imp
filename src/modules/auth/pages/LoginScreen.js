@@ -49,8 +49,6 @@ const LoginScreen = ({ navigation }) => {
   };
   const [loader, showLoader] = useState(false);
   const yellow = colors.yellow;
-
-  const { t } = useTranslation();
   const placeholderColor = colors.grey;
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
