@@ -442,7 +442,13 @@ export const UpdateUserProfile = async (profilebody) => {
     try {
         const relativeUrl = "user/updateProfile";
         const resposne = await createDigestPostRequest(relativeUrl, profilebody);
-        return resposne;
+        if (resposne.ok) {
+
+            return await resposne.json();
+        } else {
+
+            throw new Error(`Request failed with status ${response.status}`);
+        }
 
     } catch (error) {
         console.error('Error sending file with profile', error);

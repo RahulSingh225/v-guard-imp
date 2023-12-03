@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ImageWithModal from '../../../components/ImageWithModal';
 import { fetchPinCodeData, PincodedetailList, GetProfession, Citylist, Getsubprofession, getUserProfile, sendFile, getFile, UpdateUserProfile } from '../../../utils/apiservice';
-// import Popup from '../../../components/Popup';
+//import Popup from '../../../components/Popup';
 // import Loader from '../../../components/Loader';
 
 
@@ -44,6 +44,7 @@ const EditProfile = () => {
     const [Idcardfront, setIdcardfront] = useState(null);
     const [Idcardback, setIdcardback] = useState(null);
     const [pancarddata, setpancarddata] = useState(null);
+    const [maritialstatusId, setmaritialstatusId] = useState('');
 
     const [selfieemodal, setselfieemodal] = useState(false);
     const [professiondata, setprofessiondata] = useState([]);
@@ -57,6 +58,8 @@ const EditProfile = () => {
     const [userCode, setUserCode] = useState('');
     const [userImage, setUserImage] = useState('');
     const [loyalty, setloyalty] = useState('Select');
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [popupMessage, setPopupMessage] = useState('');
     const [form1, setform1] = useState({
         "preferedLanguage": "",
         "name": "",
@@ -336,8 +339,9 @@ const EditProfile = () => {
 
     // ===============================================GETTING SUGGESTION=====/// FOR PINCODE======================//
     const fetchPincodeSuggestions = async (pincode) => {
-        setIsLoading(true);
+
         try {
+            // setIsLoading(true);
             const suggestionData = await fetchPinCodeData(pincode);
 
             if (Array.isArray(suggestionData) && suggestionData.length > 0) {
@@ -356,7 +360,7 @@ const EditProfile = () => {
         }
         finally {
 
-            setIsLoading(false);
+            // setIsLoading(false);
         }
     };
 
@@ -514,7 +518,7 @@ const EditProfile = () => {
 
                 setloyalty(responseData.enrolledOtherSchemeYesNo == "Yes" ? "Yes" : "No")
 
-                console.log("Business Potential", loyalty);
+                // console.log("Business Potential", loyalty);
 
 
                 setnominee(nomineform => ({
@@ -527,7 +531,7 @@ const EditProfile = () => {
                     nomineerealtionship: responseData.bankDetail.nomineeRelation || "",
                 }))
                 fetchAndSetImageData(responseData.kycDetails.selfie, 'PROFILE', 1);
-                fetchAndSetImageData(responseData.kycDetails.aadharOrVoterOrDlBack, 'ID_CARD_FRONT', 1);
+                fetchAndSetImageData(responseData.kycDetails.aadharOrVoterOrDLFront, 'ID_CARD_FRONT', 1);
                 fetchAndSetImageData(responseData.kycDetails.aadharOrVoterOrDlBack, 'ID_CARD_BACK', 1);
                 fetchAndSetImageData(responseData.kycDetails.panCardFront, 'PAN_CARD_FRONT', 1);
 
@@ -539,6 +543,7 @@ const EditProfile = () => {
             .catch(error => {
                 console.error('Error fetching data:', error);
             });
+
         Gettingprofession();
 
 
@@ -826,8 +831,18 @@ const EditProfile = () => {
         };
 
         try {
-            console.log("@@@@@@@@@@@@@@@@@@", profilebody);
+            setIsLoading(true)
+            console.log("@@@@@@@@@@@@@@@@@PROFILE BODY@", profilebody);
             const resposne = await UpdateUserProfile(profilebody);
+            if (resposne.code == 200) {
+                setIsPopupVisible(true);
+                setPopupMessage(resposne.message);
+
+            } else {
+
+            }
+            setIsPopupVisible(true);
+            setPopupMessage(resposne.message);
             console.log("@@@@@@@@@@@@@@@@@@", resposne);
 
 
@@ -836,14 +851,25 @@ const EditProfile = () => {
             console.log("Error in updating user profile ", error);
 
         } finally {
-
+            setIsLoading(false);
         }
     }
 
     //  const baseurl = 'https://www.vguardrishta.com/img/appImages/Profile/';
     return (
         <><ScrollView style={styles.mainWrapper}>
+            {isLoading == true ? <View style={{ flex: 1 }}>
+
+                <Loader isLoading={isLoading} />
+            </View> : null}
+            {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
+                <Text>{popupMessage}</Text>
+
+            </Popup>
+            )}
+
             <View style={styles.flexBox}>
+
                 <View style={styles.ImageProfile}>
                     <Image source={{ uri: SelfieData }} style={{ width: '100%', height: '100%', borderRadius: 50 }} resizeMode='cover' />
                 </View>
@@ -884,17 +910,17 @@ const EditProfile = () => {
 
                 <Text style={{ color: 'black', marginLeft: 24, }}>{t('strings:lbl_gender_mandatory')}</Text>
 
-                <View style={{ backgroundColor: '#fff', height: height / 17, margin: 10, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 1.8, borderColor: '#D3D3D3' }}>
+                <View style={styles.input}>
                     <Picker
                         mode='dropdown'
                         style={{ color: 'black' }}
-                        selectedValue={gender}
+                        selectedValue={form1.gender}
                         onValueChange={(itemValue, itemIndex) => {
                             // console.log("Selected Value: ", itemValue)
-                            setGender(itemValue)
+                            handleFieldChange("gender", gender)
                         }}>
-                        <Picker.Item label="Select Gender*" value=" " />
-                        <Picker.Item label="Male" value="Male " />
+                        <Picker.Item label="Select Gender*" value="" />
+                        <Picker.Item label="Male" value="Male" />
                         <Picker.Item label="Female" value="Female " />
                         <Picker.Item label="Other" value="Other" />
                     </Picker>
@@ -910,10 +936,11 @@ const EditProfile = () => {
                     borderColor: '#D3D3D3',
                     borderRadius: 10,
 
-                    justifycontent: 'space-evenly',
+                    justifycontent: 'space-between',
                     margin: 10,
-                    justifycontent: 'Space-between',
-                    backgroundColor: '#fff'
+                    // justifycontent: 'Space-between',
+                    backgroundColor: '#fff',
+                    height: height / 13.5,
                 }}>
 
                     <DatePicker
@@ -921,7 +948,7 @@ const EditProfile = () => {
                         onDateChange={handleDateChange}
                         showDatePicker={showDatePicker}
                         onShowDatePicker={handleShowDatePicker} />
-                    <Icon name="keyboard-o" size={25} color="grey" style={{ margin: 18, left: width / 2.5, postion: 'relative' }} />
+                    <Icon name="keyboard-o" size={25} color="grey" style={{ margin: 18, left: width / 2, postion: 'relative' }} />
 
 
                 </View>
@@ -961,7 +988,7 @@ const EditProfile = () => {
                 <FloatingLabelInput
 
                     label={t('strings:lbl_permanent_address_mandatory')}
-
+                    editable={false}
 
                     keyboardType='default'
                     maxLength={128}
@@ -972,6 +999,7 @@ const EditProfile = () => {
                     labelStyles={styles.labelStyles}
                     inputStyles={styles.inputStyle} />
                 <FloatingLabelInput
+                    editable={false}
                     label={t('strings:lbl_street_locality')}
                     maxLength={128}
                     keyboardType='default'
@@ -983,6 +1011,7 @@ const EditProfile = () => {
                     inputStyles={styles.inputStyle}
                 />
                 <FloatingLabelInput
+                    editable={false}
                     label={t('strings:lbl_landmark')}
 
                     staticLabel
@@ -997,6 +1026,7 @@ const EditProfile = () => {
                 />
 
                 <FloatingLabelInput
+                    editable={false}
                     containerStyles={styles.input}
                     label={t('strings:select_city')}
 
@@ -1011,6 +1041,7 @@ const EditProfile = () => {
 
                 <FloatingLabelInput
                     containerStyles={styles.input}
+                    editable={false}
                     label={t('strings:select_district')}
                     keyboardType="default"
                     value={form1.permanentdistrict}
@@ -1021,12 +1052,13 @@ const EditProfile = () => {
                     inputStyles={styles.inputStyle}
                 />
                 <FloatingLabelInput
+                    editable={false}
                     containerStyles={styles.input}
                     label={t('strings:select_state')}
 
                     keyboardType="default"
                     value={form1.permanentstate}
-                    //   onChangeText={(text) => [setSelectedState(text),
+                    //  onChangeText={(text) => setSelectedState(text)},
                     //   setOpen(true)]}
                     staticLabel
                     labelStyles={styles.labelStyles}
@@ -1049,9 +1081,7 @@ const EditProfile = () => {
 
                 <Text style={{ color: 'black', marginLeft: 15, margin: 5, color: "grey", fontSize: responsiveFontSize(1.8) }}>{t('strings:is_current_address_different')}</Text>
 
-                <View style={{
-                    backgroundColor: '#fff', height: height / 17, margin: 10, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 1.8, borderColor: '#D3D3D3', borderRadius: 10,
-                }}>
+                <View style={styles.input}>
                     <Picker
                         mode='dropdown'
                         style={{ color: 'black' }}
@@ -1163,7 +1193,7 @@ const EditProfile = () => {
                             }))}
                             setOpen={setOpen}
                             // value={form2.currentpincode}
-                            onchangeItem={(item) => {
+                            onChangeValue={(item) => {
                                 //  handlefiledChangeform2("currentpincode", item.value)
                                 setpincode(item)
 
@@ -1180,13 +1210,14 @@ const EditProfile = () => {
                                 backgroundColor: '#D3D3D3'
                             }}
                             style={{
+
                                 backgroundColor: 'white',
                                 elevation: 50,
                                 opacity: 0.9,
                                 borderWidth: 1.5,
                                 borderColor: "#D3D3D3",
                                 width: width / 1.2,
-                                height: height / 15,
+                                height: height / 13,
                                 alignSelf: 'center',
                                 bottom: 10,
                                 elevation: 0,
@@ -1220,7 +1251,7 @@ const EditProfile = () => {
                         />
 
                         <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_city')}</Text>
-                        <View style={{ backgroundColor: 'transparent', height: height / 15, margin: 20, borderRadius: 10, flexDirection: 'column', marginTop: 0, borderWidth: 2, borderColor: "#D3D3D3", elevation: 0, width: width / 1.15, alignSelf: "center" }}>
+                        <View style={styles.input}>
                             <Picker
                                 mode='model'
                                 style={{ color: 'black' }}
@@ -1253,9 +1284,7 @@ const EditProfile = () => {
 
                 }
                 <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:select_profession')}</Text>
-                <View style={{
-                    backgroundColor: '#fff', height: height / 17, margin: 10, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 1.8, borderColor: '#D3D3D3', borderRadius: 10,
-                }}>
+                <View style={styles.input}>
 
                     <Picker
                         mode='dropdown'
@@ -1273,18 +1302,21 @@ const EditProfile = () => {
                 </View>
 
                 <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:select_marital_status')}</Text>
-                <View style={{
-                    backgroundColor: '#fff', height: height / 17, margin: 10, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 1.8, borderColor: '#D3D3D3', borderRadius: 10,
-                }}>
+                <View style={styles.input}>
                     <Picker
                         mode='dropdown'
                         style={{ color: 'black' }}
                         selectedValue={form2.martialStatus}
-                        onValueChange={(itemValue, itemIndex) => handlefiledChangeform2("martialStatus", itemValue)}
+                        onValueChange={(itemValue, itemIndex) => {
+                            const maritialStatusId = itemValue === "Married" ? '1' : '2';
+                            handlefiledChangeform2("martialStatus", itemValue)
+
+                            setmaritialstatusId(maritialStatusId);
+                        }}
                     >
                         <Picker.Item label="Select" value="" />
-                        <Picker.Item label="Married" value="Married" />
-                        <Picker.Item label=" Unmarried" value="Unmarried" />
+                        <Picker.Item label="Married" value="1" />
+                        <Picker.Item label=" Unmarried" value="2" />
 
 
                     </Picker>
@@ -1390,7 +1422,7 @@ const EditProfile = () => {
                 </View>
                 <Text style={{ color: 'black', marginLeft: 24, marginBottom: 5 }}>{t('strings:already_enrolled_into_loyalty_scheme')}</Text>
 
-                <View style={{ backgroundColor: '#fff', height: height / 15, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 1.8, borderColor: '#D3D3D3', width: width / 1.2, alignSelf: 'center', borderRadius: 10 }}>
+                <View style={styles.input}>
 
 
                     <Picker
@@ -1544,10 +1576,11 @@ const EditProfile = () => {
                         borderColor: '#D3D3D3',
                         borderRadius: 10,
 
-                        justifycontent: 'space-evenly',
+
                         margin: 10,
                         justifycontent: 'Space-between',
                         backgroundColor: '#fff',
+                        height: height / 13.5,
                     }}>
 
 
@@ -1556,7 +1589,7 @@ const EditProfile = () => {
                             onDateChange={handleDateChange2}
                             showDatePicker={showDatePicker1}
                             onShowDatePicker={handleShowDatePicker1} />
-                        <Icon name="keyboard-o" size={20} color="grey" style={{ margin: 18, left: width / 2.5, postion: 'relative' }} />
+                        <Icon name="keyboard-o" size={20} color="grey" style={{ margin: 18, left: width / 2, postion: 'relative' }} />
 
                     </View>
 
