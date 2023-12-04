@@ -1,14 +1,28 @@
 import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import ReusableCarousel from '../../../../../components/ReusableCarousel'
 import colors from '../../../../../../colors';
 import image from '../../../../../assets/images/banner_redeem_ppoints.webp'
 import CustomTouchableOption from '../../../../../components/CustomTouchableOption';
 import NeedHelp from '../../../../../components/NeedHelp';
 import { useTranslation } from 'react-i18next';
+import { getInfoDeskBanners } from '../../../../../utils/apiservice';
+import { imageUrl } from '../../../../../utils/constants';
 
 const Info = () => {
+  useEffect(() => {
+    getInfoDeskBanners().then(response=>response.json().then(result=>{
+      var ar= [];
+      result.map(r => ar.push({imageUrl: imageUrl + r.imgPath}));
+        console.log(ar)
+        setImageArray(ar)
+    }))
+  
+    
+  }, [])
+  
   const { t } = useTranslation();
+  const [imageArray,setImageArray] = useState(null);
 
   const carouselData = [
     { imageUrl: require('../../../../../assets/images/banner_redeem_ppoints.webp') },
@@ -19,7 +33,9 @@ const Info = () => {
   return (
     <View  style={styles.container}>
       <View style={styles.carousel}>
-        <ReusableCarousel data={carouselData} />
+        {imageArray&&
+        <ReusableCarousel data={imageArray} />
+}
       </View>
       <View style = {styles.mainWrapper}>
       <View style={styles.options}>

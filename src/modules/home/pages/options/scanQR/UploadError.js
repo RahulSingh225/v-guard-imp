@@ -25,6 +25,7 @@ const UploadError = () => {
                     variant="blackButton"
                     onPress={() => console.log('Pressed')}
                     width="100%"
+                    height="10%"
                 />
                 <View style={styles.inputContainer}>
                     <TextInput
@@ -63,6 +64,7 @@ const UploadError = () => {
 }
 
 const styles = StyleSheet.create({
+   
     scrollViewContainer: {
         flexGrow: 1,
         backgroundColor: colors.white

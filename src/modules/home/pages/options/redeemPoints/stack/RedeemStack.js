@@ -23,7 +23,7 @@ const RedeemStack = () => {
           },
           headerShown: false
         }}>
-      <Stack.Screen name="Redeem Products" component={RedeemPoints}
+      <Stack.Screen name="Redeem Points" component={RedeemPoints}
       options={{
           headerShown: true
         }} />                

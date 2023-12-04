@@ -121,7 +121,7 @@ const Dashboard = () => {
 
       <View style={styles.points}>
         <View style={styles.leftPoint}>
-          <Text style={styles.greyText}>{t('strings:points_balance')}</Text>
+          <Text style={styles.greyText}>{t('strings:points_earned')}</Text>
 
           <Text style={styles.point}>{userData.pointsBalance ? userData.pointsBalance : 0}</Text>
         </View>

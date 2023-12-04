@@ -1,24 +1,31 @@
-import { View, Text, StyleSheet, ScrollView, TextInput, Image } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TextInput,
+  Image,
+} from 'react-native';
+import React, {useState, useEffect} from 'react';
 import colors from '../../../../../../colors';
-import { useTranslation } from 'react-i18next';
-import { responsiveFontSize } from 'react-native-responsive-dimensions';
+import {useTranslation} from 'react-i18next';
+import {responsiveFontSize} from 'react-native-responsive-dimensions';
 import Buttons from '../../../../../components/Buttons';
 import arrowIcon from '../../../../../assets/images/arrow.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { paytmTransfer } from '../../HomeApiService';
+import {paytmTransfer} from '../../HomeApiService';
 import Popup from '../../../../../components/Popup';
 const PaytmTransfer = () => {
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [popupContent, setPopupContent] = useState('');
 
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   const validateMobileNumber = () => {
     return /^[0-9]{10}$/.test(mobileNumber);
   };
   const handleProceed = () => {
     if (!validateMobileNumber()) {
-      setPopupContent("Enter Valid Mobile Number");
+      setPopupContent('Enter Valid Mobile Number');
       setPopupVisible(true);
       return;
     }
@@ -26,7 +33,7 @@ const PaytmTransfer = () => {
       mobileNo: mobileNumber,
       points: points,
     };
-  
+
     paytmTransfer(transferData)
       .then(response => {
         return response.json();
@@ -34,7 +41,7 @@ const PaytmTransfer = () => {
       .then(jsonData => {
         console.log('API Response:', jsonData.message);
         setPopupContent(jsonData.message);
-            setPopupVisible(true);
+        setPopupVisible(true);
       })
       .catch(error => {
         if (error.response && error.response.data) {
@@ -55,16 +62,16 @@ const PaytmTransfer = () => {
   const [mobileNumber, setMobileNumber] = useState('');
   const [points, setPoints] = useState('');
 
-  const handleMobileNumberChange = (text) => {
+  const handleMobileNumberChange = text => {
     setMobileNumber(text);
   };
 
-  const handlePointsChange = (text) => {
+  const handlePointsChange = text => {
     setPoints(text);
   };
 
   useEffect(() => {
-    AsyncStorage.getItem('USER').then((r) => {
+    AsyncStorage.getItem('USER').then(r => {
       const user = JSON.parse(r);
       const data = {
         pointsBalance: user.pointsSummary.pointsBalance,
@@ -80,11 +87,15 @@ const PaytmTransfer = () => {
         <View style={styles.points}>
           <View style={styles.leftPoint}>
             <Text style={styles.greyText}>{t('strings:points_balance')}</Text>
-            <Text style={styles.point}>{pointData.pointsBalance ? pointData.pointsBalance : 0}</Text>
+            <Text style={styles.point}>
+              {pointData.pointsBalance ? pointData.pointsBalance : 0}
+            </Text>
           </View>
           <View style={styles.rightPoint}>
             <Text style={styles.greyText}>{t('strings:points_redeemed')}</Text>
-            <Text style={styles.point}>{pointData.redeemedPoints ? pointData.redeemedPoints : 0}</Text>
+            <Text style={styles.point}>
+              {pointData.redeemedPoints ? pointData.redeemedPoints : 0}
+            </Text>
           </View>
         </View>
         <View style={styles.rightTextView}>
@@ -102,6 +113,7 @@ const PaytmTransfer = () => {
               placeholder={t('strings:mobile_number')}
               placeholderTextColor={colors.grey}
               textAlign="center"
+              maxLength={19}
               onChangeText={handleMobileNumberChange}
             />
           </View>
@@ -124,8 +136,16 @@ const PaytmTransfer = () => {
         </View>
         <Text style={styles.chooseWallet}>{t('strings:choose_wallet')}</Text>
         <View style={styles.wallet}>
-          <Image resizeMode="contain" style={{ flex: 1, width: '100%', height: '100%' }} source={require('../../../../../assets/images/ic_paytm_logo.webp')} />
-          <Image resizeMode="contain" style={{ flex: 1, width: '100%', height: '100%' }} source={require('../../../../../assets/images/tick_1.png')} />
+          <Image
+            resizeMode="contain"
+            style={{flex: 1, width: '100%', height: '100%'}}
+            source={require('../../../../../assets/images/ic_paytm_logo.webp')}
+          />
+          <Image
+            resizeMode="contain"
+            style={{flex: 1, width: '100%', height: '100%'}}
+            source={require('../../../../../assets/images/tick_1.png')}
+          />
         </View>
         <Buttons
           style={styles.button}
@@ -140,18 +160,20 @@ const PaytmTransfer = () => {
         />
       </View>
       {isPopupVisible && (
-                <Popup isVisible={isPopupVisible} onClose={() => setPopupVisible(false)}>
-                    {popupContent}
-                </Popup>
-            )}
+        <Popup
+          isVisible={isPopupVisible}
+          onClose={() => setPopupVisible(false)}>
+          {popupContent}
+        </Popup>
+      )}
     </ScrollView>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
-    backgroundColor: colors.white
+    backgroundColor: colors.white,
   },
   mainWrapper: {
     padding: 15,
@@ -163,7 +185,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     gap: 5,
-    marginTop: 30
+    marginTop: 30,
   },
   leftPoint: {
     width: '50%',
@@ -172,7 +194,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 50,
     borderBottomLeftRadius: 50,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
 
   rightPoint: {
@@ -190,7 +212,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     fontSize: responsiveFontSize(1.7),
-    marginBottom: 10
+    marginBottom: 10,
   },
   point: {
     fontWeight: 'bold',
@@ -200,19 +222,19 @@ const styles = StyleSheet.create({
   rightText: {
     color: colors.black,
     fontWeight: 'bold',
-    fontSize: responsiveFontSize(1.5)
+    fontSize: responsiveFontSize(1.5),
   },
   rightTextView: {
     display: 'flex',
     width: '100%',
     alignItems: 'flex-end',
-    marginTop: 5
+    marginTop: 5,
   },
   smallText: {
     textAlign: 'center',
     color: colors.black,
     fontSize: responsiveFontSize(1.8),
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   enterCode: {
     marginTop: 20,
@@ -222,14 +244,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     height: 100,
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   chooseWallet: {
     marginTop: 20,
     color: colors.black,
     fontSize: responsiveFontSize(2),
     textAlign: 'center',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   wallet: {
     marginTop: 10,
@@ -241,14 +263,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   topContainer: {
     borderBottomWidth: 2,
     borderColor: colors.lightGrey,
     padding: 10,
     height: 50,
-    flexGrow: 1
+    flexGrow: 1,
   },
   bottomContainer: {
     flexGrow: 1,
@@ -259,8 +281,8 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(2),
     textAlign: 'center',
     color: colors.black,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
-})
+});
 
-export default PaytmTransfer
+export default PaytmTransfer;

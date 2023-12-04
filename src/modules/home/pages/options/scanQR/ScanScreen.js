@@ -6,6 +6,7 @@ import {
   Image,
   TextInput,
   ScrollView,
+  Pressable,
 } from 'react-native';
 import React from 'react';
 import colors from '../../../../../../colors';
@@ -14,7 +15,7 @@ import {
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
 import Buttons from '../../../../../components/Buttons';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import cameraIcon from '../../../../../assets/images/ic_scan_code_camera.webp';
 import arrowIcon from '../../../../../assets/images/arrow.png';
 import NeedHelp from '../../../../../components/NeedHelp';
@@ -28,21 +29,17 @@ import {
 import ScratchCard from '../../../../../components/ScratchCard';
 // import {scanQR} from 'react-native-simple-qr-reader';
 
-const ScanScreen = ({ navigation, route }) => {
+const ScanScreen = ({navigation, route}) => {
   const type = null;
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   const [qrCode, setQrcode] = React.useState('');
   const [scratchCard, showScratchCard] = React.useState(false);
   var USER = null;
 
-
   React.useEffect(() => {
-
-    AsyncStorage.getItem("USER").then(r => {
+    AsyncStorage.getItem('USER').then(r => {
       USER = JSON.parse(r);
-    })
-
-
+    });
   }, []);
 
   // async function scan() {
@@ -84,15 +81,12 @@ const ScanScreen = ({ navigation, route }) => {
     CouponData.userMobileNumber = user.mobileNo1;
     CouponData.geolocation = null;
 
-
     if (type == 'airCooler') {
       apiResponse = await isValidBarcode(CouponData, 1, '', 0, null);
       console.log(apiResponse.json());
-    }
-    else if (type == 'fan') {
-      navigation.navigate('Product Registration')
-    }
-    else {
+    } else if (type == 'fan') {
+      navigation.navigate('Product Registration');
+    } else {
       apiResponse = await isValidBarcode(CouponData, 0, '', 0, null);
 
       console.log(apiResponse);
@@ -124,13 +118,13 @@ const ScanScreen = ({ navigation, route }) => {
             }}
           />
         )}
-        <View style={styles.imageContainer}>
+        <Pressable onPress={() => scan()} style={styles.imageContainer}>
           <Image
             source={require('../../../../../assets/images/ic_scan_code_2.png')}
-            style={{ width: '100%', height: '100%' }}
+            style={{width: '100%', height: '100%'}}
             resizeMode="contain"
           />
-        </View>
+        </Pressable>
         <Buttons
           style={styles.button}
           label={t('strings:click_here_to_scan_a_unique_code')}
@@ -149,11 +143,14 @@ const ScanScreen = ({ navigation, route }) => {
           </View>
           <View style={styles.bottomContainer}>
             <TextInput
+              onChangeText={e => setQrcode(e)}
+              maxLength={16}
               value={qrCode}
               style={styles.input}
               placeholder={t('strings:enter_code_here')}
               placeholderTextColor={colors.grey}
               textAlign="center"
+              onSubmitEditing={async () => await sendBarcode()}
             />
           </View>
         </View>
@@ -168,19 +165,20 @@ const ScanScreen = ({ navigation, route }) => {
           iconGap={30}
           icon={arrowIcon}
         />
-        <View style={styles.rightText}>
-          <Text style={styles.smallText}>
-            {t('strings:go_to_unique_code_history')}
-          </Text>
-          <TouchableOpacity
-            style={styles.scanImage}
-            onPress={() => navigation.navigate('Unique Code History')}>
-            <Image
-              style={{ width: 30, height: 30 }}
-              source={require('../../../../../assets/images/ic_circle_right_arrow_yellow.webp')}
-            />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Unique Code History')}>
+          <View style={styles.rightText}>
+            <Text style={styles.smallText}>
+              {t('strings:go_to_unique_code_history')}
+            </Text>
+            <View style={styles.scanImage}>
+              <Image
+                style={{width: 30, height: 30}}
+                source={require('../../../../../assets/images/ic_circle_right_arrow_yellow.webp')}
+              />
+            </View>
+          </View>
+        </TouchableOpacity>
         <Buttons
           style={styles.button}
           label={t('strings:upload_scan_error_')}

@@ -17,7 +17,7 @@ const SchemesStack = () => {
           },
           headerShown: false
         }}>
-      <Stack.Screen name="Schemes" component={Schemes} 
+      <Stack.Screen name="Schemes/Offers" component={Schemes} 
         options={{
           headerShown: true
         }}
@@ -27,7 +27,7 @@ const SchemesStack = () => {
           headerShown: true
         }}
       />                                             
-      <Stack.Screen name="Active Schemes" component={ActiveScheme} 
+      <Stack.Screen name="Active Schemes/Offers" component={ActiveScheme} 
         options={{
           headerShown: true
         }}

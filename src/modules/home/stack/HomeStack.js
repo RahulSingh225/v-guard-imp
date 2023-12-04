@@ -17,6 +17,8 @@ import NewStack from '../pages/options/new/stack/NewStack';
 import ProfileStack from '../../profile/stack/ProfileStack';
 import colors from '../../../../colors';
 import { CustomTabHeader } from '../../common/services/BottomTab';
+import RedemptionHistory from '../pages/options/redeemPoints/RedemptionHistory';
+import UniqueCodeHistory from '../pages/options/scanQR/UniqueCodeHistory';
 
 const HomeStack = () => {
   const Stack = createNativeStackNavigator();
@@ -36,6 +38,17 @@ const HomeStack = () => {
             headerShown: true
           })}
         />
+        <Stack.Screen name="Redemption History" component={RedemptionHistory} 
+        options={{
+          headerShown: true
+        }}
+      />
+       <Stack.Screen name="Unique Code History" component={UniqueCodeHistory} 
+        options={{
+          headerShown: true
+        }}
+      />    
+         
         <Stack.Screen name="Scan QR" component={ScanStack}/>
         <Stack.Screen name="Dashboard" component={DashboardStack}/>
         <Stack.Screen name="Redeem Products" component={RedeemStack}/>

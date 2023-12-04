@@ -16,15 +16,18 @@ import {
 } from 'react-native-responsive-dimensions';
 import NeedHelp from '../../../../../components/NeedHelp';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import ReusableCarousel from '../../../../../components/ReusableCarousel'
-
+import ReusableCarousel from '../../../../../components/ReusableCarousel';
 
 const RedeemPoints = ({navigation}) => {
   const {t} = useTranslation();
   const carouselData = [
-    { imageUrl: require('../../../../../assets/images/banner_redeem_ppoints.webp') },
-    { imageUrl: require('../../../../../assets/images/banner.webp') },
-    { imageUrl: require('../../../../../assets/images/banner_redeem_ppoints.webp') },
+    {
+      imageUrl: require('../../../../../assets/images/banner_redeem_ppoints.webp'),
+    },
+    {imageUrl: require('../../../../../assets/images/banner.webp')},
+    {
+      imageUrl: require('../../../../../assets/images/banner_redeem_ppoints.webp'),
+    },
   ];
   const [pointData, setPointData] = useState({
     pointsBalance: '',
@@ -46,14 +49,16 @@ const RedeemPoints = ({navigation}) => {
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       <View style={styles.mainWrapper}>
-      <View style={styles.carousel}>
-        <ReusableCarousel data={carouselData} />
-      </View>
+        <View style={styles.carousel}>
+          <ReusableCarousel data={carouselData} />
+        </View>
         <View style={styles.points}>
           <View style={styles.leftPoint}>
             <Text style={styles.greyText}>{t('strings:points_balance')}</Text>
 
-            <Text style={styles.point}>{pointData.pointsBalance ? pointData.pointsBalance : 0}</Text>
+            <Text style={styles.point}>
+              {pointData.pointsBalance ? pointData.pointsBalance : 0}
+            </Text>
           </View>
           <View style={styles.middlePoint}>
             <Text style={styles.greyText}>{t('strings:points_redeemed')}</Text>
@@ -64,7 +69,6 @@ const RedeemPoints = ({navigation}) => {
           <View style={styles.rightPoint}>
             <Text style={styles.greyText}>{t('strings:number_of_scans')}</Text>
             <Text style={styles.point}>{pointData.numberOfScan}</Text>
-
           </View>
         </View>
         <View style={styles.dashboard}>
@@ -142,7 +146,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   carousel: {
-    backgroundColor: colors.white
+    backgroundColor: colors.white,
   },
   points: {
     width: '100%',

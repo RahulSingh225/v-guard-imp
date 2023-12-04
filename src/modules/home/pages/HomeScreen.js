@@ -6,11 +6,12 @@ import {
   View,
   TouchableOpacity,
   Linking,
+  Pressable,
 } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import colors from '../../../../colors';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import AuthNavigator from '../../auth/stack/AuthNavigator';
 import CustomTouchableOption from '../../../components/CustomTouchableOption';
 import {
@@ -19,12 +20,12 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import NeedHelp from '../../../components/NeedHelp';
-import { getFile } from '../../../utils/apiservice';
+import {getFile} from '../../../utils/apiservice';
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({navigation}) => {
   const baseURL = 'https://www.vguardrishta.com/img/appImages/Profile/';
 
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   const [profileImage, setProfileImage] = useState('');
 
   // const [userName, setUserName] = useState('');
@@ -40,7 +41,7 @@ const HomeScreen = ({ navigation }) => {
     redeemedPoints: 0,
     numberOfScan: 0,
     userImage: null,
-    userRole: 0
+    userRole: 0,
   });
   const [LoggedInUser, setLoggedInUser] = useState(null);
 
@@ -56,7 +57,7 @@ const HomeScreen = ({ navigation }) => {
           redeemedPoints: value.pointsSummary.redeemedPoints,
           numberOfScan: value.pointsSummary.numberOfScan,
           userImage: value.kycDetails.selfie,
-          userRole: value.professionId
+          userRole: value.professionId,
         };
         setUserData(user);
       });
@@ -64,11 +65,15 @@ const HomeScreen = ({ navigation }) => {
   }, [LoggedInUser]);
 
   useEffect(() => {
-    console.log(userData, "userData=================")
+    console.log(userData, 'userData=================');
     if (userData.userRole && userData.userImage) {
       const getImage = async () => {
         try {
-          const profileImage = await getFile(userData.userImage, 'PROFILE', userData.userRole);
+          const profileImage = await getFile(
+            userData.userImage,
+            'PROFILE',
+            userData.userRole,
+          );
           setProfileImage(profileImage.url);
         } catch (error) {
           console.log('Error while fetching profile image:', error);
@@ -86,8 +91,8 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.profileDetails}>
           <View style={styles.ImageProfile}>
             <Image
-              source={{ uri: profileImage }}
-              style={{ width: '100%', height: '100%', borderRadius: 100 }}
+              source={{uri: profileImage}}
+              style={{width: '100%', height: '100%', borderRadius: 100}}
               resizeMode="contain"
             />
           </View>
@@ -96,27 +101,36 @@ const HomeScreen = ({ navigation }) => {
             <Text style={styles.textDetail}>{userData.userCode}</Text>
 
             <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-              <Text style={styles.viewProfile}>{t('strings:view_profile')}</Text>
-            </TouchableOpacity>          
-            </View>
+              <Text style={styles.viewProfile}>
+                {t('strings:view_profile')}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.points}>
-          <View style={styles.leftPoint}>
+          <Pressable
+            onPress={() => navigation.navigate('Dashboard')}
+            style={styles.leftPoint}>
             <Text style={styles.greyText}>{t('strings:points_balance')}</Text>
 
-            <Text style={styles.point}>{userData.pointsBalance ? userData.pointsBalance : 0}</Text>
-          </View>
-          <View style={styles.middlePoint}>
+            <Text style={styles.point}>
+              {userData.pointsBalance ? userData.pointsBalance : 0}
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={() => navigation.navigate('Redemption History')}
+            style={styles.middlePoint}>
             <Text style={styles.greyText}>{t('strings:points_redeemed')}</Text>
             <Text style={styles.point}>
               {userData.redeemedPoints ? userData.redeemedPoints : 0}
             </Text>
-          </View>
-          <View style={styles.rightPoint}>
+          </Pressable>
+          <Pressable
+            onPress={() => navigation.navigate('Unique Code History')}
+            style={styles.rightPoint}>
             <Text style={styles.greyText}>{t('strings:number_of_scans')}</Text>
             <Text style={styles.point}>{userData.numberOfScan}</Text>
-
-          </View>
+          </Pressable>
         </View>
         <View style={styles.dashboard}>
           <View style={styles.row}>
@@ -198,13 +212,12 @@ const HomeScreen = ({ navigation }) => {
               <View style={[styles.optionIcon]}>
                 <Image
                   source={require('../../../assets/images/ic_instruction_manual.jpeg')}
-                  style={[{ flex: 1, width: '100%', height: '100%' }]}
+                  style={[{flex: 1, width: '100%', height: '100%'}]}
                   resizeMode="contain"
                 />
               </View>
 
               <Text style={[styles.nav]}>Instruction Manual</Text>
-
             </TouchableOpacity>
             {/* <CustomTouchableOption
               text="dashboard:options:manual"

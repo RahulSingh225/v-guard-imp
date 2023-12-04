@@ -22,7 +22,7 @@ const CustomTabHeader = ({ route, handleLanguageButtonPress  }) => {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '97%' }}>
       <View style={{ flexDirection: 'row', gap: 10 }}>
-        <Text style={{ color: colors.black, fontSize: responsiveFontSize(2.5), fontWeight: 'bold' }}>{route.name}</Text>
+        {/* <Text style={{ color: colors.black, fontSize: responsiveFontSize(2.5), fontWeight: 'bold' }}>{route.name}</Text> */}
         <TouchableOpacity style={styles.languageContainer} onPress={handleLanguageButtonPress}>
           <Text style={{ color: colors.black }}>{t('strings:language')}</Text>
           <Image style={{ width: 15, height: 15, marginLeft: 5 }} source={require('../../../assets/images/down_yellow_arrow.png')} />
