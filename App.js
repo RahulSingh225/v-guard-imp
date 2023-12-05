@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Alert, BackHandler, PermissionsAndroid, } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  BackHandler,
+  PermissionsAndroid,
+  TextInput,
+} from 'react-native';
 import SplashScreen from './src/modules/auth/pages/SplashScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import AuthNavigator from './src/modules/auth/stack/AuthNavigator';
@@ -7,17 +15,14 @@ import i18n from './src/utils/i18n';
 import BottomTab from './src/modules/common/services/BottomTab';
 import BottomTabLogo from './src/components/BottomTabLogo';
 import AppNavigator from './src/components/AppNavigator';
-import { DataProvider } from "../v-guard-imp/src/utils/appcontext";
-
-
-
+import { DataProvider } from '../v-guard-imp/src/utils/appcontext';
 
 async function requestAllPermissions() {
   try {
     const cameraPermission = PermissionsAndroid.PERMISSIONS.CAMERA;
     const contactPermission = PermissionsAndroid.PERMISSIONS.READ_CONTACTS;
-    const locationPermission = PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION;
-
+    const locationPermission =
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION;
 
     const granted = await PermissionsAndroid.requestMultiple([
       cameraPermission,
@@ -35,7 +40,7 @@ async function requestAllPermissions() {
     } else {
       Alert.alert(
         'Permission denied',
-        'You must grant camera, contact, and location permissions to use this feature.'
+        'You must grant camera, contact, and location permissions to use this feature.',
       );
     }
   } catch (error) {
@@ -47,18 +52,18 @@ import { AuthProvider } from './src/components/AuthContext';
 import ScanStack from './src/modules/home/pages/options/scanQR/stack/ScanStack';
 import ScanScreen from './src/modules/home/pages/options/scanQR/ScanScreen';
 import ScratchCard from './src/components/ScratchCard';
+import { height, width } from './src/utils/dimensions';
+import RewardBox from './src/components/ScratchCard';
+import PopupWithButton from './src/components/PopupWithButton';
 
 const App = () => {
-
+  const [k, setK] = useState('KK')
   useEffect(() => {
     requestAllPermissions();
+  }, []);
+ 
 
-
-
-  }, [])
-  // return(
-  //   <ScratchCard points={10}onPress={()=>console.log("pressed")}/>
-  // )
+  
 
   return (
     <AuthProvider>

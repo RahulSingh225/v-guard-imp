@@ -9,25 +9,34 @@ import {
   TextInput,
 } from 'react-native';
 import React from 'react';
+import ScratchEffectView from 'react-native-scratch-effect';
+import {ScratchCard} from 'rn-scratch-card';
 
-const ScratchCard = ({
+const RewardBox = ({
   visible,
   onClose,
   scratchCardProps,
+  scratchable = false,
 }) => {
-
   // ---- specified theme for custom dialog or default style will be applied  -----
   const styles = StyleSheet.create({
+    scratch_card: {
+      height: '100%',
+      width: '100%',
+      backgroundColor: 'transparent',
+    },
     modalContainer: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      backgroundColor: 'red',
     },
     modalContent: {
       backgroundColor: 'white',
       borderRadius: 10,
       width: '70%',
+      height: '50%',
+      position: 'absolute',
     },
     modalHeader: {
       flexDirection: 'row',
@@ -55,7 +64,7 @@ const ScratchCard = ({
       justifyContent: 'center',
     },
     text: {
-      color: scratchCardProps.rewardResultText.color || "blue",
+      color: scratchCardProps.rewardResultText.color || 'blue',
       fontWeight: scratchCardProps.rewardResultText.fontWeight || '500',
       fontSize: scratchCardProps.rewardResultText.fontSize || 16,
       textAlign: 'center',
@@ -74,7 +83,7 @@ const ScratchCard = ({
     },
     rewardImage: {height: 100, width: 100, alignSelf: 'center'},
     text1: {
-      color: scratchCardProps.text1.color || "blue",
+      color: scratchCardProps.text1.color || 'blue',
       fontWeight: scratchCardProps.text1.fontWeight || '500',
       fontSize: scratchCardProps.text1.fontSize || 16,
       marginTop: 5,
@@ -82,14 +91,14 @@ const ScratchCard = ({
       textTransform: 'uppercase',
     },
     text2: {
-      color: scratchCardProps.text2.color || "blue",
+      color: scratchCardProps.text2.color || 'blue',
       fontWeight: scratchCardProps.text2.fontWeight || '500',
       fontSize: scratchCardProps.text2.fontSize || 16,
       marginTop: 5,
       textAlign: 'center',
     },
     text3: {
-      color: scratchCardProps.text3.color || "blue",
+      color: scratchCardProps.text3.color || 'blue',
       fontWeight: scratchCardProps.text3.fontWeight || '500',
       fontSize: scratchCardProps.text3.fontSize || 16,
       textAlign: 'center',
@@ -99,7 +108,6 @@ const ScratchCard = ({
   });
 
   // ---- specified theme for custom dialog or default style will be applied  -----
-
 
   const [text, onChangeText] = React.useState('');
   return (
@@ -130,36 +138,52 @@ const ScratchCard = ({
             )}
           </View>
 
-          {scratchCardProps.rewardImage.resourceLocation  && (
-            <Image style={styles.rewardImage} source={scratchCardProps.rewardImage.resourceLocation} />
+          {scratchCardProps.rewardImage.resourceLocation && (
+            <Image
+              style={styles.rewardImage}
+              source={scratchCardProps.rewardImage.resourceLocation}
+            />
           )}
 
-          {
-            scratchCardProps.rewardImage.resourceUrl && (
-              <Image style={styles.rewardImage} source={{url:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg=="}} />
-            )
-          }
+          {scratchCardProps.rewardImage.resourceUrl && (
+            <Image
+              style={styles.rewardImage}
+              source={{
+                url: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg==',
+              }}
+            />
+          )}
 
-          <Text style={styles.text}>{scratchCardProps.rewardResultText.textContent}</Text>
+          <Text style={styles.text}>
+            {scratchCardProps.rewardResultText.textContent}
+          </Text>
           <Text style={styles.text1}>{scratchCardProps.text1.textContent}</Text>
           <Text style={styles.text2}>{scratchCardProps.text2.textContent}</Text>
           <Text style={styles.text3}>{scratchCardProps.text3.textContent}</Text>
 
-          {scratchCardProps.button.buttonText && (<TouchableOpacity
-            style={styles.modalButton}
-            onPress={() => console.log('Register warranty ')}>
-            <Text style={styles.regWarButton}>{scratchCardProps.button.buttonText}</Text>
-          </TouchableOpacity>)}
+          {scratchCardProps.button.buttonText && (
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => console.log('Register warranty ')}>
+              <Text style={styles.regWarButton}>
+                {scratchCardProps.button.buttonText}
+              </Text>
+            </TouchableOpacity>
+          )}
+          {scratchable && (
+            <ScratchCard
+              source={require('../assets/images/ic_scratch_card_greeting_2.webp')}
+              brushWidth={20}
+              style={styles.scratch_card}
+            />
+          )}
         </View>
       </View>
     </Modal>
   );
 };
 
-
-
-export default ScratchCard;
-
+export default RewardBox;
 
 // const scratchCardProps = {
 //   rewardImage : { width:100, height:100, resourceLocation:require("../../../assets/images/ic_rewards_gift.png"), /*resourceUrl:"https://www.leavesofgrassnewyork.com/cdn/shop/products/gift-card_612x.jpg?v=1614324792"*/ },

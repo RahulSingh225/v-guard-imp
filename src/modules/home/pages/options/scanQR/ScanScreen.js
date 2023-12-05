@@ -27,28 +27,36 @@ import {
   sendCouponPin,
 } from '../../../../../utils/apiservice';
 import ScratchCard from '../../../../../components/ScratchCard';
-// import {scanQR} from 'react-native-simple-qr-reader';
+import RewardBox from '../../../../../components/ScratchCard';
+import PopupWithButton from '../../../../../components/PopupWithButton';
+//import {scanQR} from 'react-native-simple-qr-reader';
 
 const ScanScreen = ({navigation, route}) => {
   const type = null;
   const {t} = useTranslation();
   const [qrCode, setQrcode] = React.useState('');
   const [scratchCard, showScratchCard] = React.useState(false);
+  const [popupVisible, setPopupVisible] = React.useState(false);
+  const [PIN,setPIN] = React.useState(null)
   var USER = null;
-
+  var scratchCardProps;
+  var CouponResponse;
+  var popupProps={}
   React.useEffect(() => {
     AsyncStorage.getItem('USER').then(r => {
       USER = JSON.parse(r);
     });
   }, []);
 
-  // async function scan() {
-  //   scanQR()
-  //     .then(result => setQrcode(result))
-  //     .catch(e => console.error(e));
-  // }
+  async function scan() {
+    // scanQR()
+    //   .then(result => setQrcode(result))
+    //   .catch(e => console.error(e));
+  }
 
-  async function sendBarcode() {
+  async function sendBarcode(pin=null) {
+    setPopupVisible(false)
+    
     const position = await getLocation();
     const user = JSON.parse(await AsyncStorage.getItem('USER'));
     const userRoleId = user && user.roleId ? user.roleId.toString() : '';
@@ -93,31 +101,134 @@ const ScanScreen = ({navigation, route}) => {
       const r = await apiResponse.json();
       console.log(r);
     }
-
+    CouponResponse = apiResponse;
     if (apiResponse.errorCode == 1) {
       setQrcode('');
-      showScratchCard(true);
+      var couponPoints = apiResponse.couponPoints;
+      var basePoints = apiResponse.basePoints;
+      basePoints ? (basePoints = `Base Points: ${basePoints}`) : null;
+
+      scratchCardProps = {
+        rewardImage: {
+          width: 100,
+          height: 100,
+          resourceLocation: require('../../../../../assets/images/ic_rewards_gift.png'),
+        },
+        rewardResultText: {
+          color: 'black',
+          fontSize: 16,
+          textContent: 'YOU WON',
+          fontWeight: '700',
+        },
+        text1: {
+          color: 'black',
+          fontSize: 16,
+          textContent: couponPoints,
+          fontWeight: '700',
+        },
+        text2: {
+          color: 'black',
+          fontSize: 16,
+          textContent: 'POINTS',
+          fontWeight: '700',
+        },
+        text3: {
+          color: '#9c9c9c',
+          fontSize: 12,
+          textContent: basePoints,
+          fontWeight: '700',
+        },
+        button: {
+          buttonColor: '#F0C300',
+          buttonTextColor: 'black',
+          buttonText: '',
+          buttonAction: showScratchCard(false),
+          fontWeight: '400',
+        },
+        textInput: false,
+        scratchable:false
+      };
+      showScratchCard(true)
+    
+      }else if(apiResponse.errorCode ==2){
+        popupProps.buttonText = 'SUBMIT',
+        popupProps.children = (<TextInput onChangeText={(e) => setPIN(e)} value={PIN} style={{ borderBottomWidth: 2, borderBottomColor: 'black', textDecorationColor: 'black', width: '100%', height: 40 }} />)
+        popupProps.onConfirm = sendBarcode(PIN)
+        setPopupVisible(true);
+      }else {
+        popupProps.buttonText = 'OK',
+        popupProps.children = (<Text>{CouponResponse.errorMsg}</Text>)
+        popupProps.onConfirm = setPopupVisible(false)
     }
+  
+
+  }
+
+  function checkBonusPoints(){
+    showScratchCard(false);
+    if(CouponResponse.transactId && CouponResponse.bitEligibleScratchCard){
+      getBonusPoints().then(response=>response.json().then(result=>{
+        var couponPoints = result.promotionPoints;
+        scratchCardProps = {
+          rewardImage: {
+            width: 100,
+            height: 100,
+            resourceLocation: require('../../../../../assets/images/ic_rewards_gift.png'),
+          },
+          rewardResultText: {
+            color: 'black',
+            fontSize: 16,
+            textContent: result.errorMsg,
+            fontWeight: '700',
+          },
+          text1: {
+            color: 'black',
+            fontSize: 16,
+            textContent: couponPoints,
+            fontWeight: '700',
+          },
+          text2: {
+            color: 'black',
+            fontSize: 16,
+            textContent: 'POINTS',
+            fontWeight: '700',
+          },
+          text3: {
+            color: '#9c9c9c',
+            fontSize: 12,
+            textContent: "",
+            fontWeight: '700',
+          },
+          button: {
+            buttonColor: '#F0C300',
+            buttonTextColor: 'black',
+            buttonText: '',
+            buttonAction: showScratchCard(false),
+            fontWeight: '400',
+          },
+          textInput: false,
+          scratchable:true
+        };
+
+      }))
+      showScratchCard(true)
+    }
+  
   }
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       <View style={styles.mainWrapper}>
         {scratchCard && (
-          <ScratchCard
-            points={'40'}
-            onPress={() => {
-              showScratchCard(false);
-              // if (
-              //   apiResponse.transactId &&
-              //   apiResponse.bitEligibleScratchCard
-              // ) {
-              //   getBonusPoints(apiResponse.transactId)
-              //     .then(r => showScratchCard(true))
-              //     .catch(e => console.log(e));
-              // }
-            }}
+          <RewardBox
+            scratchCardProps={scratchCardProps}
+            visible={scratchCard}
+            scratchable={scratchCardProps.scratchable}
+            onClose={checkBonusPoints}
           />
         )}
+        {popupVisible&&
+        <PopupWithButton isVisible={popupVisible} buttonText={popupProps.buttonText} children={popupProps.children} onConfirm={popupProps.onConfirm}/>}
+
         <Pressable onPress={() => scan()} style={styles.imageContainer}>
           <Image
             source={require('../../../../../assets/images/ic_scan_code_2.png')}

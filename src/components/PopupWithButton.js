@@ -34,7 +34,7 @@ const PopupWithButton = ({ isVisible, onClose, children, buttonText, onConfirm }
                             resizeMode="contain"
                         />
                     </TouchableOpacity>
-                    <Text style={styles.popupText}>{children}</Text>
+                   {children}
                     <TouchableOpacity style={styles.button} onPress={onConfirm}>
                         <Text style={styles.buttonText}>{buttonText}</Text>
                     </TouchableOpacity>
