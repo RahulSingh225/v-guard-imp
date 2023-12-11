@@ -2,11 +2,11 @@ import axios from 'axios';
 import digestFetch from 'react-native-digest-fetch';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_LINK = 'http://202.66.175.34:18091';
+const API_LINK = 'http://34.100.133.239:18092';
 
 const imageURL = 'https://vguardrishta.com/';
 
-const BASE_URL = 'http://202.66.175.34:18091/vguard/api/';
+const BASE_URL = 'http://34.100.133.239:18092/vguard/api/';
 
 export const createDigestPostRequest = async (relativeUrl = {}, data) => {
   try {
@@ -73,7 +73,6 @@ export const loginPasswordDigest = async (relativeUrl, username, password) => {
     };
     await AsyncStorage.clear();
     let response = null;
-    console.log(response);
     response = await digestFetch(url, {
       method: 'GET',
       headers,
@@ -82,6 +81,9 @@ export const loginPasswordDigest = async (relativeUrl, username, password) => {
     });
 
     console.log('username=======', username);
+    console.log('password========', password)
+    console.log(response);
+
     //const userDetailsData = await response.json();
 
     // console.log(userDetailsData);
