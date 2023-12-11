@@ -9,6 +9,7 @@ import whiteTickImage from '../../../assets/images/ic_tick_white.png';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import { height, width } from '../../../utils/dimensions';
 import LanguagePicker from '../../../components/LanguagePicker';
+import arrowIcon from '../../../assets/images/arrow.png';
 
 
 const CategorySelection = ({ navigation }) => {
@@ -103,9 +104,13 @@ const CategorySelection = ({ navigation }) => {
 
             <View style={styles.startButtonContainer}>
                 <Buttons
-                    label={t('strings:submit')}
-                    variant="blackButton"
+                    label={t('strings:start')}
+                    variant="filledButton"
                     onPress={() => navigation.navigate('login')}
+                    iconHeight={10}
+                    iconWidth={30}
+                    iconGap={30}
+                    icon={arrowIcon}
                     width="90%"
                 />
             </View>
