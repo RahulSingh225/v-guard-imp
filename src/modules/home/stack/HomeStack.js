@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import HomeScreen from '../pages/HomeScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import UpdateKYC from '../pages/options/updateKyc/UpdateKYC';
@@ -19,9 +19,39 @@ import colors from '../../../../colors';
 import { CustomTabHeader } from '../../common/services/BottomTab';
 import RedemptionHistory from '../pages/options/redeemPoints/RedemptionHistory';
 import UniqueCodeHistory from '../pages/options/scanQR/UniqueCodeHistory';
+import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import LanguagePicker from '../../../components/LanguagePicker';
+import { View, Text, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity, Alert, Modal } from 'react-native';
 
 const HomeStack = () => {
   const Stack = createNativeStackNavigator();
+  const [showLanguagePicker, setShowLanguagePicker] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('');
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    const fetchStoredLanguage = async () => {
+      try {
+        const storedLanguage = (await AsyncStorage.getItem('language')) || i18n.language;
+        setSelectedLanguage(storedLanguage);
+        i18n.changeLanguage(storedLanguage);
+        console.log('Language changed:', storedLanguage);
+      } catch (error) {
+        console.error('Error fetching language from AsyncStorage:', error);
+      }
+    };
+
+    fetchStoredLanguage();
+  }, [i18n]);
+
+  const handleLanguageButtonPress = () => {
+    setShowLanguagePicker(true);
+  };
+
+  const handleCloseLanguagePicker = () => {
+    setShowLanguagePicker(false);
+  };
   return (
     <>
       <Stack.Navigator
@@ -34,7 +64,7 @@ const HomeStack = () => {
       >
         <Stack.Screen name="Home" component={HomeScreen}
           options={({ route }) => ({
-            headerTitle: () => <CustomTabHeader route={route} />,
+            headerTitle: () => <CustomTabHeader handleLanguageButtonPress={handleLanguageButtonPress} route={route} />,
             headerShown: true
           })}
         />
@@ -91,9 +121,49 @@ const HomeStack = () => {
         }}
         />
       </Stack.Navigator>
-
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showLanguagePicker}
+        onRequestClose={handleCloseLanguagePicker}
+        style={styles.modal}
+      >
+        <View style={styles.languagePickerContainer}>
+          <LanguagePicker onCloseModal={handleCloseLanguagePicker} />
+          <TouchableOpacity onPress={handleCloseLanguagePicker}>
+            <Text style={styles.closeText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  languageContainer: {
+    borderWidth: 1,
+    borderColor: colors.black,
+    paddingVertical: 2,
+    paddingHorizontal: 5,
+    borderRadius: 5,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  languagePickerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.white
+  },
+  closeText: {
+    marginTop: 20,
+    color: colors.black,
+    backgroundColor: colors.yellow,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 5,
+    fontWeight: 'bold'
+  },
+})
 
 export default HomeStack;

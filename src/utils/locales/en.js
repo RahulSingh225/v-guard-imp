@@ -90,7 +90,7 @@ export default {
     get_otp: 'Get OTP',
     or: 'or',
     powered_by_v_guard: 'Powered by',
-    lbl_otp_through_phone_call: 'Click Here to get OTP\nthrough phone call',
+    lbl_otp_through_phone_call: 'Click Here to get OTP through phone call',
     call: 'call',
     enter_your_mobile_number: 'Enter your mobile number',
     lbl_otp_verification: 'OTP Verification',
