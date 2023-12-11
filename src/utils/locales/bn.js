@@ -151,6 +151,7 @@ export default {
     paytm_transfer: "পেটিএম ট্রান্সফার",
     e_gift_cards: "ইলেক্ট্রোনিক গিফ্ট ভাউচার",
     update_kyc: "কেওয়াইসি আপডেট করুন",
+    update_kyc_capslock: "কেওয়াইসি আপডেট করুন",
     track_your_redemption: "আপনার রিডেম্পশন ট্র্যাক করুন",
     redeem_products: "রিডীম করা প্রোডাক্ট",
     redeemed_points: "রিডীম করা পয়েন্টস",

@@ -157,6 +157,7 @@ export default {
     click_here_to_scan_a_unique_code: 'Click here to scan a unique code',
     paytm_transfer: 'Paytm Transfer',
     e_gift_cards: 'Electronic Gift Voucher',
+    update_kyc_capslock: 'UPDATE KYC',
     update_kyc: 'Update KYC',
     update_pan: 'Update PAN',
     track_your_redemption: 'Track Your Redemption',

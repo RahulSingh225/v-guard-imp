@@ -24,11 +24,14 @@ import selectedTickImage from '../../../assets/images/tick_1.png';
 import notSelectedTickImage from '../../../assets/images/tick_1_notSelected.png';
 import LanguagePicker from '../../../components/LanguagePicker';
 import language from '../../../assets/images/language.png';
+import { responsiveFontSize } from 'react-native-responsive-dimensions';
 
 const LoginScreen = ({ navigation }) => {
 
   const { t, i18n } = useTranslation();
   const [showLanguagePicker, setShowLanguagePicker] = useState(false);
+  const pkg = require('../../../../package.json');
+  const version = pkg.version;
 
   const handleLanguageButtonPress = () => {
     setShowLanguagePicker(true);
@@ -39,6 +42,7 @@ const LoginScreen = ({ navigation }) => {
   };
   useEffect(() => {
     console.log('Language changed:', i18n.language);
+    console.log('Version:', pkg.version);
   }, [i18n.language]);
 
   const showSnackbar = message => {
@@ -113,25 +117,25 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
-      
+
       <View style={styles.loginScreen}>
 
         <View style={styles.mainWrapper}>
-        <View style={styles.buttonLanguageContainer}>
-        <Buttons
-          style={styles.button}
-          label=""
-          variant="outlined"
-          onPress={handleLanguageButtonPress}
-          iconHeight={30}
-          iconWidth={30}
-          iconGap={0}
-          icon={language}
-        />
-      </View>
+          <View style={styles.buttonLanguageContainer}>
+            <Buttons
+              style={styles.button}
+              label=""
+              variant="outlined"
+              onPress={handleLanguageButtonPress}
+              iconHeight={30}
+              iconWidth={30}
+              iconGap={0}
+              icon={language}
+            />
+          </View>
           {loader && <Loader />}
           <Image
-            source={require('../../../assets/images/group_907.png')}
+            source={require('../../../assets/images/ic_rishta_logo.png')}
             style={styles.imageSaathi}
           />
           <Text style={styles.mainHeader}>{t('strings:lbl_welcome')}</Text>
@@ -141,28 +145,33 @@ const LoginScreen = ({ navigation }) => {
           </Text>
 
           <View style={styles.formContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder={t('strings:lbl_registered_mobile_number_login')}
-              placeholderTextColor={placeholderColor}
-              value={username}
-              onChangeText={text => setUsername(text)}
-            />
-            <TextInput
-              style={styles.input}
-
-              placeholder={t('strings:password')}
-              placeholderTextColor={placeholderColor}
-              secureTextEntry={true}
-              value={password}
-              onChangeText={(text) => setPassword(text)}
-            />
+            <View style={styles.inputContainer}>
+              <Image style={styles.icon} source={require('../../../assets/images/mobile_icon.png')} resizeMode='contain' />
+              <TextInput
+                style={styles.input}
+                placeholder={t('strings:lbl_registered_mobile_number_login')}
+                placeholderTextColor={placeholderColor}
+                value={username}
+                onChangeText={text => setUsername(text)}
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Image style={styles.icon} source={require('../../../assets/images/lock_icon.png')} resizeMode='contain' />
+              <TextInput
+                style={styles.input}
+                placeholder={t('strings:password')}
+                placeholderTextColor={placeholderColor}
+                secureTextEntry={true}
+                value={password}
+                onChangeText={(text) => setPassword(text)}
+              />
+            </View>
             {!isValidMobile && (
               <Text style={styles.validationMessage}>Invalid mobile number</Text>
             )}
             <View style={styles.updateAndForgot}>
               <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>{t('strings:update_kyc')}</Text>
+                <Text style={styles.buttonText}>{t('strings:update_kyc_capslock')}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -173,14 +182,6 @@ const LoginScreen = ({ navigation }) => {
                 </Text>
               </TouchableOpacity>
             </View>
-            {/* <Text style={styles.or}>{t('auth:login:or')}</Text>
-            <TextInput
-              style={styles.input}
-              placeholder={t('auth:login:otp')}
-              placeholderTextColor={placeholderColor}
-              value={otp}
-              onChangeText={(text) => setOtp(text)}
-            /> */}
             <View style={styles.buttonContainer}>
               <Buttons
                 style={styles.button}
@@ -195,7 +196,7 @@ const LoginScreen = ({ navigation }) => {
               />
               <Buttons
                 style={styles.button}
-                label={t('strings:login_via_otp')}
+                label={t('strings:login_with_otp')}
                 variant="filled"
                 onPress={() => navigation.navigate('loginWithNumber')}
                 width="100%"
@@ -223,6 +224,9 @@ const LoginScreen = ({ navigation }) => {
               </Text>
             </TouchableOpacity>
           </TouchableOpacity>
+          <Text style={styles.versionText}>
+            V {version}
+          </Text>
           <View style={styles.footerContainer}>
             <Text style={styles.footergreyText}>
               {t('strings:powered_by_v_guard')}
@@ -242,21 +246,21 @@ const LoginScreen = ({ navigation }) => {
           </Popup>
         )}
         <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showLanguagePicker}
-        onRequestClose={handleCloseLanguagePicker}
-        style={styles.modal}
-      >
-        <View style={styles.languagePickerContainer}>
-          <LanguagePicker onCloseModal={handleCloseLanguagePicker} />
-          <TouchableOpacity onPress={handleCloseLanguagePicker}>
-            <Text style={styles.closeText}>Close</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
+          animationType="slide"
+          transparent={true}
+          visible={showLanguagePicker}
+          onRequestClose={handleCloseLanguagePicker}
+          style={styles.modal}
+        >
+          <View style={styles.languagePickerContainer}>
+            <LanguagePicker onCloseModal={handleCloseLanguagePicker} />
+            <TouchableOpacity onPress={handleCloseLanguagePicker}>
+              <Text style={styles.closeText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
       </View>
-      
+
     </ScrollView>
   );
 };
@@ -289,7 +293,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   imageSaathi: {
-    width: 100,
+    width: 127,
     height: 98,
     marginBottom: 30,
   },
@@ -310,14 +314,24 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    height: 40,
-    marginBottom: 20,
-    padding: 10,
-    borderRadius: 5,
     color: colors.black,
-    backgroundColor: colors.white,
+    flex: 1
+  },
+  inputContainer: {
     shadowColor: 'rgba(0, 0, 0, 0.8)',
+    marginBottom: 20,
     elevation: 5,
+    height: 40,
+    backgroundColor: colors.white,
+    borderRadius: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    // padding: 5,
+  },
+  icon: {
+    marginHorizontal: 10,
+    width: 20,
+    height: 20
   },
   forgotPasswordContainer: {
     alignItems: 'center',
@@ -374,6 +388,11 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingVertical: 10,
   },
+  versionText: {
+    textAlign: 'center',
+    color: colors.black,
+    fontSize: responsiveFontSize(1.3)
+  },
   updateAndForgot: {
     display: 'flex',
     flexDirection: 'row',
@@ -387,6 +406,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: 100,
     alignItems: 'center',
+    alignSelf: 'right'
   },
   buttonText: {
     fontSize: 12,
@@ -399,9 +419,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
   },
-  button: {
-    alignSelf: 'right',
-  },
+  // button: {
+  //   alignSelf: 'right',
+  // },
   languagePickerContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -416,7 +436,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: 5,
     fontWeight: 'bold'
-},
+  },
 });
 
 export default LoginScreen;

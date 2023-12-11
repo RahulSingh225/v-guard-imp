@@ -25,7 +25,7 @@ const Buttons = ({ label, onPress, disabled, variant, width, icon, iconWidth, ic
             disabled={variant === 'disabled' || disabled}
         >
             <View style={[styles.buttonContent, { gap: iconGap }]}>
-                <Text style={[styles.buttonText, variant === 'blackButton' && styles.yellowText]}>
+                <Text style={[styles.buttonText, variant === 'blackButton' && styles.whiteText]}>
                     {label}
                 </Text>
                 <Image
@@ -82,8 +82,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         shadowColor: 'rgba(0, 0, 0, 0.8)',
         elevation: 5,
-        flex:1,
-        
+        flex:1,        
     },
     defaultButton: {
         backgroundColor: colors.yellow,

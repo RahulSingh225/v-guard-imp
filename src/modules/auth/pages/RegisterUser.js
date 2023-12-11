@@ -152,7 +152,7 @@ const RegisterUser = ({ navigation }) => {
             <View style={styles.registerUser}>
                 <View style={styles.mainWrapper}>
                     <Image
-                        source={require('../../../assets/images/group_907.png')}
+                        source={require('../../../assets/images/ic_rishta_logo.png')}
                         style={styles.imageSaathi}
                     />
                     <Text style={styles.mainHeader}>{t('strings:new_user_registration')}</Text>
@@ -188,15 +188,19 @@ const RegisterUser = ({ navigation }) => {
                         </View>
                         <View style={styles.containter}>
                             <Text style={styles.textHeader}>{t('strings:lbl_enter_mobile_number')}</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder={t('strings:enter_your_mobile_number')}
-                                placeholderTextColor={placeholderColor}
-                                value={number}
-                                keyboardType='numeric'
-                                onChangeText={handleNumberChange}
-                                maxLength={10}
-                            />
+                            <View style={styles.inputContainer}>
+                                <Image style={styles.icon} source={require('../../../assets/images/mobile_icon.png')} resizeMode='contain' />
+
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder={t('strings:enter_your_mobile_number')}
+                                    placeholderTextColor={placeholderColor}
+                                    value={number}
+                                    keyboardType='numeric'
+                                    onChangeText={handleNumberChange}
+                                    maxLength={10}
+                                />
+                            </View>
                             {!validationResult.isValid && (
                                 <Text style={styles.errorText}>{validationResult.errorMessage}</Text>
                             )}
@@ -204,7 +208,7 @@ const RegisterUser = ({ navigation }) => {
                         <View style={styles.buttonContainer}>
                             <Buttons
                                 style={styles.button}
-                                label={t('strings:send_otp')}
+                                label={t('strings:get_otp')}
                                 variant="filled"
                                 //  onPress={() => navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption })}
                                 onPress={() => handleValidation()}
@@ -219,7 +223,7 @@ const RegisterUser = ({ navigation }) => {
                         <TouchableOpacity onPress={() => calltogetopt()}>
                             <View style={styles.otpPhone}>
                                 <Image source={require('../../../assets/images/group_501.png')} style={styles.phone} />
-                                <Text style={styles.greyText}>Click Here to get OTP through phone call</Text>
+                                <Text style={styles.greyText}>{t('strings:lbl_otp_through_phone_call')}</Text>
                             </View>
                         </TouchableOpacity>
 
@@ -300,9 +304,9 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     imageSaathi: {
-        width: 100,
+        width: 127,
         height: 98,
-        marginBottom: 30
+        marginBottom: 30,
     },
     imageVguard: {
         width: 100,
@@ -315,13 +319,23 @@ const styles = StyleSheet.create({
         flex: 2,
     },
     input: {
-        height: 40,
-        padding: 10,
-        borderRadius: 5,
         color: colors.black,
-        backgroundColor: colors.white,
+        flex: 1
+    },
+    inputContainer: {
         shadowColor: 'rgba(0, 0, 0, 0.8)',
+        marginBottom: 20,
         elevation: 5,
+        height: 40,
+        backgroundColor: colors.white,
+        borderRadius: 5,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    icon: {
+        marginHorizontal: 10,
+        width: 20,
+        height: 20
     },
     or: {
         textAlign: 'center',

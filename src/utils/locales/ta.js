@@ -158,6 +158,7 @@ export default {
         paytm_transfer: 'Paytm பரிவர்த்தனை',
         e_gift_cards: 'மின்னணு பரிசு அட்டைகள்',
         update_kyc: 'KYC ஐ புதுப்பிக்க',
+        update_kyc_capslock: 'KYC ஐ புதுப்பிக்க',
         update_pan: 'PAN ஐ புதுப்பிக்க',
         track_your_redemption: 'உங்கள் மீட்டமைப்பை கண்காணிக்க',
         redeem_products: 'பொருட்களை மீட்டமை',
