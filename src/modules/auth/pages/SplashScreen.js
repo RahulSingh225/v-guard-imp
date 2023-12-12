@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback  } from 'react';
 import { View, Text, StyleSheet, Image, Modal, TouchableOpacity } from 'react-native';
 import Buttons from '../../../components/Buttons';
 import colors from '../../../../colors';
@@ -6,6 +6,7 @@ import language from '../../../assets/images/language.png';
 import arrowIcon from '../../../assets/images/arrow.png';
 import { useTranslation } from 'react-i18next';
 import LanguagePicker from '../../../components/LanguagePicker';
+import { useFocusEffect } from '@react-navigation/native';
 
 const SplashScreen = ({ navigation }) => {
   const { t, i18n } = useTranslation();
@@ -19,10 +20,19 @@ const SplashScreen = ({ navigation }) => {
     setShowLanguagePicker(false);
   };
 
-  useEffect(() => {
-    // Re-render the component when the language changes
-    console.log('Language changed:', i18n.language);
-  }, [i18n.language]);
+  const navigateToCategory = () => {
+    navigation.navigate('category');
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      console.log('Language changed:', i18n.language);
+
+      const timeoutId = setTimeout(navigateToCategory, 500);
+
+      return () => clearTimeout(timeoutId);
+    }, [i18n.language, navigateToCategory])
+  );
 
   return (
     <View style={styles.mainWrapper}>
@@ -48,7 +58,7 @@ const SplashScreen = ({ navigation }) => {
           style={styles.imageSaathi}
         />
       </View>
-      <View style={styles.startButtonContainer}>
+      {/* <View style={styles.startButtonContainer}>
         <Buttons
           style={styles.startButton}
           label={t('strings:start')}
@@ -60,7 +70,7 @@ const SplashScreen = ({ navigation }) => {
           icon={arrowIcon}
           width="90%"
         />
-      </View>
+      </View> */}
 
       <Modal
         animationType="slide"
