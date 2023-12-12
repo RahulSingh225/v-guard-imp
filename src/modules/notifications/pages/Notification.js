@@ -5,43 +5,36 @@ import {
   responsiveFontSize,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import {getNotifications} from '../../../utils/apiservice';
+import {getNotificationCount, getNotifications} from '../../../utils/apiservice';
+import Loader from '../../../components/Loader';
 
 const Notification = () => {
+  const [loader, showLoader] = useState(false);
   useEffect(() => {
     getNotifications().then(async r => {
+      showLoader(true);
       console.log(r);
       const result = await r.json();
       console.log(result);
-      setNotifications(result)
+      setNotifications(result);
+      showLoader(false);
     });
+    getNotificationCount().then(async r => {
+      const result = await r.json();
+    })
   }, []);
   const data = [
     {
       alertDesc:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      alertDate: '23-10-2023',
-    },
-    {
-      alertDesc:
-        'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      alertDate: '3-07-2023',
-    },
-    {
-      alertDesc:
-        'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-      alertDate: '24-05-2023',
-    },
-    {
-      alertDesc:
-        'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum',
-      alertDate: '23-01-2023',
+        'No Data',
+      alertDate: '',
     },
   ];
   const [notifications, setNotifications] = useState(data);
 
   return (
     <ScrollView style={styles.mainWrapper}>
+              {loader && <Loader />}
       {notifications.map((item, index) => (
         <View key={index} style={styles.messageItem}>
           <Image

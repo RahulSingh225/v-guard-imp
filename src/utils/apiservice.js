@@ -355,10 +355,16 @@ export function getBonusPoints(transactionId) {
   return createDigestGetRequest(path);
 }
 
-export function getNotifications(transactionId) {
+export function getNotifications() {
   const path = 'alert/';
   return createDigestGetRequest(path);
 }
+export function getNotificationCount() {
+  const path = 'alert/count';
+  return createDigestGetRequest(path);
+}
+
+
 // export const sendFile = async (formData) => {
 //     try {
 
