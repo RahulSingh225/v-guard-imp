@@ -3,7 +3,7 @@ import {View, Image, StyleSheet, Dimensions} from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import colors from '../../colors';
 
-const ReusableCarousel = ({
+const ReusableUrlCarousel = ({
   data,
   autoChangeInterval = 5000,
   carouselHeight = 200,
@@ -13,7 +13,7 @@ const ReusableCarousel = ({
   const renderItem = ({ item, index }) => (
     <View style={[styles.carouselItem, { height: carouselHeight }]}>
       <Image
-        source={item.imageUrl}
+        source={{ uri: item.imageUrl }}
         style={styles.carouselImage}
         resizeMode="contain"
       />
@@ -62,4 +62,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ReusableCarousel;
+export default ReusableUrlCarousel;
