@@ -7,6 +7,7 @@ import CustomTouchableOption from '../../../../../components/CustomTouchableOpti
 import NeedHelp from '../../../../../components/NeedHelp';
 import {getSchemeImages} from '../../../../../utils/apiservice';
 import {imageUrl} from '../../../../../utils/constants';
+import ReusableUrlCarousel from '../../../../../components/ReusableUrlCarousel';
 
 const Schemes = () => {
   useEffect(() => {
@@ -20,23 +21,13 @@ const Schemes = () => {
     });
   }, []);
 
-  const carouselData = [
-    {
-      imageUrl: require('../../../../../assets/images/banner_redeem_ppoints.webp'),
-    },
-    {imageUrl: require('../../../../../assets/images/banner.webp')},
-    {
-      imageUrl: require('../../../../../assets/images/banner_redeem_ppoints.webp'),
-    },
-  ];
-
   const [imageArray, setImageArray] = useState(null);
 
   return (
     <View style={styles.container}>
       <View style={styles.carousel}>
-        {imageArray&&
-        <ReusableCarousel data={imageArray} />}
+        {imageArray &&
+        <ReusableUrlCarousel data={imageArray} />}
       </View>
       <View style={styles.mainWrapper}>
         <View style={styles.options}>
@@ -48,7 +39,7 @@ const Schemes = () => {
           <CustomTouchableOption
             text="strings:active_scheme_offers"
             iconSource={require('../../../../../assets/images/ic_active_offers.webp')}
-            screenName="Active Schemes"
+            screenName="Active Schemes/Offers"
           />
           <CustomTouchableOption
             text="strings:special_combo_offers"
@@ -68,7 +59,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   carousel: {
-    backgroundColor: colors.black,
+    backgroundColor: colors.white,
   },
   options: {
     display: 'flex',

@@ -118,6 +118,11 @@ export function getUniqueCodeHistory() {
     return createDigestGetRequest(path);
 }
 
+export function getInfoBanners() {
+    const path = "infoDesk/banners";
+    return createDigestGetRequest(path);
+}
+
 // export function productRegistration(data) {
 //     const path = "product/registerAirCoolerCustomer";
 //     return createDigestPostRequest(path, data);
