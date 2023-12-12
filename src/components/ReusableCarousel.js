@@ -10,15 +10,16 @@ const ReusableCarousel = ({
 }) => {
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const renderItem = ({item, index}) => (
-    <View style={[styles.carouselItem, {height: carouselHeight}]}>
+  const renderItem = ({ item, index }) => (
+    <View style={[styles.carouselItem, { height: carouselHeight }]}>
       <Image
-        src={item.imageUrl}
+        source={item.imageUrl}
         style={styles.carouselImage}
         resizeMode="contain"
       />
     </View>
   );
+  
 
   const screenWidth = Dimensions.get('window').width;
 
