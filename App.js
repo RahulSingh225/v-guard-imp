@@ -1,21 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View,
-  Text,
   StyleSheet,
   Alert,
-  BackHandler,
   PermissionsAndroid,
-  TextInput,
 } from 'react-native';
-import SplashScreen from './src/modules/auth/pages/SplashScreen';
-import { NavigationContainer } from '@react-navigation/native';
-import AuthNavigator from './src/modules/auth/stack/AuthNavigator';
-import i18n from './src/utils/i18n';
-import BottomTab from './src/modules/common/services/BottomTab';
-import BottomTabLogo from './src/components/BottomTabLogo';
+
 import AppNavigator from './src/components/AppNavigator';
-import { DataProvider } from '../v-guard-imp/src/utils/appcontext';
 
 async function requestAllPermissions() {
   try {
@@ -36,7 +26,6 @@ async function requestAllPermissions() {
       granted[locationPermission] === PermissionsAndroid.RESULTS.GRANTED
     ) {
       console.log('Camera, contact, and location permissions granted.');
-      // You can now use the camera, access contacts, and access the device's location.
     } else {
       Alert.alert(
         'Permission denied',
@@ -49,31 +38,16 @@ async function requestAllPermissions() {
 }
 
 import { AuthProvider } from './src/components/AuthContext';
-import ScanStack from './src/modules/home/pages/options/scanQR/stack/ScanStack';
-import ScanScreen from './src/modules/home/pages/options/scanQR/ScanScreen';
-import ScratchCard from './src/components/ScratchCard';
-import { height, width } from './src/utils/dimensions';
-import RewardBox from './src/components/ScratchCard';
-import PopupWithButton from './src/components/PopupWithButton';
 
 const App = () => {
-  const [k, setK] = useState('KK')
   useEffect(() => {
     requestAllPermissions();
   }, []);
- 
-
-  
 
   return (
     <AuthProvider>
       <AppNavigator />
     </AuthProvider>
-    // <NavigationContainer>
-    //   <View style={styles.fullscreen}>
-    //     <BottomTab/>
-    //   </View>
-    // </NavigationContainer>
   );
 };
 

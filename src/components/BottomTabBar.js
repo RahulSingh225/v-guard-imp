@@ -1,18 +1,26 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
-  Image,
   Platform,
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
 import BottomTabLogo from './BottomTabLogo';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import colors from '../../colors';
+import { responsiveFontSize } from 'react-native-responsive-dimensions';
+import { getNotificationCount } from '../utils/apiservice';
 
 const BottomTabBar = ({ state, descriptors, navigation }) => {
   const { routes = [], index: activeIndex } = state;
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    getNotificationCount().then(async r => {
+      const result = await r.json();
+      setCount(result.count);
+    });
+}, []);
   return (
     <View style={styles.container}>
       <BottomTabLogo />
@@ -57,11 +65,20 @@ const BottomTabBar = ({ state, descriptors, navigation }) => {
               onLongPress={onLongPress}
               style={{ flex: 1 }}
             >
-              <View style={{ alignItems: 'center', }}>
-                <Icon name={icon} size={24} color={isFocused ? '#673ab7' : '#222'} />
-                {/* <Text style={{ color: isFocused ? '#673ab7' : '#222' }}>
-                  {label}
-                </Text> */}
+              <View style={{ alignItems: 'center' }}>
+                {route.name === 'Notification' && (
+                  <View style={styles.badgeContainer}>
+                    <Icon name={icon} size={24} color={isFocused ? '#673ab7' : '#222'} />
+                    { count > 0 &&
+                      (<View style={styles.badge}>
+                      <Text style={styles.badgeText}>{count}</Text>
+                    </View>)
+                    }
+                  </View>
+                )}
+                {route.name !== 'Notification' && (
+                  <Icon name={icon} size={24} color={isFocused ? '#673ab7' : '#222'} />
+                )}
               </View>
             </TouchableOpacity>
           );
@@ -74,26 +91,21 @@ const BottomTabBar = ({ state, descriptors, navigation }) => {
 function getTabIcon(routeName) {
   switch (routeName) {
     case 'Home':
-     // console.log("==> HOMe", routeName);
       return 'home-outline';
     case 'Notification':
-      //console.log("==>notify", routeName);
       return 'notifications-outline';
     case 'Profile':
-     // console.log("==>sett", routeName);
       return 'person-outline';
     case 'Support':
-      // console.log("==>sett", routeName);
       return 'call-outline';
 
     case 'Logout':
-      //console.log("==>sett", routeName);
       return 'log-out-outline';
       person - outline
 
     default:
 
-      return 'circle'; // Default icon for unknown tabs
+      return 'circle';
   }
 }
 export default BottomTabBar;
@@ -119,21 +131,31 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   container: {
-
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     height: 60,
-
+    elevation: 10,
     backgroundColor: 'white',
     paddingBottom: Platform.OS === 'ios' ? 15 : 0,
   },
+  badge: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
+    backgroundColor: colors.yellow,
+    borderRadius: 50,
+    width: 20,
+    height: 20,
+    padding: 2,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  badgeText: {
+    color: colors.black,
+    fontSize: responsiveFontSize(1),
+    fontWeight: 'bold',
+    textAlign: 'center'
+  },
 });
-
-
-// <View style={{ alignItems: 'center' }}>
-//   <Icon name={icon} size={24} color={isFocused ? '#673ab7' : '#222'} />
-//   <Text style={{ color: isFocused ? '#673ab7' : '#222' }}>
-//     {label}
-//   </Text>
-// </View>
