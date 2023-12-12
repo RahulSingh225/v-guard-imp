@@ -69,9 +69,11 @@ const BottomTabBar = ({ state, descriptors, navigation }) => {
                 {route.name === 'Notification' && (
                   <View style={styles.badgeContainer}>
                     <Icon name={icon} size={24} color={isFocused ? '#673ab7' : '#222'} />
-                    <View style={styles.badge}>
+                    { count > 0 &&
+                      (<View style={styles.badge}>
                       <Text style={styles.badgeText}>{count}</Text>
-                    </View>
+                    </View>)
+                    }
                   </View>
                 )}
                 {route.name !== 'Notification' && (
