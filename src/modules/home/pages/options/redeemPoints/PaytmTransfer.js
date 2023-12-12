@@ -5,27 +5,33 @@ import {
   ScrollView,
   TextInput,
   Image,
+  TouchableOpacity
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import colors from '../../../../../../colors';
-import {useTranslation} from 'react-i18next';
-import {responsiveFontSize} from 'react-native-responsive-dimensions';
+import { useTranslation } from 'react-i18next';
+import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import Buttons from '../../../../../components/Buttons';
 import arrowIcon from '../../../../../assets/images/arrow.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {paytmTransfer} from '../../HomeApiService';
+import { paytmTransfer } from '../../HomeApiService';
 import Popup from '../../../../../components/Popup';
 const PaytmTransfer = () => {
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [popupContent, setPopupContent] = useState('');
 
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const validateMobileNumber = () => {
     return /^[0-9]{10}$/.test(mobileNumber);
   };
   const handleProceed = () => {
     if (!validateMobileNumber()) {
       setPopupContent('Enter Valid Mobile Number');
+      setPopupVisible(true);
+      return;
+    }
+    if(selectedWallet == false) {
+      setPopupContent('Please select Wallet');
       setPopupVisible(true);
       return;
     }
@@ -61,6 +67,7 @@ const PaytmTransfer = () => {
 
   const [mobileNumber, setMobileNumber] = useState('');
   const [points, setPoints] = useState('');
+  const [selectedWallet, setSelectedWallet] = useState(true);
 
   const handleMobileNumberChange = text => {
     setMobileNumber(text);
@@ -81,6 +88,10 @@ const PaytmTransfer = () => {
       setPointData(data);
     });
   }, []);
+  const handleChange = () => {
+    setSelectedWallet(!selectedWallet);
+    console.log("Selected Wallet", selectedWallet);
+  }
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.mainWrapper}>
@@ -135,18 +146,28 @@ const PaytmTransfer = () => {
           </View>
         </View>
         <Text style={styles.chooseWallet}>{t('strings:choose_wallet')}</Text>
-        <View style={styles.wallet}>
+        <TouchableOpacity onPress={handleChange} style={styles.wallet}>
           <Image
             resizeMode="contain"
-            style={{flex: 1, width: '100%', height: '100%'}}
+            style={{ flex: 1, width: '100%', height: '100%' }}
             source={require('../../../../../assets/images/ic_paytm_logo.webp')}
           />
-          <Image
-            resizeMode="contain"
-            style={{flex: 1, width: '100%', height: '100%'}}
-            source={require('../../../../../assets/images/tick_1.png')}
-          />
-        </View>
+          {selectedWallet && (
+            <Image
+              resizeMode="contain"
+              style={{ flex: 1, width: '100%', height: '100%' }}
+              source={require('../../../../../assets/images/tick_1.png')}
+            />
+          )
+          }
+          {!selectedWallet && (
+            <Image
+              resizeMode="contain"
+              style={{ flex: 1, width: '100%', height: '100%' }}
+              source={require('../../../../../assets/images/tick_1_notSelected.png')}
+            />
+          )}
+        </TouchableOpacity>
         <Buttons
           style={styles.button}
           label={t('strings:proceed')}
