@@ -47,6 +47,8 @@ const Bank = () => {
   const [entityUid, setEntityUid] = useState('');
   const [userRole, setUserRole] = useState('');
   const [availableBanks, setAvailableBanks] = useState([]);
+  const [popupContent, setPopupContent] = useState('');
+  const [isPopupVisible, setPopupVisible] = useState(false);
 
   useEffect(() => {
     const getUserRoleFromAsyncStorage = async () => {
@@ -191,6 +193,14 @@ const Bank = () => {
 
 
   const handleProceed = () => {
+    if(accNo == '' || accHolder == '' || accType =='' || bankName=='' || ifscCode=='' || entityUid == ''){
+      showSnackbar('Enter all the details');
+      return
+    }
+    else if (!/^[a-zA-Z\s]+$/.test(accHolder)) {
+      showSnackbar('Account holder name should contain only alphabets');
+      return;
+    }
     const postData = {
       bankAccNo: accNo,
       bankAccHolderName: accHolder,
@@ -240,6 +250,7 @@ const Bank = () => {
               placeholder={t(
                 'strings:lbl_account_number',
               )}
+              keyboardType="numeric"
               placeholderTextColor={colors.grey}
               value={accNo}
               onChangeText={accNo => setAccNo(accNo)}
@@ -261,6 +272,7 @@ const Bank = () => {
               selectedValue={accType}
               onValueChange={itemValue => setAccType(itemValue)}
               style={styles.picker}>
+              <Picker.Item label={t('strings:select_account_type')} value={''} />
               <Picker.Item label={t('strings:account_type:saving')} value={'saving'} />
               <Picker.Item label={t('strings:account_type:current')} value={'current'} />
             </Picker>
@@ -276,11 +288,12 @@ const Bank = () => {
               selectedValue={bankName}
               onValueChange={itemValue => setBankName(itemValue)}
               style={styles.picker}>
+              <Picker.Item label={t('strings:select_bank')} value={''} />
               {availableBanks.map((bank, index) => (
                 <Picker.Item
                   key={index}
                   label={bank}
-                  value={bank.bankNameAndBranch}
+                  value={bank}
                 />
               ))}
             </Picker>
@@ -396,6 +409,13 @@ const Bank = () => {
           />
         </View>
       </View>
+      {isPopupVisible && (
+      <Popup
+        isVisible={isPopupVisible}
+        onClose={() => setPopupVisible(false)}>
+        {popupContent}
+      </Popup>
+    )}
     </ScrollView>
   );
 };
