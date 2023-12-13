@@ -98,14 +98,20 @@ const UpiTransfer = () => {
                 />
             </View>
             <PopupWithButton buttonText="Find UPI ID" isVisible={isPopupVisible} onClose={() => setPopupVisible(false)} onConfirm={() => console.log("Finding UPI ID")}>
+            <Text style={styles.popupText}>
             Please click on find to get UPI ID linked with your registered mobile number.
+            </Text>
             </PopupWithButton>
             <PopupWithButton buttonText="Proceed" isVisible={isUpiFound} onClose={() => setUpiFound(false)} onConfirm={() => console.log("Finding UPI ID")}>
+                <Text style={styles.popupText}>
                 Below UPI-VPA found linked. {'\n'}
+                </Text>
                 <Text style={styles.italics}>testvguardrishta@okhdfcbank</Text>
             </PopupWithButton>
             <PopupWithButton buttonText="Ok" isVisible={isUpiNotFound} onClose={() => setUpiNotFound(false)} onConfirm={() => console.log("Finding UPI ID")}>
+                <Text style={styles.popupText}>
                 No UPI-VPA linked found.
+                </Text>
             </PopupWithButton>
         </ScrollView>
     )
@@ -274,6 +280,10 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         paddingHorizontal: 25,
         elevation: 10
+    },
+    popupText: {
+        color: colors.black,
+        fontWeight: 'bold'
     }
 })
 
