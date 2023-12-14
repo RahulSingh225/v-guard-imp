@@ -363,6 +363,10 @@ export function getNotificationCount() {
   const path = 'alert/count';
   return createDigestGetRequest(path);
 }
+export function getKycIdTypes() {
+  const path = 'user/kycIdTypes';
+  return createDigestGetRequest(path);
+}
 
 
 // export const sendFile = async (formData) => {
