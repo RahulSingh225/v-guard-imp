@@ -1,17 +1,20 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableHighlight, Image, Linking, TouchableOpacity } from 'react-native';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import colors from '../../../../colors';
 import { getFile, getUserProfile } from '../../../utils/apiservice';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 
 
-const Profile = ({navigation}) => {
+const Profile = ({ navigation }) => {
   const { t } = useTranslation();
 
   const baseURL = 'https://www.vguardrishta.com/img/appImages/Profile/';
   const ecardURL = 'https://www.vguardrishta.com/img/appImages/eCard/';
+  const [showBankDetails, setShowBankDetails] = useState(false);
+  const [showPanDetails, setShowPanDetails] = useState(false);
+  const [showNomineeDetails, setShowNomineeDetails] = useState(false);
 
   const [data, setData] = useState([]);
   const [userData, setUserData] = useState({
@@ -40,20 +43,20 @@ const Profile = ({navigation}) => {
       };
       setUserData(data);
       getUserProfile()
-      .then(response => response.json())
-      .then(responseData => {
-        setData(responseData);
-        console.log("<><<><<><>><", responseData, "<><<<><><><><><><<><");
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
+        .then(response => response.json())
+        .then(responseData => {
+          setData(responseData);
+          console.log("<><<><<><>><", responseData, "<><<<><><><><><><<><");
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
     });
   }, []);
 
   useEffect(() => {
     if (userData.userRole && userData.userImage) {
-      
+
       const getImage = async () => {
         try {
           const profileImage = await getFile(userData.userImage, 'PROFILE', userData.userRole);
@@ -62,7 +65,7 @@ const Profile = ({navigation}) => {
           console.log('Error while fetching profile image:', error);
         }
       };
-  
+
       getImage();
     }
   }, [userData.userRole, userData.userImage]);
@@ -81,6 +84,7 @@ const Profile = ({navigation}) => {
     'Selfie',
     'ID Document',
     'Bank Details',
+    'Nominee Details',
     'Pan Card',
   ];
   const renderField = (fieldName) => {
@@ -96,7 +100,7 @@ const Profile = ({navigation}) => {
       'Email': 'emailId',
       'Profession': 'profession',
     };
-  
+
     if (fieldName in fieldMap) {
       const mappedField = fieldMap[fieldName];
       if (mappedField in data) {
@@ -118,17 +122,113 @@ const Profile = ({navigation}) => {
         return 'No';
       }
     } else if (fieldName === 'Pan Card') {
-      if (data.kycDetails && data.kycDetails.panCardFront && data.kycDetails.panCardBack && data.kycDetails.panCardNo) {
-        return 'Yes';
-      } else {
-        return 'No';
-      }
+      const hasPanDetails = data.kycDetails && data.kycDetails.panCardNo;
+      return (
+        <>
+          <View>
+            <View style={styles.databox}>
+              <Text style={styles.yesorno}>{hasPanDetails ? 'Yes' : 'No'}</Text>
+              {hasPanDetails && (
+                <TouchableOpacity style={{ marginLeft: 5 }} onPress={() => setShowPanDetails(!showPanDetails)}>
+                  <Image source={require('../../../assets/images/ic_ticket_drop_down2.png')} style={{ width: 20, height: 20 }} />
+                </TouchableOpacity>
+              )}
+            </View>
+            {showPanDetails && (
+              <View style={styles.smallDataBox}>
+                <View style={styles.smallDataRow}>
+                  <Text style={styles.dataSmallLabel}>Pan Card No: </Text>
+                  <Text style={styles.dataSmall}>{data.kycDetails.panCardNo}</Text>
+                </View>
+              </View>
+            )}
+          </View>
+
+        </>
+      );
     } else if (fieldName === 'Bank Details') {
-      if (data.bankDetail && data.bankDetail.bankAccNo) {
-        return 'Yes';
-      } else {
-        return 'No';
-      }
+      const hasBankDetails = data.bankDetail && data.bankDetail.bankAccNo;
+      return (
+        <>
+          <View>
+            <View style={styles.databox}>
+              <Text style={styles.yesorno}>{hasBankDetails ? 'Yes' : 'No'}</Text>
+              {hasBankDetails && (
+                <TouchableOpacity style={{ marginLeft: 5 }} onPress={() => setShowBankDetails(!showBankDetails)}>
+                  <Image source={require('../../../assets/images/ic_ticket_drop_down2.png')} style={{ width: 20, height: 20 }} />
+                </TouchableOpacity>
+              )}
+            </View>
+            {showBankDetails && (
+              <View style={styles.smallDataBox}>
+                <View style={styles.smallDataRow}>
+                  <Text style={styles.dataSmallLabel}>Bank Acc No: </Text>
+                  <Text style={styles.dataSmall}>{data.bankDetail.bankAccNo}</Text>
+                </View>
+                <View style={styles.smallDataRow}>
+                  <Text style={styles.dataSmallLabel}>Bank Acc Holder Name: </Text>
+                  <Text style={styles.dataSmall}>{data.bankDetail.bankAccHolderName}</Text>
+                </View>
+                <View style={styles.smallDataRow}>
+                  <Text style={styles.dataSmallLabel}>Bank Acc Type: </Text>
+                  <Text style={styles.dataSmall}>{data.bankDetail.bankAccType}</Text>
+                </View>
+                <View style={styles.smallDataRow}>
+                  <Text style={styles.dataSmallLabel}>Bank Name and Branch: </Text>
+                  <Text style={styles.dataSmall}>{data.bankDetail.bankNameAndBranch}</Text>
+                </View>
+              </View>
+            )}
+          </View>
+
+        </>
+      );
+    }
+    else if (fieldName === 'Nominee Details') {
+      const hasNomineeDetails = data.bankDetail && data.bankDetail.nomineeAccNo;
+      return (
+        <>
+          <View>
+            <View style={styles.databox}>
+              <Text style={styles.yesorno}>{hasNomineeDetails ? 'Yes' : 'No'}</Text>
+              {hasNomineeDetails && (
+                <TouchableOpacity style={{ marginLeft: 5 }} onPress={() => setShowNomineeDetails(!showNomineeDetails)}>
+                  <Image source={require('../../../assets/images/ic_ticket_drop_down2.png')} style={{ width: 20, height: 20 }} />
+                </TouchableOpacity>
+              )}
+            </View>
+            {showNomineeDetails && (
+              <View style={styles.smallDataBox}>
+                <View style={styles.smallDataRow}>
+                  <Text style={styles.dataSmallLabel}>Nominee Acc No: </Text>
+                  <Text style={styles.dataSmall}>{data.bankDetail?.nomineeAccNo}</Text>
+                </View>
+                <View style={styles.smallDataRow}>
+                  <Text style={styles.dataSmallLabel}>Nominee Acc Holder Name: </Text>
+                  <Text style={styles.dataSmall}>{data.bankDetail?.nomineeName}</Text>
+                </View>
+                <View style={styles.smallDataRow}>
+                  <Text style={styles.dataSmallLabel}>Nominee Date of Birth: </Text>
+                  <Text style={styles.dataSmall}>{data.bankDetail?.nomineeDob}</Text>
+                </View>
+                <View style={styles.smallDataRow}>
+                  <Text style={styles.dataSmallLabel}>Nominee Mobile Number: </Text>
+                  <Text style={styles.dataSmall}>{data.bankDetail?.nomineeMobileNo}</Text>
+                </View>
+                <View style={styles.smallDataRow}>
+                  <Text style={styles.dataSmallLabel}>Nominee Email ID: </Text>
+                  <Text style={styles.dataSmall}>{data.bankDetail?.nomineeEmail}</Text>
+                </View>
+                <View style={styles.smallDataRow}>
+                  <Text style={styles.dataSmallLabel}>Nominee Relation: </Text>
+                  <Text style={styles.dataSmall}>{data.bankDetail?.nomineeRelation}</Text>
+                </View>
+              </View>
+            )}
+          </View>
+
+        </>
+      );
     } else if (fieldName in data) {
       const fieldValue = data[fieldName];
       return fieldValue === true ? 'Yes' : fieldValue === false ? 'No' : fieldValue;
@@ -136,18 +236,18 @@ const Profile = ({navigation}) => {
       return 'N/A';
     }
   };
-  
+
 
   const openEVisitingCard = () => {
-    console.log(ecardURL+data.ecardPath, 'url---------')
-    Linking.openURL(ecardURL+data.ecardPath);
+    console.log(ecardURL + data.ecardPath, 'url---------')
+    Linking.openURL(ecardURL + data.ecardPath);
   };
-  
+
   return (
     <ScrollView style={styles.mainWrapper}>
       <View style={styles.flexBox}>
         <View style={styles.ImageProfile}>
-        <Image source={{ uri: profileImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
+          <Image source={{ uri: profileImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
         </View>
         <TouchableHighlight
           style={styles.button}
@@ -160,8 +260,8 @@ const Profile = ({navigation}) => {
         <Text style={styles.textDetail}>{userData.userName}</Text>
         <Text style={styles.textDetail}>{userData.userCode}</Text>
         <TouchableOpacity onPress={openEVisitingCard}>
-        <Text style={styles.viewProfile}>{t('strings:view_e_card')}</Text>
-      </TouchableOpacity>
+          <Text style={styles.viewProfile}>{t('strings:view_e_card')}</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.detailsContainer}>
         {labels.map((label, index) => (
@@ -215,6 +315,45 @@ const styles = StyleSheet.create({
     marginTop: responsiveHeight(3),
     textAlign: 'right',
     fontWeight: 'bold'
+  },
+  dataSmall: {
+    color: colors.black,
+    fontSize: responsiveFontSize(1.5),
+    textAlign: 'right',
+    fontWeight: 'bold',
+    maxWidth: responsiveWidth(50)
+  },
+  dataSmallLabel: {
+    color: colors.grey,
+    fontSize: responsiveFontSize(1.5),
+    textAlign: 'right',
+    fontWeight: 'bold',
+  },
+  smallDataBox: {
+    backgroundColor: colors.lightYellow,
+    padding: 5,
+    borderRadius: 5,
+    marginTop: 5,
+  },
+  smallDataRow: {
+    flexDirection: 'row',
+    textAlign: 'right',
+    justifyContent: 'flex-end',
+    width: responsiveWidth(50),
+    flexWrap: 'wrap'
+  },
+  yesorno: {
+    color: colors.black,
+    fontSize: responsiveFontSize(1.7),
+    textAlign: 'right',
+    alignSelf: 'center',
+    fontWeight: 'bold',
+  },
+  databox: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end'
   },
   profileText: {
     marginTop: responsiveHeight(2),
