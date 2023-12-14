@@ -18,7 +18,7 @@ const ScanStack = () => {
           },
           headerShown: false
         }}>
-      <Stack.Screen name="Scan QR" component={ScanScreen} 
+      <Stack.Screen name="Scan Code" component={ScanScreen} 
         options={{
           headerShown: true
         }}

@@ -24,38 +24,61 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   captureSale,
   getBonusPoints,
+  checkScanPopUp,
   sendCouponPin,
 } from '../../../../../utils/apiservice';
 import ScratchCard from '../../../../../components/ScratchCard';
 import RewardBox from '../../../../../components/ScratchCard';
 import PopupWithButton from '../../../../../components/PopupWithButton';
-//import {scanQR} from 'react-native-simple-qr-reader';
+import {scanQR} from 'react-native-simple-qr-reader';
 
 const ScanScreen = ({navigation, route}) => {
   const type = null;
   const {t} = useTranslation();
   const [qrCode, setQrcode] = React.useState('');
   const [scratchCard, showScratchCard] = React.useState(false);
-  const [popupVisible, setPopupVisible] = React.useState(false);
+  const [popupProps, setPopupProps] = React.useState({buttonText:'',children:null,onConfirm:null,onClose:null,isVisible:false});
+ 
   const [PIN,setPIN] = React.useState(null)
   var USER = null;
   var scratchCardProps;
   var CouponResponse;
-  var popupProps={}
+  //var popupProps={}
   React.useEffect(() => {
+    
     AsyncStorage.getItem('USER').then(r => {
       USER = JSON.parse(r);
+      console.log(USER.userCode)
+      checkScanPopUp(USER.userCode).then(response=>response.json().then(result=>{
+          console.log(result,'ssssss')
+        if(result.code =='1'){
+          var d={}
+        d.buttonText = 'OK',
+        d.children = (<Text>{result.message}</Text>)
+        d.onConfirm =()=>setPopupProps({...popupProps,isVisible:false})
+        d.isVisible = true
+        d.onClose =  ()=>setPopupProps({...popupProps,isVisible:false})
+        setPopupProps(d)
+       
+        
+        }
+        
+      }))
     });
+
+
   }, []);
 
   async function scan() {
-    // scanQR()
-    //   .then(result => setQrcode(result))
-    //   .catch(e => console.error(e));
+
+    
+    scanQR()
+      .then(result => setQrcode(result))
+      .catch(e => console.error(e));
   }
 
   async function sendBarcode(pin=null) {
-    setPopupVisible(false)
+    setPopupProps({...popupProps,isVisible:false})
     
     const position = await getLocation();
     const user = JSON.parse(await AsyncStorage.getItem('USER'));
@@ -151,14 +174,23 @@ const ScanScreen = ({navigation, route}) => {
       showScratchCard(true)
     
       }else if(apiResponse.errorCode ==2){
-        popupProps.buttonText = 'SUBMIT',
-        popupProps.children = (<TextInput onChangeText={(e) => setPIN(e)} value={PIN} style={{ borderBottomWidth: 2, borderBottomColor: 'black', textDecorationColor: 'black', width: '100%', height: 40 }} />)
-        popupProps.onConfirm = sendBarcode(PIN)
-        setPopupVisible(true);
+        setPopupProps({
+          buttonText : 'SUBMIT',
+          children: (<TextInput onChangeText={(e) => setPIN(e)} value={PIN} style={{ borderBottomWidth: 2, borderBottomColor: 'black', textDecorationColor: 'black', width: '100%', height: 40 }} />),
+          onConfirm :()=> sendBarcode(PIN),
+          isVisible:true,
+          onClose:()=>setPopupProps({...popupProps,isVisible:false})
+        })
+       
       }else {
-        popupProps.buttonText = 'OK',
-        popupProps.children = (<Text>{CouponResponse.errorMsg}</Text>)
-        popupProps.onConfirm = setPopupVisible(false)
+        setPopupProps({
+          buttonText:'OK',
+          children:(<Text>{CouponResponse.errorMsg}</Text>),
+          onConfirm:()=>setPopupProps({...popupProps,isVisible:false}),
+          onClose:()=>setPopupProps({...popupProps,isVisible:false}),
+          isVisible:true
+        })
+      
     }
   
 
@@ -213,7 +245,7 @@ const ScanScreen = ({navigation, route}) => {
       }))
       showScratchCard(true)
     }
-  
+  console.log(popupProps)
   }
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
@@ -226,8 +258,9 @@ const ScanScreen = ({navigation, route}) => {
             onClose={checkBonusPoints}
           />
         )}
-        {popupVisible&&
-        <PopupWithButton isVisible={popupVisible} buttonText={popupProps.buttonText} children={popupProps.children} onConfirm={popupProps.onConfirm}/>}
+        
+        
+        <PopupWithButton onClose={popupProps.onClose} isVisible={popupProps.isVisible} buttonText={popupProps.buttonText} children={popupProps.children} onConfirm={popupProps.onConfirm}/>
 
         <Pressable onPress={() => scan()} style={styles.imageContainer}>
           <Image
@@ -256,6 +289,7 @@ const ScanScreen = ({navigation, route}) => {
             <TextInput
               onChangeText={e => setQrcode(e)}
               maxLength={16}
+              keyboardType='number-pad'
               value={qrCode}
               style={styles.input}
               placeholder={t('strings:enter_code_here')}

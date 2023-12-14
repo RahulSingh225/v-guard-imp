@@ -5,6 +5,7 @@ import {
   Image,
   TextInput,
   ScrollView,
+  Pressable,
 } from 'react-native';
 import React from 'react';
 import colors from '../../../../../../colors';
@@ -13,23 +14,52 @@ import {
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
 import Buttons from '../../../../../components/Buttons';
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import arrowIcon from '../../../../../assets/images/arrow.png';
 import NeedHelp from '../../../../../components/NeedHelp';
+import ActionPickerModal from '../../../../../components/ActionPickerModal';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 const UploadError = () => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
+  const [showModal, setshowModal] = React.useState(false)
+  const [couponImage, setCouponImage] = React.useState(null)
 
+  function openGallery() {
+    launchCamera({
+      mediaType: 'photo', quality: 0.5,
+      cameraType: 'back',
+      saveToPhotos: true
+    }).then(result => { if (result.assets.length) { setCouponImage({ uri: result.assets[0], type: result.assets[0].type, name: result.assets[0].fileName }) } });
+
+  }
+
+  function openCamera() {
+    launchImageLibrary({ mediaType: 'photo', quality: 0.5 }).then(result => { if (result.assets.length) { setCouponImage({ uri: result.assets[0], type: result.assets[0].type, name: result.assets[0].fileName }) } });
+
+
+  }
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       <View style={styles.mainWrapper}>
-        <View style={styles.imageContainer}>
-          <Image
-            source={require('../../../../../assets/images/camera.png')}
-            style={{width: '100%', height: '100%'}}
-            resizeMode="contain"
-          />
-        </View>
+        {showModal &&
+          <ActionPickerModal onCamera={openCamera()} onGallery={openGallery()} />}
+        <Pressable onPress={() => setshowModal(true)}>
+          <View style={styles.imageContainer}>
+            {couponImage ? <Image
+              source={{ uri: couponImage.uri }}
+              style={{ width: '100%', height: '100%' }}
+              resizeMode="contain"
+            /> :
+              <Image
+                source={require('../../../../../assets/images/camera.png')}
+                style={{ width: '100%', height: '100%' }}
+                resizeMode="contain"
+              />
+            }
+
+          </View>
+        </Pressable>
         <Buttons
           style={styles.button}
           label={t('strings:click_here_to_report_error_scan')}
@@ -47,7 +77,7 @@ const UploadError = () => {
           <View style={styles.scanImage}>
             <Image
               source={require('../../../../../assets/images/ic_scan_code_2.png')}
-              style={{width: '100%', height: '100%'}}
+              style={{ width: '100%', height: '100%' }}
               resizeMode="contain"
             />
           </View>

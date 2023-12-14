@@ -491,3 +491,9 @@ export function getInfoDeskBanners() {
     const path = 'infoDesk/banners';
     return createDigestGetRequest(path);
   }
+
+  export function checkScanPopUp(id) {
+    const path = `user/scanPopUp/${id}`;
+    return createDigestGetRequest(path);
+  }
+

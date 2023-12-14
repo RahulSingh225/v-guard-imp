@@ -15,6 +15,7 @@ import {
 } from 'react-native-responsive-dimensions';
 
 const PopupWithButton = ({ isVisible, onClose, children, buttonText, onConfirm }) => {
+    console.log(isVisible);
     if (!isVisible) {
         return null;
     }
