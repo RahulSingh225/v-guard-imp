@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { height, width } from '../utils/dimensions';
 import { black } from 'react-native-paper/lib/typescript/styles/colors';
+import colors from '../../colors';
 
 const ImageWithModal = ({ imageUri }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -28,7 +29,7 @@ const ImageWithModal = ({ imageUri }) => {
             style={{
               width: width / 8,
               height: height / 20,
-              backgroundColor: 'red',
+              backgroundColor: colors.lightGrey,
               borderRadius: 5,
               margin: 5
 

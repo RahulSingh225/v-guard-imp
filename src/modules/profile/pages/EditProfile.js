@@ -1,34 +1,29 @@
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Modal, Image, PermissionsAndroid } from 'react-native'
+import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Modal, PermissionsAndroid  } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import colors from '../../../../colors'
 import { height, width } from '../../../utils/dimensions'
-import { Avatar, Button } from 'react-native-paper';
-import { Picker } from '@react-native-picker/picker';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import Buttons from "../../../components/Buttons";
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { IconButton, } from 'react-native-paper';
-
-
-import DatePicker from '../../../components/DatePicker';
-import { FloatingLabelInput } from 'react-native-floating-label-input';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from '../../../components/Loader';
 import Popup from '../../../components/Popup';
-import DropDownPicker from 'react-native-dropdown-picker';
 import { useTranslation } from 'react-i18next';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { fetchPinCodeData, PincodedetailList, GetProfession, Citylist, Getsubprofession, getUserProfile, sendFile, getFile, UpdateUserProfile, getKycIdTypes } from '../../../utils/apiservice';
+import InputField from '../../../components/InputField'
+import PickerField from '../../../components/PickerField'
+import DatePickerField from '../../../components/DatePickerField'
+import ImagePickerField from '../../../components/ImagePickerField'
+import DatePicker from '../../../components/DatePicker'
 import ImageWithModal from '../../../components/ImageWithModal';
-import { fetchPinCodeData, PincodedetailList, GetProfession, Citylist, Getsubprofession, getUserProfile, sendFile, getFile, UpdateUserProfile } from '../../../utils/apiservice';
-//import Popup from '../../../components/Popup';
-// import Loader from '../../../components/Loader';
+import { Picker } from '@react-native-picker/picker';
+import { Avatar, Button } from 'react-native-paper';
 
 
 
 const EditProfile = () => {
-
-
     const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(false);
 
@@ -48,6 +43,7 @@ const EditProfile = () => {
 
     const [selfieemodal, setselfieemodal] = useState(false);
     const [professiondata, setprofessiondata] = useState([]);
+    const [professiondatanames, setprofessiondatanames] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
     const [citylistpicker, setcitylistpicker] = useState(null);
     const [open, setOpen] = useState(false);
@@ -59,6 +55,7 @@ const EditProfile = () => {
     const [userImage, setUserImage] = useState('');
     const [loyalty, setloyalty] = useState('Select');
     const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [kycTypes, setKycTypes] = useState([]);
     const [popupMessage, setPopupMessage] = useState('');
     const [form1, setform1] = useState({
         "preferedLanguage": "",
@@ -152,104 +149,7 @@ const EditProfile = () => {
             },
 
         }));
-        console.log('Updated schemeData:', schemeData);
     };
-
-    const handleIconButtonPress = () => {
-        // Add a new set of text inputs
-        if (schemes.length < 5) {
-            setSchemes([...schemes, { schmename: '', resonforlikingschme: '' }]);
-        }
-    };
-    async function Gettingprofession(params) {
-
-        try {
-            const professionfromapi = await GetProfession();
-            setprofessiondata([professionfromapi[0], professionfromapi[1], professionfromapi[2],]);
-            // console.log("==%%%%===", professiondata);
-        }
-        catch (error) {
-            console.error('Error fetching suggestions:', error);
-        }
-        finally {
-            // After the API call (whether it succeeds or fails), hide the loader
-            // setLoading(false);
-        }
-
-    }
-
-    const handleDateChange = (event, selectedDate) => {
-        if (event.type === 'set') {
-            // setSelectedDate(selectedDate);
-            // handleFieldChange("dateofbirth", selectedDate)}
-            handleFieldChange("dateofbirth", selectedDate);
-
-            setShowDatePicker(false);
-        }
-        setShowDatePicker(false);
-    };
-    const handleDateChange2 = (event, selectedDate1) => {
-        if (event.type === 'set') {
-            //  setSelectedDate(selectedDate);
-            // handleFieldChange("dateofbirth", selectedDate)}
-            handlefiledchnage3("nomineedateofbirth", selectedDate1);
-
-            //setShowDatePicker(false);
-        }
-        setShowDatePicker1(false);
-    };
-
-    const handleShowDatePicker = () => {
-        setShowDatePicker(true);
-    };
-    const handleShowDatePicker1 = () => {
-        setShowDatePicker1(true);
-    };
-    let options = {
-        saveToPhotoes: true,
-        mediaType: 'photo',
-        saveToPhotos: true,
-        selectionLimit: 1,
-        quality: 0.5,
-        includeBase64: true,
-        storageOption: {
-            skipbackup: true,
-            path: 'images',
-        }
-    };
-    const openCamera = async (documentType, onCapture) => {
-        const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.CAMERA,
-        );
-        const granted1 = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        );
-        const granted2 = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            const result = await launchCamera(options);
-            const photo = result.assets[0];
-            const newPhoto = { uri: photo.uri, type: photo.type, name: photo.fileName };
-
-            // Handle the captured data based on the document type
-            switch (documentType) {
-                case 'Selfie':
-                    setSelfieData(newPhoto.uri);
-                    // console.log(SelfieData);
-                    break;
-
-                default:
-                    console.log('Unknown document type');
-            }
-
-            // Call the provided callback function to further process the data
-            if (typeof onCapture === 'function') {
-                onCapture(documentType, newPhoto);
-            }
-        }
-    };
-
     const openImagePicker = async (documentType, onCapture) => {
         const granted = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -290,35 +190,106 @@ const EditProfile = () => {
             }
         }
     };
+    const openCamera = async (documentType, onCapture) => {
+        const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.CAMERA,
+        );
+        const granted1 = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        );
+        const granted2 = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            const result = await launchCamera(options);
+            const photo = result.assets[0];
+            const newPhoto = { uri: photo.uri, type: photo.type, name: photo.fileName };
+
+            // Handle the captured data based on the document type
+            switch (documentType) {
+                case 'Selfie':
+                    setSelfieData(newPhoto.uri);
+                    // console.log(SelfieData);
+                    break;
+
+                default:
+                    console.log('Unknown document type');
+            }
+
+            // Call the provided callback function to further process the data
+            if (typeof onCapture === 'function') {
+                onCapture(documentType, newPhoto);
+            }
+        }
+    };
+    const handleIconButtonPress = () => {
+        // Add a new set of text inputs
+        if (schemes.length < 5) {
+            setSchemes([...schemes, { schmename: '', resonforlikingschme: '' }]);
+        }
+    };
+    async function Gettingprofession(params) {
+
+        try {
+            const professionfromapi = await GetProfession();
+            const professions = professionfromapi.slice(0, 3); // Take the first 3 professions
+            setprofessiondata(professions);
+            const professionDataNames = professions.map(item => ({ label: item.professionName, value: item.professionName }));
+            setprofessiondatanames(professionDataNames);
+
+        }
+        catch (error) {
+            console.error('Error fetching suggestions:', error);
+        }
+        finally {
+            // After the API call (whether it succeeds or fails), hide the loader
+            // setLoading(false);
+        }
+
+    }
+
+    const handleDateChange = (event, selectedDate) => {
+        if (event.type === 'set') {
+            handleFieldChange("dateofbirth", selectedDate);
+            setShowDatePicker(false);
+        }
+        setShowDatePicker(false);
+    };
+
+
+    const handleDateChange2 = (event, selectedDate1) => {
+        if (event.type === 'set') {
+            handlefiledchnage3("nomineedateofbirth", selectedDate1);
+            setShowDatePicker1(false);
+        }
+        setShowDatePicker1(false);
+    };
+    let options = {
+        saveToPhotoes: true,
+        mediaType: 'photo',
+        saveToPhotos: true,
+        selectionLimit: 1,
+        quality: 0.5,
+        includeBase64: true,
+        storageOption: {
+            skipbackup: true,
+            path: 'images',
+        }
+    };
 
     async function fetchDataForPinCode1(pincode) {
         setIsLoading(true);
         try {
             const data = await fetchPinCodeData(pincode);
-            console.log('Fetching data for pincode API CALL:', typeof pincode);
             const pincodeid = data[0].pinCodeId; // Declare the variable using 'const'
-            console.log('Pin Code Data:', pincodeid);
-
             const secondData = await PincodedetailList(pincodeid);
-            console.log("<><><><><>IF NO HAPPENING THIS ", secondData.distId);
             handlefiledChangeform2("currentcityid", secondData.cityId);
-            // setcurrentdistrictId(secondData.distId);
             handlefiledChangeform2("cuurentstateid", secondData.stateId);
-
-
             const cityData = await getCityDataForDistrict(secondData.distId);
-            // console.log('City Data:', cityData);
             setcitylistpicker(cityData);
             handlefiledChangeform2("currentstate", secondData.stateName);
-
-
             handlefiledChangeform2("currentdistrict", secondData.distName);
             handlefiledChangeform2("currentdistrictId", secondData.distId);
-            // console.log('================INSDE FETCH PINCODE FUNCTION ====================');
-            // console.log(currentdistrictId);
-            // console.log(currentstateid);
-            // console.log(currentcityid);
-            // console.log('====================================');
         } catch (error) {
             console.error('Error in Page 1:', error);
         } finally {
@@ -376,9 +347,18 @@ const EditProfile = () => {
             setOpen(true);
         }
     }
+
+    const handleShowDatePicker = () => {
+        setShowDatePicker(true);
+    };
+    const handleShowDatePicker1 = () => {
+        setShowDatePicker1(true);
+    };
+
+
     useEffect(() => {
 
-        //  Gettingprofession();
+        Gettingprofession();
         AsyncStorage.getItem('userImage').then((userimage) => {
             setUserImage(userimage);
         });
@@ -388,15 +368,19 @@ const EditProfile = () => {
         AsyncStorage.getItem('userCode').then((code) => {
             setUserCode(code);
         });
+        getKycIdTypes()
+            .then(response => response.json())
+            .then(responseData => {
+                const kycIdTypes = responseData.map(item => ({ label: item.kycIdName, value: item.kycId }));
+                setKycTypes(kycIdTypes);
+            })
         getUserProfile()
             .then(response => response.json())
             .then(responseData => {
-                console.log("<><><Inise the edit profile", responseData);
                 setData(responseData);
                 setUserName(responseData.name);
                 setUserCode(responseData.userCode);
                 setGender(responseData.gender);
-                console.log("##############", gender);
 
                 const parseDate = (dateString) => {
                     const months = {
@@ -410,11 +394,14 @@ const EditProfile = () => {
                 const nomineeDate = parseDate(responseData.bankDetail.nomineeDob)
                 const dobDate = parseDate(responseData.dob);
                 setSelectedDate(dobDate);
-                if (responseData.bankDetail.nomineeDob != null || "undefined") {
-                    setSelectedDate1(" ");
+
+                if (responseData.bankDetail.nomineeDob === "" || responseData.bankDetail.nomineeDob === undefined) {
+                    setSelectedDate1("");
                 } else {
+                    console.log("valid date")
                     setSelectedDate1(nomineeDate);
                 }
+
 
 
                 if (responseData.currPinCode == responseData.pinCode) {
@@ -431,7 +418,6 @@ const EditProfile = () => {
                     }))
 
                 }
-                // console.log("?????????????????????", nomineeDate);
                 setform1(prevForm1 => ({
                     ...prevForm1,
                     preferedLanguage: responseData.preferredLanguage || "",
@@ -468,7 +454,7 @@ const EditProfile = () => {
                     martialStatus: responseData.maritalStatus || "",
                     alreadyenrolled: responseData.enrolledOtherSchemeYesNo || "",
                     annualbusiness: responseData.annualBusinessPotential || "",
-                    //IdProoftype: responseData.
+                    IdProoftype: responseData.kycDetails.kycId || "",
                     pancard: responseData.kycDetails.panCardNo || "",
                     currentaddressselections: responseData.currPinCode == responseData.pinCode ? "Yes" : "No" || " ",
                     userprofession: responseData.userProfession || "",
@@ -476,49 +462,7 @@ const EditProfile = () => {
 
                 }))
 
-                // if (currentaddressselections == "No") {
-                //     setform2(prevform2 => ({
-                //         ...prevform2,
-                //         curremtaddress: responseData.currentAddress || "",
-                //         curretnstreet: responseData.currStreetAndLocality || "",
-                //         currentlandmark: responseData.currLandmark || "",
-                //         currentpincode: "",
-                //         currentCity: responseData.currCity || "",
-                //         currentdistrict: responseData.currDist || "",
-                //         currentstate: responseData.currState || "",
-                //         currentcityid: responseData.currCityId || "",
-                //         currentdistrictId: responseData.currDistId || "",
-                //         cuurentstateid: responseData.currStateId || "",
-                //         profession: responseData.profession || "",
-                //         martialStatus: responseData.maritalStatus || "",
-                //         alreadyenrolled: responseData.enrolledOtherSchemeYesNo || "",
-
-                //         annualbusiness: responseData.annualBusinessPotential || "",
-                //         IdProoftype: responseData.aadharOrVoterOrDLFront || "",
-                //         pancard: responseData.kycDetails.panCardNo || "",
-                //         currentaddressselections: responseData.currPinCode == responseData.pinCode ? "Yes" : "No" || " ",
-                //         userprofession: responseData.userProfession || "",
-
-
-
-                //     }))
-
-
-                // }
-
-                // if (currentaddressselections == 'No') {
-                //     handlefiledChangeform2("currentaddressselections", itemValue);
-                //     handlefiledChangeform2("curretnstreet", "");
-                //     handlefiledChangeform2("currentlandmark", "");
-                //     handlefiledChangeform2("currentpincode", "");
-                //     handlefiledChangeform2("currentCity", "");
-                //     handlefiledChangeform2("currentdistrict", "");
-                //     handlefiledChangeform2("currentstate", "");
-                // }
-
                 setloyalty(responseData.enrolledOtherSchemeYesNo == "Yes" ? "Yes" : "No")
-
-                // console.log("Business Potential", loyalty);
 
 
                 setnominee(nomineform => ({
@@ -534,11 +478,6 @@ const EditProfile = () => {
                 fetchAndSetImageData(responseData.kycDetails.aadharOrVoterOrDLFront, 'ID_CARD_FRONT', 1);
                 fetchAndSetImageData(responseData.kycDetails.aadharOrVoterOrDlBack, 'ID_CARD_BACK', 1);
                 fetchAndSetImageData(responseData.kycDetails.panCardFront, 'PAN_CARD_FRONT', 1);
-
-
-
-                // console.log("<><><", SelfieData);
-                // console.log("<><<><<><>><", responseData, "<><<<><><><><><><<><");
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
@@ -551,7 +490,6 @@ const EditProfile = () => {
     }, [])
     const fetchAndSetImageData = async (uuid, imageRelated, userRole) => {
         try {
-            // setIsLoading(true)
             const response = await getFile(uuid, imageRelated, userRole);
             const imageUrl = response.url;
 
@@ -574,32 +512,20 @@ const EditProfile = () => {
                     console.warn(`Unhandled imageRelated value: ${imageRelated}`);
             }
 
-            // console.log(`Data set for ${imageRelated} (${uuid}):`, imageUrl);
             return response;
         } catch (error) {
             console.error(`Error getting file for ${imageRelated} (${uuid}):`, error);
             throw error;
         } finally {
-            // setIsLoading(false);
         }
     };
     const uploadFiles = async (fileDataArray) => {
 
-        // console.log("", IdProofFrontData);
-        // console.log("", IdProofFrontData);
-        // console.log("", SelfieData);
-        // console.log("", PanData);
-
-        // console.log("$$$$$$$$", aadharbackuuid);
-        // console.log("$$$$$$$$", aadharfrontuuid);
-        // console.log("$$$$$$$$", selfieuuid);
-        // console.log("$$$$$$$$", pancarduuid);
 
         try {
             const responses = [];
             for (const fileData of fileDataArray) {
                 const { imageRelated, file } = fileData;
-                console.log("inside api uplode files", file);
 
                 if (file) {
                     const formData = new FormData();
@@ -614,10 +540,8 @@ const EditProfile = () => {
                     formData.append('image_related', imageRelated);
                     formData.append('USER_ROLE', "1");
 
-                    //   console.log("<><><><><FROM DATA  ><><><", formData);
 
                     const response = await sendFile(formData);
-                    console.log("<><><><><FROM API GET FILE  ><><><", response);
                     responses.push(response.data);
                 }
             }
@@ -640,19 +564,16 @@ const EditProfile = () => {
 
             ];
 
-            // Filter out files with null data
             const validFilesToUpload = filesToUpload.filter(fileData => fileData.file !== null);
 
             if (validFilesToUpload.length >= 0) {
                 const responses = await uploadFiles(validFilesToUpload);
 
-                // Extract and store entityUid values in separate state variables
                 responses.forEach((response, index) => {
                     switch (validFilesToUpload[index].imageRelated) {
 
                         case 'PROFILE':
                             setselfieuuidnew(response.entityUid);
-                            console.log("just going insde ", selfieuuidnew);
                             break;
                         default:
                             break;
@@ -832,7 +753,6 @@ const EditProfile = () => {
 
         try {
             setIsLoading(true)
-            console.log("@@@@@@@@@@@@@@@@@PROFILE BODY@", profilebody);
             const resposne = await UpdateUserProfile(profilebody);
             if (resposne.code == 200) {
                 setIsPopupVisible(true);
@@ -843,7 +763,6 @@ const EditProfile = () => {
             }
             setIsPopupVisible(true);
             setPopupMessage(resposne.message);
-            console.log("@@@@@@@@@@@@@@@@@@", resposne);
 
 
 
@@ -855,7 +774,49 @@ const EditProfile = () => {
         }
     }
 
-    //  const baseurl = 'https://www.vguardrishta.com/img/appImages/Profile/';
+    const handleInputChange = (value, label) => {
+        setPostData((prevData) => {
+            let updatedValue = value;
+            return {
+                ...prevData,
+                [label]: updatedValue,
+            };
+        });
+    };
+
+    const genderpickerItems = [
+        { label: 'Male', value: 'Male ' },
+        { label: 'Female', value: 'Female ' },
+        { label: 'Other', value: 'Other ' },
+    ];
+
+    const selectYesorNo = [
+        { label: 'Yes', value: 'Yes' },
+        { label: 'No', value: 'No' },
+    ];
+
+    const maritalStatusData = [
+        { label: 'Married', value: 'Married' },
+        { label: 'Unmarried', value: 'Unmarried' },
+    ];
+
+    const handleImageChange = async (image, imageName, apiResponse, label) => {
+
+        try {
+            if (label == "Id Proof* (Front)") {
+                setIdFrontUid(apiResponse.data.entityUid);
+            }
+            else if (label == "Id Proof* (Back)") {
+                setIdBackUid(apiResponse.data.entityUid);
+            }
+            else if (label == "Selfie") {
+                setSelfie(apiResponse.data.entityUid);
+            }
+        } catch (error) {
+            console.error('Error handling image change in EditProfile:', error);
+        }
+    };
+
     return (
         <><ScrollView style={styles.mainWrapper}>
             {isLoading == true ? <View style={{ flex: 1 }}>
@@ -881,472 +842,240 @@ const EditProfile = () => {
             </View>
             {/* <View style={{ backgroundColor: 'red', height: height, flexDirection: 'column', justifyContent: 'space-around', padding: 10 }}> */}
             <View style={{ flexDirection: 'column', justifyContent: 'space-around', }}>
-                <FloatingLabelInput
+                <InputField
                     label={t('strings:lbl_preferred_language')}
-                    staticLabel
-                    maxLength={30}
-                    editable={false}
                     value={form1.preferedLanguage}
-                    // onChangeText={(text) => setSelectedLanguage(text)}
-                    keyboardType='default'
-
-                    containerStyles={styles.input}
-                    labelStyles={styles.labelStyles}
-                    inputStyles={styles.inputStyle}
+                    disabled={true}
                 />
-                <FloatingLabelInput
+                <InputField
                     label={t('strings:name')}
                     value={form1.name}
-                    keyboardType="default"
-                    //   onChangeText={value => setname(value)}
-                    staticLabel
-                    containerStyles={styles.input}
-                    labelStyles={styles.labelStyles}
-                    inputStyles={{
-                        color: 'black',
-                        paddingHorizontal: 15,
-                        paddingVertical: 10,
-                    }} />
-
-                <Text style={{ color: 'black', marginLeft: 24, }}>{t('strings:lbl_gender_mandatory')}</Text>
-
-                <View style={styles.input}>
-                    <Picker
-                        mode='dropdown'
-                        style={{ color: 'black' }}
-                        selectedValue={form1.gender}
-                        onValueChange={(itemValue, itemIndex) => {
-                            // console.log("Selected Value: ", itemValue)
-                            handleFieldChange("gender", gender)
-                        }}>
-                        <Picker.Item label="Select Gender*" value="" />
-                        <Picker.Item label="Male" value="Male" />
-                        <Picker.Item label="Female" value="Female " />
-                        <Picker.Item label="Other" value="Other" />
-                    </Picker>
-
-                </View>
-
-                <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_date_of_birth_mandatory')}</Text>
-                <View style={{
-                    flexDirection: 'row',
-
-                    borderWidth: 2,
-
-                    borderColor: '#D3D3D3',
-                    borderRadius: 10,
-
-                    justifycontent: 'space-between',
-                    margin: 10,
-                    // justifycontent: 'Space-between',
-                    backgroundColor: '#fff',
-                    height: height / 13.5,
-                }}>
-
+                    disabled={true}
+                />
+                <PickerField
+                    label={t('strings:lbl_gender_mandatory')}
+                    disabled={false}
+                    selectedValue={form1.gender}
+                    onValueChange={(text) => handleFieldChange("gender", text)}
+                    items={genderpickerItems}
+                />
+                {/* <DatePickerField
+                    label={t('strings:lbl_date_of_birth_mandatory')}
+                    date={form1.dateofbirth
+                        ? form1.dateofbirth.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+                        : ''}
+                    onDateChange={(text) => handleDateChange(text)}
+                /> */}
+                <Text style={{ color: colors.black, marginLeft: 2, marginBottom: 2, fontWeight: 'bold', fontSize: responsiveFontSize(1.5) }}>{t('strings:lbl_date_of_birth_mandatory')}</Text>
+                <View style={styles.datepickerview}>
                     <DatePicker
                         date={form1.dateofbirth}
                         onDateChange={handleDateChange}
                         showDatePicker={showDatePicker}
                         onShowDatePicker={handleShowDatePicker} />
-                    <Icon name="keyboard-o" size={25} color="grey" style={{ margin: 18, left: width / 2, postion: 'relative' }} />
-
-
+                    <Icon name="keyboard-o" size={20} color="grey" style={{ left: width / 2, postion: 'relative' }} />
                 </View>
-
-                <FloatingLabelInput
-
-                    label={t('strings:contact_no')}
-                    value={form1.number}
-
-                    keyboardType='number-pad'
-                    editable={false}
-                    maxLength={10}
-                    staticLabel
-                    containerStyles={styles.input}
-                    labelStyles={styles.labelStyles}
-                    inputStyles={styles.inputStyle} />
-                <FloatingLabelInput
-                    label={t('strings:_is_what_s_app_contact_same_as_above')}
-                    maxLength={10}
+                <InputField
+                    label={t('strings:whatsapp_no')}
                     value={form1.WhatappNo}
-                    onChangeText={(text) => handleFieldChange('WhatappNo', text)}
-                    keyboardType='number-pad'
-                    staticLabel
-                    containerStyles={styles.input}
-                    labelStyles={styles.labelStyles}
-                    inputStyles={styles.inputStyle} />
-                <FloatingLabelInput
+                    keyboardType="numeric"
+                    onChangeText={(text) => handleFieldChange("WhatappNo", text)}
+                />
+                <InputField
+                    label={t('strings:lbl_contact_number_mandatory')}
+                    value={form1.number}
+                    keyboardType="numeric"
+                    onChangeText={(text) => handleFieldChange(text, 'number')}
+                />
+                <InputField
                     label={t('strings:email')}
-                    keyboardType='email-address'
                     value={form1.email}
-                    onChangeText={(text) => handleFieldChange("email", text)}
-                    staticLabel
-                    containerStyles={styles.input}
-                    labelStyles={styles.labelStyles}
-                    inputStyles={styles.inputStyle} />
-                <Text>Permanent Address</Text>
-                <FloatingLabelInput
-
+                    onChangeText={(text) => handleFieldChange(text, 'email')}
+                />
+                <InputField
                     label={t('strings:lbl_permanent_address_mandatory')}
-                    editable={false}
-
-                    keyboardType='default'
-                    maxLength={128}
                     value={form1.parmanentaddress}
-                    staticLabel
-                    // onChangeText={(text) => setaddress(text)}
-                    containerStyles={styles.input}
-                    labelStyles={styles.labelStyles}
-                    inputStyles={styles.inputStyle} />
-                <FloatingLabelInput
-                    editable={false}
+                    disabled={true}
+                />
+                <InputField
                     label={t('strings:lbl_street_locality')}
-                    maxLength={128}
-                    keyboardType='default'
                     value={form1.permanantStreet}
-                    // onChangeText={(text) => setstreet(text)}
-                    containerStyles={styles.input}
-                    staticLabel
-                    labelStyles={styles.labelStyles}
-                    inputStyles={styles.inputStyle}
+                    disabled={true}
                 />
-                <FloatingLabelInput
-                    editable={false}
+                <InputField
                     label={t('strings:lbl_landmark')}
-
-                    staticLabel
-                    maxLength={60}
-                    keyboardType='default'
-                    value={form1.permanantlandmark} // Set the value of the input to the 'text' state
-
-                    // onChangeText={(text) => setlandmark(text)}
-                    containerStyles={styles.input}
-                    labelStyles={styles.labelStyles}
-                    inputStyles={styles.inputStyle}
+                    value={form1.permanantlandmark}
+                    disabled={true}
                 />
-
-                <FloatingLabelInput
-                    editable={false}
-                    containerStyles={styles.input}
-                    label={t('strings:select_city')}
-
-                    keyboardType="default"
+                <InputField
+                    label={t('strings:lbl_city_mandatory')}
                     value={form1.permanantcity}
-                    //   onChangeText={(text) => [setSelectedState(text),
-                    //   setOpen(true)]}
-                    staticLabel
-                    labelStyles={styles.labelStyles}
-                    inputStyles={styles.inputStyle}
+                    disabled={true}
                 />
-
-                <FloatingLabelInput
-                    containerStyles={styles.input}
-                    editable={false}
-                    label={t('strings:select_district')}
-                    keyboardType="default"
+                <InputField
+                    label={t('strings:district')}
                     value={form1.permanentdistrict}
-                    //   onChangeText={(text) => [setSelectedState(text),
-                    //   setOpen(true)]}
-                    staticLabel
-                    labelStyles={styles.labelStyles}
-                    inputStyles={styles.inputStyle}
+                    disabled={true}
                 />
-                <FloatingLabelInput
-                    editable={false}
-                    containerStyles={styles.input}
+                <InputField
                     label={t('strings:select_state')}
-
-                    keyboardType="default"
                     value={form1.permanentstate}
-                    //  onChangeText={(text) => setSelectedState(text)},
-                    //   setOpen(true)]}
-                    staticLabel
-                    labelStyles={styles.labelStyles}
-                    inputStyles={{
-                        color: 'grey',
-                        paddingHorizontal: 15,
-                    }} />
-                <FloatingLabelInput
-                    containerStyles={styles.input}
-                    label={t('auth:newuser:Secondpagepincode')}
-
-                    keyboardType="default"
-                    value={form1.pincode}
-                    //   onChangeText={(text) => [setSelectedState(text),
-                    //   setOpen(true)]}
-                    staticLabel
-                    labelStyles={styles.labelStyles}
-                    inputStyles={styles.inputStyle}
+                    disabled={true}
                 />
+                <InputField
+                    label={t('strings:pincode')}
+                    value={form1.pincode}
+                    disabled={true}
+                />
+                <PickerField
+                    label={t('strings:is_current_address_different')}
+                    disabled={false}
+                    selectedValue={form2.currentaddressselections}
+                    onValueChange={(itemValue, itemIndex) => {
+                        handlefiledChangeform2("currentaddressselections", itemValue)
 
-                <Text style={{ color: 'black', marginLeft: 15, margin: 5, color: "grey", fontSize: responsiveFontSize(1.8) }}>{t('strings:is_current_address_different')}</Text>
-
-                <View style={styles.input}>
-                    <Picker
-                        mode='dropdown'
-                        style={{ color: 'black' }}
-                        selectedValue={form2.currentaddressselections}
-                        onValueChange={(itemValue, itemIndex) => {
-                            handlefiledChangeform2("currentaddressselections", itemValue)
-
-                            if (itemValue == 'No') {
-                                handlefiledChangeform2("currentaddressselections", itemValue);
-                                handlefiledChangeform2("curremtaddress", "");
-                                handlefiledChangeform2("curretnstreet", "");
-                                handlefiledChangeform2("currentlandmark", "");
-                                handlefiledChangeform2("currentpincode", "");
-                                handlefiledChangeform2("currentCity", "");
-                                handlefiledChangeform2("currentdistrict", "");
-                                handlefiledChangeform2("currentstate", "");
-                            }
-                            if (itemValue == 'Yes') {
-                                handlefiledChangeform2("form2.currentaddressselections", form2.currentaddressselections);
-                                handlefiledChangeform2("curremtaddress", form1.parmanentaddress);
-                                handlefiledChangeform2("curretnstreet", form1.permanantStreet);
-                                handlefiledChangeform2("currentlandmark", form1.permanantlandmark);
-                                handlefiledChangeform2("currentpincode", form1.permanentpincode);
-                                handlefiledChangeform2("currentCity", form1.permanantcity);
-                                handlefiledChangeform2("currentdistrict", form1.permanentdistrict);
-                                handlefiledChangeform2("currentstate", form1.permanentstate);
-                            }
-                        }}
-                    >
-                        <Picker.Item label="Select" value="Select" />
-                        <Picker.Item label="Yes" value="Yes" />
-                        <Picker.Item label="No" value="No" />
-                    </Picker>
-                </View>
+                        if (itemValue == 'No') {
+                            handlefiledChangeform2("currentaddressselections", itemValue);
+                            handlefiledChangeform2("curremtaddress", "");
+                            handlefiledChangeform2("curretnstreet", "");
+                            handlefiledChangeform2("currentlandmark", "");
+                            handlefiledChangeform2("currentpincode", "");
+                            handlefiledChangeform2("currentCity", "");
+                            handlefiledChangeform2("currentdistrict", "");
+                            handlefiledChangeform2("currentstate", "");
+                        }
+                        if (itemValue == 'Yes') {
+                            handlefiledChangeform2("form2.currentaddressselections", form2.currentaddressselections);
+                            handlefiledChangeform2("curremtaddress", form1.parmanentaddress);
+                            handlefiledChangeform2("curretnstreet", form1.permanantStreet);
+                            handlefiledChangeform2("currentlandmark", form1.permanantlandmark);
+                            handlefiledChangeform2("currentpincode", form1.permanentpincode);
+                            handlefiledChangeform2("currentCity", form1.permanantcity);
+                            handlefiledChangeform2("currentdistrict", form1.permanentdistrict);
+                            handlefiledChangeform2("currentstate", form1.permanentstate);
+                        }
+                    }}
+                    items={selectYesorNo}
+                />
 
                 {form2.currentaddressselections == 'select' || form2.currentaddressselections == 'Yes' ? <></> : <>
-                    <FloatingLabelInput
-                        label="Current House Flat/block no"
-                        editable={form2.currentaddressselections === 'No'}
-                        keyboardType='default'
+                    <InputField
+                        label={t('strings:lbl_current_address_mandatory')}
                         value={form2.curremtaddress}
                         onChangeText={(text) => handlefiledChangeform2("curremtaddress", text)}
-                        containerStyles={styles.input}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={styles.inputStyle}
+                        disabled={form2.currentaddressselections === 'Yes'}
                     />
-                    <FloatingLabelInput
-                        editable={form2.currentaddressselections == 'No'}
-                        label="Current Street/ Colony/Locality Name *"
-                        keyboardType='default'
+                    <InputField
+                        label={t('strings:lbl_street_locality')}
                         value={form2.curretnstreet}
                         onChangeText={(text) => handlefiledChangeform2("curretnstreet", text)}
-                        containerStyles={styles.input}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={styles.inputStyle}
-
+                        disabled={form2.currentaddressselections === 'Yes'}
                     />
-                    <FloatingLabelInput
-
-                        editable={form2.currentaddressselections == 'No'}
-                        label="Landmark"
-                        keyboardType='default'
+                    <InputField
+                        label={t('strings:lbl_landmark')}
                         value={form2.currentlandmark}
                         onChangeText={(text) => handlefiledChangeform2("currentlandmark", text)}
-                        containerStyles={styles.input}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={styles.inputStyle}
+                        disabled={form2.currentaddressselections === 'Yes'}
+                    />
+                    <InputField
+                        label={t('strings:lbl_pin_code_mandatory')}
+                        value={form2.currentpincode}
+                        onChangeText={(text) => handlefiledChangeform2("currentpincode", text)}
+                        disabled={form2.currentaddressselections === 'Yes'}
+                    />
+                    <InputField
+                        label={t('strings:lbl_state')}
+                        value={form2.currentstate}
+                        onChangeText={(text) => handlefiledChangeform2("currentstate", text)}
+                        disabled={form2.currentaddressselections === 'Yes'}
+                    />
+                    <InputField
+                        label={t('strings:district')}
+                        value={form2.currentdistrict}
+                        onChangeText={(text) => handlefiledChangeform2("currentdistrict", text)}
+                        disabled={form2.currentaddressselections === 'Yes'}
+                    />
+                    <InputField
+                        label={t('strings:city')}
+                        value={form2.currentCity}
+                        onChangeText={(text) => handlefiledChangeform2("currentCity", text)}
+                        disabled={form2.currentaddressselections === 'Yes'}
                     />
                 </>}
-                {form2.currentaddressselections == 'Yes' ? <></>
-                    :
-                    <>
-                        <DropDownPicker
-                            mode="BADGE"
-                            showBadgeDot={true}
-                            searchable={true}
-                            loading={isLoading}
-                            label={value}
-                            placeholder={form2.currentpincode == "" ? 'Search Pincode' : `Searched Pincode: ${form2.currentpincode}`}
-                            searchablePlaceholder="Search Pincode"
-                            translation={t('auth:newuser:Secondpagepincode')}
-                            // placeholder={value}
-                            searchTextInputProps={{
-                                maxLength: 6
-                            }}
-                            badgeStyle={(item, index) => ({
-                                padding: 5,
-                                backgroundColor: item.value ? 'red' : 'grey',
-                            })}
-                            badgeProps={{
-                                activeOpacity: 1.5
-                            }}
+                <PickerField
+                    label={t('strings:select_profession')}
+                    disabled={false}
+                    selectedValue={form2.profession}
+                    onValueChange={(itemValue, itemIndex) => handlefiledChangeform2("profession", itemValue)}
+                    items={professiondatanames}
+                />
 
-                            badgeSeparatorStyle={{
-                                width: 30,
-                            }}
-                            badgeColors={['red']}
-                            badgeDotColors={['red']}
-                            listMode="SCROLLVIEW"
-                            scrollViewProps={{ nestedScrollEnabled: true, decelerationRate: "fast" }}
-                            open={open}
-                            value={form2.currentpincode}
-                            items={suggestions.map((item) => ({
-                                label: item.pinCode,
-                                value: item.pinCode,
-                            }))}
-                            setOpen={setOpen}
-                            // value={form2.currentpincode}
-                            onChangeValue={(item) => {
-                                //  handlefiledChangeform2("currentpincode", item.value)
-                                setpincode(item)
+                <PickerField
+                    label={t('strings:select_marital_status')}
+                    disabled={false}
+                    selectedValue={form2.martialStatus}
+                    onValueChange={(itemValue, itemIndex) => {
+                        const maritialStatusId = itemValue === "Married" ? '1' : '2';
+                        handlefiledChangeform2("martialStatus", itemValue)
 
-                            }}
-                            onChangeSearchText={(text) => pincodefunction(text)}
-                            dropDownContainerStyle={{
-                                width: width / 1.2,
-                                height: height / 5,
-                                padding: 10,
-                                left: 14,
-                                borderRadius: 5,
-                                borderWidth: 0,
-                                elevation: 0,
-                                backgroundColor: '#D3D3D3'
-                            }}
-                            style={{
+                        setmaritialstatusId(maritialStatusId);
+                    }}
+                    items={maritalStatusData}
+                />
+                <PickerField
+                    label={t('strings:already_enrolled_into_loyalty_scheme')}
+                    disabled={false}
+                    selectedValue={form2.alreadyenrolled}
+                    onValueChange={(itemValue, itemIndex) => handlefiledChangeform2("alreadyenrolled", itemValue)}
+                    items={selectYesorNo}
+                />
 
-                                backgroundColor: 'white',
-                                elevation: 50,
-                                opacity: 0.9,
-                                borderWidth: 1.5,
-                                borderColor: "#D3D3D3",
-                                width: width / 1.2,
-                                height: height / 13,
-                                alignSelf: 'center',
-                                bottom: 10,
-                                elevation: 0,
-                                margintop: 50,
-                                margin: 20,
-                            }} />
-
-                        <FloatingLabelInput
-
-                            editable={form2.currentaddressselections == 'No'}
-                            label="District"
-                            keyboardType='default'
-                            value={form2.currentdistrict}
-                            onChangeText={(text) => handlefiledChangeform2("currentdistrict", text)}
-                            containerStyles={styles.input}
-                            staticLabel
-                            labelStyles={styles.labelStyles}
-                            inputStyles={styles.inputStyle}
-                        />
-                        <FloatingLabelInput
-
-                            editable={form2.currentaddressselections == 'No'}
-                            label="State Name"
-                            keyboardType='default'
-                            value={form2.currentstate}
-                            onChangeText={(text) => handlefiledChangeform2("currentstate", text)}
-                            containerStyles={styles.input}
-                            staticLabel
-                            labelStyles={styles.labelStyles}
-                            inputStyles={styles.inputStyle}
-                        />
-
-                        <Text style={{ color: 'black', left: 20, marginBottom: 2 }}>{t('strings:select_city')}</Text>
-                        <View style={styles.input}>
-                            <Picker
-                                mode='model'
-                                style={{ color: 'black' }}
-                                selectedValue={form2.currentCity}
-                                onValueChange={(itemValue, itemIndex) => {
-                                    const selectedItem = citylistpicker[itemIndex];
-                                    handlefiledChangeform2("currentCity", itemValue);
-                                    handlefiledChangeform2("currentcityid", selectedItem.id);
-                                }}>
-
-                                {Array.isArray(citylistpicker) && citylistpicker.length >= 0 ? (
-                                    citylistpicker.map(item => (
-                                        <Picker.Item
-                                            key={item.id}
-                                            label={item.cityName}
-                                            value={item.cityName}
-                                        />
-                                    ))
-                                ) : (
-
-                                    <Picker.Item label={form2.currentCity} value={form2.currentCity} />
-
-
-                                )}
-                            </Picker>
-                        </View>
-
-                    </>
-
-
-                }
-                <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:select_profession')}</Text>
-                <View style={styles.input}>
-
-                    <Picker
-                        mode='dropdown'
-                        style={{ color: 'black' }}
-                        selectedValue={form2.profession}
-                        onValueChange={(itemValue, itemIndex) => handlefiledChangeform2("profession", itemValue)}
-                    >
-                        <Picker.Item label="Select" value="" />
-                        {professiondata.map(item => (
-                            <Picker.Item key={item.professionId} label={item.professionName} value={item.professionName} />
-                        ))}
-
-                    </Picker>
-
-                </View>
-
-                <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:select_marital_status')}</Text>
-                <View style={styles.input}>
-                    <Picker
-                        mode='dropdown'
-                        style={{ color: 'black' }}
-                        selectedValue={form2.martialStatus}
-                        onValueChange={(itemValue, itemIndex) => {
-                            const maritialStatusId = itemValue === "Married" ? '1' : '2';
-                            handlefiledChangeform2("martialStatus", itemValue)
-
-                            setmaritialstatusId(maritialStatusId);
-                        }}
-                    >
-                        <Picker.Item label="Select" value="" />
-                        <Picker.Item label="Married" value="1" />
-                        <Picker.Item label=" Unmarried" value="2" />
-
-
-                    </Picker>
-                </View>
-
-                <FloatingLabelInput
-                    label="Annual business potential*"
+                {form2.alreadyenrolled ?
+                    <View>
+                        {form2.alreadyenrolled == "Yes" &&
+                            schemes.map((scheme, index) => (
+                                <View key={index} style={styles.schemeContainer}>
+                                    <InputField
+                                        label={`Scheme ${index + 1} Brand Name`}
+                                        value={schemeData[index + 1].otherSchemeBrand}
+                                        onChangeText={(text) => handleInputChangeschemes(index + 1, `otherSchemeBrand`, text)}
+                                    />
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <View style={{ flex: 1 }}>
+                                            <InputField
+                                                label={`Reason for liking Scheme ${index + 1}`}
+                                                value={schemeData[index + 1].abtOtherSchemeLiked}
+                                                onChangeText={(text) => handleInputChangeschemes(index + 1, `abtOtherSchemeLiked`, text)}
+                                            />
+                                        </View>
+                                        <IconButton style={styles.iconButton} icon="plus" size={20} onPress={handleIconButtonPress} />
+                                    </View>
+                                </View>
+                            ))}
+                    </View> : null}
+                <InputField
+                    label={t('strings:annual_business_potential')}
                     value={form2.annualbusiness.toString()}
                     onChangeText={(text) => handlefiledChangeform2("annualbusiness", text)}
-                    keyboardType='number-pad'
-                    containerStyles={[styles.input]}
-                    staticLabel
-                    labelStyles={styles.labelStyles}
-                    inputStyles={styles.inputStyle}
-                    // onBlur={handleAadharBlur}
-                    maxLength={12} />
-
-
-                <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:lbl_update_your_selfie')}</Text>
+                    keyboardType="numeric"
+                />
+                {/* <ImagePickerField label='Selfie'
+                    onImageChange={handleImageChange}
+                    setImageData={() => setPostDataOfImage('kycDetails?.selfie', selfie)}
+                    imageRelated='PROFILE'
+                /> */}
+                <Text style={{ color: colors.black, marginLeft: 2, marginBottom: 2, fontWeight: 'bold' }}>{t('strings:lbl_update_your_selfie')}</Text>
                 <View style={styles.imagecontainereditprofile}>
                     <View
                         style={styles.imagepicker}
                     >
                         {SelfieData === null ?
                             <TouchableOpacity onPress={() => setselfieemodal(true)}>
-                                <><Text style={{ color: 'black', top: 15 }}>Update your selfie*</Text></>
+                                <><Text style={{ color: colors.black, top: 15, fontWeight: 'bold' }}>Update your selfie*</Text></>
                             </TouchableOpacity> :
-                            <TouchableOpacity onPress={() => setselfieemodal(true)} color={'grey'} style={{ width: width / 1.8, margin: 5 }}>
+                            <TouchableOpacity onPress={() => setselfieemodal(true)} color={colors.grey} style={{ width: width / 1.8, margin: 5 }}>
                                 <View>
-                                    <Text style={{ color: "#D3D3D3", marginTop: 10, width: width / 5 }}>Selfie</Text>
+                                    <Text style={{ color: colors.grey, marginTop: 10, width: width / 5 }}>Selfie</Text>
                                 </View>
 
                             </TouchableOpacity>}
@@ -1360,7 +1089,7 @@ const EditProfile = () => {
                             <View style={{
                                 width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
                                 margin: 20,
-                                backgroundColor: '#D3D3D3',
+                                backgroundColor: colors.grey,
                                 borderRadius: 20,
                                 padding: 10,
                                 // alignItems: 'center',
@@ -1376,7 +1105,7 @@ const EditProfile = () => {
                                 <Picker
                                     mode="dropdown"
                                     placeholder={'Update Your Selfie *'}
-                                    style={{ color: 'black' }}
+                                    style={{ color: colors.black }}
                                     selectedValue={select}
                                     onValueChange={(itemValue, itemIndex) => {
                                         if (itemValue === "Open camera") {
@@ -1404,285 +1133,117 @@ const EditProfile = () => {
                                 </Button>
                             </View>
                         </Modal>
-
-
-
-
-
                     </View>
-
                     <ImageWithModal imageUri={SelfieData} style={styles.noimagepicker} />
-
-
-
-
-
-
-
-                </View>
-                <Text style={{ color: 'black', marginLeft: 24, marginBottom: 5 }}>{t('strings:already_enrolled_into_loyalty_scheme')}</Text>
-
-                <View style={styles.input}>
-
-
-                    <Picker
-                        style={{ color: 'black' }}
-                        selectedValue={form2.alreadyenrolled}
-                        onValueChange={(itemValue, itemIndex) => handlefiledChangeform2("alreadyenrolled", itemValue)}
-                    >
-                        <Picker.Item label="Select" value="Select" />
-                        <Picker.Item label="Yes" value="Yes" />
-                        <Picker.Item label=" No" value="No" />
-
-
-
-                    </Picker>
-
                 </View>
 
-                {form2.alreadyenrolled == "Yes" ?
-                    <View>
-                        {form2.alreadyenrolled == "Yes" &&
-                            schemes.map((scheme, index) => (
-                                <View key={index} style={styles.schemeContainer}>
-                                    <FloatingLabelInput
-                                        label={`Scheme ${index + 1} Brand Name`}
-                                        value={schemeData[index + 1].otherSchemeBrand}
-                                        onChangeText={(text) => handleInputChangeschemes(index + 1, `otherSchemeBrand`, text)}
-                                        keyboardType="default"
-                                        containerStyles={styles.input}
-                                        staticLabel
-                                        labelStyles={styles.labelStyles}
-                                        inputStyles={{
-                                            color: 'black',
-                                            paddingHorizontal: 10,
-                                        }}
-                                    />
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <FloatingLabelInput
-                                            label={`Reason for liking Scheme ${index + 1}`}
-                                            value={schemeData[index + 1].abtOtherSchemeLiked}
-                                            onChangeText={(text) => handleInputChangeschemes(index + 1, `abtOtherSchemeLiked`, text)}
-                                            keyboardType="default"
-                                            containerStyles={styles.input}
-                                            staticLabel
-                                            labelStyles={styles.labelStyles}
-                                            inputStyles={{
-                                                color: 'black',
-                                                paddingHorizontal: 10,
-                                            }}
-                                        />
-                                        <IconButton style={styles.iconButton} icon="plus" size={20} onPress={handleIconButtonPress} />
-                                    </View>
-                                </View>
-                            ))}
-                    </View> : null}
+                
 
 
-                <FloatingLabelInput
+                {/* <InputField
+                    label={t('strings:id_proof_type')}
+                    value={kycTypes}
+                    disabled={true}
+                /> */}
+                <PickerField
+                    label={t('strings:id_proof_type')}
+                    disabled={true}
+                    selectedValue={form2.IdProoftype.toString()}
+                    items={kycTypes}
+                />
+                {/* <ImagePickerField label={t('strings:update_aadhar_voter_id_dl_front')}
+                    onImageChange={handleImageChange}
+                    setImageData={() => setPostDataOfImage('kycDetails?.selfie', selfie)}
+                    imageRelated='PROFILE'
+                    disabled={true}
+                />
+                <ImagePickerField label={t('strings:update_aadhar_voter_id_dl_back')}
+                    onImageChange={handleImageChange}
+                    setImageData={() => setPostDataOfImage('kycDetails?.selfie', selfie)}
+                    imageRelated='PROFILE'
+                    disabled={true}
+                /> */}
 
-                    label="ID Proof type"
-                    // value={aadharcardno}
-                    // onChangeText={(text) => setaadharcardno(text)}
-                    keyboardType='number-pad'
-                    editable={false}
-
-                    containerStyles={[styles.input]}
-                    staticLabel
-                    labelStyles={styles.labelStyles}
-                    inputStyles={{
-                        // color: isAadharValid ? 'black' : 'red',
-                        paddingHorizontal: 15,
-                    }}
-                    // onBlur={handleAadharBlur}
-                    maxLength={12} />
-
-                <Text style={{ color: 'black', marginLeft: 24, marginBottom: 2 }}>{t('strings:update_aadhar_voter_id_dl_front')}</Text>
+                <Text style={{ color: colors.black, marginLeft: 24, marginBottom: 2 }}>{t('strings:update_aadhar_voter_id_dl_front')}</Text>
                 <View style={styles.imagecontainereditprofile}>
-                    <Text style={{ color: '#D3D3D3', }}>IdProof*(Front)</Text>
+                    <Text style={{ color: colors.grey, }}>IdProof*(Front)</Text>
                     {Idcardfront != null ? <ImageWithModal imageUri={Idcardfront} style={styles.noimagepicker} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={styles.noimagepicker} />}
                 </View>
-                <Text style={{ color: 'black', marginLeft: 24, marginTop: 5 }}>{t('strings:update_aadhar_voter_id_dl_back')}</Text>
+                <Text style={{ color: colors.black, marginLeft: 24, marginTop: 5 }}>{t('strings:update_aadhar_voter_id_dl_back')}</Text>
                 <View style={styles.imagecontainereditprofile}>
-                    <Text style={{ color: '#D3D3D3', }}>IdProof*(Front)</Text>
+                    <Text style={{ color: colors.grey, }}>IdProof*(Front)</Text>
                     {Idcardback != null ? <ImageWithModal imageUri={Idcardback} style={styles.noimagepicker} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={styles.noimagepicker} />}
                 </View>
 
-                <FloatingLabelInput
-
-                    label={t('strings:update_aadhar_voter_id_dl_manually')}
+                <InputField
+                    label={t('strings:id_proof_no')}
                     value={form2.idproofnumber}
-                    onChangeText={(text) => handlefiledChangeform2("idproofnumber", text)}
-                    keyboardType='number-pad'
-                    editable={false}
-                    containerStyles={[styles.input]}
-                    staticLabel
-                    labelStyles={styles.labelStyles}
-                    inputStyles={{
-                        // color: isAadharValid ? 'black' : 'red',
-                        paddingHorizontal: 15,
-                    }}
-                    // onBlur={handleAadharBlur}
-                    maxLength={12} />
-
-
-                <Text style={{ color: 'black', marginLeft: 24, marginBottom: 12 }}>{t('strings:update_pan_card_front')}</Text>
+                    disabled={true}
+                />
+                {/* <ImagePickerField label={t('strings:update_pan_card_front')}
+                    imageRelated='PROFILE'
+                    disabled={true}
+                /> */}
+                <Text style={{ color: colors.black, marginLeft: 24, marginBottom: 12 }}>{t('strings:update_pan_card_front')}</Text>
                 <View style={styles.imagecontainereditprofile}>
-                    <Text style={{ color: '#D3D3D3', }}>Pan Card(Front)</Text>
+                    <Text style={{ color: colors.grey}}>{t('strings:pan_card_front')}</Text>
                     {pancarddata != null ? <ImageWithModal imageUri={pancarddata} style={{ marginBottom: 10 }} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={styles.noimagepicker} />}
                 </View>
-
-                <FloatingLabelInput
-
-                    label={t('strings:update_pan_number_manually')}
-
+                <InputField
+                    label={t('strings:pan_no')}
                     value={form2.pancard}
-                    onChangeText={(text) => handlefiledChangeform2("pancard", text)}
-                    keyboardType='number-pad'
+                    disabled={true}
+                />
 
-                    containerStyles={[styles.input]}
-                    staticLabel
-                    labelStyles={styles.labelStyles}
-                    inputStyles={{
-                        // color: isAadharValid ? 'black' : 'red',
-                        paddingHorizontal: 15,
-                    }}
-                    // onBlur={handleAadharBlur}
-                    maxLength={12} />
-
-                <View style={{ marginTop: 30 }}>
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
-                        label={t('strings:lbl_name_of_nominee')}
-
-
-                        keyboardType='default'
-                        value={nominee.nomineename}
-                        onChangeText={(text) => handlefiledchnage3("nomineename", text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 15,
-                        }} />
-                    <Text style={{ color: 'black', marginLeft: 20, }}>{t('auth:newuser:NomineeeDob')}</Text>
-                    <View style={{
-                        flexDirection: 'row',
-
-                        borderWidth: 2,
-
-                        borderColor: '#D3D3D3',
-                        borderRadius: 10,
-
-
-                        margin: 10,
-                        justifycontent: 'Space-between',
-                        backgroundColor: '#fff',
-                        height: height / 13.5,
-                    }}>
-
-
-                        <DatePicker
-                            date={nominee.nomineedateofbirth}
-                            onDateChange={handleDateChange2}
-                            showDatePicker={showDatePicker1}
-                            onShowDatePicker={handleShowDatePicker1} />
-                        <Icon name="keyboard-o" size={20} color="grey" style={{ margin: 18, left: width / 2, postion: 'relative' }} />
-
-                    </View>
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:lbl_mobile_number')}
-                        keyboardType='number-pad'
-                        value={nominee.nomineenumber}
-                        onChangeText={(text) => handlefiledchnage3("nomineenumber", text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 15,
-                        }}
-                        maxLength={10} />
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label={t('strings:lbl_email')}
-                        keyboardType='email-address'
-                        value={nominee.nomineemail}
-                        onChangeText={(text) => handlefiledchnage3("nomineemail", text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 15,
-                        }} />
-
-
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-
-                        label={t('strings:lbl_address')}
-
-
-                        keyboardType='email-address'
-                        value={nominee.nomineeaddress}
-                        onChangeText={(text) => handlefiledchnage3("nomineeaddress", text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={{
-                            color: 'black',
-                            paddingHorizontal: 15,
-                        }} />
-
-                    <FloatingLabelInput
-                        containerStyles={styles.input}
-                        label="Relatioship with you"
-                        keyboardType='default'
-                        value={nominee.nomineerealtionship}
-                        onChangeText={(text) => handlefiledchnage3("nomineerealtionship", text)}
-                        staticLabel
-                        labelStyles={styles.labelStyles}
-                        inputStyles={styles.inputStyle} />
-                    <View style={{ height: height / 15 }}></View>
+                <Text style={{ color: colors.black, fontSize: responsiveFontSize(2), marginBottom: 10 }}>{t('strings:lbl_nominee_details')}</Text>
+                <InputField
+                    label={t('strings:lbl_name_of_nominee')}
+                    value={form2.nomineename}
+                    onChangeText={(text) => handlefiledchnage3("nomineename", text)}
+                />
+                {/* <DatePickerField
+                    label={t('strings:lbl_date_of_birth_mandatory')}
+                    date={form2.nomineedateofbirth}
+                    onDateChange={handleDateChange2}
+                /> */}
+                <Text style={{ color: colors.black, marginLeft: 2, marginBottom: 2, fontWeight: 'bold', fontSize: responsiveFontSize(1.5) }}>{t('strings:lbl_date_of_birth_mandatory')}</Text>
+                <View style={styles.datepickerview}>
+                    <DatePicker
+                        date={nominee?.nomineedateofbirth}
+                        onDateChange={handleDateChange2}
+                        showDatePicker={showDatePicker1}
+                        onShowDatePicker={handleShowDatePicker1} />
+                    <Icon name="keyboard-o" size={20} color="grey" style={{ left: width / 2, postion: 'relative' }} />
                 </View>
-
+                <InputField
+                    label={t('strings:lbl_mobile_number')}
+                    value={nominee.nomineenumber}
+                    onChangeText={(text) => handlefiledchnage3("nomineenumber", text)}
+                    keyboardType="numeric"
+                />
+                <InputField
+                    label={t('strings:lbl_email')}
+                    value={nominee.nomineemail}
+                    onChangeText={(text) => handlefiledchnage3("nomineemail", text)}
+                />
+                <InputField
+                    label={t('strings:lbl_address')}
+                    value={nominee.nomineeaddress}
+                    onChangeText={(text) => handlefiledchnage3("nomineeaddress", text)}
+                />
+                <InputField
+                    label={t('strings:lbl_relationship_with_you')}
+                    value={nominee.nomineerealtionship}
+                    onChangeText={(text) => handlefiledchnage3("nomineerealtionship", text)}
+                />
+                <View style={{ marginTop: 30 }}>
+                </View>
             </View>
-            {/* <View style={{ backgroundColor: "yellow", position: 'absolute', top: 3100 }}> */}
-            {/* <Buttons
-        label="Submit"
-        onPress={() => {
-            // Check if the data is valid before navigating
-            //  navigation.navigate('NewUserKyc', { userData: userData })
-            // validateAndNavigate('male', email, number, address, street, pincode, selectedState, selectedDistrict, selectedCity,);
-            //validateAndNavigate()
-            // callUploadAndThenAnotherFunction();
-        }}
-        variant="filled" // or any other variant you want to use
-        width={width / 1} // specify the width
-        icon={require('../../../assets/images/arrow.png')} // provide the path to your icon
-        iconWidth={50} // specify the icon width
-        iconHeight={20} // specify the icon height
-        iconGap={10}
-    // specify the gap between the label and the icon
-    /> */}
-            {/* </View> */}
-
-
         </ScrollView >
-
-
             <View style={{ padding: 10, backgroundColor: "#fff", margintop: 10, alignItems: 'center' }}>
                 <Buttons
                     label="Submit"
                     onPress={() => {
-
-                        // callUploadAndThenAnotherFunction();
                         triggerupdateprofile();
                     }}
                     variant="filled"
@@ -1695,24 +1256,27 @@ const EditProfile = () => {
             </View>
 
         </>
-
-
-
-
     )
 }
 
 const styles = StyleSheet.create({
     mainWrapper: {
         padding: 25,
-
         backgroundColor: '#fff',
-
     },
     iconButton: {
-        backgroundColor: colors.yellow, // Replace 'yourBackgroundColor' with the desired color
+        backgroundColor: colors.yellow,
         borderRadius: 50,
-        alignSelf: 'center',
+    },
+    datepickerview: {
+        flexDirection: 'row',
+        borderWidth: 2,
+        borderColor: colors.grey,
+        borderRadius: 5,
+        backgroundColor: colors.white,
+        height: 50,
+        marginBottom: 20,
+        alignItems: 'center'
     },
     viewProfile: {
         color: colors.yellow,
@@ -1730,7 +1294,7 @@ const styles = StyleSheet.create({
     textDetail: {
         color: colors.black,
         fontWeight: 'bold',
-        fontSize: responsiveFontSize(2),
+        fontSize: responsiveFontSize(1.7),
     },
 
     button: {
@@ -1744,23 +1308,23 @@ const styles = StyleSheet.create({
     flexBox: {
         flexDirection: "row",
         backgroundColor: 'transparent',
-        padding: 10,
+        alignItems: 'center',
+        marginBottom: 20
     },
     labelStyles: {
         backgroundColor: 'transparent',
         margin: 14,
-
-        color: '#D3D3D3',
+        color: colors.grey,
     },
     input: {
         padding: 5,
         height: height / 13.5,
         margin: 10,
         marginTop: 5,
-        color: 'black',
+        color: colors.black,
         borderRadius: 5,
         backgroundColor: '#fff',
-        borderColor: 'grey',
+        borderColor: colors.grey,
         borderWidth: 1.8,
         borderwidth: 2,
         bottom: 0,
@@ -1771,7 +1335,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: width / 1.18,
         borderWidth: 2,
-        borderColor: '#D3D3D3',
+        borderColor: colors.grey,
         borderRadius: 10,
         height: height / 16.5,
         margin: 10,
@@ -1798,25 +1362,22 @@ const styles = StyleSheet.create({
         bottom: 20
     },
     imagepicker: {
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
         height: height / 20,
         margin: 10,
         borderRadius: 5,
         flexDirection: 'row',
         marginTop: 0,
         width: width / 1.75,
-
     },
     inputStyle: {
-
         paddingHorizontal: 20,
         paddingTop: 20,
         height: height / 15,
-        color: "black",
-
+        color: colors.black,
     },
     picker: {
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
         height: height / 20,
         margin: 10,
         borderRadius: 5,
@@ -1831,34 +1392,29 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: width / 1.20,
         borderWidth: 2,
-
-        borderColor: '#D3D3D3',
+        borderColor: colors.grey,
         borderRadius: 10,
         height: height / 16.5,
-
         margin: 10,
         justifycontent: 'Space-between',
-
     },
     imagecontainereditprofile: {
-        flexDirection: 'row', padding: 5,
-        height: height / 15,
-        margin: 10,
-        marginBottom: 10,
-        paddingVertical: 1,
-
-        color: 'black',
+        flexDirection: 'row', 
+        padding: 5,
+        height: 65,
+        marginBottom: 20,
+        color: colors.black,
         borderRadius: 5,
-        backgroundColor: '#fff',
-        borderColor: 'grey',
-        borderWidth: 1.8,
-        borderwidth: 2,
-        bottom: 0,
-        borderRadius: 8,
-        borderColor: "#D3D3D3",
-        justifyContent: 'space-between'
+        backgroundColor: colors.white,
+        borderWidth: 2,
+        borderColor: colors.grey,
+        justifyContent: 'space-between',
+        alignItems: 'center'
     },
-    modalcontainer: { alignSelf: 'center', backgroundColor: 'rgba(0,0,0,0.7)' },
+    modalcontainer: { 
+        alignSelf: 'center', 
+        backgroundColor: 'rgba(0,0,0,0.7)' 
+    },
 })
 
 export default EditProfile
