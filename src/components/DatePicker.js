@@ -9,7 +9,7 @@ const DatePicker = ({ date, onDateChange, showDatePicker, onShowDatePicker }) =>
             <TextInput
                 style={styles.input}
                 placeholder="Select date"
-                value={date ? date.toLocaleDateString() : ''}
+                value={date ? date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : ''}
                 onFocus={onShowDatePicker}
             />
             {showDatePicker && (
