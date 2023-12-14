@@ -203,14 +203,6 @@ const UpdateKYC = ({ navigation }) => {
             await fetchAndSetImageData(response.data.kycDetails.aadharOrVoterOrDLFront, 'ID_CARD_FRONT', 1);
             await fetchAndSetImageData(response.data.kycDetails.aadharOrVoterOrDlBack, 'ID_CARD_BACK', 1);
             await fetchAndSetImageData(response.data.kycDetails.panCardFront, 'PAN_CARD_FRONT', 1);
-            // console.log("%%%%%%%%%%%INSDE THE FETCH PROFILE UUID %%%%%%%%%%%%%%", response.data.kycDetails.aadharOrVoterOrDLFront,);
-            // console.log("%%%%%%%%%%%INSDE THE FETCH PROFILE UUID %%%%%%%%%%%%%%", aadharbackuuid);
-            // console.log("%%%%%%%%%%%INSDE THE FETCH PROFILE UUID %%%%%%%%%%%%%%", pancarduuid);
-            // console.log("%%%%%%%%%%%INSDE THE FETCH PROFILE UUID %%%%%%%%%%%", selfieuuid);
-
-
-
-
         } catch (error) {
             console.log("Error:", error);
         } finally {
@@ -219,16 +211,6 @@ const UpdateKYC = ({ navigation }) => {
     }
 
     const uploadFiles = async (fileDataArray) => {
-
-        // console.log("", IdProofFrontData);
-        // console.log("", IdProofFrontData);
-        // console.log("", SelfieData);
-        // console.log("", PanData);
-
-        // console.log("$$$$$$$$", aadharbackuuid);
-        // console.log("$$$$$$$$", aadharfrontuuid);
-        // console.log("$$$$$$$$", selfieuuid);
-        // console.log("$$$$$$$$", pancarduuid);
 
         try {
             const responses = [];
@@ -266,21 +248,6 @@ const UpdateKYC = ({ navigation }) => {
         }
     };
 
-    // const sendingfile = async () => {
-    //     console.log("Insde senfile", IdProofFrontData);
-    //     const formData = new FormData();
-    //     let imageHere = {}
-    //     imageHere.uri = IdProofFrontData;
-    //     imageHere.type = 'image/' + IdProofFrontData.split('/').pop().split('.').pop();
-    //     imageHere.name = IdProofFrontData.split('/').pop().split('.').pop();
-    //     formData.append('image_related', "PROFILE");
-    //     formData.append('USER_ROLE', "1");
-    //     formData.append('file', imageHere);
-    //     const response = await sendFileAfterLogin(formData);
-    //     console.log("<><><><><sending file api ><><><", response);
-    //     setaadharfrontuuid(response);
-
-    // }
 
     const triggerApiWithImageupdatekyc = async () => {
         try {
@@ -320,25 +287,9 @@ const UpdateKYC = ({ navigation }) => {
                     }
 
                 });
-                // console.log("$$$$$$$$", aadharbackuuidnew);
-                // console.log("$$$$$$$$", aadharfrontuuidnew);
-                // console.log("$$$$$$$$", selfieuuidnew);
-                // console.log("$$$$$$$$", pancarduuidnew);
 
 
                 if (aadharfrontuuidnew != null && aadharfrontuuidnew != 'undefined' && aadharbackuuidnew != null && aadharbackuuidnew != 'undefined' && selfieuuidnew != 'undefined' && selfieuuidnew != null) {
-                    // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharfrontuuid,);
-                    // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharbackuuid);
-                    // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", pancarduuid);
-                    // console.log("%%%%%%%%%%%%%%%%%%%%%%", selfieuuid);
-
-                    // console.log("$$$$$$$$", aadharbackuuidnew);
-                    // console.log("$$$$$$$$", aadharfrontuuidnew);
-                    // console.log("$$$$$$$$", selfieuuidnew);
-                    // console.log("$$$$$$$$", pancarduuidnew);
-                    // console.log("================================================");
-                    // console.log(">><><<><>><><><><><><><><><><><><><", userbody);
-                    // console.log("================================================");
                     handleKycUpdate();
                 }
                 else {
@@ -357,15 +308,6 @@ const UpdateKYC = ({ navigation }) => {
     const handleKycUpdate = async () => {
         setIsLoading(true)
         try {
-            // console.log("%%%%%%%INSDE THE HANDLE KYC UPDATE %%%%%%%%%%%%%%%%%%", aadharfrontuuid,);
-            // console.log("%%%%%%%INSDE THE HANDLE KYC UPDATE %%%%%%%%%%%%%%%%%%", aadharbackuuid);
-            // console.log("%%%%%%%INSDE THE HANDLE KYC UPDATE %%%%%%%%%%%%%%%%%%", pancarduuid);
-            // console.log("%%%%%%%INSDE THE HANDLE KYC UPDATE %%%%%%%%%%%%%%%", selfieuuid);
-            // console.log("$$$INSIDE NEW UUID $$$$$", aadharbackuuidnew);
-            // console.log("$$$INSIDE NEW UUID $$$$$", aadharfrontuuidnew);
-            // console.log("$$$INSIDE NEW UUID $$$$$", selfieuuidnew);
-            // console.log("$$$INSIDE NEW UUID $$$$$", pancarduuidnew);
-
             const kycData = {
                 kycFlag: kycflag,
                 userId: userId,
@@ -383,25 +325,16 @@ const UpdateKYC = ({ navigation }) => {
                 gstYesNo: "",
 
             };
-            // console.log("<><><><><><<", kycData);
             const response = await reupdatekyc(kycData);
             setIsPopupVisible(true);
             setPopupMessage(response.message);
 
-            console.log("&&&&&&&&&&&&&&&&&&&&&&", response.message);
             if (response.message == 'Your KYC re-submission successful') {
-
                 setTimeout(() => {
-
                     navigation.navigate('home');
                 }, 2500);
-
-
             }
-
-            // Handle the response as needed
         } catch (error) {
-            // Handle errors
             console.error('KYC Update Error:', error);
         } finally {
             setIsLoading(false)
@@ -413,13 +346,8 @@ const UpdateKYC = ({ navigation }) => {
             const userRole = await AsyncStorage.getItem('userRole');
             setUserRole(userRole);
         };
-
         getUserRoleFromAsyncStorage();
-
         Fetchingprofile();
-
-
-
     }, [])
 
     const fetchAndSetImageData = async (uuid, imageRelated, userRole) => {
@@ -427,8 +355,6 @@ const UpdateKYC = ({ navigation }) => {
             // setIsLoading(true)
             const response = await getFile(uuid, imageRelated, userRole);
             const imageUrl = response.url;
-
-
             switch (imageRelated) {
                 case 'ID_CARD_FRONT':
                     setIdProofFrontData(imageUrl);
@@ -484,10 +410,10 @@ const UpdateKYC = ({ navigation }) => {
 
                             {SelfieData === null ?
                                 <TouchableOpacity onPress={() => setselfieemodal(true)}>
-                                    <><Text style={{ color: 'black' }}>Update your selfie*</Text></>
+                                    <><Text style={{ color: colors.black }}>{t('strings:lbl_update_your_selfie')}</Text></>
                                 </TouchableOpacity> :
                                 <TouchableOpacity mode="text" onPress={() => setselfieemodal(true)} color={'grey'}>
-                                    <Text style={{ color: 'black', margin: 10, height: height / 25 }}> Upate your Selfie*</Text>
+                                    <Text style={{ color: colors.black, margin: 10, height: height / 25 }}> Upate your Selfie*</Text>
                                 </TouchableOpacity>
                             }
 
@@ -501,7 +427,7 @@ const UpdateKYC = ({ navigation }) => {
                                 <View style={{
                                     width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
                                     margin: 20,
-                                    backgroundColor: '#D3D3D3',
+                                    backgroundColor: colors.grey,
                                     borderRadius: 20,
                                     padding: 10,
                                     // alignItems: 'center',
@@ -516,8 +442,8 @@ const UpdateKYC = ({ navigation }) => {
                                 }}>
                                     <Picker
                                         mode="dropdown"
-                                        placeholder={'Update Your Selfie *'}
-                                        style={{ color: 'black' }}
+                                        placeholder={t('strings:lbl_update_your_selfie')}
+                                        style={{ color: colors.black }}
                                         selectedValue={select}
                                         onValueChange={(itemValue, itemIndex) => {
                                             if (itemValue === "Open camera") {
@@ -550,27 +476,18 @@ const UpdateKYC = ({ navigation }) => {
                         </View>
 
                         <ImageWithModal imageUri={SelfieData} style={styles.noimage} />
-
-
-
-
-
-
-
                     </View>
 
                     <View style={styles.pickercontainer}>
                         <View
                             style={styles.picker}
                         >
-
-
                             {IdProofFrontData === null ?
                                 <TouchableOpacity onPress={() => setIsModalVisible(true)}>
-                                    <><Text style={{ color: 'black' }}>Aadhar Card (Front)*</Text></>
+                                    <><Text style={{ color: colors.black }}>{t('strings:aadhar_card_front')}</Text></>
                                 </TouchableOpacity> :
                                 <TouchableOpacity mode="text" onPress={() => setIsModalVisible(true)} color={'grey'}>
-                                    <Text style={{ color: 'black', margin: 10, height: height / 25 }}>IdProof Image</Text>
+                                    <Text style={{ color: colors.black, margin: 10, height: height / 25 }}>{t('strings:id_proof_front')}</Text>
                                 </TouchableOpacity>
                             }
 
@@ -585,10 +502,9 @@ const UpdateKYC = ({ navigation }) => {
                                 <View style={{
                                     width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
                                     margin: 20,
-                                    backgroundColor: '#D3D3D3',
+                                    backgroundColor: colors.grey,
                                     borderRadius: 20,
                                     padding: 10,
-                                    // alignItems: 'center',
                                     shadowColor: '#000',
                                     shadowOffset: {
                                         width: 100,
@@ -600,22 +516,17 @@ const UpdateKYC = ({ navigation }) => {
                                 }}>
                                     <Picker
                                         mode="dropdown"
-
-
-
-                                        style={{ color: 'black', backgroundColor: 'transparent', }}
+                                        style={{ color: colors.black, backgroundColor: 'transparent', }}
                                         selectedValue={select}
                                         onValueChange={(itemValue, itemIndex) => {
                                             if (itemValue === "Open camera") {
                                                 openCamera("IdProofFront", (documentType, newPhoto) => {
-                                                    // Handle the captured selfie here
                                                     setIsModalVisible(false);
                                                     console.log('Captured selfie:', newPhoto);
 
                                                 });
                                             } else if (itemValue === "Open Image picker") {
                                                 openImagePicker('IdProofFront', (documentType, newPhoto) => {
-                                                    // Handle the selected selfie here
                                                     setIsModalVisible(false);
                                                     console.log('Selected selfie:', newPhoto);
 
@@ -644,17 +555,13 @@ const UpdateKYC = ({ navigation }) => {
                     <View style={styles.pickercontainer}>
                         <View
                             style={styles.picker}
-
-
                         >
-
-
                             {IdProofBackData === null ?
                                 <TouchableOpacity onPress={() => setIsModalVisible1(true)}>
-                                    <><Text style={{ color: 'black' }}>Aadhar Card (Back)*</Text></>
+                                    <><Text style={{ color: colors.black }}>{t('strings:addhar_card_back')}</Text></>
                                 </TouchableOpacity> :
                                 <TouchableOpacity mode="text" onPress={() => setIsModalVisible1(true)} color={'grey'}>
-                                    <Text style={{ color: 'black', margin: 10, height: height / 25 }}>IdProof Back Image</Text>
+                                    <Text style={{ color: colors.black, margin: 10, height: height / 25 }}>{t('strings:id_proof_back')}</Text>
                                 </TouchableOpacity>
                             }
                             <Modal
@@ -667,7 +574,7 @@ const UpdateKYC = ({ navigation }) => {
                                 <View style={{
                                     width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
                                     margin: 20,
-                                    backgroundColor: '#D3D3D3',
+                                    backgroundColor: colors.grey,
                                     borderRadius: 20,
                                     padding: 10,
                                     // alignItems: 'center',
@@ -682,7 +589,7 @@ const UpdateKYC = ({ navigation }) => {
                                 }}>
                                     <Picker
                                         mode="dropdown"
-                                        style={{ color: 'black' }}
+                                        style={{ color: colors.black }}
                                         selectedValue={select}
                                         onValueChange={(itemValue, itemIndex) => {
                                             if (itemValue === "Open camera") {
@@ -730,7 +637,7 @@ const UpdateKYC = ({ navigation }) => {
                                     staticLabel
                                     labelStyles={styles.labelStyles}
                                     inputStyles={{
-                                        color: isAadharValid ? 'black' : 'red',
+                                        color: isAadharValid ? colors.black : 'red',
                                         paddingHorizontal: 20,
                                         marginVertical: 10,
 
@@ -741,7 +648,7 @@ const UpdateKYC = ({ navigation }) => {
                                     maxLength={12}
                                 />
                                 {!isAadharValid && (
-                                    <Text style={{ color: 'red', marginTop: 5 }}>Please enter a valid Aadhar card number.</Text>
+                                    <Text style={{ color: 'red', marginTop: 5 }}>{t('strings:please_enter_valid_aadhar_no')}</Text>
                                 )}
                             </View>
 
@@ -757,10 +664,10 @@ const UpdateKYC = ({ navigation }) => {
                         >
                             {PanData === null ?
                                 <TouchableOpacity onPress={() => setpanmodal(true)}>
-                                    <><Text style={{ color: 'black' }}>Update Your pan Card(FRONT*)</Text></>
+                                    <><Text style={{ color: colors.black }}>{t('strings:update_pan_card_front')}</Text></>
                                 </TouchableOpacity> :
                                 <TouchableOpacity mode="text" onPress={() => setpanmodal(true)} color={'grey'}>
-                                    <Text style={{ margin: 10, color: "black", height: height / 25 }}>Pan Front Image</Text>
+                                    <Text style={{ margin: 10, color: "black", height: height / 25 }}>{t('strings:pan_card_front')}</Text>
                                 </TouchableOpacity>
                             }
                             <Modal
@@ -773,7 +680,7 @@ const UpdateKYC = ({ navigation }) => {
                                 <View style={{
                                     width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
                                     margin: 20,
-                                    backgroundColor: '#D3D3D3',
+                                    backgroundColor: colors.grey,
                                     borderRadius: 20,
                                     padding: 10,
                                     // alignItems: 'center',
@@ -788,7 +695,7 @@ const UpdateKYC = ({ navigation }) => {
                                 }}>
                                     <Picker
                                         mode="dropdown"
-                                        style={{ color: 'black' }}
+                                        style={{ color: colors.black }}
                                         selectedValue={select}
                                         onValueChange={(itemValue, itemIndex) => {
                                             if (itemValue === "Open camera") {
@@ -812,7 +719,7 @@ const UpdateKYC = ({ navigation }) => {
 
                                     </Picker>
                                     <Button mode="text" onPress={() => setpanmodal(false)}>
-                                        close
+                                        Close
                                     </Button>
                                 </View>
                             </Modal>
@@ -836,7 +743,7 @@ const UpdateKYC = ({ navigation }) => {
                                     staticLabel
                                     labelStyles={styles.labelStyles}
                                     inputStyles={{
-                                        color: isAadharValid ? 'black' : 'red',
+                                        color: isAadharValid ? colors.black : 'red',
 
                                         paddingHorizontal: 20,
                                         marginVertical: 10,
@@ -848,7 +755,7 @@ const UpdateKYC = ({ navigation }) => {
                                     maxLength={12}
                                 />
                                 {!isPanValid && (
-                                    <Text style={{ color: 'red', marginTop: 5 }}>Please enter a valid Pan card number.</Text>
+                                    <Text style={{ color: 'red', marginTop: 5 }}>{t('strings:please_enter_valid_pan_no')}</Text>
                                 )}
                             </View>
 
@@ -948,7 +855,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
 
 
-        borderColor: '#D3D3D3',
+        borderColor: colors.grey,
         borderRadius: 10,
         height: height / 14,
 
@@ -961,7 +868,7 @@ const styles = StyleSheet.create({
     },
     noimage: {
 
-        backgroundColor: '#D3D3D3',
+        backgroundColor: colors.grey,
         borderRadius: 5,
         margin: 5,
         marginLeft: 20,

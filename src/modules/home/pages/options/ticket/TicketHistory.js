@@ -4,12 +4,36 @@ import colors from '../../../../../../colors';
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import { fetchTicketHistory } from '../../HomeApiService';
 import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 
 const TicketHistory = () => {
   const [data, setData] = useState([]);
   const { t } = useTranslation();
+  const [userData, setUserData] = useState({
+    userName: '',
+    userId: '',
+    userCode: '',
+    userImage: '',
+    userRole: ''
+  });
+  const [profileImage, setProfileImage] = useState('');
+
 
   useEffect(() => {
+    AsyncStorage.getItem('USER').then(r => {
+      const user = JSON.parse(r);
+      console.log(user);
+      const data = {
+        userName: user.name,
+        userCode: user.userCode,
+        pointsBalance: user.pointsSummary.pointsBalance,
+        redeemedPoints: user.pointsSummary.redeemedPoints,
+        userImage: user.kycDetails.selfie,
+        userRole: user.professionId,
+        userId: user.contactNo
+      };
+      setUserData(data);
+    });
     fetchTicketHistory()
       .then(response => response.json())
       .then(responseData => {
@@ -21,8 +45,37 @@ const TicketHistory = () => {
       });
   }, []);
 
+  useEffect(() => {
+    console.log("<><><><><><")
+    if (userData.userRole && userData.userImage) {
+      
+      const getImage = async () => {
+        try {
+          const profileImage = await getFile(userData.userImage, 'PROFILE', userData.userRole);
+          setProfileImage(profileImage.url);
+        } catch (error) {
+          console.log('Error while fetching profile image:', error);
+        }
+      };
+  
+      getImage();
+    }
+  }, [userData.userRole, userData.userImage]);
+
   return (
     <ScrollView style={styles.container}>
+      <View style={styles.flexBox}>
+
+        <View style={styles.profileDetails}>
+          <View style={styles.ImageProfile}>
+            <Image source={{ uri: profileImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
+          </View>
+          <View style={styles.profileText}>
+            <Text style={styles.textDetail}>{userData.userName}</Text>
+            <Text style={styles.textDetail}>{userData.userCode}</Text>
+          </View>
+        </View>
+      </View>
       {data.length === 0 ? (
         <View style={styles.noDataContainer}>
           <Text style={styles.noDataText}>{t('strings:no_data')}</Text>
@@ -104,7 +157,32 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 5,
     alignItems: 'center'
-  }
+  },
+  flexBox: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  profileDetails: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    fontSize: responsiveFontSize(1.7),
+  },
+  ImageProfile: {
+    height: 50,
+    width: 50,
+    backgroundColor: colors.lightGrey,
+    borderRadius: 100
+  },
+  textDetail: {
+    color: colors.black,
+    fontWeight: 'bold',
+    fontSize: responsiveFontSize(1.7)
+  },
 });
 
 export default TicketHistory;
