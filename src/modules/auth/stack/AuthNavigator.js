@@ -70,7 +70,7 @@ const Kyc = () => {
 
       <kycStack.Screen name="NewUser" component={NewUser} />
       <kycStack.Screen name="NewUserKyc" component={NewUserKyc} />
-      < kycStack.Screen name='NomineePage' component={NomineePage} />
+      <kycStack.Screen name='NomineePage' component={NomineePage} />
 
     </kycStack.Navigator>
 
