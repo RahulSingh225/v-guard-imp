@@ -123,6 +123,11 @@ export function getInfoBanners() {
     return createDigestGetRequest(path);
 }
 
+export function getAccessmentYear() {
+    const path = "user/getAccessmentYear";
+    return createDigestGetRequest(path);
+}
+
 // export function productRegistration(data) {
 //     const path = "product/registerAirCoolerCustomer";
 //     return createDigestPostRequest(path, data);
