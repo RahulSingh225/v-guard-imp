@@ -584,20 +584,17 @@ const UpdateKYC = ({ navigation }) => {
                             <View>
 
                                 <FloatingLabelInput
-
-                                    label="Aadhar Card No*"
+                                    label={t('strings:update_aadhar_voter_id_dl_manually')}
                                     value={aadharcardno}
                                     onChangeText={(text) => setaadharcardno(text)}
                                     keyboardType='number-pad'
-
                                     containerStyles={[styles.input]}
                                     staticLabel
-                                    labelStyles={styles.labelStyles}
+                                    // labelStyles={styles.labelStyles}
                                     inputStyles={{
                                         color: isAadharValid ? colors.black : 'red',
-                                        paddingHorizontal: 20,
+                                        // paddingHorizontal: 20,
                                         marginVertical: 10,
-
                                         height: height / 23
                                     }}
                                     onBlur={handleAadharBlur}
@@ -680,10 +677,10 @@ const UpdateKYC = ({ navigation }) => {
                                     keyboardType='default'
                                     containerStyles={[styles.input]}
                                     staticLabel
-                                    labelStyles={styles.labelStyles}
+                                    // labelStyles={styles.labelStyles}
                                     inputStyles={{
                                         color: isAadharValid ? colors.black : 'red',
-                                        paddingHorizontal: 20,
+                                        // paddingHorizontal: 20,
                                         marginVertical: 10,
                                         height: height / 23
                                     }}
