@@ -32,7 +32,6 @@ const ImageWithModal = ({ imageUri }) => {
               backgroundColor: colors.lightGrey,
               borderRadius: 5,
               margin: 5
-
             }}
           />
           {/* <Text style={{ color: 'black' }}>

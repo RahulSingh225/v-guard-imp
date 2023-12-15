@@ -18,6 +18,7 @@ import { Profile, fetchImage, fetchImage2, reupdatekyc, sendFile, getFile, sendF
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Popup from '../../../../../components/Popup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { responsiveWidth } from 'react-native-responsive-dimensions';
 
 
 
@@ -413,7 +414,7 @@ const UpdateKYC = ({ navigation }) => {
                                     <><Text style={{ color: colors.black }}>{t('strings:lbl_update_your_selfie')}</Text></>
                                 </TouchableOpacity> :
                                 <TouchableOpacity mode="text" onPress={() => setselfieemodal(true)} color={'grey'}>
-                                    <Text style={{ color: colors.black, margin: 10, height: height / 25 }}> Upate your Selfie*</Text>
+                                    <Text style={{ color: colors.black, margin: 10, height: height / 25 }}> Update your Selfie*</Text>
                                 </TouchableOpacity>
                             }
 
@@ -424,22 +425,7 @@ const UpdateKYC = ({ navigation }) => {
                                 style={styles.modalcontainer}
                                 hardwareAccelerated={true}
                                 opacity={0.3}>
-                                <View style={{
-                                    width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
-                                    margin: 20,
-                                    backgroundColor: colors.grey,
-                                    borderRadius: 20,
-                                    padding: 10,
-                                    // alignItems: 'center',
-                                    shadowColor: '#000',
-                                    shadowOffset: {
-                                        width: 100,
-                                        height: 2,
-                                    },
-                                    shadowOpacity: 0.25,
-                                    shadowRadius: 4,
-                                    elevation: 5,
-                                }}>
+                                <View style={styles.imagePickerModal}>
                                     <Picker
                                         mode="dropdown"
                                         placeholder={t('strings:lbl_update_your_selfie')}
@@ -499,21 +485,7 @@ const UpdateKYC = ({ navigation }) => {
                                 style={styles.modalcontainer}
                                 hardwareAccelerated={true}
                                 opacity={0.3}>
-                                <View style={{
-                                    width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
-                                    margin: 20,
-                                    backgroundColor: colors.grey,
-                                    borderRadius: 20,
-                                    padding: 10,
-                                    shadowColor: '#000',
-                                    shadowOffset: {
-                                        width: 100,
-                                        height: 2,
-                                    },
-                                    shadowOpacity: 0.25,
-                                    shadowRadius: 4,
-                                    elevation: 5,
-                                }}>
+                                <View style={styles.imagePickerModal}>
                                     <Picker
                                         mode="dropdown"
                                         style={{ color: colors.black, backgroundColor: 'transparent', }}
@@ -571,22 +543,7 @@ const UpdateKYC = ({ navigation }) => {
                                 style={styles.modalcontainer}
                                 hardwareAccelerated={true}
                                 opacity={0.3}>
-                                <View style={{
-                                    width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
-                                    margin: 20,
-                                    backgroundColor: colors.grey,
-                                    borderRadius: 20,
-                                    padding: 10,
-                                    // alignItems: 'center',
-                                    shadowColor: '#000',
-                                    shadowOffset: {
-                                        width: 100,
-                                        height: 2,
-                                    },
-                                    shadowOpacity: 0.25,
-                                    shadowRadius: 4,
-                                    elevation: 5,
-                                }}>
+                                <View style={styles.imagePickerModal}>
                                     <Picker
                                         mode="dropdown"
                                         style={{ color: colors.black }}
@@ -667,7 +624,7 @@ const UpdateKYC = ({ navigation }) => {
                                     <><Text style={{ color: colors.black }}>{t('strings:update_pan_card_front')}</Text></>
                                 </TouchableOpacity> :
                                 <TouchableOpacity mode="text" onPress={() => setpanmodal(true)} color={'grey'}>
-                                    <Text style={{ margin: 10, color: "black", height: height / 25 }}>{t('strings:pan_card_front')}</Text>
+                                    <Text style={{ margin: 10, color: colors.black, height: height / 25 }}>{t('strings:pan_card_front')}</Text>
                                 </TouchableOpacity>
                             }
                             <Modal
@@ -677,22 +634,7 @@ const UpdateKYC = ({ navigation }) => {
                                 style={styles.modalcontainer}
                                 hardwareAccelerated={true}
                                 opacity={0.3}>
-                                <View style={{
-                                    width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
-                                    margin: 20,
-                                    backgroundColor: colors.grey,
-                                    borderRadius: 20,
-                                    padding: 10,
-                                    // alignItems: 'center',
-                                    shadowColor: '#000',
-                                    shadowOffset: {
-                                        width: 100,
-                                        height: 2,
-                                    },
-                                    shadowOpacity: 0.25,
-                                    shadowRadius: 4,
-                                    elevation: 5,
-                                }}>
+                                <View style={styles.imagePickerModal}>
                                     <Picker
                                         mode="dropdown"
                                         style={{ color: colors.black }}
@@ -731,23 +673,18 @@ const UpdateKYC = ({ navigation }) => {
                             style={styles.picker}
                         >
                             <View>
-
                                 <FloatingLabelInput
-
                                     label="Update Pan Number manually*"
                                     value={pancardno}
                                     onChangeText={(text) => setpancardno(text)}
                                     keyboardType='default'
-
                                     containerStyles={[styles.input]}
                                     staticLabel
                                     labelStyles={styles.labelStyles}
                                     inputStyles={{
                                         color: isAadharValid ? colors.black : 'red',
-
                                         paddingHorizontal: 20,
                                         marginVertical: 10,
-
                                         height: height / 23
                                     }}
                                     onBlur={handleAadharBlur}
@@ -758,16 +695,9 @@ const UpdateKYC = ({ navigation }) => {
                                     <Text style={{ color: 'red', marginTop: 5 }}>{t('strings:please_enter_valid_pan_no')}</Text>
                                 )}
                             </View>
-
-
                         </View>
                         <Icon name="keyboard-o" size={25} color="grey" style={{ margin: 10, left: 5 }} />
-
                     </View>
-
-
-
-
                     <Buttons
                         style={styles.button}
                         label={'Submit'}
@@ -837,8 +767,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     picker: {
-        backgroundColor: '#fff',
-        height: height / 20,
+        backgroundColor: colors.white,
+        height: 40,
         margin: 10,
         borderRadius: 5,
         flexDirection: 'column',
@@ -846,37 +776,38 @@ const styles = StyleSheet.create({
         width: width / 1.75,
         marginTop: 5,
         paddingBottom: 5,
-
-
+        flex: 1
     },
     pickercontainer: {
         flexDirection: 'row',
-        width: width / 1.20,
+        width: '100%',
         borderWidth: 2,
-
-
         borderColor: colors.grey,
         borderRadius: 10,
-        height: height / 14,
-
-        margin: 10,
+        height: 60,
         justifycontent: 'Space-between',
-        // justifyContent: "center",
-        //  backgroundColor: "red",
-
-
+        marginBottom: 20,
+        alignItems: 'center',
+        paddingRight: 10
     },
     noimage: {
-
-        backgroundColor: colors.grey,
+        backgroundColor: colors.lightGrey,
         borderRadius: 5,
-        margin: 5,
-        marginLeft: 20,
-        paddingleft: 50,
-
-
-
     },
-    modalcontainer: { alignSelf: 'center', backgroundColor: 'rgba(0,0,0,0.7)' },
+    modalcontainer: {
+        alignSelf: 'center',
+        backgroundColor: 'rgba(0,0,0,0.7)'
+    },
+    imagePickerModal: {
+        width: width / 1.80, 
+        alignSelf: 'center', 
+        height: height / 8, 
+        top: height / 2.8,
+        margin: 20,
+        backgroundColor: colors.lightGrey,
+        borderRadius: 20,
+        padding: 10,
+        elevation: 5,
+    }
 })
 export default UpdateKYC
