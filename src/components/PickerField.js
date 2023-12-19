@@ -41,17 +41,15 @@ const PickerField = ({
                     selectedValue={selectedValue}
                     onFocus={handleFocus}
                     onBlur={handleBlur}
+                    dropdownIconColor='#87CEEB'
+                    dropdownIconRippleColor='#87CEEB'
                 >
                 <Picker.item key={"select"} label="Select" value="select" />
                     {items.map((item) => (
                         <Picker.Item key={item.value} label={item.label} value={item.value} />
                     ))}
                 </Picker>
-                <Image
-                    source={require('../assets/images/ic_ticket_drop_down2.png')}
-                    style={{ width: '5%', height: '100%', marginRight: 5 }}
-                    resizeMode="contain"
-                />
+                
             </View>
             {/* {errorMessage && <Text style={styles.error}>{errorMessage}</Text>} */}
         </View>

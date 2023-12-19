@@ -12,6 +12,7 @@ import VguardRishtaUser from '../../common/modals/VguardRishtaUser'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
 import DropDownPicker from 'react-native-dropdown-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useTranslation } from 'react-i18next'
 
 
 
@@ -174,7 +175,7 @@ const ReUpdateKyc = ({navigation}) => {
         updateAccount: null,
 
     })
-    const {t} = useTransition();
+    const {t} = useTranslation();
     const [imageData, setImageData] = React.useState([{
         documentType: null,
         path: null,
@@ -379,6 +380,7 @@ const ReUpdateKyc = ({navigation}) => {
 
         type==='permanent'?setVGuardRishtaUser({ ...vGuardRishtaUser, pinCode: pincode }):setVGuardRishtaUser({ ...vGuardRishtaUser, currPinCode: pincode })
     }
+    
     function updateDistrictState(pincode,type) {
         setIsLoading(true)
 

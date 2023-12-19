@@ -2,7 +2,7 @@ import Geolocation from 'react-native-geolocation-service';
 
 async function getLocation() {
   var data = {};
-  Geolocation.getCurrentPosition(
+  return  Geolocation.getCurrentPosition(
     position => {
       console.log(position);
       return position;

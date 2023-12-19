@@ -106,15 +106,15 @@ const BottomTab = () => {
         }}>
         <Tab.Screen name="Home" component={HomeStack} screenOptions={{ headerShown: false }} />
         <Tab.Screen name="Notification" component={Notification} options={({ route }) => ({
-          headerTitle: () => <CustomTabHeader handleLanguageButtonPress={handleLanguageButtonPress} route={route} />,
+          //headerTitle: () => <CustomTabHeader handleLanguageButtonPress={handleLanguageButtonPress} route={route} />,
           headerShown: true
         })} />
         <Tab.Screen name="Profile" component={ProfileStack} options={({ route }) => ({
-          headerTitle: () => <CustomTabHeader handleLanguageButtonPress={handleLanguageButtonPress} route={route} />,
+          //headerTitle: () => <CustomTabHeader handleLanguageButtonPress={handleLanguageButtonPress} route={route} />,
           headerShown: true
         })} />
         <Tab.Screen name="Support" component={ContactPage} options={({ route }) => ({
-          headerTitle: () => <CustomTabHeader handleLanguageButtonPress={handleLanguageButtonPress} route={route} />,
+          //headerTitle: () => <CustomTabHeader handleLanguageButtonPress={handleLanguageButtonPress} route={route} />,
           headerShown: true
         })} />
         <Tab.Screen name="Logout" listeners={{ tabPress: showLogoutPopup }} component={({ route }) => {

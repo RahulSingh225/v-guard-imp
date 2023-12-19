@@ -36,12 +36,12 @@ const ScanScreen = ({navigation, route}) => {
   const type = null;
   const {t} = useTranslation();
   const [qrCode, setQrcode] = React.useState('');
-  const [scratchCard, showScratchCard] = React.useState(false);
+  const [scratchCardProps, setscratchCardProps] = React.useState({isVisible:false,rewardImage:null,rewardResultText:null,text1:null,text2:null,text3:null,button:null,textInput:false,scratchable:false});
   const [popupProps, setPopupProps] = React.useState({buttonText:'',children:null,onConfirm:null,onClose:null,isVisible:false});
  
   const [PIN,setPIN] = React.useState(null)
   var USER = null;
-  var scratchCardProps;
+ 
   var CouponResponse;
   //var popupProps={}
   React.useEffect(() => {
@@ -66,6 +66,7 @@ const ScanScreen = ({navigation, route}) => {
       }))
     });
 
+   
 
   }, []);
 
@@ -78,7 +79,18 @@ const ScanScreen = ({navigation, route}) => {
   }
 
   async function sendBarcode(pin=null) {
+   
     setPopupProps({...popupProps,isVisible:false})
+    if(qrCode.length!=16){
+      setPopupProps({
+        buttonText:'OK',
+        children:(<Text style={{fontWeight:'bold'}}>Please enter valid 16 character barcode</Text>),
+        onConfirm:()=>setPopupProps({...popupProps,isVisible:false}),
+        onClose:()=>setPopupProps({...popupProps,isVisible:false}),
+        isVisible:true
+      })
+      return
+    }
     
     const position = await getLocation();
     const user = JSON.parse(await AsyncStorage.getItem('USER'));
@@ -104,13 +116,14 @@ const ScanScreen = ({navigation, route}) => {
     };
 
     console.log(position);
-    CouponData.latitude = 99;
-    CouponData.longitude = 99;
-
+    CouponData.latitude = 99
+    CouponData.longitude = 99
+    pin?CouponData.pin=pin:CouponData.pin=''
     CouponData.couponCode = qrCode;
     CouponData.from = 'APP';
     CouponData.userMobileNumber = user.mobileNo1;
     CouponData.geolocation = null;
+    
 
     if (type == 'airCooler') {
       apiResponse = await isValidBarcode(CouponData, 1, '', 0, null);
@@ -123,15 +136,16 @@ const ScanScreen = ({navigation, route}) => {
       console.log(apiResponse);
       const r = await apiResponse.json();
       console.log(r);
+      CouponResponse = r;
     }
-    CouponResponse = apiResponse;
-    if (apiResponse.errorCode == 1) {
+   
+    if (CouponResponse.errorCode == 1) {
       setQrcode('');
-      var couponPoints = apiResponse.couponPoints;
-      var basePoints = apiResponse.basePoints;
+      var couponPoints = CouponResponse.couponPoints;
+      var basePoints = CouponResponse.basePoints;
       basePoints ? (basePoints = `Base Points: ${basePoints}`) : null;
 
-      scratchCardProps = {
+      let data = {
         rewardImage: {
           width: 100,
           height: 100,
@@ -165,15 +179,16 @@ const ScanScreen = ({navigation, route}) => {
           buttonColor: '#F0C300',
           buttonTextColor: 'black',
           buttonText: '',
-          buttonAction: showScratchCard(false),
+          buttonAction: setscratchCardProps({...scratchCardProps,isVisible:false}),
           fontWeight: '400',
         },
         textInput: false,
-        scratchable:false
+        scratchable:false,
+        isVisible:true,
       };
-      showScratchCard(true)
+      setscratchCardProps(data)
     
-      }else if(apiResponse.errorCode ==2){
+      }else if(CouponResponse.errorCode ==2){
         setPopupProps({
           buttonText : 'SUBMIT',
           children: (<TextInput onChangeText={(e) => setPIN(e)} value={PIN} style={{ borderBottomWidth: 2, borderBottomColor: 'black', textDecorationColor: 'black', width: '100%', height: 40 }} />),
@@ -185,7 +200,7 @@ const ScanScreen = ({navigation, route}) => {
       }else {
         setPopupProps({
           buttonText:'OK',
-          children:(<Text>{CouponResponse.errorMsg}</Text>),
+          children:(<Text style={{fontWeight:'bold'}}>{CouponResponse.errorMsg}</Text>),
           onConfirm:()=>setPopupProps({...popupProps,isVisible:false}),
           onClose:()=>setPopupProps({...popupProps,isVisible:false}),
           isVisible:true
@@ -197,11 +212,11 @@ const ScanScreen = ({navigation, route}) => {
   }
 
   function checkBonusPoints(){
-    showScratchCard(false);
+  setscratchCardProps({...scratchCardProps,isVisible:false})
     if(CouponResponse.transactId && CouponResponse.bitEligibleScratchCard){
       getBonusPoints().then(response=>response.json().then(result=>{
         var couponPoints = result.promotionPoints;
-        scratchCardProps = {
+        let data = {
           rewardImage: {
             width: 100,
             height: 100,
@@ -235,25 +250,26 @@ const ScanScreen = ({navigation, route}) => {
             buttonColor: '#F0C300',
             buttonTextColor: 'black',
             buttonText: '',
-            buttonAction: showScratchCard(false),
+            buttonAction: setscratchCardProps({...scratchCardProps,isVisible:false}),
             fontWeight: '400',
           },
           textInput: false,
-          scratchable:true
+          scratchable:true,
+          isVisible:true
         };
 
       }))
-      showScratchCard(true)
+      setscratchCardProps(data)
     }
   console.log(popupProps)
   }
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       <View style={styles.mainWrapper}>
-        {scratchCard && (
+        {scratchCardProps.isVisible && (
           <RewardBox
             scratchCardProps={scratchCardProps}
-            visible={scratchCard}
+            visible={scratchCardProps.isVisible}
             scratchable={scratchCardProps.scratchable}
             onClose={checkBonusPoints}
           />

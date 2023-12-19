@@ -242,10 +242,10 @@ const UpdateKYC = ({ navigation }) => {
                     formData.append('image_related', imageRelated);
                     formData.append('USER_ROLE', "1");
 
-                    console.log("<><><><><FROM DATA  ><><><", formData);
+                 
 
                     const response = await sendFile(formData);
-                    console.log("<><><><><FROM API GET FILE  ><><><", response);
+                    
                     responses.push(response.data);
                 }
             }

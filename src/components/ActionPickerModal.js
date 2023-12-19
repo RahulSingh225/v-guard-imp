@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, Modal,Pressable } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, Modal,Pressable,Alert } from 'react-native';
 import { FloatingLabelInput } from 'react-native-floating-label-input'; // Import your input component
 import { Picker } from '@react-native-picker/picker'; // Import your Picker component
 import { height, width } from '../utils/dimensions';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 const ActionPickerModal = ({onCamera,onGallery}) => {
+
     const [modalVisible, setModalVisible] = useState(true);
   
 
@@ -18,18 +19,19 @@ const ActionPickerModal = ({onCamera,onGallery}) => {
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
+            //Alert.alert('Modal has been closed.');
             setModalVisible(!modalVisible);
           }}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
             <Text style={styles.modalText}>Select Action!</Text>
-            <Pressable style={{marginVertical:15}}
+            <Pressable style={{height:40,marginVertical:15,backgroundColor:'red'}}
                 
-                onPress={onGallery}>
+                onPress={onGallery}
+                >
               <Text style={styles.textStyle}>Select photo from gallery</Text>
               </Pressable>
-              <Pressable style={{marginVertical:15}}
+              <Pressable style={{height:40,marginVertical:15,backgroundColor:'blue'}}
                 
                 onPress={onCamera}>
                 <Text style={styles.textStyle}>Capture photo from camera</Text>

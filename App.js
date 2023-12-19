@@ -41,12 +41,12 @@ async function requestAllPermissions() {
 import { AuthProvider } from './src/components/AuthContext';
 import ActionPickerModal from './src/components/ActionPickerModal';
 import { height, width } from './src/utils/dimensions';
+import ReUpdateKyc from './src/modules/auth/pages/ReUpdateKyc';
 
 const App = () => {
   useEffect(() => {
     requestAllPermissions();
   }, []);
-
 
 
   return (

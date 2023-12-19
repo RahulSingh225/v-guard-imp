@@ -151,7 +151,7 @@ const Profile = ({navigation}) => {
         </View>
         <TouchableHighlight
           style={styles.button}
-          onPress={() => navigation.navigate('editProfile')}
+          onPress={() => navigation.navigate('Edit Profile')}
         >
           <Text style={styles.buttonText}>{t('strings:edit_profile')}</Text>
         </TouchableHighlight>
