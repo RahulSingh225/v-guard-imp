@@ -543,3 +543,17 @@ export const reUpdateUserForKyc = async userCredentials => {
     throw error;
   }
 };
+
+export const processErrorCoupon = async userCredentials => {
+  try {
+    const relativeUrl = 'coupon/processErrorCoupon';
+    const response = await createDigestPostRequest(
+      relativeUrl,
+      userCredentials,
+    );
+    return response.json();
+  } catch (error) {
+    console.error('Error validating login OTP', error);
+    throw error;
+  }
+};

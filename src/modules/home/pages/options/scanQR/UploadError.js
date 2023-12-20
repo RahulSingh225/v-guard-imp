@@ -6,6 +6,7 @@ import {
   TextInput,
   ScrollView,
   Pressable,
+  ToastAndroid
 } from 'react-native';
 import React from 'react';
 import colors from '../../../../../../colors';
@@ -19,11 +20,16 @@ import arrowIcon from '../../../../../assets/images/arrow.png';
 import NeedHelp from '../../../../../components/NeedHelp';
 import ActionPickerModal from '../../../../../components/ActionPickerModal';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { sendImage } from '../../../../../utils/FileUtils';
+import { processErrorCoupon } from '../../../../../utils/apiservice';
 
 const UploadError = () => {
   const { t } = useTranslation();
   const [showModal, setshowModal] = React.useState(false)
   const [couponImage, setCouponImage] = React.useState(null)
+  const [barcode, setBarcode] = React.useState(null)
+  const [remarks,setRemarks] = React.useState(null);
+
 
   async function openCamera() {
     let options = { quality: 5, maxWidth: 500, maxHeight: 500, includeBase64: true, mediaType: 'photo', noData: true, };
@@ -35,13 +41,27 @@ const UploadError = () => {
     console.log('Error', response.errorMessage);
     } else { 
     console.log(response); 
-    if (response.assets.length) { setCouponImage({ uri: response.assets[0].uri, type: response.assets[0].type, name: response.assets[0].fileName })}
+    if (response.assets.length) { setCouponImage({ uri: response.assets[0].uri, type: response.assets[0].type, filename: response.assets[0].fileName })}
     } }) 
   
   setshowModal(false);
   }
 
-  
+  async function uploadScanError(){
+
+    if(!couponImage) {ToastAndroid.show(t('strings:please_capture_or_upload_invalid_coupon_picture'),ToastAndroid.SHORT); return}
+    if(!barcode){ ToastAndroid.show(t('strings:error_barcode'));return}
+    if(!barcode.length()<16) {ToastAndroid.show(t('strings:please_enter_valid_sixteen_digit'));return}
+    if(!remarks) {ToastAndroid.show(t('strings:enter_remarks')); return}
+
+    const imagePath = await sendImage(couponImage,'ERROR_COUPON','1')
+    const errorCoupon = {
+      remarks:remarks,
+      couponCode:barcode,
+      errorCouponPath:imagePath
+    }
+    processErrorCoupon(errorCoupon).then(result=>)
+  }  
 
   async function openGallery() {
     let options = { quality: 5,  mediaType: 'photo', noData: true, };
@@ -91,6 +111,8 @@ const UploadError = () => {
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
+            value={barcode}
+            onChangeText={(t)=>setBarcode(t)}
             maxLength={16}
             keyboardType='number-pad'
             placeholder={t('strings:enter_code_here')}
