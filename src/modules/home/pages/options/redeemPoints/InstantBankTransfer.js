@@ -1,11 +1,11 @@
-import { View, TextInput, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Modal, Button } from 'react-native'
+import { View, TextInput, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Modal, Button, ToastAndroid } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions'
 import colors from '../../../../../../colors'
 import { useTranslation } from 'react-i18next';
 import Buttons from '../../../../../components/Buttons';
 import arrowIcon from '../../../../../assets/images/arrow.png';
-import { getFile, sendFile } from '../../../../../utils/apiservice';
+import { bankTransfer, getBankDetail, getFile, sendFile } from '../../../../../utils/apiservice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { getBankDetails, getBankNames, updateBankDetails } from '../../HomeApiService';
@@ -13,8 +13,16 @@ import Snackbar from 'react-native-snackbar';
 import { Picker } from '@react-native-picker/picker';
 import Popup from '../../../../../components/Popup';
 
+import { useNavigation } from '@react-navigation/native';
+import { sendImage } from '../../../../../utils/FileUtils';
+
+
+
 
 const InstantBankTransfer = () => {
+
+   
+    const navigation = useNavigation();
     const { t } = useTranslation();
     const [accNo, setAccNo] = React.useState("");
     const [accHolder, setAccHolder] = React.useState("");
@@ -29,24 +37,38 @@ const InstantBankTransfer = () => {
     const [availableBanks, setAvailableBanks] = useState([]);
     const [isPopupVisible, setPopupVisible] = useState(false);
     const [popupContent, setPopupContent] = useState('');
+    const [updateBank, setUpdateBank] = useState(false);
+    const [fileData, setFileData] =  useState({uri:null,filename:null,type:null});
+    const [redeemPayload,setRedeemPayload] = useState({});
 
     useEffect(() => {
         const getUserRoleFromAsyncStorage = async () => {
             const userRole = await AsyncStorage.getItem('userRole');
             setUserRole(userRole);
+            console.log(userRole,">>>>>>userrole")
+            getBankDetailsAndCallFileUri()
+            getBankDetail().then((res) =>
+              res.json().then((result) =>{
+                if(result?.bankDataPresent == 1){
+                    setUpdateBank(true)
+                    getBankDetailsAndCallFileUri();
+                }
+              })
+            );
         };
 
         // Define a function to get bank details and call getFileUri
         const getBankDetailsAndCallFileUri = async () => {
             try {
                 await getUserRoleFromAsyncStorage();
-                const response = await getBankDetails();
+                const response = await getBankDetail();
                 if (response.status === 200) {
                     const data = await response.json();
-                    console.log(data.errorMessage, "<><<error message<><>")
-                    if (data.errorMessage) {
+                    console.log(data)
+                    if (data.errorMessage && data.bankDataPresent == 1) {
                         setPopupContent(data.errorMessage);
                         setPopupVisible(true);
+                        setUpdateBank(true)
                     }
                     else {
                         setAccHolder(data.bankAccHolderName);
@@ -56,8 +78,7 @@ const InstantBankTransfer = () => {
                         setAccNo(data.bankAccNo);
                         setSelectedImageName(data.checkPhoto);
                         setEntityUid(data.checkPhoto);
-
-                        // Call getFileUri with the user role
+    
                         await getFileUri(data.checkPhoto);
                     }
                 } else {
@@ -124,11 +145,13 @@ const InstantBankTransfer = () => {
                     const fileData = {
                         uri: response.assets[0].uri,
                         type: response.assets[0].type,
-                        name: response.assets[0].fileName,
+                        filename: response.assets[0].fileName,
                     };
+
+                    setFileData(fileData)
                     setSelectedImage(response.assets[0].uri);
                     setSelectedImageName(response.assets[0].fileName);
-                    triggerApiWithImage(fileData);
+                    // triggerApiWithImage(fileData);
                 }
             }
         );
@@ -154,7 +177,7 @@ const InstantBankTransfer = () => {
                     };
                     setSelectedImage(response.assets[0].uri);
                     setSelectedImageName(response.assets[0].fileName);
-                    triggerApiWithImage(fileData);
+                    // triggerApiWithImage(fileData);
                 }
             }
         );
@@ -169,23 +192,30 @@ const InstantBankTransfer = () => {
         try {
             const response = await sendFile(formData);
             setEntityUid(response.data.entityUid);
+            console.log(response.data.entityUid,">>>>>>my logssssssssssssssssss")
         } catch (error) {
             console.error('API Error:', error);
         }
     };
 
-    const handleProceed = () => {
+    const handleProceed = async () => {
+      const redeemResult = await bankTransfer(redeemPayload)
+      ToastAndroid.show(redeemResult?.message || 'Points redeemed', ToastAndroid.SHORT);
+    };
+
+    const handleSubmit = async () => {
         const postData = {
             bankAccNo: accNo,
             bankAccHolderName: accHolder,
             bankAccType: accType,
             bankNameAndBranch: bankName,
             bankIfsc: ifscCode,
-            checkPhoto: entityUid,
+            // checkPhoto: entityUid,
         };
+        postData.checkPhoto = await sendImage(fileData,"CHEQUE",userRole)
         updateBankDetails(postData)
             .then(response => {
-                console.log(postData, "---------------postdata")
+                console.log(postData, "---------------postdata",response)
                 if (response.status === 200) {
                     const responses = response.json()
                     return responses;
@@ -199,134 +229,204 @@ const InstantBankTransfer = () => {
             .catch(error => {
                 console.error('API Error:', error);
             });
-    };
+    }
     const showSnackbar = (message) => {
         Snackbar.show({
             text: message,
             duration: Snackbar.LENGTH_SHORT,
         });
     };
+
+    const handleClose = () => {
+        navigation.goBack();
+    }
     return (
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <View style={styles.mainWrapper}>
-                <View style={styles.header}>
-                    <Text style={styles.textHeader}>{t('strings:bank_details')}</Text>
-                    <Text style={styles.textSubHeader}>{t('strings:for_account_tranfer_only')}</Text>
-                </View>
-                <View style={styles.form}>
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder={t('strings:lbl_account_number')}
-                            placeholderTextColor={colors.grey}
-                            value={accNo}
-                            onChangeText={accNo => setAccNo(accNo)}
-                        />
-                    </View>
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder={t('strings:lbl_account_holder_name')}
-                            value={accHolder}
-                            placeholderTextColor={colors.grey}
-                            onChangeText={accHolder => setAccHolder(accHolder)}
-                        />
-                    </View>
-                    <View style={styles.inputContainer}>
-                        <Picker
-                            selectedValue={accType}
-                            onValueChange={(itemValue) => setAccType(itemValue)}
-                            style={styles.picker}
-                        >
-                            <Picker.Item label={t('strings:account_type:saving')} value={'savings'} />
-                            <Picker.Item label={t('strings:account_type:current')} value={'current'} />
-                        </Picker>
-
-
-                        <Image source={require('../../../../../assets/images/ic_ticket_drop_down2.png')} style={{ width: '5%', height: '100%', marginRight: 5 }} resizeMode="contain" />
-                    </View>
-                    <View style={styles.inputContainer}>
-                        <Picker
-                            selectedValue={bankName}
-                            onValueChange={(itemValue) => setBankName(itemValue)}
-                            style={styles.picker}
-                        >
-                            {availableBanks.map((bank, index) => (
-                                <Picker.Item key={index} label={bank} value={bank.bankNameAndBranch} />
-                            ))}
-                        </Picker>
-                        <Image source={require('../../../../../assets/images/ic_ticket_drop_down2.png')} style={{ width: '5%', height: '100%', marginRight: 5 }} resizeMode="contain" />
-                    </View>
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder={t('strings:ifsc')}
-                            value={ifscCode}
-                            placeholderTextColor={colors.grey}
-                            onChangeText={ifscCode => setIfscCode(ifscCode)}
-                        />
-                    </View>
-                    <View>
-                        <TouchableOpacity style={styles.inputContainer} onPress={handleImagePickerPress}>
-                            {selectedImage ? (
-                                <TextInput
-                                    style={styles.input}
-                                    placeholder={selectedImageName}
-                                    placeholderTextColor={colors.grey}
-                                    editable={false}
-                                />
-                            ) : (
-                                <TextInput
-                                    style={styles.input}
-                                    placeholder={t('strings:lbl_upload_cancelled_cheque')}
-                                    placeholderTextColor={colors.grey}
-                                    editable={false}
-                                />
-                            )}
-                            <View style={styles.inputImage}>
-                                {selectedImage ? (
-                                    <Image source={{ uri: selectedImage }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
-                                ) : (
-                                    <Image source={require('../../../../../assets/images/photo_camera.png')} style={{ width: '100%', height: '100%' }} resizeMode="contain" />
-                                )}
-                            </View>
-                        </TouchableOpacity>
-
-                        {/* Modal for selecting camera or gallery */}
-                        <Modal
-                            animationType="slide"
-                            transparent={true}
-                            visible={showImagePickerModal}
-                        >
-                            <View style={styles.modalContainer}>
-                                <View style={styles.modalContent}>
-                                    <Button title={t('strings:capture_from_camera')} onPress={handleCameraUpload} />
-                                    <Button title={t('strings:select_from_gallery')} onPress={handleGalleryUpload} />
-                                </View>
-                            </View>
-                        </Modal>
-                    </View>
-                </View>
-                <View style={styles.button}>
-                    <Buttons
-                        label={t('strings:proceed')}
-                        variant="filled"
-                        onPress={() => handleProceed()}
-                        width="100%"
-                        iconHeight={10}
-                        iconWidth={30}
-                        iconGap={30}
-                        icon={arrowIcon}
-                    />
-                </View>
-            </View>
-            {isPopupVisible && (
-                <Popup isVisible={isPopupVisible} onClose={() => setPopupVisible(false)}>
-                    {popupContent}
-                </Popup>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.mainWrapper}>
+          <View style={styles.header}>
+            <Text style={styles.textHeader}>{t("strings:bank_details")}</Text>
+            <Text style={styles.textSubHeader}>
+              {t("strings:for_account_tranfer_only")}
+            </Text>
+          </View>
+          <View style={styles.form}>
+            {!updateBank && (
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.input}
+                  placeholder={t("strings:enter_points_to_be_redeemed")}
+                  placeholderTextColor={colors.grey}
+                  value={accNo}
+                  onChangeText={(accNo) => setAccNo(accNo)}
+                />
+              </View>
             )}
-        </ScrollView>
-    )
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder={t("strings:lbl_account_number")}
+                placeholderTextColor={colors.grey}
+                value={accNo}
+                onChangeText={(accNo) => setAccNo(accNo)}
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder={t("strings:lbl_account_holder_name")}
+                value={accHolder}
+                placeholderTextColor={colors.grey}
+                onChangeText={(accHolder) => setAccHolder(accHolder)}
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Picker
+                selectedValue={accType}
+                onValueChange={(itemValue) => setAccType(itemValue)}
+                style={styles.picker}
+              >
+                <Picker.Item
+                  label={t("strings:account_type:saving")}
+                  value={"savings"}
+                />
+                <Picker.Item
+                  label={t("strings:account_type:current")}
+                  value={"current"}
+                />
+              </Picker>
+
+              <Image
+                source={require("../../../../../assets/images/ic_ticket_drop_down2.png")}
+                style={{ width: "5%", height: "100%", marginRight: 5 }}
+                resizeMode="contain"
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Picker
+                selectedValue={bankName}
+                onValueChange={(itemValue) => setBankName(itemValue)}
+                style={styles.picker}
+              >
+                {availableBanks.map((bank, index) => (
+                  <Picker.Item
+                    key={index}
+                    label={bank}
+                    value={bank.bankNameAndBranch}
+                  />
+                ))}
+              </Picker>
+              <Image
+                source={require("../../../../../assets/images/ic_ticket_drop_down2.png")}
+                style={{ width: "5%", height: "100%", marginRight: 5 }}
+                resizeMode="contain"
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder={t("strings:ifsc")}
+                value={ifscCode}
+                placeholderTextColor={colors.grey}
+                onChangeText={(ifscCode) => setIfscCode(ifscCode)}
+              />
+            </View>
+            <View>
+              <TouchableOpacity
+                style={styles.inputContainer}
+                onPress={handleImagePickerPress}
+              >
+                {selectedImage ? (
+                  <TextInput
+                    style={styles.input}
+                    placeholder={selectedImageName}
+                    placeholderTextColor={colors.grey}
+                    editable={false}
+                  />
+                ) : (
+                  <TextInput
+                    style={styles.input}
+                    placeholder={t("strings:lbl_upload_cancelled_cheque")}
+                    placeholderTextColor={colors.grey}
+                    editable={false}
+                  />
+                )}
+                <View style={styles.inputImage}>
+                  {selectedImage ? (
+                    <Image
+                      source={{ uri: selectedImage }}
+                      style={{ width: "100%", height: "100%" }}
+                      resizeMode="cover"
+                    />
+                  ) : (
+                    <Image
+                      source={require("../../../../../assets/images/photo_camera.png")}
+                      style={{ width: "100%", height: "100%" }}
+                      resizeMode="contain"
+                    />
+                  )}
+                </View>
+              </TouchableOpacity>
+
+              {/* Modal for selecting camera or gallery */}
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={showImagePickerModal}
+              >
+                <View style={styles.modalContainer}>
+                  <View style={styles.modalContent}>
+                    <Button
+                      title={t("strings:capture_from_camera")}
+                      onPress={handleCameraUpload}
+                    />
+                    <Button
+                      title={t("strings:select_from_gallery")}
+                      onPress={handleGalleryUpload}
+                    />
+                  </View>
+                </View>
+              </Modal>
+            </View>
+          </View>
+          <View style={styles.button}>
+            {!updateBank && (
+              <Buttons
+                label={t("strings:proceed")}
+                variant="filled"
+                onPress={() => handleProceed()}
+                width="100%"
+                iconHeight={10}
+                iconWidth={30}
+                iconGap={30}
+                icon={arrowIcon}
+              />
+            )}
+
+            {updateBank && (
+              <Buttons
+                label={t("strings:submit")}
+                variant="filled"
+                onPress={() => handleSubmit()}
+                width="100%"
+                iconHeight={10}
+                iconWidth={30}
+                iconGap={30}
+                icon={arrowIcon}
+              />
+            )}
+          </View>
+        </View>
+        {isPopupVisible && (
+          <Popup
+            isVisible={isPopupVisible}
+            acceptUpdate={() => setPopupVisible(false)}
+            onClose={() => handleClose()}
+          >
+            {popupContent}
+          </Popup>
+        )}
+      </ScrollView>
+    );
 }
 
 const styles = StyleSheet.create({

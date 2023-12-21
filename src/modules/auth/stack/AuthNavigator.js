@@ -17,6 +17,9 @@ import HomeStack from '../../home/stack/HomeStack';
 import PreviewUserRegistration from '../pages/PreviewUserRegistration';
 
 import RegisterWithOtp from '../pages/RegisterWithOtp';
+import ReUpdateKycOTP from '../pages/ReUpdateKycOTP';
+import ReUpdateKyc from '../pages/ReUpdateKyc';
+import PreviewReUpdateKyc from '../pages/PreviewReUpdateKyc';
 
 
 const AuthNavigator = () => {
@@ -49,6 +52,9 @@ const AuthNavigator = () => {
       <Stack.Screen name="NewUserKyc" component={NewUserKyc} />
       <Stack.Screen name='NomineePage' component={NomineePage} />
       <Stack.Screen name='PreviewSummary' component={PreviewUserRegistration} />
+      <Stack.Screen name='ReUpdateKycOTP' component={ReUpdateKycOTP}/>
+      <Stack.Screen name='ReUpdateKyc' component={ReUpdateKyc}/>
+      <Stack.Screen name='PreviewReUpdateKyc' component={PreviewReUpdateKyc}/>
 
 
     </Stack.Navigator>

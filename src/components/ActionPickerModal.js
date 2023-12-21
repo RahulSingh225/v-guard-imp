@@ -1,78 +1,94 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, Modal } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, Modal,Pressable,Alert } from 'react-native';
 import { FloatingLabelInput } from 'react-native-floating-label-input'; // Import your input component
 import { Picker } from '@react-native-picker/picker'; // Import your Picker component
+import { height, width } from '../utils/dimensions';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
-const ActionPickerModal = ({ label, onSelectAction, selectedValue }) => {
-    const [modalVisible, setModalVisible] = useState(false);
+const ActionPickerModal = ({onCamera,onGallery}) => {
 
+    const [modalVisible, setModalVisible] = useState(true);
+  
+
+    
+      
     return (
-        <View>
-            <FloatingLabelInput
-                label={label}
-                value={selectedValue}
-                onFocus={() => setModalVisible(true)}
-                containerStyles={[styles.input]}
-                staticLabel
-                labelStyles={styles.labelStyles}
-                inputStyles={{
-                    color: 'black',
-                    paddingHorizontal: 10,
-                }}
-            />
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => setModalVisible(false)}
-            >
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
-                        <Picker
-                            mode="dropdown"
-                            style={{ color: 'black' }}
-                            selectedValue={selectedValue}
-                            onValueChange={(itemValue, itemIndex) => {
-                                onSelectAction(itemValue);
-                                setModalVisible(false);
-                            }}
-                        >
-                            <Picker.Item label="Select Action" value="" />
-                            <Picker.Item label="Select Photo from gallery" value="Open Image picker" />
-                            <Picker.Item label="Capture Photo from camera" value="Open camera" />
-                        </Picker>
-                        <TouchableOpacity onPress={() => setModalVisible(false)}>
-                            <Text style={styles.closeButton}>Close</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </Modal>
-        </View>
+       
+        <Modal style={{height:height/2,width:width/2,backgroundColor:'red'}}
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            //Alert.alert('Modal has been closed.');
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+            <Text style={styles.modalText}>Select Action!</Text>
+            <Pressable style={{height:40,marginVertical:15,backgroundColor:'red'}}
+                
+                onPress={onGallery}
+                >
+              <Text style={styles.textStyle}>Select photo from gallery</Text>
+              </Pressable>
+              <Pressable style={{height:40,marginVertical:15,backgroundColor:'blue'}}
+                
+                onPress={onCamera}>
+                <Text style={styles.textStyle}>Capture photo from camera</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+      
     );
 };
 
-const styles = StyleSheet.create({
-    input: {
-        // Your input styles
+const styles =  StyleSheet.create({
+    centeredView: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 22,
+      backgroundColor:'transparent'
     },
-    labelStyles: {
-        // Your label styles
+    modalView: {
+        backgroundColor:'white',
+      margin: 20,
+
+    
+      padding: 35,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
     },
-    modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+    button: {
+      borderRadius: 20,
+      padding: 10,
+      elevation: 2,
     },
-    modalContent: {
-        backgroundColor: 'white',
-        padding: 20,
-        borderRadius: 10,
-        elevation: 5,
+    buttonOpen: {
+      backgroundColor: '#F194FF',
     },
-    closeButton: {
-        color: 'blue',
-        marginTop: 10,
+    buttonClose: {
+      backgroundColor: '#2196F3',
     },
-});
+    textStyle: {
+      color: 'black',
+      fontWeight: 'bold',
+      textAlign: 'left',
+    },
+    modalText: {
+      marginBottom: 15,
+      fontWeight:'bold',
+      textAlign: 'center',
+    },
+  });
+  
 
 export default ActionPickerModal;

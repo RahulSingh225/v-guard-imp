@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import {
-  StyleSheet,
+ StyleSheet,
   Alert,
   PermissionsAndroid,
+  View
 } from 'react-native';
 
 import AppNavigator from './src/components/AppNavigator';
@@ -38,11 +39,15 @@ async function requestAllPermissions() {
 }
 
 import { AuthProvider } from './src/components/AuthContext';
+import ActionPickerModal from './src/components/ActionPickerModal';
+import { height, width } from './src/utils/dimensions';
+import ReUpdateKyc from './src/modules/auth/pages/ReUpdateKyc';
 
 const App = () => {
   useEffect(() => {
     requestAllPermissions();
   }, []);
+
 
   return (
     <AuthProvider>

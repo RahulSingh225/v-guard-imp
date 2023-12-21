@@ -3,12 +3,13 @@ import { StyleSheet, TextInput, View } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import colors from '../../colors';
 
-const DatePicker = ({ date, onDateChange, showDatePicker, onShowDatePicker }) => {
+const DatePicker = ({label, date, onDateChange, showDatePicker, onShowDatePicker }) => {
+    console.log(date,'shuhsuhs')
     return (
         <View>
             <TextInput
                 style={styles.input}
-                placeholder="Select date"
+                placeholder={label?label:"Select date"}
                 value={date ? date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : ''}
                 onFocus={onShowDatePicker}
             />

@@ -11,7 +11,7 @@ const ProfileStack = () => {
         headerShown: false,
       }}>
       <Stack.Screen name="Profile" component={Profile} />
-      <Stack.Screen name="editProfile" component={EditProfile} />
+      <Stack.Screen name="Edit Profile" component={EditProfile} />
     </Stack.Navigator>
   );
 };

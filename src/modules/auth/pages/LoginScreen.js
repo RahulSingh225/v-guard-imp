@@ -172,7 +172,7 @@ const LoginScreen = ({ navigation, route }) => {
               <Text style={styles.validationMessage}>Invalid mobile number</Text>
             )}
             <View style={styles.updateAndForgot}>
-              <TouchableOpacity style={styles.button}>
+              <TouchableOpacity onPress={()=>navigation.navigate('ReUpdateKycOTP')} style={styles.button}>
                 <Text style={styles.buttonText}>{t('strings:update_kyc_capslock')}</Text>
               </TouchableOpacity>
 

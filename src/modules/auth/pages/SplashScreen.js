@@ -21,11 +21,16 @@ const SplashScreen = ({ navigation }) => {
   };
 
   const navigateToCategory = () => {
+    console.log('hit')
     navigation.navigate('category');
   };
 
   useFocusEffect(
     useCallback(() => {
+
+      setTimeout(() => {
+        console.log('timeout triggered')
+      }, 500);
       console.log('Language changed:', i18n.language);
 
       const timeoutId = setTimeout(navigateToCategory, 500);
@@ -34,6 +39,7 @@ const SplashScreen = ({ navigation }) => {
     }, [i18n.language, navigateToCategory])
   );
 
+  
   return (
     <View style={styles.mainWrapper}>
       <View style={styles.buttonContainer}>

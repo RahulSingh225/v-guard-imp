@@ -25,7 +25,7 @@ export const createDigestPostRequest = async (relativeUrl = {}, data) => {
         body: JSON.stringify(data),
         username,
         password,
-      });
+      })
 
       return response;
     } else {
@@ -200,6 +200,7 @@ export const GetProfession = async () => {
   console.log('Fetching data for profession:===%%%%');
   try {
     const response = await api.get(`/vguard/api/user/getProfession/${0}`);
+    console.log(response)
     return response.data;
   } catch (error) {
     console.error('Error fetching pin code data:', error);
@@ -222,6 +223,7 @@ export const Getallbanks = async () => {
   console.log('Fetching data for banks:===%%%%');
   try {
     const response = await api.get('/vguard/api/banks/');
+    console.log(response)
     return response.data;
   } catch (error) {
     console.error('Error fetching pin code data:', error);
@@ -492,3 +494,78 @@ export function getInfoDeskBanners() {
     const path = 'infoDesk/banners';
     return createDigestGetRequest(path);
   }
+
+  export function checkScanPopUp(id) {
+    const path = `user/scanPopUp/${id}`;
+    return createDigestGetRequest(path);
+  }
+  export const generateOtpForReverify = async userbody => {
+    try {
+      console.log('==============INSIDE aPI SERVIE ======================');
+      console.log(userbody);
+      console.log('====================================');
+      const response = await api.post('/vguard/api/user/generateOtpForReverify', userbody);
+      return response.data;
+    } catch (error) {
+      console.error('Error ', error);
+      throw error;
+    }
+  };
+
+  export const validateReverifyOtp = async userbody => {
+    try {
+      console.log('==============INSIDE aPI SERVIE ======================');
+      console.log(userbody);
+      console.log('====================================');
+      const response = await api.post('/vguard/api/user/validateReverifyOtp', userbody);
+      return response.data;
+    } catch (error) {
+      console.error('Error ', error);
+      throw error;
+    }
+  };
+
+  export function getUser() {
+    const path = `user/userDetails`;
+    return createDigestGetRequest(path);
+  }
+
+
+  export function getBankDetail() {
+    const path = `user/bankDetails`;
+    return createDigestGetRequest(path);
+  }
+
+  
+export const reUpdateUserForKyc = async userCredentials => {
+  try {
+    const relativeUrl = 'user/reUpdateUserForKyc';
+    const response = await createDigestPostRequest(
+      relativeUrl,
+      userCredentials,
+    );
+    return response.json();
+  } catch (error) {
+    console.error('Error validating login OTP', error);
+    throw error;
+  }
+};
+
+export const processErrorCoupon = async userCredentials => {
+  try {
+    const relativeUrl = 'coupon/processErrorCoupon';
+    const response = await createDigestPostRequest(
+      relativeUrl,
+      userCredentials,
+    );
+    return response.json();
+  } catch (error) {
+    console.error('Error validating login OTP', error);
+    throw error;
+  }
+};
+
+export function bankTransfer(data) {
+  const path = 'order/bankTransfer';
+  return createDigestPostRequest(path, data);
+}
