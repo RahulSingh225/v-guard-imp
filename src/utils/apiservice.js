@@ -132,6 +132,7 @@ const imageApi2 = axios.create({
 
 export const forgotPassword = async mobileNumber => {
   try {
+    console.log("Mobile Number--------", mobileNumber)
     const response = await api.post(
       '/vguard/api/user/forgotPassword',
       mobileNumber,

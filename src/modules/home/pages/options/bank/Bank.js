@@ -14,6 +14,7 @@ import React, { useState, useEffect } from 'react';
 import {
   responsiveFontSize,
   responsiveHeight,
+  responsiveWidth
 } from 'react-native-responsive-dimensions';
 import colors from '../../../../../../colors';
 import { useTranslation } from 'react-i18next';
@@ -49,6 +50,14 @@ const Bank = () => {
   const [availableBanks, setAvailableBanks] = useState([]);
   const [popupContent, setPopupContent] = useState('');
   const [isPopupVisible, setPopupVisible] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const handleImagePress = () => {
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
 
   useEffect(() => {
     const getUserRoleFromAsyncStorage = async () => {
@@ -193,7 +202,7 @@ const Bank = () => {
 
 
   const handleProceed = () => {
-    if(accNo == '' || accHolder == '' || accType =='' || bankName=='' || ifscCode=='' || entityUid == ''){
+    if (accNo == '' || accHolder == '' || accType == '' || bankName == '' || ifscCode == '' || entityUid == '') {
       showSnackbar('Enter all the details');
       return
     }
@@ -333,11 +342,9 @@ const Bank = () => {
               )}
               <View style={styles.inputImage}>
                 {selectedImage ? (
-                  <Image
-                    source={{ uri: selectedImage }}
-                    style={{ width: '100%', height: '100%' }}
-                    resizeMode="cover"
-                  />
+                  <TouchableOpacity onPress={handleImagePress}>
+                    <Image source={{ uri: selectedImage }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+                  </TouchableOpacity>
                 ) : (
                   <Image
                     source={require('../../../../../assets/images/photo_camera.png')}
@@ -347,6 +354,21 @@ const Bank = () => {
                 )}
               </View>
             </TouchableOpacity>
+
+            <Modal
+              visible={isModalVisible}
+              transparent={true}
+              animationType="slide"
+              onRequestClose={closeModal}
+            >
+              <View style={styles.modalContainer}>
+                <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+                  <Image style={{ width: 50, height: 50 }} source={require('../../../../../assets/images/ic_close.png')} />
+                </TouchableOpacity>
+
+                <Image source={{ uri: selectedImage }} style={{ width: responsiveWidth(80), height: responsiveHeight(80) }} resizeMode="contain" />
+              </View>
+            </Modal>
 
             {/* Modal for selecting camera or gallery */}
             <Modal
@@ -410,12 +432,12 @@ const Bank = () => {
         </View>
       </View>
       {isPopupVisible && (
-      <Popup
-        isVisible={isPopupVisible}
-        onClose={() => setPopupVisible(false)}>
-        {popupContent}
-      </Popup>
-    )}
+        <Popup
+          isVisible={isPopupVisible}
+          onClose={() => setPopupVisible(false)}>
+          {popupContent}
+        </Popup>
+      )}
     </ScrollView>
   );
 };

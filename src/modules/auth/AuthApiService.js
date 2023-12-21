@@ -25,3 +25,11 @@ export function validateLoginOtp(number, otp) {
     return createDigestPostRequest(path, body)
 }
 
+export function forgotPassword(number) {
+    const body = {
+        mobileNo: number    
+    }
+    const path = "user/forgotPassword"
+    return createDigestPostRequest(path, body)
+}
+

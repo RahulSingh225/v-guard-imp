@@ -1064,7 +1064,7 @@ const EditProfile = () => {
                     setImageData={() => setPostDataOfImage('kycDetails?.selfie', selfie)}
                     imageRelated='PROFILE'
                 /> */}
-                <Text style={{ color: colors.black, marginLeft: 2, marginBottom: 2, fontWeight: 'bold' }}>{t('strings:lbl_update_your_selfie')}</Text>
+                {/* <Text style={{ color: colors.black, marginLeft: 2, marginBottom: 2, fontWeight: 'bold' }}>{t('strings:lbl_update_your_selfie')}</Text> */}
                 <View style={styles.imagecontainereditprofile}>
                     <View
                         style={styles.imagepicker}
@@ -1164,12 +1164,12 @@ const EditProfile = () => {
                     disabled={true}
                 /> */}
 
-                <Text style={{ color: colors.black, marginLeft: 24, marginBottom: 2 }}>{t('strings:update_aadhar_voter_id_dl_front')}</Text>
+                {/* <Text style={{ color: colors.black, marginLeft: 24, marginBottom: 2 }}>{t('strings:update_aadhar_voter_id_dl_front')}</Text> */}
                 <View style={styles.imagecontainereditprofile}>
                     <Text style={{ color: colors.grey, }}>IdProof*(Front)</Text>
                     {Idcardfront != null ? <ImageWithModal imageUri={Idcardfront} style={styles.noimagepicker} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={styles.noimagepicker} />}
                 </View>
-                <Text style={{ color: colors.black, marginLeft: 24, marginTop: 5 }}>{t('strings:update_aadhar_voter_id_dl_back')}</Text>
+                {/* <Text style={{ color: colors.black, marginLeft: 24, marginTop: 5 }}>{t('strings:update_aadhar_voter_id_dl_back')}</Text> */}
                 <View style={styles.imagecontainereditprofile}>
                     <Text style={{ color: colors.grey, }}>IdProof*(Front)</Text>
                     {Idcardback != null ? <ImageWithModal imageUri={Idcardback} style={styles.noimagepicker} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={styles.noimagepicker} />}
@@ -1184,13 +1184,13 @@ const EditProfile = () => {
                     imageRelated='PROFILE'
                     disabled={true}
                 /> */}
-                <Text style={{ color: colors.black, marginLeft: 24, marginBottom: 12 }}>{t('strings:update_pan_card_front')}</Text>
+                {/* <Text style={{ color: colors.black, marginLeft: 24, marginBottom: 12 }}>{t('strings:update_pan_card_front')}</Text> */}
                 <View style={styles.imagecontainereditprofile}>
                     <Text style={{ color: colors.grey}}>{t('strings:pan_card_front')}</Text>
                     {pancarddata != null ? <ImageWithModal imageUri={pancarddata} style={{ marginBottom: 10 }} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={styles.noimagepicker} />}
                 </View>
                 <InputField
-                    label={t('strings:pan_no')}
+                    label={t('strings:update_pan_number_manually')}
                     value={form2.pancard}
                     disabled={true}
                 />
