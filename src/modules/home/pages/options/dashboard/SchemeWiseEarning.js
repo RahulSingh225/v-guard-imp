@@ -24,22 +24,19 @@ const SchemeWiseEarning = () => {
         product.partDesc,
     ]);
 
-    const tableHead = ["Sl No.", "Created Date", "Material Description"];
+    const tableHead = ["Sl No.", "Created Date", "Material Description","Coupon Code","Extra Bonus Points","Scheme Name","Scheme Period"];
 
     return (
-        <ScrollView style={styles.container}>
-            <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
-                {data.length === 0 ? (
-                    <Rows data={[['No Data']]} textStyle={[styles.text, { color: colors.grey, fontWeight: 'bold', textAlign: 'center' }]} />
-                ) : (
-                    <>
-                        <Row data={tableHead} style={styles.head} textStyle={styles.text} />
-                        <Rows data={data} textStyle={styles.text} />
-                    </>
-                )}
-            </Table>
-
-        </ScrollView>
+      <ScrollView style={styles.container} horizontal={true}>
+        <Table borderStyle={{ borderWidth: 0 }}>
+          <Row data={tableHead} style={styles.head} textStyle={styles.text} />
+          {data.length === 0 ? (
+            <Rows data={[["No Data"]]} textStyle={{ color: "#000000" }} />
+          ) : (
+            <Rows data={data} textStyle={styles.text} />
+          )}
+        </Table>
+      </ScrollView>
     );
 }
 
@@ -49,12 +46,14 @@ const styles = StyleSheet.create({
         backgroundColor: colors.white
     },
     head: {
-        height: responsiveHeight(7),
-        backgroundColor: colors.lightGrey
+        backgroundColor: colors.lightGrey,
+        backgroundColor:'#000000',
     },
     text: {
-        margin: 10,
-        color: colors.black
+        color: colors.white,
+        paddingRight:30,
+        paddingBottom:20,
+        fontWeight:700,
     },
     title: {
         fontSize: responsiveFontSize(2.5),
