@@ -60,7 +60,7 @@ const UploadError = () => {
       couponCode:barcode,
       errorCouponPath:imagePath
     }
-    processErrorCoupon(errorCoupon).then(result=>)
+    // processErrorCoupon(errorCoupon).then(result=>)
   }  
 
   async function openGallery() {

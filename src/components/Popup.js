@@ -8,13 +8,14 @@ import {
   Image,
 } from 'react-native';
 import closeIcon from '../assets/images/ic_close.png';
+import checkIcon from '../assets/images/ic_tick_black.png';
 import colors from '../../colors';
 import {
   responsiveFontSize,
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
 
-const Popup = ({isVisible, onClose, children}) => {
+const Popup = ({isVisible, onClose, children, acceptUpdate}) => {
   if (!isVisible) {
     return null;
   }
@@ -28,6 +29,15 @@ const Popup = ({isVisible, onClose, children}) => {
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <Text style={styles.popupText}>{children}</Text>
+
+          {acceptUpdate && <TouchableOpacity style={styles.checkButton} onPress={acceptUpdate}>
+            <Image
+              source={checkIcon}
+              style={{flex: 1, width: '100%', height: '100%'}}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>}
+
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
             <Image
               source={closeIcon}
@@ -64,6 +74,14 @@ const styles = StyleSheet.create({
     right: 10,
     width: responsiveHeight(8),
     height: responsiveHeight(8),
+  },
+  checkButton:{
+    position: 'absolute',
+    bottom: 23,
+    right: 80,
+    width: responsiveHeight(5.5),
+    height: responsiveHeight(5.5),
+    // padding:2
   },
   closeButtonText: {
     color: 'blue',

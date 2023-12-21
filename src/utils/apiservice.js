@@ -529,6 +529,12 @@ export function getInfoDeskBanners() {
     return createDigestGetRequest(path);
   }
 
+
+  export function getBankDetail() {
+    const path = `user/bankDetails`;
+    return createDigestGetRequest(path);
+  }
+
   
 export const reUpdateUserForKyc = async userCredentials => {
   try {
@@ -557,3 +563,8 @@ export const processErrorCoupon = async userCredentials => {
     throw error;
   }
 };
+
+export function bankTransfer(data) {
+  const path = 'order/bankTransfer';
+  return createDigestPostRequest(path, data);
+}
