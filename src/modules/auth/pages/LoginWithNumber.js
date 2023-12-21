@@ -6,7 +6,7 @@ import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
 import Message from "../../../components/Message";
 import { sendloginWithOtp } from '../AuthApiService';
-import { loginwithotpApi, otpviacall } from "../../../utils/apiservice";
+import { generateOtpForLogin, loginwithotpApi, otpviacall } from "../../../utils/apiservice";
 import Popup from '../../../components/Popup';
 import { width, height } from '../../../utils/dimensions';
 import { Colors } from '../../../utils/constants';
@@ -48,28 +48,18 @@ const LoginWithNumber = ({ navigation }) => {
 
     const handleValidation = async () => {
         try {
-            let validationResponse = await sendloginWithOtp(number);
-            validationResponse = await validationResponse.json();
-            //  console.log(validationResponse.code, "<><><><><")
-            if (validationResponse.code === 200) {
+            let validationResponse = await generateOtpForLogin(number);
+             console.log(validationResponse, "<><><><><")
+            if (validationResponse.status === 200) {
                 setCounter(60);
                 setotpsentflag(true);
-                const successMessage = validationResponse.message;
+                const successMessage = validationResponse.data.message;
                 setIsPopupVisible(true);
                 setPopupMessage(successMessage);
-
-
-                // setTimeout(() => {
-                //     clearInterval(intervalId);
-                //     navigation.navigate('registerwithotp', { usernumber: number });
-                // }, 800);
-
-                // Alert.alert(successMessage);
             } else {
                 const errorMessage = validationResponse.message;
                 setIsPopupVisible(true);
                 setPopupMessage(errorMessage);
-                // Alert.alert(errorMessage);
             }
             setTimeout(() => {
                 if (countdown > 0) {
@@ -174,7 +164,7 @@ const LoginWithNumber = ({ navigation }) => {
 
                             <TextInput
                                 style={styles.input}
-                                placeholder={t('auth:register:enterOtp')}
+                                placeholder={t('strings:enter_otp')}
                                 placeholderTextColor={placeholderColor}
                                 keyboardType='number-pad'
                                 value={otp}
