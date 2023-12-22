@@ -11,12 +11,17 @@ const BASE_URL = 'http://34.100.133.239:18092/vguard/api/';
 export const createDigestPostRequest = async (relativeUrl = {}, data) => {
   try {
     const url = BASE_URL + relativeUrl;
-    const headers = {
-      'Content-Type': 'application/json',
-    };
-
+   
     const username = await AsyncStorage.getItem('username');
     const password = await AsyncStorage.getItem('password');
+    const authType = await AsyncStorage.getItem('authType');
+
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'authType':authType
+    };
+
 
     if (username && password) {
       const response = await digestFetch(url, {
@@ -39,12 +44,16 @@ export const createDigestPostRequest = async (relativeUrl = {}, data) => {
 export const createDigestGetRequest = async (relativeUrl = {}) => {
   try {
     const url = BASE_URL + relativeUrl;
-    const headers = {
-      'Content-Type': 'application/json',
-    };
+   
 
     const username = await AsyncStorage.getItem('username');
     const password = await AsyncStorage.getItem('password');
+    const authType = await AsyncStorage.getItem('authType');
+
+     const headers = {
+      'Content-Type': 'application/json',
+      'authType':authType
+    };
 
     if (username && password) {
       const response = await digestFetch(url, {
@@ -65,11 +74,12 @@ export const createDigestGetRequest = async (relativeUrl = {}) => {
 
 export const loginPasswordDigest = async (relativeUrl, username, password) => {
   try {
+    const authType = await AsyncStorage.getItem('authType');
     const url = BASE_URL + relativeUrl;
     const headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      authType: 'password',
+      authType: authType,
     };
     await AsyncStorage.clear();
     let response = null;
@@ -498,7 +508,7 @@ export const generateOtpForLogin = async number => {
   }
 };
 
-export const validateOtpLogin = async userDetails => {
+export const validateOtpLogin = async (userDetails,headers=null) => {
   try {
     const relativeUrl = `${BASE_URL}user/validateLoginOtp`;
     const response = await api.post(relativeUrl,userDetails)

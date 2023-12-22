@@ -5,13 +5,14 @@ import colors from '../../../../colors';
 import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
 import Message from "../../../components/Message";
-import { sendloginWithOtp } from '../AuthApiService';
+import { loginWithPassword, sendloginWithOtp } from '../AuthApiService';
 import { generateOtpForLogin, loginwithotpApi, otpviacall, validateOtpLogin } from "../../../utils/apiservice";
 import Popup from '../../../components/Popup';
 import { width, height } from '../../../utils/dimensions';
 import { Colors } from '../../../utils/constants';
 import { responsiveFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
 import { useAuth } from '../../../components/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginWithNumber = ({ navigation }) => {
     const [number, setNumber] = useState('');
@@ -82,13 +83,28 @@ const LoginWithNumber = ({ navigation }) => {
                 loginOtpUserName: number,
                 otp: otp,
             };
+            
+
 
             let response = await validateOtpLogin(userCredentials);
             if (response.status === 200) {
-                login(response);
+              //console.log(response);
+              AsyncStorage.setItem("username", String(number)).then((r) => {
+                AsyncStorage.setItem("password", String(otp)).then((r) => {
+                  AsyncStorage.setItem("authType", "otp").then((result) => {
+                    loginWithPassword(number, otp ).then(
+                      (r) => {
+                        if (r.status == 200) {
+                          r.json().then((result) => login(result));
+                        }
+                      }
+                    );
+                  });
+                });
+              });
             } else {
-                setIsPopupVisible(true);
-                setPopupMessage(response?.data?.message);
+              setIsPopupVisible(true);
+              setPopupMessage(response?.data?.message);
             }
             console.log(response);
         } catch (error) {

@@ -98,7 +98,10 @@ const LoginScreen = ({ navigation, route }) => {
       if (response.status === 200) {
         var r = await response.json();
         console.log(r);
-        login(r);
+        AsyncStorage.setItem('authType','').then(r=>{
+          login(r);
+        })
+        
       } else {
         togglePopup();
       }

@@ -85,7 +85,10 @@ const ReUpdateKycOTP = ({navigation}) => {
                 if (response.code === 200) {
                    AsyncStorage.setItem('username',JSON.stringify(number)).then(r=>{
                     AsyncStorage.setItem('password',JSON.stringify(otp)).then(r=>{
-                        navigation.navigate('ReUpdateKyc')
+                        AsyncStorage.setItem('authType','otp').then(r=>{
+                            navigation.navigate('ReUpdateKyc')
+                        })
+                       
                     })
                    })
                 } else {
