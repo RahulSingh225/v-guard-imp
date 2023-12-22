@@ -6,11 +6,12 @@ import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
 import Message from "../../../components/Message";
 import { sendloginWithOtp } from '../AuthApiService';
-import { generateOtpForLogin, loginwithotpApi, otpviacall } from "../../../utils/apiservice";
+import { generateOtpForLogin, loginwithotpApi, otpviacall, validateOtpLogin } from "../../../utils/apiservice";
 import Popup from '../../../components/Popup';
 import { width, height } from '../../../utils/dimensions';
 import { Colors } from '../../../utils/constants';
 import { responsiveFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
+import { useAuth } from '../../../components/AuthContext';
 
 const LoginWithNumber = ({ navigation }) => {
     const [number, setNumber] = useState('');
@@ -22,6 +23,10 @@ const LoginWithNumber = ({ navigation }) => {
     const [countdown, setCounter] = useState(null);
     const [otpsentflag, setotpsentflag] = useState(false);
     const [otp, setOtp] = useState('');
+
+    
+    const { login } = useAuth();
+    
     useEffect(() => {
         let intervalId;
         if (countdown > 0) {
@@ -49,7 +54,6 @@ const LoginWithNumber = ({ navigation }) => {
     const handleValidation = async () => {
         try {
             let validationResponse = await generateOtpForLogin(number);
-             console.log(validationResponse, "<><><><><")
             if (validationResponse.status === 200) {
                 setCounter(60);
                 setotpsentflag(true);
@@ -75,19 +79,16 @@ const LoginWithNumber = ({ navigation }) => {
     const loginUserWithOtp = async () => {
         try {
             let userCredentials = {
-                number: number,
+                loginOtpUserName: number,
                 otp: otp,
-                authType: "otp",
             };
 
-            let response = await loginwithotpApi(userCredentials);
-            let message = response.message;
-            if (response.code === 200) {
-                setIsPopupVisible(true);
-                setPopupMessage(message);
+            let response = await validateOtpLogin(userCredentials);
+            if (response.status === 200) {
+                login(response);
             } else {
                 setIsPopupVisible(true);
-                setPopupMessage(message);
+                setPopupMessage(response?.data?.message);
             }
             console.log(response);
         } catch (error) {

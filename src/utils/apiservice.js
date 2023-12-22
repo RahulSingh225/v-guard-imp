@@ -488,9 +488,20 @@ export const otpviacall = async userCredentials => {
 
 export const generateOtpForLogin = async number => {
   try {
-    const relativeUrl = 'http://34.100.133.239:18092/vguard/api/user/generateOtpForLogin';
+    const relativeUrl = `${BASE_URL}user/generateOtpForLogin`;
     const response = await api.post(relativeUrl,{loginOtpUserName:number,otpType:null})
-    console.log(response,">>>>>response")
+    return response;
+  } catch (error) {
+    console.error('Error validating login OTP', error);
+    console.log(">>>>error",error)
+    throw error;
+  }
+};
+
+export const validateOtpLogin = async userDetails => {
+  try {
+    const relativeUrl = `${BASE_URL}user/validateLoginOtp`;
+    const response = await api.post(relativeUrl,userDetails)
     return response;
   } catch (error) {
     console.error('Error validating login OTP', error);
