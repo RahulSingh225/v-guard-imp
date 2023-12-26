@@ -9,7 +9,12 @@ export const AuthProvider = ({children}) => {
   const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
 
   const login = async User => {
-   await AsyncStorage.setItem("USER",JSON.stringify(User))
+    try{
+     await AsyncStorage.setItem("USER",JSON.stringify(User))
+    }catch(e){
+      console.log("Issue in setting User details",e)
+    }
+   
     setIsUserAuthenticated(true);
   };
 
@@ -29,13 +34,13 @@ export const AuthProvider = ({children}) => {
   useEffect(() => {
     AsyncStorage.getItem('USER')
       .then(value => {
-        
-
         if (value) {
           login(JSON.parse(value));
         } else {
           logout();
         }
+      }).catch(e=>{
+        console.log(e,">>>>>>>error")
       })
       .catch(error => {
         console.error('AsyncStorage error:', error);

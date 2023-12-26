@@ -9,6 +9,8 @@ import {
   Modal
 } from 'react-native';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import colors from '../../../../colors';
@@ -96,11 +98,14 @@ const LoginScreen = ({ navigation, route }) => {
       console.log(response);
       showLoader(false)
       if (response.status === 200) {
-        var r = await response.json();
-        console.log(r);
-        AsyncStorage.setItem('authType','').then(r=>{
-          login(r);
-        })
+        var loginResponse = await response.json();
+        AsyncStorage.setItem("authType", "")
+          .then((r) => {
+            login(loginResponse);
+          })
+          .catch((r) => {
+            console.log(r, ">>>>>>>errror5");
+          });
         
       } else {
         togglePopup();
