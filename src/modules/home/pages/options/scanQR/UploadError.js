@@ -22,6 +22,8 @@ import ActionPickerModal from '../../../../../components/ActionPickerModal';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { sendImage } from '../../../../../utils/FileUtils';
 import { processErrorCoupon } from '../../../../../utils/apiservice';
+import Loader from '../../../../../components/Loader';
+import Popup from '../../../../../components/Popup';
 
 const UploadError = () => {
   const { t } = useTranslation();
@@ -29,7 +31,8 @@ const UploadError = () => {
   const [couponImage, setCouponImage] = React.useState(null)
   const [barcode, setBarcode] = React.useState(null)
   const [remarks,setRemarks] = React.useState(null);
-
+  const [isLoading,setIsLoading] = React.useState(false);
+  const [popupProps,setPopupPros] = React.useState({isVisible:false,children:null})
 
   async function openCamera() {
     let options = { quality: 5, maxWidth: 500, maxHeight: 500, includeBase64: true, mediaType: 'photo', noData: true, };
@@ -48,19 +51,35 @@ const UploadError = () => {
   }
 
   async function uploadScanError(){
-
-    if(!couponImage) {ToastAndroid.show(t('strings:please_capture_or_upload_invalid_coupon_picture'),ToastAndroid.SHORT); return}
-    if(!barcode){ ToastAndroid.show(t('strings:error_barcode'));return}
-    if(!barcode.length()<16) {ToastAndroid.show(t('strings:please_enter_valid_sixteen_digit'));return}
-    if(!remarks) {ToastAndroid.show(t('strings:enter_remarks')); return}
-
-    const imagePath = await sendImage(couponImage,'ERROR_COUPON','1')
-    const errorCoupon = {
-      remarks:remarks,
-      couponCode:barcode,
-      errorCouponPath:imagePath
-    }
-    // processErrorCoupon(errorCoupon).then(result=>)
+    
+   try {
+     if(!couponImage) {ToastAndroid.show(t('strings:please_capture_or_upload_invalid_coupon_picture'),ToastAndroid.SHORT); return}
+     if(!barcode){ ToastAndroid.show(t('strings:error_barcode'));return}
+     if(!barcode.length<16) {ToastAndroid.show(t('strings:please_enter_valid_sixteen_digit'));return}
+     if(!remarks) {ToastAndroid.show(t('strings:enter_remarks')); return}
+     //setIsLoading(true)
+     const imagePath = await sendImage(couponImage,'ERROR_COUPON','1')
+     const errorCoupon = {
+       remarks:remarks,
+       couponCode:barcode,
+       errorCouponPath:imagePath
+     }
+     processErrorCoupon(errorCoupon).then(result=>{
+       //setIsLoading(false);
+       console.log(result);
+       if(result.code==200){
+        setPopupPros({isVisible:true,children:result.message})
+       }else{
+         ToastAndroid.show(result.message,ToastAndroid.SHORT);
+       }
+     }).catch(error=>{
+       console.log(error);
+       ToastAndroid.show(t('strings:problem_occurred'),ToastAndroid.SHORT);
+     })
+   } catch (error) {
+    console.log(error);
+    ToastAndroid.show('Something went wrong',ToastAndroid.SHORT);
+   }
   }  
 
   async function openGallery() {
@@ -82,6 +101,10 @@ const UploadError = () => {
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       <View style={styles.mainWrapper}>
+        {popupProps.isVisible&&
+        <Popup isVisible={popupProps.isVisible} onClose={()=>setPopupPros({...popupProps,isVisible:false})} children={popupProps.children}/>}
+        {isLoading&&
+        <Loader isLoading={isLoading}/>}
         {showModal &&
           <ActionPickerModal onCamera={()=>openCamera()} onGallery={()=>openGallery()} />}
         <Pressable onPress={() => setshowModal(true)}>
@@ -137,7 +160,7 @@ const UploadError = () => {
           style={styles.button}
           label={t('strings:submit')}
           variant="filled"
-          onPress={() => console.log('Pressed')}
+          onPress={() => uploadScanError()}
           width="100%"
           iconHeight={10}
           iconWidth={30}
