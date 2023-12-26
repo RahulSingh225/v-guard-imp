@@ -1,109 +1,146 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Linking, StyleSheet, Image } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Linking, StyleSheet, Image,FlatList } from 'react-native';
 import colors from '../../../../../../colors';
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import { fetchTicketHistory } from '../../HomeApiService';
 import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 
-const TicketHistory = () => {
-  const [data, setData] = useState([]);
-  const { t } = useTranslation();
+const TicketHistory = () => { 
+  const [data,setData] = useState([])
 
   useEffect(() => {
-    fetchTicketHistory()
-      .then(response => response.json())
-      .then(responseData => {
-        setData(responseData);
-        console.log("<><<><<><>><", responseData, "<><<<><><><><><><<><");
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
-  }, []);
+    (async function (){
+      try{
+        let response = await fetchTicketHistory()
+        response = await response.json()
+        setData(response)
+        console.log(response,">>>>>>>>got it")
+      }catch(e){
+        console.error(e)
+      }
+    })()
+  
+  },[]);
+
+  return ( 
+      <View style={styles.container}> 
+          <ExpandableList data={data} /> 
+      </View> 
+  ); 
+}; 
+
+const ExpandableListItem = ({ item }) => { 
+  const closedImage = require("../../../../../assets/images/ic_ticket_drop_donw1.png")
+  const openedImage = require("../../../../../assets/images/ic_ticket_drop_down2.png")
+  const [expanded, setExpanded] = useState(false); 
+  const [expandImage, setExpandImage] = useState(closedImage);
+  const toggleExpand = () => { 
+      setExpanded(!expanded); 
+      if(expanded){
+        setExpandImage(closedImage)
+      }else{
+        setExpandImage(openedImage)
+      }
+  }; 
 
   return (
-    <ScrollView style={styles.container}>
-      {data.length === 0 ? (
-        <View style={styles.noDataContainer}>
-          <Text style={styles.noDataText}>{t('strings:no_data')}</Text>
+    <View style={styles.itemContainer}>
+      <TouchableOpacity onPress={toggleExpand} style={styles.itemTouchable}>
+        <Text style={{ fontWeight: 700, color: "#000000" }}>{item.createdDate}</Text>
+        <Text style={{ fontWeight: 700, color: "#000000" }}>
+        {item.name}
+        </Text>
+        <Image style={styles.tinyLogo} source={expandImage} />
+        <View
+          style={{
+            backgroundColor: "#fcc630",
+            width: "fit-content",
+            padding: 8,
+            borderRadius: 2,
+          }}
+        >
+          <Text style={{ fontWeight: 700, color: "#000000" }}>{item.status}</Text>
         </View>
-      ) : (
-        data.map((item, index) => (
-          <TouchableOpacity key={index} style={styles.listItem}>
-            <View style={styles.messageContainer}>
-              <Text style={styles.messageText}>{item.createdDate}</Text>
-              <Text style={styles.messageText}>{item.name}</Text>
-              <View style={styles.statusContainer}>
-                {/* <Image style={styles.downImage} source={require('../../../../../assets/images/ic_ticket_drop_donw1.png')} /> */}
-                <Text style={styles.status}>{item.status}</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        ))
+      </TouchableOpacity>
+      {expanded && (
+        <View style={{flexDirection:"row",justifyContent:'center'}}>
+           <View style={styles.itemContent}>
+          <Text >Ticket No: {item.ticketNo}</Text>
+          <Text>Status: {item.status}</Text>
+        </View>
+        </View>
+       
       )}
-    </ScrollView>
-  );
-};
+    </View>
+  ); 
+}; 
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 15,
-    backgroundColor: colors.white,
-  },
-  noDataContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  noDataText: {
-    fontSize: responsiveFontSize(2),
-    color: colors.grey,
-    fontWeight: 'bold',
-  },
-  title: {
-    fontSize: responsiveFontSize(2.5),
-    fontWeight: 'bold',
-    color: colors.black,
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  listItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.lightGrey,
-  },
-  messageContainer: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  },
-  messageText: {
-    fontSize: responsiveFontSize(1.6),
-    textAlign: 'left',
-    color: colors.black
-  },
-  status: {
-    backgroundColor: colors.yellow,
-    color: colors.black,
-    padding: 5,
-    fontSize: responsiveFontSize(1.5),
-    fontWeight: 'bold',
-    borderRadius: 5
-  },
-  downImage: {
-    height: responsiveFontSize(2),
-    width: responsiveFontSize(2)
-  },
-  statusContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: 5,
-    alignItems: 'center'
+const ExpandableList = ({ data }) => { 
+  const renderItem = ({ item }) => ( 
+      <ExpandableListItem item={item} /> 
+  ); 
+
+  return ( 
+      <FlatList 
+          data={data} 
+          renderItem={renderItem} 
+          keyExtractor={(item) => item.id?.toString()} 
+      /> 
+  ); 
+}; 
+
+const styles = StyleSheet.create({ 
+  container: { 
+      flex: 1, 
+      backgroundColor: "#f5f5f5", 
+      paddingTop:20,
+      paddingLeft:5,
+      paddingRight:5
+  }, 
+  header: { 
+      fontSize: 30, 
+      fontWeight: "bold", 
+      marginBottom: 20, 
+      color: "green", 
+      textAlign: "center", 
+  }, 
+  subheader: { 
+      fontSize: 20, 
+      fontWeight: "bold", 
+      marginBottom: 20, 
+      textAlign: "center", 
+  }, 
+  itemContainer: { 
+      marginBottom: 15, 
+      padding: 10, 
+      backgroundColor: "white", 
+      borderRadius: 10, 
+      elevation: 3, 
+  }, 
+  itemTouchable: {
+    flexDirection:'row',
+    justifyContent:"space-between",
+    alignItems:'center'
+  }, 
+  itemTitle: { 
+      fontSize: 18, 
+      fontWeight: "bold", 
+      color: "#333", 
+  }, 
+  itemContent: { 
+      marginTop: 10, 
+      fontSize: 14,  
+      backgroundColor:"#f2d083",
+      paddingLeft:40,
+      paddingRight:40,
+      paddingTop:5,
+      paddingBottom:5,
+      borderRadius:10
+  }, 
+  tinyLogo:{
+    width:20,
+    height:20
   }
 });
 

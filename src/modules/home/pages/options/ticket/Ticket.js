@@ -19,6 +19,7 @@ import { Button } from 'react-native-paper';
 const Ticket = ({ navigation }) => {
 
   const baseURL = 'https://www.vguardrishta.com/img/appImages/Profile/';
+  const [isModalVisible, setModalVisible] = useState(false);
 
   const { t } = useTranslation();
   // const [userName, setUserName] = useState('');
@@ -37,7 +38,7 @@ const Ticket = ({ navigation }) => {
   });
   const [profileImage, setProfileImage] = useState('');
 
-  
+
   const [options, setOptions] = useState([]);
 
   const [selectedOption, setSelectedOption] = useState('');
@@ -47,7 +48,13 @@ const Ticket = ({ navigation }) => {
   const [selectedImageName, setSelectedImageName] = useState("");
   const [entityUid, setEntityUid] = useState("");
   const [descriptionInput, setDescriptionInput] = useState("");
+  const handleImagePress = () => {
+    setModalVisible(true);
+  };
 
+  const closeModal = () => {
+    setModalVisible(false);
+  };
 
   const handleImagePickerPress = () => {
     setShowImagePickerModal(true);
@@ -156,7 +163,7 @@ const Ticket = ({ navigation }) => {
   useEffect(() => {
     console.log("<><><><><><")
     if (userData.userRole && userData.userImage) {
-      
+
       const getImage = async () => {
         try {
           const profileImage = await getFile(userData.userImage, 'PROFILE', userData.userRole);
@@ -165,7 +172,7 @@ const Ticket = ({ navigation }) => {
           console.log('Error while fetching profile image:', error);
         }
       };
-  
+
       getImage();
     }
   }, [userData.userRole, userData.userImage]);
@@ -180,6 +187,7 @@ const Ticket = ({ navigation }) => {
   openFaqS = () => {
     Linking.openURL("https://vguardrishta.com/frequently-questions-retailer.html");
   }
+  
   const handleSubmission = async () => {
     const postData = {
       userId: userData.userId,
@@ -188,6 +196,10 @@ const Ticket = ({ navigation }) => {
       description: descriptionInput,
     };
 
+    if(postData.userId=="" || postData.issueTypeId=="" || postData.imagePath=="" || postData.description==""){
+      showSnackbar('Please enter all the details');
+      return;
+    }
     createTicket(postData)
       .then(response => {
         console.log(postData, "---------------postdata")
@@ -211,6 +223,7 @@ const Ticket = ({ navigation }) => {
       .catch(error => {
         console.error('API Error:', error);
       });
+    
   };
 
   const showSnackbar = (message) => {
@@ -227,7 +240,7 @@ const Ticket = ({ navigation }) => {
 
         <View style={styles.profileDetails}>
           <View style={styles.ImageProfile}>
-          <Image source={{ uri: profileImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
+            <Image source={{ uri: profileImage }} style={{ width: '100%', height: '100%', borderRadius: 100 }} resizeMode='contain' />
           </View>
           <View style={styles.profileText}>
             <Text style={styles.textDetail}>{userData.userName}</Text>
@@ -254,6 +267,8 @@ const Ticket = ({ navigation }) => {
             style={styles.picker}
             label={t('strings:select_ticket_type')}
           >
+            <Picker.Item key="" label="Select Issue Type" value="" />
+
             {options.map(option => (
               <Picker.Item key={option.issueTypeId} label={option.name} value={option.issueTypeId} />
             ))}
@@ -278,59 +293,76 @@ const Ticket = ({ navigation }) => {
         )}
         <View style={styles.inputImage}>
           {selectedImage ? (
+            <TouchableOpacity onPress={handleImagePress}>
             <Image source={{ uri: selectedImage }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+            </TouchableOpacity>
           ) : (
             <Image source={require('../../../../../assets/images/photo_camera.png')} style={{ width: '100%', height: '100%' }} resizeMode="contain" />
           )}
         </View>
       </TouchableOpacity>
 
+      <Modal
+        visible={isModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={closeModal}
+      >
+        <View style={styles.modalContainer}>
+          <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+            <Image style={{width: 50, height: 50}} source={require('../../../../../assets/images/ic_close.png')} />
+          </TouchableOpacity>
+          
+          <Image source={{ uri: selectedImage }} style={{ width: responsiveWidth(80), height: responsiveHeight(80) }} resizeMode="contain" />
+        </View>
+      </Modal>
+
       {/* Modal for selecting camera or gallery */}
       <Modal
-              animationType="slide"
-              transparent={true}
-              visible={showImagePickerModal}
-              style={styles.modalcontainer}
-              hardwareAccelerated={true}
-              opacity={0.3}>
-              <View style={{
-                width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
-                margin: 20,
-                backgroundColor: '#D3D3D3',
-                borderRadius: 20,
-                padding: 10,
-                shadowColor: '#000',
-                shadowOffset: {
-                  width: 100,
-                  height: 2,
-                },
-                shadowOpacity: 0.25,
-                shadowRadius: 4,
-                elevation: 5,
-              }}>
-                <Picker
-                  mode="dropdown"
-                  placeholder={'Update Your Selfie *'}
-                  style={{ color: 'black' }}
-                  selectedValue={select}
-                  onValueChange={(itemValue, itemIndex) => {
-                    if (itemValue === "Open camera") {
-                      handleCameraUpload()
-                    } else if (itemValue === "Open Image picker") {
-                      handleGalleryUpload();
-                    }
-                  }}
-                >
-                  <Picker.Item label="Select Action" value="" />
-                  <Picker.Item label="Select Photo from gallery" value="Open Image picker" />
-                  <Picker.Item label="Capture Photo from camera" value="Open camera" />
+        animationType="slide"
+        transparent={true}
+        visible={showImagePickerModal}
+        style={styles.modalcontainer}
+        hardwareAccelerated={true}
+        opacity={0.3}>
+        <View style={{
+          width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
+          margin: 20,
+          backgroundColor: '#D3D3D3',
+          borderRadius: 20,
+          padding: 10,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 100,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 4,
+          elevation: 5,
+        }}>
+          <Picker
+            mode="dropdown"
+            placeholder={'Update Your Selfie *'}
+            style={{ color: 'black' }}
+            selectedValue={select}
+            onValueChange={(itemValue, itemIndex) => {
+              if (itemValue === "Open camera") {
+                handleCameraUpload()
+              } else if (itemValue === "Open Image picker") {
+                handleGalleryUpload();
+              }
+            }}
+          >
+            <Picker.Item label="Select Action" value="" />
+            <Picker.Item label="Select Photo from gallery" value="Open Image picker" />
+            <Picker.Item label="Capture Photo from camera" value="Open camera" />
 
-                </Picker>
-                <Button mode="text" onPress={() => setShowImagePickerModal(false)}>
-                  Close
-                </Button>
-              </View>
-            </Modal>
+          </Picker>
+          <Button mode="text" onPress={() => setShowImagePickerModal(false)}>
+            Close
+          </Button>
+        </View>
+      </Modal>
 
       <Text style={styles.blackText}>{t('strings:description')}</Text>
       <TextInput
@@ -484,8 +516,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
   },
-  modalcontainer: { alignSelf: 'center', backgroundColor: 'rgba(0,0,0,0.7)' },
-
 })
 
 export default Ticket

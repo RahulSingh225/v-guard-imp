@@ -5,12 +5,14 @@ import colors from '../../../../colors';
 import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
 import Message from "../../../components/Message";
-import { sendloginWithOtp } from '../AuthApiService';
-import { loginwithotpApi, otpviacall } from "../../../utils/apiservice";
+import { loginWithPassword, sendloginWithOtp } from '../AuthApiService';
+import { generateOtpForLogin, loginwithotpApi, otpviacall, validateOtpLogin } from "../../../utils/apiservice";
 import Popup from '../../../components/Popup';
 import { width, height } from '../../../utils/dimensions';
 import { Colors } from '../../../utils/constants';
 import { responsiveFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
+import { useAuth } from '../../../components/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginWithNumber = ({ navigation }) => {
     const [number, setNumber] = useState('');
@@ -22,6 +24,10 @@ const LoginWithNumber = ({ navigation }) => {
     const [countdown, setCounter] = useState(null);
     const [otpsentflag, setotpsentflag] = useState(false);
     const [otp, setOtp] = useState('');
+
+    
+    const { login } = useAuth();
+    
     useEffect(() => {
         let intervalId;
         if (countdown > 0) {
@@ -48,28 +54,17 @@ const LoginWithNumber = ({ navigation }) => {
 
     const handleValidation = async () => {
         try {
-            let validationResponse = await sendloginWithOtp(number);
-            validationResponse = await validationResponse.json();
-            //  console.log(validationResponse.code, "<><><><><")
-            if (validationResponse.code === 200) {
+            let validationResponse = await generateOtpForLogin(number);
+            if (validationResponse.status === 200) {
                 setCounter(60);
                 setotpsentflag(true);
-                const successMessage = validationResponse.message;
+                const successMessage = validationResponse.data.message;
                 setIsPopupVisible(true);
                 setPopupMessage(successMessage);
-
-
-                // setTimeout(() => {
-                //     clearInterval(intervalId);
-                //     navigation.navigate('registerwithotp', { usernumber: number });
-                // }, 800);
-
-                // Alert.alert(successMessage);
             } else {
                 const errorMessage = validationResponse.message;
                 setIsPopupVisible(true);
                 setPopupMessage(errorMessage);
-                // Alert.alert(errorMessage);
             }
             setTimeout(() => {
                 if (countdown > 0) {
@@ -85,19 +80,31 @@ const LoginWithNumber = ({ navigation }) => {
     const loginUserWithOtp = async () => {
         try {
             let userCredentials = {
-                number: number,
+                loginOtpUserName: number,
                 otp: otp,
-                authType: "otp",
             };
+            
 
-            let response = await loginwithotpApi(userCredentials);
-            let message = response.message;
-            if (response.code === 200) {
-                setIsPopupVisible(true);
-                setPopupMessage(message);
+
+            let response = await validateOtpLogin(userCredentials);
+            if (response.status === 200) {
+              //console.log(response);
+              AsyncStorage.setItem("username", String(number)).then((r) => {
+                AsyncStorage.setItem("password", String(otp)).then((r) => {
+                  AsyncStorage.setItem("authType", "otp").then((result) => {
+                    loginWithPassword(number, otp ).then(
+                      (r) => {
+                        if (r.status == 200) {
+                          r.json().then((result) => login(result));
+                        }
+                      }
+                    );
+                  });
+                });
+              });
             } else {
-                setIsPopupVisible(true);
-                setPopupMessage(message);
+              setIsPopupVisible(true);
+              setPopupMessage(response?.data?.message);
             }
             console.log(response);
         } catch (error) {
@@ -174,7 +181,7 @@ const LoginWithNumber = ({ navigation }) => {
 
                             <TextInput
                                 style={styles.input}
-                                placeholder={t('auth:register:enterOtp')}
+                                placeholder={t('strings:enter_otp')}
                                 placeholderTextColor={placeholderColor}
                                 keyboardType='number-pad'
                                 value={otp}

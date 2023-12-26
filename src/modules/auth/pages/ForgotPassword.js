@@ -6,6 +6,7 @@ import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
 import { responsiveHeight } from 'react-native-responsive-dimensions';
 import Popup from '../../../components/Popup';
+import { forgotPassword } from '../AuthApiService';
 
 const ForgotPassword = ({ navigation }) => {
   const { t } = useTranslation();
@@ -15,10 +16,23 @@ const ForgotPassword = ({ navigation }) => {
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [popupContent, setPopupContent] = useState('');
 
-  const handleSubmit = () => {
-    const message = 'Password has been sent through SMS to the mobile number ' + number;
-    setPopupContent(message);
+  const handleSubmit = async () => {
     setPopupVisible(true);
+    forgotPassword(number)
+      .then(response => response.json())
+      .then(responsedata => {
+        const message = responsedata.message;
+        setPopupContent(message);
+        setNumber("");
+        if(message == "SMS sent for new password"){
+          setTimeout(() => {
+            navigation.navigate('login');
+          }, 10000);
+        }
+        else{
+          return;
+        }
+      })
   };
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -63,10 +77,10 @@ const ForgotPassword = ({ navigation }) => {
         </View>
       </View>
       {isPopupVisible && (
-      <Popup isVisible={isPopupVisible} onClose={() => setPopupVisible(false)}>
-        {popupContent}
-      </Popup>
-    )}
+        <Popup isVisible={isPopupVisible} onClose={() => setPopupVisible(false)}>
+          {popupContent}
+        </Popup>
+      )}
     </ScrollView>
 
   )

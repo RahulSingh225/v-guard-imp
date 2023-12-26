@@ -11,12 +11,17 @@ const BASE_URL = 'http://34.100.133.239:18092/vguard/api/';
 export const createDigestPostRequest = async (relativeUrl = {}, data) => {
   try {
     const url = BASE_URL + relativeUrl;
-    const headers = {
-      'Content-Type': 'application/json',
-    };
-
+   
     const username = await AsyncStorage.getItem('username');
     const password = await AsyncStorage.getItem('password');
+    const authType = await AsyncStorage.getItem('authType');
+
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'authType':authType
+    };
+
 
     if (username && password) {
       const response = await digestFetch(url, {
@@ -39,12 +44,16 @@ export const createDigestPostRequest = async (relativeUrl = {}, data) => {
 export const createDigestGetRequest = async (relativeUrl = {}) => {
   try {
     const url = BASE_URL + relativeUrl;
-    const headers = {
-      'Content-Type': 'application/json',
-    };
+   
 
     const username = await AsyncStorage.getItem('username');
     const password = await AsyncStorage.getItem('password');
+    const authType = await AsyncStorage.getItem('authType');
+
+     const headers = {
+      'Content-Type': 'application/json',
+      'authType':authType
+    };
 
     if (username && password) {
       const response = await digestFetch(url, {
@@ -65,11 +74,12 @@ export const createDigestGetRequest = async (relativeUrl = {}) => {
 
 export const loginPasswordDigest = async (relativeUrl, username, password) => {
   try {
+    const authType = await AsyncStorage.getItem('authType');
     const url = BASE_URL + relativeUrl;
     const headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      authType: 'password',
+      authType: authType,
     };
     await AsyncStorage.clear();
     let response = null;
@@ -132,6 +142,7 @@ const imageApi2 = axios.create({
 
 export const forgotPassword = async mobileNumber => {
   try {
+    console.log("Mobile Number--------", mobileNumber)
     const response = await api.post(
       '/vguard/api/user/forgotPassword',
       mobileNumber,
@@ -485,6 +496,31 @@ export const otpviacall = async userCredentials => {
   }
 };
 
+export const generateOtpForLogin = async number => {
+  try {
+    const relativeUrl = `${BASE_URL}user/generateOtpForLogin`;
+    const response = await api.post(relativeUrl,{loginOtpUserName:number,otpType:null})
+    return response;
+  } catch (error) {
+    console.error('Error validating login OTP', error);
+    console.log(">>>>error",error)
+    throw error;
+  }
+};
+
+export const validateOtpLogin = async (userDetails,headers=null) => {
+  try {
+    const relativeUrl = `${BASE_URL}user/validateLoginOtp`;
+    const response = await api.post(relativeUrl,userDetails)
+    return response;
+  } catch (error) {
+    console.error('Error validating login OTP', error);
+    console.log(">>>>error",error)
+    throw error;
+  }
+};
+
+
 export function getSchemeImages() {
   const path = 'schemes/';
   return createDigestGetRequest(path);
@@ -529,6 +565,12 @@ export function getInfoDeskBanners() {
     return createDigestGetRequest(path);
   }
 
+
+  export function getBankDetail() {
+    const path = `user/bankDetails`;
+    return createDigestGetRequest(path);
+  }
+
   
 export const reUpdateUserForKyc = async userCredentials => {
   try {
@@ -557,3 +599,8 @@ export const processErrorCoupon = async userCredentials => {
     throw error;
   }
 };
+
+export function bankTransfer(data) {
+  const path = 'order/bankTransfer';
+  return createDigestPostRequest(path, data);
+}
