@@ -92,6 +92,9 @@ const ContactPage = ({ navigation }) => {
                 </Text>
                 <View style={styles.smallContainer}>
                     <Text style={styles.smallDetail}>
+                    V-Guard Industries Ltd.
+                    </Text>
+                    <Text style={styles.smallDetail}>
                     Regd. Office:
                     </Text>
                     <Text style={styles.smallDetail}>

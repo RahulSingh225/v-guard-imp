@@ -9,6 +9,8 @@ import {
   Modal
 } from 'react-native';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import colors from '../../../../colors';
@@ -26,12 +28,13 @@ import LanguagePicker from '../../../components/LanguagePicker';
 import language from '../../../assets/images/language.png';
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({ navigation, route }) => {
 
   const { t, i18n } = useTranslation();
   const [showLanguagePicker, setShowLanguagePicker] = useState(false);
   const pkg = require('../../../../package.json');
   const version = pkg.version;
+  const type = route.params?.customParam || 'default value';
 
   const handleLanguageButtonPress = () => {
     setShowLanguagePicker(true);
@@ -43,6 +46,7 @@ const LoginScreen = ({ navigation }) => {
   useEffect(() => {
     console.log('Language changed:', i18n.language);
     console.log('Version:', pkg.version);
+    console.log('Type:', type);
   }, [i18n.language]);
 
   const showSnackbar = message => {
@@ -94,9 +98,15 @@ const LoginScreen = ({ navigation }) => {
       console.log(response);
       showLoader(false)
       if (response.status === 200) {
-        var r = await response.json();
-        console.log(r);
-        login(r);
+        var loginResponse = await response.json();
+        AsyncStorage.setItem("authType", "")
+          .then((r) => {
+            login(loginResponse);
+          })
+          .catch((r) => {
+            console.log(r, ">>>>>>>errror5");
+          });
+        
       } else {
         togglePopup();
       }
@@ -201,13 +211,17 @@ const LoginScreen = ({ navigation }) => {
                 onPress={() => navigation.navigate('loginWithNumber')}
                 width="100%"
               />
-              <Buttons
+              { type == "retailer" &&
+                (
+                  <Buttons
                 style={styles.button}
                 label={t('strings:new_user_registration')}
                 variant="blackButton"
                 onPress={() => navigation.navigate('register')}
                 width="100%"
               />
+                )
+              }
             </View>
           </View>
         </View>

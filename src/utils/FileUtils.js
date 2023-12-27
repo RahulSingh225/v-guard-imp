@@ -16,7 +16,7 @@ export async function sendImage(file,documentType,userID){
       formData.append('image_related',documentType);
       formData.append('USER_ROLE',userID);
       const result = await sendFile(formData);
-      if(result?.status.code==200){
+      if(result?.status==200){
         return result.data.entityUid
       }
       return "";

@@ -1,24 +1,40 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import colors from '../../../../../../colors'
 import { responsiveFontSize } from 'react-native-responsive-dimensions'
 import { Linking } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { getAccessmentYear } from '../../HomeApiService';
 
 
 const TDS = () => {
   const { t } = useTranslation();
+  const [data, setData] = useState([]);
 
-  const data = [
-    {
-      year: '2022-2023',
-      file: 'https://www.africau.edu/images/default/sample.pdf'
-    },
-    {
-      year: '2021-2022',
-      file: 'https://www.africau.edu/images/default/sample.pdf'
-    },
-  ]
+  // const data = [
+  //   {
+  //     year: '2022-2023',
+  //     file: 'https://www.africau.edu/images/default/sample.pdf'
+  //   },
+  //   {
+  //     year: '2021-2022',
+  //     file: 'https://www.africau.edu/images/default/sample.pdf'
+  //   },
+  // ]
+
+  useEffect(()=>{
+    getAccessmentYear()
+    .then(response => response.json())
+    .then(data => {
+      setData(data);
+      console.log("DATA::::::::::::", data)
+    })
+    .catch(error => {
+      console.error('Error fetching options:', error);
+    });
+  }, []);
+
+
   const handleDownload = (file) => {
     Linking.openURL(file);
   };
@@ -28,7 +44,7 @@ const TDS = () => {
       <Text style={styles.greyText}>Select Assessment Year</Text>
       {data.map((item, index) => (
         <View style={styles.card} key={index}>
-          <Text style={styles.yearText}>{item.year}</Text>
+          <Text style={styles.yearText}>{item}</Text>
           <TouchableOpacity onPress={() => handleDownload(item.file)}>
             <Image style={styles.downImage} source={require('../../../../../assets/images/ic_ticket_drop_down2.png')} />
           </TouchableOpacity>
@@ -73,7 +89,7 @@ const styles = StyleSheet.create({
   downImage: {
     height: responsiveFontSize(2.5),
     width: responsiveFontSize(2.5)
-},
+  },
 })
 
 export default TDS

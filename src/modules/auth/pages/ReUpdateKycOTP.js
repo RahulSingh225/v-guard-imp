@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, Image, StyleSheet, TextInput, ScrollView, TouchableOpacity, Alert, ToastAndroid } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next';
 import colors from '../../../../colors';
@@ -6,7 +6,7 @@ import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
 import Message from "../../../components/Message";
 import { sendloginWithOtp } from '../AuthApiService';
-import { generateOtpForReverify, loginwithotpApi, otpviacall, validateReverifyOtp } from "../../../utils/apiservice";
+import { generateOtpForLogin, generateOtpForReverify, loginwithotpApi, otpviacall, validateReverifyOtp } from "../../../utils/apiservice";
 import Popup from '../../../components/Popup';
 import { width, height } from '../../../utils/dimensions';
 import { Colors } from '../../../utils/constants';
@@ -49,30 +49,17 @@ const ReUpdateKycOTP = ({navigation}) => {
     
         const handleValidation = async () => {
             try {
-                let data = {loginOtpUserName:number,otpType:null}
-                let validationResponse = await generateOtpForReverify(data);
-                console.log(validationResponse)
-                validationResponse = await validationResponse.json();
-                //  console.log(validationResponse.code, "<><><><><")
-                if (validationResponse.code === 200) {
+                let validationResponse = await generateOtpForLogin(number);
+                if (validationResponse.status === 200) {
                     setCounter(60);
                     setotpsentflag(true);
-                    const successMessage = validationResponse.message;
+                    const successMessage = validationResponse.data.message;
                     setIsPopupVisible(true);
-                    setPopupMessage(successMessage);
-    
-    
-                    // setTimeout(() => {
-                    //     clearInterval(intervalId);
-                    //     navigation.navigate('registerwithotp', { usernumber: number });
-                    // }, 800);
-    
-                    // Alert.alert(successMessage);
+                     setPopupMessage(successMessage);
                 } else {
                     const errorMessage = validationResponse.message;
                     setIsPopupVisible(true);
                     setPopupMessage(errorMessage);
-                    // Alert.alert(errorMessage);
                 }
                 setTimeout(() => {
                     if (countdown > 0) {
@@ -98,7 +85,10 @@ const ReUpdateKycOTP = ({navigation}) => {
                 if (response.code === 200) {
                    AsyncStorage.setItem('username',JSON.stringify(number)).then(r=>{
                     AsyncStorage.setItem('password',JSON.stringify(otp)).then(r=>{
-                        navigation.navigate('ReUpdateKyc')
+                        AsyncStorage.setItem('authType','otp').then(r=>{
+                            navigation.navigate('ReUpdateKyc')
+                        })
+                       
                     })
                    })
                 } else {
@@ -151,8 +141,8 @@ const ReUpdateKycOTP = ({navigation}) => {
     
         return (
             <ScrollView contentContainerStyle={styles.scrollContainer}>
-                {isPopupVisible && (<Popup isVisible={isPopupVisible} onClose={() => setIsPopupVisible(false)}>
-                    <Text>{popupMessage}</Text>
+                {isPopupVisible && (<Popup isVisible={isPopupVisible} children={<Text>{popupMessage}</Text>} onClose={() => setIsPopupVisible(false)}>
+                    
     
                 </Popup>
                 )}
@@ -180,7 +170,7 @@ const ReUpdateKycOTP = ({navigation}) => {
     
                                 <TextInput
                                     style={styles.input}
-                                    placeholder={t('auth:register:enterOtp')}
+                                    placeholder={t('strings:enter_otp')}
                                     placeholderTextColor={placeholderColor}
                                     keyboardType='number-pad'
                                     value={otp}

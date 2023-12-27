@@ -15,6 +15,7 @@ import arrowIcon from '../../../assets/images/arrow.png';
 const CategorySelection = ({ navigation }) => {
     const { t, i18n } = useTranslation();
     const [showLanguagePicker, setShowLanguagePicker] = useState(false);
+    const [type, setType] = useState("retailer");
 
     const handleLanguageButtonPress = () => {
         setShowLanguagePicker(true);
@@ -32,7 +33,9 @@ const CategorySelection = ({ navigation }) => {
     const [selectedOption, setSelectedOption] = useState('retailer');
 
     const handleOptionSelect = (option) => {
+        console.log(option);
         setSelectedOption(option);
+        setType(option);
     };
     return (
         <ScrollView style={styles.mainWrapper}>
@@ -106,7 +109,7 @@ const CategorySelection = ({ navigation }) => {
                 <Buttons
                     label={t('strings:start')}
                     variant="filledButton"
-                    onPress={() => navigation.navigate('login')}
+                    onPress={() => navigation.navigate('login', { customParam: type })}
                     iconHeight={10}
                     iconWidth={30}
                     iconGap={30}
