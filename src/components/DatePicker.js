@@ -3,8 +3,7 @@ import { StyleSheet, TextInput, View } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import colors from '../../colors';
 
-const DatePicker = ({label, date, onDateChange, showDatePicker, onShowDatePicker }) => {
-    console.log(date,'shuhsuhs')
+const DatePicker = ({label, date, onDateChange, showDatePicker, onShowDatePicker,maximum_date }) => {
     return (
         <View>
             <TextInput
@@ -15,6 +14,7 @@ const DatePicker = ({label, date, onDateChange, showDatePicker, onShowDatePicker
             />
             {showDatePicker && (
                 <DateTimePicker
+                    maximumDate={maximum_date}
                     value={date || new Date()}
                     mode="date"
                     display="calendar"

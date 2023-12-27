@@ -427,6 +427,7 @@ const NewUser = ({ navigation }) => {
     }
     return true;
   }
+  const maximum_date = new Date(new Date().getFullYear() - 18,new Date().getMonth(),new Date().getDate());
   return (
     <ScrollView style={{ backgroundColor: "white" }}>
       <View style={{ backgroundColor: "white" }}>
@@ -503,6 +504,7 @@ const NewUser = ({ navigation }) => {
 
         <View style={{ backgroundColor: 'fff', height: height / 20, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, borderWidth: 1.5, borderColor: "#D3D3D3" }}>
           <DatePicker
+            maximum_date = {maximum_date}
             date={selectedDate}
             onDateChange={handleDateChange}
             showDatePicker={showDatePicker}
