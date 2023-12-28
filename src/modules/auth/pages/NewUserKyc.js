@@ -446,44 +446,63 @@ const NewUserKyc = ({ navigation, route }) => {
         }
     };
     const openCamera = async (documentType, onCapture) => {
-        // const granted = await PermissionsAndroid.request(
-        //     PermissionsAndroid.PERMISSIONS.CAMERA,
-        // );
-        // const granted1 = await PermissionsAndroid.request(
-        //     PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        // );
-        // const granted2 = await PermissionsAndroid.request(
-        //     PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        // );
-        // if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        const result = await launchCamera(options);
-        const photo = result.assets[0];
-        const newPhoto = { uri: photo.uri, type: photo.type, name: photo.fileName };
+      let photo;
+      let newPhoto; 
+      let options = { quality: 5, maxWidth: 500, maxHeight: 500, includeBase64: true, mediaType: 'photo', noData: true, };
+      try {
+      await launchCamera(
+          options,
+          response => {
+            if (response.didCancel) {
+              console.log("Camera was canceled");
+            } else if (response.error) {
+              console.error("Camera error: ", response.error);
+            } else {
+              console.log(response,">>>>>camera issue fixed");
+              if(response.assets.length){
+                photo = response.assets[0];
+                newPhoto = {
+                  uri: photo.uri,
+                  type: photo.type,
+                  name: photo.fileName,
+                };
 
-        // Handle the captured data based on the document type
-        switch (documentType) {
-            case 'Selfie':
-                setSelfieData(newPhoto);
-                console.log(selfieData);
-                break;
-            case 'IdProofFront':
-                setIdProofFrontData(newPhoto);
-                break;
-            case 'IdProofBack':
-                setIdProofBackData(newPhoto);
-                break;
-            case 'Pan':
-                setPanData(newPhoto);
-                break;
-            default:
-                console.log('Unknown document type');
-        }
+                switch (documentType) {
+                    case "Selfie":
+                      setSelfieData(newPhoto);
+                      console.log(selfieData);
+                      break;
+                    case "IdProofFront":
+                      setIdProofFrontData(newPhoto);
+                      break;
+                    case "IdProofBack":
+                      setIdProofBackData(newPhoto);
+                      break;
+                    case "Pan":
+                      setPanData(newPhoto);
+                      break;
+                    default:
+                      console.log("Unknown document type");
+                  }
+              }
+             
+            
+            }
+          }
+        );
+      } catch (e) {
+        console.log(e, "Errror");
+      }
 
-        // Call the provided callback function to further process the data
-        if (typeof onCapture === 'function') {
-            onCapture(documentType, newPhoto);
-        }
-        //}
+      console.log(">>>>>>>>>>>>>>>>3");
+
+      // Handle the captured data based on the document type
+
+      // Call the provided callback function to further process the data
+      // if (typeof onCapture === 'function') {
+      //     onCapture(documentType, newPhoto);
+      // }
+      //}
     };
 
     const NewUserKycData = {

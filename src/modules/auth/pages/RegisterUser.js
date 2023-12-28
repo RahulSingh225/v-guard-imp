@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import colors from '../../../../colors';
 import Buttons from '../../../components/Buttons';
 import arrowIcon from '../../../assets/images/arrow.png';
-import { NewusermobileNumberValidation, otpviacall } from '../../../utils/apiservice';
+import { NewusermobileNumberValidation, generateOtpViaCall, otpviacall } from '../../../utils/apiservice';
 import Message from "../../../components/Message";
 import Loader from '../../../components/Loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -108,18 +108,19 @@ const RegisterUser = ({ navigation }) => {
     const calltogetopt = async () => {
         try {
             let userCredentials = {
-                loginOtpUserName: number,
+                mobileNo: number,
                 otpType: "voice"
 
             };
 
-            let response = await otpviacall(userCredentials);
-            let message = response.message;
-            if (response.code === 200) {
+            let response = await generateOtpViaCall(userCredentials);
+            let message = response.data.message;
+            console.log(message,response)
+            if (response.status === 200) {
                 // setCounter(60);
                 // setotpsentflag(true);
-                setIsPopupVisible(true);
-                setPopupMessage(message);
+                // setIsPopupVisible(true);
+                // setPopupMessage(message);
                 AsyncStorage.setItem("userno", number);
                 AsyncStorage.setItem("preferedLanguage", preferedLanguage.toString());
                 navigation.navigate('loginwithotp', { usernumber: number, jobprofession: selectedOption, preferedLanguage: preferedLanguage });

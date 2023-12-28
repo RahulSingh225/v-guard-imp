@@ -118,7 +118,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
         5: { otherSchemeBrand: '', abtOtherSchemeLiked: '' },
     });
     // const { PreviewSummaryData } = route.params;
-    // console.log('==================%%%=PREVIEW SUMMARY=================', PreviewSummaryData);
+    // //console.log('==================%%%=PREVIEW SUMMARY=================', PreviewSummaryData);
 
     const handleInputChangeschemes = (schemeNumber, field, value) => {
         setSchemeData((prevData) => ({
@@ -129,11 +129,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
             },
 
         }));
-        console.log('Updated schemeData:', schemeData);
+        //console.log('Updated schemeData:', schemeData);
     };
 
-    // console.log(KycData);
-    // console.log('===============^^^^=====================', Userdata);
+    // //console.log(KycData);
+    // //console.log('===============^^^^=====================', Userdata);
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -152,7 +152,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
                     const retrievedData = JSON.parse(data);
                     const retrievedSchemeData = retrievedData.fullData.NewUserKycData.schemeData;
-                    console.log("??????????????????", retrievedSchemeData);
+                    //console.log("??????????????????", retrievedSchemeData);
                     const updatedSchemeData = {
                         1: {
                             otherSchemeBrand: retrievedSchemeData[1]?.otherSchemeBrand,
@@ -175,16 +175,16 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                             abtOtherSchemeLiked: retrievedSchemeData[5]?.abtOtherSchemeLiked4,
                         },
                     };
-                    console.log("??????????????????", updatedSchemeData);
+                    //console.log("??????????????????", updatedSchemeData);
                     setSchemeData(updatedSchemeData);
-                    console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData);
-                    // console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.userData.permananetsateid);
-                    // console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.userData.permananetcityid);
-                    // console.log("++++++++++++&&&&&&&&++DISTRACT++^^^^^^^^^^^^++++++++++", retrievedData.fullData.userData.permananetdistrictId);
-                    // console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.NewUserKycData.currentcityid);
-                    // console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.NewUserKycData.currentdistrictId);
-                    // console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.NewUserKycData.currentstateid);
-                    // console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.BankDetailsAndNominee.bankid);
+                    //console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData);
+                    // //console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.userData.permananetsateid);
+                    // //console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.userData.permananetcityid);
+                    // //console.log("++++++++++++&&&&&&&&++DISTRACT++^^^^^^^^^^^^++++++++++", retrievedData.fullData.userData.permananetdistrictId);
+                    // //console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.NewUserKycData.currentcityid);
+                    // //console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.NewUserKycData.currentdistrictId);
+                    // //console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.fullData.NewUserKycData.currentstateid);
+                    // //console.log("++++++++++++&&&&&&&&++++^^^^^^^^^^^^++++++++++", retrievedData.BankDetailsAndNominee.bankid);
                     setSelectedLanguage(retrievedData.fullData.userData.selectedLanguage);
                     setGender(retrievedData.fullData.userData.gender);
                     setemail(retrievedData.fullData.userData.email);
@@ -257,7 +257,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
 
             } catch (error) {
-                console.error('Error retrieving data: ', error);
+                //console.error('Error retrieving data: ', error);
             } finally {
                 setIsLoading(false);
             }
@@ -268,13 +268,13 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
         // GettingAppversion();
         Gettingprofession();
-        // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharfrontuuid,);
-        // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharbackuuid);
-        // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", pancarduuid);
-        // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", chequeImageuuid);
-        // console.log("================================================");
-        // console.log(">><><<><>><><><><><><><><><><><><", userbody);
-        // console.log("================================================");
+        // //console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharfrontuuid,);
+        // //console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharbackuuid);
+        // //console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", pancarduuid);
+        // //console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", chequeImageuuid);
+        // //console.log("================================================");
+        // //console.log(">><><<><>><><><><><><><><><><><><", userbody);
+        // //console.log("================================================");
     }, [aadharfrontuuid, aadharbackuuid, pancarduuid, chequeImageuuid, selfieeuuid]);
 
     const updateDataInAsyncStorage = async () => {
@@ -403,7 +403,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                         type: file.type,
                         name: file.name,
                     });
-                    console.log("inside upload files ", formData);
+                    //console.log("inside upload files ", formData);
                     const response = await sendFile(formData);
                     responses.push(response.data);
                 }
@@ -411,7 +411,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
             return responses;
         } catch (error) {
-            console.error('Error sending files:', error);
+            //console.error('Error sending files:', error);
             throw error;
         } finally {
 
@@ -420,6 +420,7 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
     const callUploadAndThenAnotherFunction = async () => {
         try {
+            //console.log(">>>>>>>>>>>came")
             setIsLoading(true);
             const filesToUpload = [
                 { imageRelated: 'ID_CARD_FRONT', file: idProofFrontData },
@@ -460,11 +461,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     }
 
                 });
-                console.log("aadharfrontuuid:", aadharfrontuuid);
-                console.log("aadharbackuuid:", aadharbackuuid);
-                console.log("pancarduuid:", pancarduuid);
-                console.log("chequeimageuuid:", chequeImageuuid);
-                console.log("selfieeuuid:", selfieeuuid);
+                //console.log("aadharfrontuuid:", aadharfrontuuid);
+                //console.log("aadharbackuuid:", aadharbackuuid);
+                //console.log("pancarduuid:", pancarduuid);
+                //console.log("chequeimageuuid:", chequeImageuuid);
+                //console.log("selfieeuuid:", selfieeuuid);
                 // setAllUUIDs(() => ({
                 //     aadharfrontuuid,
                 //     aadharbackuuid,
@@ -474,15 +475,15 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                 // }));
 
                 if (aadharfrontuuid != null && aadharfrontuuid != 'undefined' && aadharbackuuid != null && aadharbackuuid != 'undefined' && selfieeuuid != 'undefined' && selfieeuuid != null) {
-                    // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharfrontuuid,);
-                    // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharbackuuid);
-                    // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", pancarduuid);
-                    // console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", chequeImageuuid);
-                    // console.log("%%%%%%%%%%%%%%%%%%%%%%", selfieeuuid);
-                    // console.log("================================================");
-                    console.log(">><><<><>><><><>PREVIEW SUMMARY<><><><><><><><><><", userbody);
-                    // console.log("================================================");
-                    registernewuser(userbody);
+                    // //console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharfrontuuid,);
+                    // //console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", aadharbackuuid);
+                    // //console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", pancarduuid);
+                    // //console.log("%%%%%%%%%%%%%%%%%%%%%%%%%", chequeImageuuid);
+                    // //console.log("%%%%%%%%%%%%%%%%%%%%%%", selfieeuuid);
+                    // //console.log("================================================");
+                    //console.log(">><><<><>><><><>PREVIEW SUMMARY<><><><><><><><><><", userbody);
+                    // //console.log("================================================");
+                    registernewuser();
                 }
                 else {
 
@@ -490,10 +491,10 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                     // registernewuser(userbody);
                 }
             } else {
-                console.log('No valid files to upload.');
+                //console.log('No valid files to upload.');
             }
         } catch (error) {
-            console.error('Error:', error);
+            //console.error('Error:', error);
         } finally {
             setIsLoading(false);
         }
@@ -502,15 +503,15 @@ const PreviewUserRegistration = ({ navigation, route }) => {
     async function registernewuser() {
         try {
 
-            console.log("+++++++++++++++++++++", userbody)
+            console.log("cameeeeeeeee", userbody)
             setIsLoading(true);
-            // const response = await RegisterNewUser(userbody);
-
+            const response = await RegisterNewUser(userbody);
+            console.log(response,">>>>>>>>>response")
             if (response.message === 'Member registered successfully') {
                 setIsPopupVisible(true);
                 setPopupMessage(response.message);
                 // Alert.alert(response.message);
-                //  navigation.navigate('login');
+                 //navigation.navigate('login');
                 setTimeout(() => {
                     navigation.navigate('login');
                 }, 1200);
@@ -518,11 +519,11 @@ const PreviewUserRegistration = ({ navigation, route }) => {
                 setIsPopupVisible(true);
                 setPopupMessage(response.message);
             }
-            // console.log(response)
+            // //console.log(response)
 
         } catch (error) {
             throw error;
-            // console.error('Error while registering user:', error);
+            // //console.error('Error while registering user:', error);
 
         } finally {
             setIsLoading(false);
@@ -540,10 +541,10 @@ const PreviewUserRegistration = ({ navigation, route }) => {
 
             const professionfromapi = await GetProfession();
             setprofessiondata([professionfromapi[0], professionfromapi[1], professionfromapi[2],]);
-            console.log("==%%%%===", professiondata);
+            //console.log("==%%%%===", professiondata);
         }
         catch (error) {
-            console.error('Error fetching suggestions:', error);
+            //console.error('Error fetching suggestions:', error);
         }
         finally {
             // After the API call (whether it succeeds or fails), hide the loader
@@ -555,9 +556,9 @@ const PreviewUserRegistration = ({ navigation, route }) => {
     // async function GettingAppversion() {
     //     try {
     //         const response = await Appversion();
-    //         console.log('====================================');
-    //         console.log(response.data);
-    //         console.log('====================================');
+    //         //console.log('====================================');
+    //         //console.log(response.data);
+    //         //console.log('====================================');
     //         setAppversion(response.data.toString());
     //     } catch (error) {
     //         throw error

@@ -38,13 +38,13 @@ const NomineePage = ({ navigation, route }) => {
     // const [currentaddres, setcurrentaddres] = useState('Select');
     const [checked, setChecked] = useState(false);
     const [number, setnumber] = useState();
-    const [accountnumber, setaccountnumber] = useState('');
+    const [accountnumber, setaccountnumber] = useState(null);
     const [accountholdername, setaccountholdername] = useState(null);
     const [chequeImage, setchequeImage] = useState(null);
     const [IFSC, setIFSC] = useState(null);
     const [accounttype, setaccounttype] = useState("");
 
-    const [selectedbank, setselectedbank] = useState('');
+    const [selectedbank, setselectedbank] = useState(null);
     const [allbankslist, setallbankslist] = useState(null);
     const [bankid, setbankid] = useState('');
     const [validateallfieldforbank, setvalidateallfieldforbank] = useState(false);
@@ -108,54 +108,34 @@ const NomineePage = ({ navigation, route }) => {
 
         // // Check for at least one field being entere
 
-
         if (checked) {
-
-            // console.log(accountnumber);
-            // console.log(accountholdername);
-            // console.log(chequeImage);
-            // console.log(IFSC);
-            // console.log(accounttype);
-            // console.log(selectedbank);
-
             if (
-                accountnumber === '' &&
-                accountholdername === null &&
-                chequeImage === null &&
-                IFSC === null &&
-                accounttype == "" &&
-                selectedbank == ''
+              accountnumber &&
+              accountholdername &&
+              chequeImage !=null &&
+              IFSC &&
+              accounttype &&
+              selectedbank &&
+              nomineename &&
+              selectedDatenominee &&
+              nomineemobileno &&
+              nomineeemail &&
+              nomineeaddress &&
+              relationship 
             ) {
-                console.log("<><><><>>", BankDetailsAndNominee);
-                const dataToStore = JSON.stringify(PreviewSummaryData);
-                await AsyncStorage.setItem("previewSummaryData", dataToStore);
-                navigation.navigate("PreviewSummary");
-            }
-            else if (
-                accountnumber !== '' &&
-                accountholdername !== null &&
-                chequeImage !== null &&
-                IFSC !== null &&
-                accounttype != "" &&
-                selectedbank != ''
-            ) {
-
-                const dataToStore = JSON.stringify(PreviewSummaryData);
-                await AsyncStorage.setItem("previewSummaryData", dataToStore);
-                console.log("++++++++INSDE NOMINEE PAGE CONSLE BEFORE NAVIGATION++++++++$$$$$$", dataToStore);
-                navigation.navigate("PreviewSummary");
-            }
-            else {
-
-                // console.log(accountnumber);
-                // console.log(accountholdername);
-                // console.log(chequeImage);
-                // console.log(IFSC);
-                // console.log(accounttype);
-                // console.log(selectedbank);
-                setIsPopupVisible(true);
-                setPopupMessage('Please fill compleate bank details.');
-
+              
+              const dataToStore = JSON.stringify(PreviewSummaryData);
+              await AsyncStorage.setItem("previewSummaryData", dataToStore);
+              navigation.navigate("PreviewSummary");
+            } else {
+              // console.log(accountnumber);
+              // console.log(accountholdername);
+              // console.log(chequeImage);
+              // console.log(IFSC);
+              // console.log(accounttype);
+              // console.log(selectedbank);
+              setIsPopupVisible(true);
+              setPopupMessage("Please fill compleate bank details.");
             }
         } else {
             setIsPopupVisible(true);
@@ -233,37 +213,46 @@ const NomineePage = ({ navigation, route }) => {
     };
 
     const openCamera = async (documentType, onCapture) => {
-        const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.CAMERA,
-        );
-        const granted1 = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        );
-        const granted2 = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            const result = await launchCamera(options);
-            const photo = result.assets[0];
-            const newPhoto = { uri: photo.uri, type: photo.type, name: photo.fileName };
-
-            // Handle the captured data based on the document type
-            switch (documentType) {
-                case 'cheque':
-                    setchequeImage(newPhoto);
-                    console.log(chequeImage);
-                    break;
-
-                default:
-                    console.log('Unknown document type');
+        let photo;
+        let newPhoto; 
+        let options = { quality: 5, maxWidth: 500, maxHeight: 500, includeBase64: true, mediaType: 'photo', noData: true, };
+        try {
+        await launchCamera(
+            options,
+            response => {
+              if (response.didCancel) {
+                console.log("Camera was canceled");
+              } else if (response.error) {
+                console.error("Camera error: ", response.error);
+              } else {
+                console.log(response,">>>>>camera issue fixed");
+                if(response.assets.length){
+                  photo = response.assets[0];
+                  newPhoto = {
+                    uri: photo.uri,
+                    type: photo.type,
+                    name: photo.fileName,
+                  };
+                  console.log(documentType,">>>>doc type")
+                  switch (documentType) {
+                    case 'Cheque':
+                        setchequeImage(newPhoto);
+                        console.log(chequeImage);
+                        break;
+    
+                    default:
+                        console.log('Unknown document type');
+                }
+                }
+               
+              
+              }
             }
-
-            // Call the provided callback function to further process the data
-            if (typeof onCapture === 'function') {
-                onCapture(documentType, newPhoto);
-            }
+          );
+        } catch (e) {
+          console.log(e, "Errror");
         }
-    };
+      };
 
 
     useEffect(() => {

@@ -292,10 +292,8 @@ export const Citylist = async disctrictId => {
 
 export const RegisterNewUser = async userbody => {
   try {
-    console.log('==============INSIDE aPI SERVIE ======================');
-    console.log(userbody);
-    console.log('====================================');
     const response = await api.post('/vguard/api/user/registerUser', userbody);
+    console.log(response)
     return response.data;
   } catch (error) {
     console.error('Error ', error);
@@ -496,6 +494,16 @@ export const otpviacall = async userCredentials => {
   }
 };
 
+export const generateOtpViaCall = async body => {
+  try {
+    const relativeUrl = `${BASE_URL}user/validateNewMobileNo`;
+    const response = await api.post(relativeUrl,body)
+    return response;
+  } catch (error) {
+    console.error('Error while getting OTP via call', error);
+  }
+};
+
 export const generateOtpForLogin = async number => {
   try {
     const relativeUrl = `${BASE_URL}user/generateOtpForLogin`;
@@ -503,8 +511,6 @@ export const generateOtpForLogin = async number => {
     return response;
   } catch (error) {
     console.error('Error validating login OTP', error);
-    console.log(">>>>error",error)
-    throw error;
   }
 };
 
