@@ -391,7 +391,8 @@ const EditProfile = () => {
                     const [day, month, year] = dateString.split(' ');
                     return new Date(year, months[month], day);
                 };
-                const nomineeDate = parseDate(responseData.bankDetail.nomineeDob)
+                
+                const nomineeDate = responseData.bankDetail.nomineeDob ? parseDate(responseData.bankDetail.nomineeDob) : ""
                 const dobDate = parseDate(responseData.dob);
                 setSelectedDate(dobDate);
 
@@ -481,6 +482,7 @@ const EditProfile = () => {
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
+                console.log('Error fetching data:', error);
             });
 
         Gettingprofession();
