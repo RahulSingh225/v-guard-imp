@@ -1,6 +1,7 @@
 import axios from 'axios';
 import digestFetch from 'react-native-digest-fetch';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import messaging from "@react-native-firebase/messaging";
 
 const API_LINK = 'http://34.100.133.239:18092';
 
@@ -72,6 +73,23 @@ export const createDigestGetRequest = async (relativeUrl = {}) => {
   }
 };
 
+const update_fcm_token = async () => {
+    const path = 'pushNotification/registerToken'
+    try {
+      let fcmtoken = await messaging().getToken();
+      if(fcmtoken){
+        let body = {
+          fcmToken : fcmtoken
+        }
+        await createDigestPostRequest(path,body)
+      }else{
+        console.log("Error : Issue in firebase FCM generater, ",fcmtoken)
+      }
+    } catch (e) {
+      console.log("Error : ", e);
+    }
+};
+
 export const loginPasswordDigest = async (relativeUrl, username, password) => {
   try {
     const authType = await AsyncStorage.getItem('authType');
@@ -89,39 +107,13 @@ export const loginPasswordDigest = async (relativeUrl, username, password) => {
       username,
       password,
     });
-
-    console.log('username=======', username);
-    console.log('password========', password)
-    console.log(response);
-
-    //const userDetailsData = await response.json();
-
-    // console.log(userDetailsData);
-
-    // const {name, userCode} = userDetailsData;
     const userName = username;
     const Password = password;
-    // const UserRole = userDetailsData.roleId;
-    // const UserImage = userDetailsData.kycDetails.selfie;
-    // const pointsBalance = userDetailsData.pointsSummary.pointsBalance;
-    // const redeemedPoints = userDetailsData.pointsSummary.redeemedPoints;
-    // const numberOfScan = userDetailsData.pointsSummary.numberOfScan;
-
-    // const safePointsBalance = pointsBalance || 0;
-    // const safeRedeemedPoints = redeemedPoints || 0;
-    // const safeNumberOfScan = numberOfScan || 0;
-
-    await AsyncStorage.setItem('username', userName);
-    await AsyncStorage.setItem('password', Password);
-    // await AsyncStorage.setItem('name', name);
-    // await AsyncStorage.setItem('userCode', userCode);
-    // await AsyncStorage.setItem('userRole', UserRole);
-    // await AsyncStorage.setItem('userImage', UserImage);
-    // await AsyncStorage.setItem('pointsBalance', safePointsBalance.toString());
-    // await AsyncStorage.setItem('redeemedPoints', safeRedeemedPoints.toString());
-    // await AsyncStorage.setItem('numberOfScan', safeNumberOfScan.toString());
-
-    // console.log('usercode=======', await AsyncStorage.getItem('userCode'));
+    if(response?.status === 200){
+      await AsyncStorage.setItem('username', userName);
+      await AsyncStorage.setItem('password', Password);
+      await update_fcm_token();
+    }
     return response;
   } catch (error) {
     throw error;
@@ -518,6 +510,12 @@ export const validateOtpLogin = async (userDetails,headers=null) => {
   try {
     const relativeUrl = `${BASE_URL}user/validateLoginOtp`;
     const response = await api.post(relativeUrl,userDetails)
+    if(response.status === 200){
+      await AsyncStorage.setItem("username", String(userDetails.loginOtpUserName))
+      await AsyncStorage.setItem("password", String(userDetails.otp))
+      await AsyncStorage.setItem("authType", "otp")
+      await update_fcm_token()
+    }
     return response;
   } catch (error) {
     console.error('Error validating login OTP', error);

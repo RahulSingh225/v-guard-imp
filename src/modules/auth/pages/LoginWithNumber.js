@@ -88,20 +88,12 @@ const LoginWithNumber = ({ navigation }) => {
 
             let response = await validateOtpLogin(userCredentials);
             if (response.status === 200) {
-              //console.log(response);
-              AsyncStorage.setItem("username", String(number)).then((r) => {
-                AsyncStorage.setItem("password", String(otp)).then((r) => {
-                  AsyncStorage.setItem("authType", "otp").then((result) => {
                     loginWithPassword(number, otp ).then(
                       (r) => {
                         if (r.status == 200) {
                           r.json().then((result) => login(result));
                         }
-                      }
-                    );
-                  });
-                });
-              });
+                      });
             } else {
               setIsPopupVisible(true);
               setPopupMessage(response?.data?.message);

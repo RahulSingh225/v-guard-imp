@@ -5,8 +5,9 @@ import {
   PermissionsAndroid,
   View
 } from 'react-native';
-
 import AppNavigator from './src/components/AppNavigator';
+import { AuthProvider } from './src/components/AuthContext';
+import notificationListener from './src/modules/notifications/pages/push_notification';
 
 async function requestAllPermissions() {
   try {
@@ -14,17 +15,20 @@ async function requestAllPermissions() {
     const contactPermission = PermissionsAndroid.PERMISSIONS.READ_CONTACTS;
     const locationPermission =
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION;
+      const notificationPermission =  PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
 
     const granted = await PermissionsAndroid.requestMultiple([
       cameraPermission,
       contactPermission,
       locationPermission,
+      notificationPermission
     ]);
 
     if (
       granted[cameraPermission] === PermissionsAndroid.RESULTS.GRANTED &&
       granted[contactPermission] === PermissionsAndroid.RESULTS.GRANTED &&
-      granted[locationPermission] === PermissionsAndroid.RESULTS.GRANTED
+      granted[locationPermission] === PermissionsAndroid.RESULTS.GRANTED&&
+      granted[notificationPermission]===PermissionsAndroid.RESULTS.GRANTED
     ) {
       console.log('Camera, contact, and location permissions granted.');
     } else {
@@ -38,14 +42,10 @@ async function requestAllPermissions() {
   }
 }
 
-import { AuthProvider } from './src/components/AuthContext';
-import ActionPickerModal from './src/components/ActionPickerModal';
-import { height, width } from './src/utils/dimensions';
-import ReUpdateKyc from './src/modules/auth/pages/ReUpdateKyc';
-
 const App = () => {
   useEffect(() => {
     requestAllPermissions();
+    notificationListener();
   }, []);
 
 
