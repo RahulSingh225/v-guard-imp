@@ -450,7 +450,7 @@ export const UpdateUserProfile = async profilebody => {
     if (resposne.ok) {
       return await resposne.json();
     } else {
-      throw new Error(`Request failed with status ${response.status}`);
+      throw new Error(`Request failed with status ${resposne.status}`);
     }
   } catch (error) {
     console.error('Error sending file with profile', error);

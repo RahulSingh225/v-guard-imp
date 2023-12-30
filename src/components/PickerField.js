@@ -11,6 +11,7 @@ const PickerField = ({
     selectedValue,
     onValueChange,
     items,
+    setIndex
 }) => {
     const [isFocused, setIsFocused] = useState(true);
     const [hasValue, setHasValue] = useState(Boolean(selectedValue));
@@ -23,9 +24,10 @@ const PickerField = ({
         setIsFocused(Boolean(selectedValue)); // Update focus based on whether a value is selected
     };
 
-    const handleValueChange = (value) => {
+    const handleValueChange = (value,index) => {
         setHasValue(Boolean(value));
         onValueChange(value);
+        setIndex && setIndex(index)
     };
 
     return (

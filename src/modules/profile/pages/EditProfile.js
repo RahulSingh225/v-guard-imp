@@ -76,6 +76,7 @@ const EditProfile = () => {
         "permanantstateId": "",
         "pincode": "",
         "gender": "",
+        "genderPos":""
     })
 
     const [form2, setform2] = useState({
@@ -130,6 +131,18 @@ const EditProfile = () => {
             [fieldName]: value,
 
         }));
+    }
+    
+    const getGenderPos = (gender) => {
+         if(gender == "Male "){
+            return 1
+         } else if(gender == "Female"){
+            return 2
+         } else if(gender == "Others"){
+            return 3
+         }else{
+            return 0
+         }
     }
     const [schemes, setSchemes] = useState([{ schmename: '', resonforlikingschme: '' }]);
     const [schemeData, setSchemeData] = useState({
@@ -381,7 +394,6 @@ const EditProfile = () => {
                 setUserName(responseData.name);
                 setUserCode(responseData.userCode);
                 setGender(responseData.gender);
-
                 const parseDate = (dateString) => {
                     const months = {
                         Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
@@ -438,6 +450,7 @@ const EditProfile = () => {
                     permananetcityid: responseData.cityId || "",
                     permanantdistrictId: responseData.distId || "",
                     permanantstateId: responseData.stateId || "",
+                    genderPos:getGenderPos(responseData?.gender)
                 }));
                 setform2(prevform2 => ({
                     ...prevform2,
@@ -633,8 +646,8 @@ const EditProfile = () => {
             "referralCode": "",
             "nameOfReferee": "",
             "name": form1.name,
-            "gender": form2.gender,
-            "genderPos": "",
+            "gender": form1.gender,
+            "genderPos":form1.genderPos,
             "dob": form1.dateofbirth,
             "contactNo": form1.number,
             "whatsappNo": form1.WhatappNo,
@@ -788,8 +801,8 @@ const EditProfile = () => {
 
     const genderpickerItems = [
         { label: 'Male', value: 'Male ' },
-        { label: 'Female', value: 'Female ' },
-        { label: 'Other', value: 'Other ' },
+        { label: 'Female', value: 'Female' },
+        { label: 'Others', value: 'Others' },
     ];
 
     const selectYesorNo = [
@@ -860,14 +873,11 @@ const EditProfile = () => {
                     selectedValue={form1.gender}
                     onValueChange={(text) => handleFieldChange("gender", text)}
                     items={genderpickerItems}
+                    setIndex = {(t)=>setform1((prevForm1)=>({
+                        ...prevForm1,
+                        genderPos:t
+                    }))}
                 />
-                {/* <DatePickerField
-                    label={t('strings:lbl_date_of_birth_mandatory')}
-                    date={form1.dateofbirth
-                        ? form1.dateofbirth.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
-                        : ''}
-                    onDateChange={(text) => handleDateChange(text)}
-                /> */}
                 <Text style={{ color: colors.black, marginLeft: 2, marginBottom: 2, fontWeight: 'bold', fontSize: responsiveFontSize(1.5) }}>{t('strings:lbl_date_of_birth_mandatory')}</Text>
                 <View style={styles.datepickerview}>
                     <DatePicker
