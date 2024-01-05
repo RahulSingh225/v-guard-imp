@@ -24,16 +24,16 @@ const ProductWiseEarning = () => {
         product.points.toString()
     ]);
 
-    const tableHead = ["Sl No.", "Product Description", "Points"];
+    const tableHead = ["Sl No.","Material Description", "Product Description", "Points","Bonus Points","Coupon Code","Created Date"];
 
     return (
-        <ScrollView style={styles.container}>
-            <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
+        <ScrollView style={styles.container} horizontal={true} >
+            <Table borderStyle={{ borderWidth: 0 }}>
+            <Row data={tableHead} style={styles.head} textStyle={styles.text} />
                 {data.length === 0 ? (
-                    <Rows data={[['No Data']]} textStyle={[styles.text, { color: colors.grey, fontWeight: 'bold', textAlign: 'center' }]} />
+                    <Rows data={[['No Data']]} textStyle={[styles.text,styles.emptyDataStyle]} />
                 ) : (
                     <>
-                        <Row data={tableHead} style={styles.head} textStyle={styles.text} />
                         <Rows data={data} textStyle={styles.text} />
                     </>
                 )}
@@ -43,25 +43,31 @@ const ProductWiseEarning = () => {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colors.white
-    },
-    head: {
-        height: responsiveHeight(7),
-        backgroundColor: colors.lightGrey
-    },
-    text: {
-        margin: 10,
-        color: colors.black
-    },
-    title: {
-        fontSize: responsiveFontSize(2.5),
-        textAlign: 'center',
-        marginBottom: 10,
-        color: colors.black,
-        fontWeight: 'bold'
-    }
+  container: {
+    flex: 1,
+    backgroundColor: colors.white,
+  },
+  head: {
+    backgroundColor: colors.lightGrey,
+    backgroundColor: "#000000",
+  },
+  text: {
+    color: colors.white,
+    paddingRight: 30,
+    paddingBottom: 20,
+    fontWeight: 700,
+  },
+  title: {
+    fontSize: responsiveFontSize(2.5),
+    textAlign: "center",
+    marginBottom: 10,
+    color: colors.black,
+    fontWeight: "bold",
+  },
+  emptyDataStyle: {
+    color: colors.grey,
+    fontWeight: "bold",
+  },
 });
 
 export default ProductWiseEarning;

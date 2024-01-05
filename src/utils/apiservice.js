@@ -544,7 +544,7 @@ export function getInfoDeskBanners() {
       console.log(userbody);
       console.log('====================================');
       const response = await api.post('/vguard/api/user/generateOtpForReverify', userbody);
-      return response.data;
+      return response;
     } catch (error) {
       console.error('Error ', error);
       throw error;

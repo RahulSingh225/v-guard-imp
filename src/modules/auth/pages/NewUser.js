@@ -173,6 +173,8 @@ const NewUser = ({ navigation }) => {
 
   useEffect(() => {
 
+    setIsPopupVisible(false)
+
 
     AsyncStorage.getItem("userno").then(userno => {
       if (userno) {

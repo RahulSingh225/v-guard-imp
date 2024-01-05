@@ -832,6 +832,7 @@ const EditProfile = () => {
         }
     };
     const maximum_date = new Date(new Date().getFullYear() - 18,new Date().getMonth(),new Date().getDate());
+    const curr_date = new Date();
 
     return (
         <><ScrollView style={styles.mainWrapper}>
@@ -1224,6 +1225,7 @@ const EditProfile = () => {
                 <Text style={{ color: colors.black, marginLeft: 2, marginBottom: 2, fontWeight: 'bold', fontSize: responsiveFontSize(1.5) }}>{t('strings:lbl_date_of_birth_mandatory')}</Text>
                 <View style={styles.datepickerview}>
                     <DatePicker
+                        maximum_date={curr_date}
                         date={nominee?.nomineedateofbirth}
                         onDateChange={handleDateChange2}
                         showDatePicker={showDatePicker1}

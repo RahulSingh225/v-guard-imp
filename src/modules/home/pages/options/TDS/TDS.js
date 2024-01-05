@@ -36,7 +36,7 @@ const TDS = () => {
 
 
   const handleDownload = (file) => {
-    Linking.openURL(file);
+    // Linking.openURL(file);
   };
   return (
     <View style={styles.mainWrapper}>
@@ -45,7 +45,7 @@ const TDS = () => {
       {data.map((item, index) => (
         <View style={styles.card} key={index}>
           <Text style={styles.yearText}>{item}</Text>
-          <TouchableOpacity onPress={() => handleDownload(item.file)}>
+          <TouchableOpacity onPress={() => handleDownload(item)}>
             <Image style={styles.downImage} source={require('../../../../../assets/images/ic_ticket_drop_down2.png')} />
           </TouchableOpacity>
         </View>

@@ -31,7 +31,7 @@ const SchemeWiseEarning = () => {
         <Table borderStyle={{ borderWidth: 0 }}>
           <Row data={tableHead} style={styles.head} textStyle={styles.text} />
           {data.length === 0 ? (
-            <Rows data={[["No Data"]]} textStyle={{ color: "#000000" }} />
+            <Rows data={[["No Data"]]} textStyle={[styles.text, styles.emptyDataStyle]} />
           ) : (
             <Rows data={data} textStyle={styles.text} />
           )}
@@ -61,7 +61,11 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         color: colors.black,
         fontWeight: 'bold'
-    }
+    },
+    emptyDataStyle: {
+      color: colors.grey,
+      fontWeight: "bold",
+    },
 });
 
 export default SchemeWiseEarning;

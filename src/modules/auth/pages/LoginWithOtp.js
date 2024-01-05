@@ -121,6 +121,7 @@ const LoginWithOtp = ({ navigation, route }) => {
                 const successMessage = verification.data.message;
                 console.log(successMessage);
                 if (successMessage === 'OTP verified successfully, please proceed with the registration.') {
+                    console.log(">>>>login is heree")
                     setPopupMessage(successMessage);
                     setIsPopupVisible(true);
                     setTimeout(() => {

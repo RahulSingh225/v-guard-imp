@@ -49,13 +49,13 @@ const ReUpdateKycOTP = ({navigation}) => {
     
         const handleValidation = async () => {
             try {
-                let validationResponse = await generateOtpForLogin(number);
-                if (validationResponse.status === 200) {
+                let validationResponse = await generateOtpForReverify({loginOtpUserName:number});
+                if (validationResponse.code === 200) {
                     setCounter(60);
                     setotpsentflag(true);
-                    const successMessage = validationResponse.data.message;
+                    const successMessage = validationResponse.message;
                     setIsPopupVisible(true);
-                     setPopupMessage(successMessage);
+                    setPopupMessage(successMessage);
                 } else {
                     const errorMessage = validationResponse.message;
                     setIsPopupVisible(true);

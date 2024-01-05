@@ -66,6 +66,7 @@ const NomineePage = ({ navigation, route }) => {
 
     const handleDateChange = (event, selectedDatenominee) => {
         if (event.type === 'set') {
+            console.log(selectedDatenominee)
             setSelectedDatenominee(selectedDatenominee);
             // setnomineeSelectedDate(selectedDate);
             // setnomineeSelectedDate(selectedDate);
@@ -106,36 +107,69 @@ const NomineePage = ({ navigation, route }) => {
         }
         setvalidateallfieldforbank(false)
 
+        const checkBankDetailsReq = () => {
+          if (
+            accountnumber ||
+            accountholdername ||
+            chequeImage != null ||
+            IFSC ||
+            accounttype ||
+            selectedbank
+          )
+            if (
+              accountnumber &&
+              accountholdername &&
+              chequeImage != null &&
+              IFSC &&
+              accounttype &&
+              selectedbank
+            )
+              return true;
+            else return false;
+          else return true;
+        };
+
+        const checkNomineeDetailsReq = () => {
+          if (
+            nomineename ||
+            selectedDatenominee ||
+            nomineemobileno ||
+            nomineeemail ||
+            nomineeaddress ||
+            relationship
+          ) 
+          if (
+            nomineename &&
+            selectedDatenominee &&
+            nomineemobileno &&
+            nomineeemail &&
+            nomineeaddress &&
+            relationship
+          ) 
+          return true
+            else return false;
+          else return true;
+        };
+
         // // Check for at least one field being entere
 
         if (checked) {
             if (
-              accountnumber &&
-              accountholdername &&
-              chequeImage !=null &&
-              IFSC &&
-              accounttype &&
-              selectedbank &&
-              nomineename &&
-              selectedDatenominee &&
-              nomineemobileno &&
-              nomineeemail &&
-              nomineeaddress &&
-              relationship 
+              checkBankDetailsReq() && checkNomineeDetailsReq()
             ) {
               
               const dataToStore = JSON.stringify(PreviewSummaryData);
               await AsyncStorage.setItem("previewSummaryData", dataToStore);
               navigation.navigate("PreviewSummary");
             } else {
-              // console.log(accountnumber);
-              // console.log(accountholdername);
-              // console.log(chequeImage);
-              // console.log(IFSC);
-              // console.log(accounttype);
-              // console.log(selectedbank);
               setIsPopupVisible(true);
-              setPopupMessage("Please fill compleate bank details.");
+              let message = "";
+              if(checkBankDetailsReq() == false){
+                message = "Please fill complete bank details"
+              }else{
+                message = "Please fill nominee details"
+              }
+              setPopupMessage(message);
             }
         } else {
             setIsPopupVisible(true);
@@ -284,7 +318,7 @@ const NomineePage = ({ navigation, route }) => {
                     setnomineemobileno(retrievedData.BankDetailsAndNominee.nomineemobileno);
                     setnomineeemail(retrievedData.BankDetailsAndNominee.nomineeemail);
                     setnomineeaddress(retrievedData.BankDetailsAndNominee.nomineeaddress);
-                    setSelectedDatenominee(new Date(retrievedData.BankDetailsAndNominee.selectedDatenominee));
+                    retrievedData.BankDetailsAndNominee.selectedDatenominee && setSelectedDatenominee(new Date(retrievedData.BankDetailsAndNominee.selectedDatenominee));
                     setrelationship(retrievedData.BankDetailsAndNominee.relationship);
                     console.log('==============in nominee page======================');
                     console.log(selectedDatenominee);
@@ -316,6 +350,7 @@ const NomineePage = ({ navigation, route }) => {
 
         }
     }
+    const curr_date = new Date()
     return (
         <SafeAreaView>
             <ScrollView style={{ backgroundColor: "white" }} >
@@ -478,6 +513,7 @@ const NomineePage = ({ navigation, route }) => {
                         <Text style={{ color: 'black', marginLeft: 20, }}>Nomiee DOB</Text>
                         <View style={{ backgroundColor: 'transparent', height: height / 17, margin: 20, borderRadius: 5, flexDirection: 'column', marginTop: 0, width: width / 1.15, borderWidth: 1.8, borderColor: "#D3D3D3" }}>
                             <DatePicker
+                            maximum_date={curr_date}
                                 date={selectedDatenominee}
                                 onDateChange={handleDateChange}
                                 showDatePicker={showDatePicker}
