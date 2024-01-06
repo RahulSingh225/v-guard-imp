@@ -128,8 +128,8 @@ const ScanScreen = ({navigation, route}) => {
     if (type == 'airCooler') {
       apiResponse = await isValidBarcode(CouponData, 1, '', 0, null);
       console.log(apiResponse.json());
-    } else if (type == 'fan') {
-      navigation.navigate('Product Registration');
+    
+     
     } else {
       apiResponse = await isValidBarcode(CouponData, 0, '', 0, null);
 
@@ -179,16 +179,68 @@ const ScanScreen = ({navigation, route}) => {
           buttonColor: '#F0C300',
           buttonTextColor: 'black',
           buttonText: '',
-          buttonAction: setscratchCardProps({...scratchCardProps,isVisible:false}),
+          buttonAction: ()=>setscratchCardProps({...scratchCardProps,isVisible:false}),
           fontWeight: '400',
         },
         textInput: false,
         scratchable:false,
         isVisible:true,
+        onClose:()=>checkBonusPoints()
       };
       setscratchCardProps(data)
     
-      }else if(CouponResponse.errorCode ==2){
+      }else if (CouponResponse.errorCode ==3) {
+        setQrcode('');
+        var couponPoints = CouponResponse.couponPoints;
+        var basePoints = CouponResponse.basePoints;
+        basePoints ? (basePoints = `Base Points: ${basePoints}`) : null;
+  
+        let data = {
+          rewardImage: {
+            width: 100,
+            height: 100,
+            resourceLocation: require('../../../../../assets/images/ic_rewards_gift.png'),
+          },
+          rewardResultText: {
+            color: 'black',
+            fontSize: 16,
+            textContent: 'YOU WON',
+            fontWeight: '700',
+          },
+          text1: {
+            color: 'black',
+            fontSize: 16,
+            textContent: couponPoints,
+            fontWeight: '700',
+          },
+          text2: {
+            color: 'black',
+            fontSize: 16,
+            textContent: 'POINTS',
+            fontWeight: '700',
+          },
+          text3: {
+            color: '#9c9c9c',
+            fontSize: 12,
+            textContent: basePoints,
+            fontWeight: '700',
+          },
+          button: {
+            buttonColor: '#F0C300',
+            buttonTextColor: 'black',
+            buttonText: 'Register Warranty',
+            buttonAction:()=>navigation.navigate("Product Registration"),
+            fontWeight: '400',
+          },
+          textInput: false,
+          scratchable:false,
+          isVisible:true,
+          onClose:()=>navigation.navigate("Product Registration")
+        };
+        setscratchCardProps(data)
+      
+        }
+      else if(CouponResponse.errorCode ==2){
         setPopupProps({
           buttonText : 'SUBMIT',
           children: (<TextInput onChangeText={(e) => setPIN(e)} value={PIN} style={{ borderBottomWidth: 2, borderBottomColor: 'black', textDecorationColor: 'black', width: '100%', height: 40 }} />),
@@ -255,7 +307,8 @@ const ScanScreen = ({navigation, route}) => {
           },
           textInput: false,
           scratchable:true,
-          isVisible:true
+          isVisible:true,
+          onClose:()=>setscratchCardProps({...scratchCardProps,isVisible:false}),
         };
 
       }))
@@ -271,7 +324,7 @@ const ScanScreen = ({navigation, route}) => {
             scratchCardProps={scratchCardProps}
             visible={scratchCardProps.isVisible}
             scratchable={scratchCardProps.scratchable}
-            onClose={checkBonusPoints}
+            onClose={scratchCardProps.onClose}
           />
         )}
         

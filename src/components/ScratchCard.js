@@ -18,6 +18,7 @@ const RewardBox = ({
   onClose,
   scratchCardProps,
   scratchable = true,
+ 
 }) => {
   // ---- specified theme for custom dialog or default style will be applied  -----
   const styles = StyleSheet.create({
@@ -188,7 +189,7 @@ const RewardBox = ({
             {scratchCardProps.button.buttonText && (
               <TouchableOpacity
                 style={styles.modalButton}
-                onPress={() => console.log("Register warranty ")}
+                onPress={scratchCardProps.button.buttonAction}
               >
                 <Text style={styles.regWarButton}>
                   {scratchCardProps.button.buttonText}

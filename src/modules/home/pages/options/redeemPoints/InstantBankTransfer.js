@@ -295,11 +295,7 @@ const InstantBankTransfer = () => {
                 />
               </Picker>
 
-              <Image
-                source={require("../../../../../assets/images/ic_ticket_drop_down2.png")}
-                style={{ width: "5%", height: "100%", marginRight: 5 }}
-                resizeMode="contain"
-              />
+              
             </View>
             <View style={styles.inputContainer}>
               <Picker
@@ -315,11 +311,7 @@ const InstantBankTransfer = () => {
                   />
                 ))}
               </Picker>
-              <Image
-                source={require("../../../../../assets/images/ic_ticket_drop_down2.png")}
-                style={{ width: "5%", height: "100%", marginRight: 5 }}
-                resizeMode="contain"
-              />
+            
             </View>
             <View style={styles.inputContainer}>
               <TextInput

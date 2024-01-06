@@ -7,6 +7,7 @@ import ProductRegistration from '../ProductRegistration';
 import { CustomTabHeader } from '../../../../../common/services/BottomTab';
 import colors from '../../../../../../../colors';
 
+
 const ScanStack = () => {
   const Stack = createNativeStackNavigator();
 
@@ -32,14 +33,19 @@ const ScanStack = () => {
         options={{
           headerShown: true
         }}
-      />         
+      />    
+       <Stack.Screen name="CustomerDetails" component={CustomerDetails} 
+        options={{
+          headerShown: true
+        }}
+      />           
       <Stack.Screen name="Product Registration" component={ProductRegistration} 
         options={{
           headerShown: true
         }}
       />         
     </Stack.Navigator>
-  );
+  ); 
 };
 
 export default ScanStack;

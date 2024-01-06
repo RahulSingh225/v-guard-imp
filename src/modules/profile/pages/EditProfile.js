@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Modal, PermissionsAndroid  } from 'react-native'
+import { View,Pressable,TextInput, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Modal, PermissionsAndroid  } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import colors from '../../../../colors'
@@ -20,10 +20,13 @@ import DatePicker from '../../../components/DatePicker'
 import ImageWithModal from '../../../components/ImageWithModal';
 import { Picker } from '@react-native-picker/picker';
 import { Avatar, Button } from 'react-native-paper';
+import { imageUrl } from '../../../utils/constants'
+import ActionPickerModal from '../../../components/ActionPickerModal'
 
 
 
 const EditProfile = () => {
+    var filesToUpload=[];
     const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(false);
 
@@ -33,7 +36,7 @@ const EditProfile = () => {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showDatePicker1, setShowDatePicker1] = useState(false);
     const [pincode, setpincode] = useState('');
-
+   
     const [SelfieData, setSelfieData] = useState(null);
     const [selfieuuidnew, setselfieuuidnew] = useState(null);
     const [Idcardfront, setIdcardfront] = useState(null);
@@ -41,7 +44,7 @@ const EditProfile = () => {
     const [pancarddata, setpancarddata] = useState(null);
     const [maritialstatusId, setmaritialstatusId] = useState('');
 
-    const [selfieemodal, setselfieemodal] = useState(false);
+    const [selfieemodal, setselfieemodal] = useState({isVisible:false,documentType:null});
     const [professiondata, setprofessiondata] = useState([]);
     const [professiondatanames, setprofessiondatanames] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
@@ -134,7 +137,7 @@ const EditProfile = () => {
     }
     
     const getGenderPos = (gender) => {
-         if(gender == "Male "){
+         if(gender.trim() == "Male"){
             return 1
          } else if(gender == "Female"){
             return 2
@@ -220,11 +223,26 @@ const EditProfile = () => {
 
             // Handle the captured data based on the document type
             switch (documentType) {
-                case 'Selfie':
+                case 'SELFIE':
                     setSelfieData(newPhoto.uri);
+                    filesToUpload.push( { imageRelated: 'PROFILE', file: newPhoto.uri })
                     // console.log(SelfieData);
                     break;
-
+                    case 'ID_CARD_FRONT':
+                        setIdcardfront(newPhoto.uri);
+                        filesToUpload.push( { imageRelated: 'ID_CARD_FRONT', file: newPhoto.uri })
+                        // console.log(SelfieData);
+                        break;
+                        case 'ID_CARD_BACK':
+                            setIdcardback(newPhoto.uri);
+                            filesToUpload.push( { imageRelated: 'ID_CARD_BACK', file: newPhoto.uri })
+                            // console.log(SelfieData);
+                            break;
+                            case 'PAN_CARD':
+                                setpancarddata(newPhoto.uri);
+                                filesToUpload.push( { imageRelated: 'PAN_CARD_FRONT', file: newPhoto.uri })
+                                // console.log(SelfieData);
+                                break;
                 default:
                     console.log('Unknown document type');
             }
@@ -390,6 +408,7 @@ const EditProfile = () => {
         getUserProfile()
             .then(response => response.json())
             .then(responseData => {
+                console.log(responseData)
                 setData(responseData);
                 setUserName(responseData.name);
                 setUserCode(responseData.userCode);
@@ -505,29 +524,30 @@ const EditProfile = () => {
     }, [])
     const fetchAndSetImageData = async (uuid, imageRelated, userRole) => {
         try {
-            const response = await getFile(uuid, imageRelated, userRole);
-            const imageUrl = response.url;
-
+            //const response = await getFile(uuid, imageRelated, userRole);
+          
 
             switch (imageRelated) {
                 case 'ID_CARD_FRONT':
-                    setIdcardfront(imageUrl);
+                    setIdcardfront(`${imageUrl}IdCard/${uuid}`);
                     break;
                 case 'ID_CARD_BACK':
-                    setIdcardback(imageUrl);
+                    setIdcardback(`${imageUrl}IdCard/${uuid}`);
                     break;
                 case 'PAN_CARD_FRONT':
-                    setpancarddata(imageUrl);
+                    setpancarddata(`${imageUrl}PanCard/${uuid}`);
                     break;
                 case 'PROFILE':
-                    setSelfieData(imageUrl);
+                    console.log(`${imageUrl}Profile/${uuid}`)
+                    setSelfieData(`${imageUrl}Profile/${uuid}`);
                     break;
 
                 default:
                     console.warn(`Unhandled imageRelated value: ${imageRelated}`);
             }
-
-            return response;
+         
+            
+            //return response;
         } catch (error) {
             console.error(`Error getting file for ${imageRelated} (${uuid}):`, error);
             throw error;
@@ -573,11 +593,11 @@ const EditProfile = () => {
     const triggerupdateprofile = async () => {
         try {
             setIsLoading(true);
-            const filesToUpload = [
+            // const filesToUpload = [
 
-                { imageRelated: 'PROFILE', file: SelfieData },
+            //     { imageRelated: 'PROFILE', file: SelfieData },
 
-            ];
+            // ];
 
             const validFilesToUpload = filesToUpload.filter(fileData => fileData.file !== null);
 
@@ -800,9 +820,9 @@ const EditProfile = () => {
     };
 
     const genderpickerItems = [
-        { label: 'Male', value: 'Male ' },
-        { label: 'Female', value: 'Female' },
-        { label: 'Others', value: 'Others' },
+        { label: 'Male', value: 1 },
+        { label: 'Female', value: 2 },
+        { label: 'Others', value: 3 },
     ];
 
     const selectYesorNo = [
@@ -811,8 +831,8 @@ const EditProfile = () => {
     ];
 
     const maritalStatusData = [
-        { label: 'Married', value: 'Married' },
-        { label: 'Unmarried', value: 'Unmarried' },
+        { label: 'Married', value: '1' },
+        { label: 'Unmarried', value: '2' },
     ];
 
     const handleImageChange = async (image, imageName, apiResponse, label) => {
@@ -872,7 +892,7 @@ const EditProfile = () => {
                 <PickerField
                     label={t('strings:lbl_gender_mandatory')}
                     disabled={false}
-                    selectedValue={form1.gender}
+                    selectedValue={form1.genderPos}
                     onValueChange={(text) => handleFieldChange("gender", text)}
                     items={genderpickerItems}
                     setIndex = {(t)=>setform1((prevForm1)=>({
@@ -901,12 +921,12 @@ const EditProfile = () => {
                     label={t('strings:lbl_contact_number_mandatory')}
                     value={form1.number}
                     keyboardType="numeric"
-                    onChangeText={(text) => handleFieldChange(text, 'number')}
+                    onChangeText={(text) => handleFieldChange('number',text)}
                 />
                 <InputField
                     label={t('strings:email')}
                     value={form1.email}
-                    onChangeText={(text) => handleFieldChange(text, 'email')}
+                    onChangeText={(text) => handleFieldChange('email',text)}
                 />
                 <InputField
                     label={t('strings:lbl_permanent_address_mandatory')}
@@ -952,13 +972,13 @@ const EditProfile = () => {
 
                         if (itemValue == 'No') {
                             handlefiledChangeform2("currentaddressselections", itemValue);
-                            handlefiledChangeform2("curremtaddress", "");
-                            handlefiledChangeform2("curretnstreet", "");
-                            handlefiledChangeform2("currentlandmark", "");
-                            handlefiledChangeform2("currentpincode", "");
-                            handlefiledChangeform2("currentCity", "");
-                            handlefiledChangeform2("currentdistrict", "");
-                            handlefiledChangeform2("currentstate", "");
+                            // handlefiledChangeform2("curremtaddress", "");
+                            // handlefiledChangeform2("curretnstreet", "");
+                            // handlefiledChangeform2("currentlandmark", "");
+                            // handlefiledChangeform2("currentpincode", "");
+                            // handlefiledChangeform2("currentCity", "");
+                            // handlefiledChangeform2("currentdistrict", "");
+                            // handlefiledChangeform2("currentstate", "");
                         }
                         if (itemValue == 'Yes') {
                             handlefiledChangeform2("form2.currentaddressselections", form2.currentaddressselections);
@@ -1032,6 +1052,7 @@ const EditProfile = () => {
                     selectedValue={form2.martialStatus}
                     onValueChange={(itemValue, itemIndex) => {
                         const maritialStatusId = itemValue === "Married" ? '1' : '2';
+                        console.log(itemValue)
                         handlefiledChangeform2("martialStatus", itemValue)
 
                         setmaritialstatusId(maritialStatusId);
@@ -1081,77 +1102,24 @@ const EditProfile = () => {
                     imageRelated='PROFILE'
                 /> */}
                 {/* <Text style={{ color: colors.black, marginLeft: 2, marginBottom: 2, fontWeight: 'bold' }}>{t('strings:lbl_update_your_selfie')}</Text> */}
-                <View style={styles.imagecontainereditprofile}>
-                    <View
-                        style={styles.imagepicker}
-                    >
-                        {SelfieData === null ?
-                            <TouchableOpacity onPress={() => setselfieemodal(true)}>
-                                <><Text style={{ color: colors.black, top: 15, fontWeight: 'bold' }}>Update your selfie*</Text></>
-                            </TouchableOpacity> :
-                            <TouchableOpacity onPress={() => setselfieemodal(true)} color={colors.grey} style={{ width: width / 1.8, margin: 5 }}>
-                                <View>
-                                    <Text style={{ color: colors.grey, marginTop: 10, width: width / 5 }}>Selfie</Text>
-                                </View>
-
-                            </TouchableOpacity>}
-                        <Modal
-                            animationType="slide"
-                            transparent={true}
-                            visible={selfieemodal}
-                            style={styles.modalcontainer}
-                            hardwareAccelerated={true}
-                            opacity={0.3}>
-                            <View style={{
-                                width: width / 1.80, borderRadius: 5, alignSelf: 'center', height: height / 8, top: height / 2.8,
-                                margin: 20,
-                                backgroundColor: colors.grey,
-                                borderRadius: 20,
-                                padding: 10,
-                                // alignItems: 'center',
-                                shadowColor: '#000',
-                                shadowOffset: {
-                                    width: 100,
-                                    height: 2,
-                                },
-                                shadowOpacity: 0.25,
-                                shadowRadius: 4,
-                                elevation: 5,
-                            }}>
-                                <Picker
-                                    mode="dropdown"
-                                    placeholder={'Update Your Selfie *'}
-                                    style={{ color: colors.black }}
-                                    selectedValue={select}
-                                    onValueChange={(itemValue, itemIndex) => {
-                                        if (itemValue === "Open camera") {
-                                            openCamera("Selfie", (documentType, newPhoto) => {
-                                                // Handle the captured selfie here
-                                                console.log('Captured selfie:', newPhoto)
-                                                setselfieemodal(false)
+               
+                      <Pressable onPress={() => setselfieemodal({ isVisible: true, documentType: 'PROFILE' })} style={{ justifyContent: 'space-between', flexDirection: 'row', maxWidth: width * 0.9,marginBottom: 20, borderWidth: 2, borderColor: 'black', borderRadius: 5 }}>
+                        <TextInput editable={false} placeholder={t('strings:lbl_update_your_selfie')} />
+                        {SelfieData ?
+                            <Image  style={{height:24,width:30,marginHorizontal: 10, alignSelf: 'center' }}  source={{ uri: SelfieData|| ""}} /> :
+                            <Image style={{ marginHorizontal: 10, alignSelf: 'center' }} source={require('../../../assets/images/photo_camera.png')} />
+                        }
+                    </Pressable>
+                       {selfieemodal.isVisible && <ActionPickerModal onCamera={()=> openCamera(selfieemodal.documentType, (documentType, newPhoto) => {
+                                              setselfieemodal({isVisible:false,documentType:null})
                                             })
-                                        } else if (itemValue === "Open Image picker") {
-                                            openImagePicker('Selfie', (documentType, newPhoto) => {
-                                                // Handle the selected selfie here
-                                                setselfieemodal(false)
-                                                console.log('Selected selfie:', newPhoto)
-                                            })
-                                        }
-                                    }}
-                                >
-                                    <Picker.Item label="Select Action" value="" />
-                                    <Picker.Item label="Select Photo from gallery" value="Open Image picker" />
-                                    <Picker.Item label="Capture Photo from camera" value="Open camera" />
-
-                                </Picker>
-                                <Button mode="text" onPress={() => setselfieemodal(false)}>
-                                    close
-                                </Button>
-                            </View>
-                        </Modal>
-                    </View>
-                    <ImageWithModal imageUri={SelfieData} style={styles.noimagepicker} />
-                </View>
+                                           }onGallery={()=>  openImagePicker(selfieemodal.documentType, (documentType, newPhoto) => {
+                                            // Handle the selected selfie here
+                                            setselfieemodal({isVisible:false,documentType:null})
+                                            
+                                        })}/>}
+                                         
+                   
 
                 
 
@@ -1181,15 +1149,23 @@ const EditProfile = () => {
                 /> */}
 
                 {/* <Text style={{ color: colors.black, marginLeft: 24, marginBottom: 2 }}>{t('strings:update_aadhar_voter_id_dl_front')}</Text> */}
-                <View style={styles.imagecontainereditprofile}>
-                    <Text style={{ color: colors.grey, }}>IdProof*(Front)</Text>
-                    {Idcardfront != null ? <ImageWithModal imageUri={Idcardfront} style={styles.noimagepicker} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={styles.noimagepicker} />}
-                </View>
+
+                <Pressable onPress={() => setselfieemodal({ isVisible: true, documentType: 'ID_CARD_FRONT' })} style={{ justifyContent: 'space-between', flexDirection: 'row', maxWidth: width * 0.9,marginBottom: 20, borderWidth: 2, borderColor: 'black', borderRadius: 5 }}>
+                        <TextInput editable={false} placeholder={t('strings:update_aadhar_voter_id_dl_front')} />
+                        {Idcardfront ?
+                            <Image  style={{height:24,width:30,marginHorizontal: 10, alignSelf: 'center' }}  source={{ uri: Idcardfront|| ""}} /> :
+                            <Image style={{ marginHorizontal: 10, alignSelf: 'center' }} source={require('../../../assets/images/photo_camera.png')} />
+                        }
+                    </Pressable>
+               
                 {/* <Text style={{ color: colors.black, marginLeft: 24, marginTop: 5 }}>{t('strings:update_aadhar_voter_id_dl_back')}</Text> */}
-                <View style={styles.imagecontainereditprofile}>
-                    <Text style={{ color: colors.grey, }}>IdProof*(Front)</Text>
-                    {Idcardback != null ? <ImageWithModal imageUri={Idcardback} style={styles.noimagepicker} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={styles.noimagepicker} />}
-                </View>
+                <Pressable onPress={() => setselfieemodal({ isVisible: true, documentType: 'ID_CARD_BACK' })} style={{ justifyContent: 'space-between', flexDirection: 'row', maxWidth: width * 0.9,marginBottom: 20, borderWidth: 2, borderColor: 'black', borderRadius: 5 }}>
+                        <TextInput editable={false} placeholder={t('strings:update_aadhar_voter_id_dl_back')} />
+                        {Idcardback ?
+                            <Image  style={{height:24,width:30,marginHorizontal: 10, alignSelf: 'center' }}  source={{ uri: Idcardback|| ""}} /> :
+                            <Image style={{ marginHorizontal: 10, alignSelf: 'center' }} source={require('../../../assets/images/photo_camera.png')} />
+                        }
+                    </Pressable>
 
                 <InputField
                     label={t('strings:id_proof_no')}
@@ -1200,11 +1176,17 @@ const EditProfile = () => {
                     imageRelated='PROFILE'
                     disabled={true}
                 /> */}
+                
                 {/* <Text style={{ color: colors.black, marginLeft: 24, marginBottom: 12 }}>{t('strings:update_pan_card_front')}</Text> */}
-                <View style={styles.imagecontainereditprofile}>
-                    <Text style={{ color: colors.grey}}>{t('strings:pan_card_front')}</Text>
-                    {pancarddata != null ? <ImageWithModal imageUri={pancarddata} style={{ marginBottom: 10 }} /> : <Image resizeMode="cover" source={require("../../../assets/images/noimg.jpg")} style={styles.noimagepicker} />}
-                </View>
+
+                <Pressable onPress={() => setselfieemodal({ isVisible: true, documentType: 'PAN_CARD' })} style={{ justifyContent: 'space-between', flexDirection: 'row', maxWidth: width * 0.9,marginBottom: 20, borderWidth: 2, borderColor: 'black', borderRadius: 5 }}>
+                        <TextInput editable={false} placeholder={t('strings:pan_card_front')} />
+                        {pancarddata ?
+                            <Image  style={{height:24,width:30,marginHorizontal: 10, alignSelf: 'center' }}  source={{ uri: pancarddata|| ""}} /> :
+                            <Image style={{ marginHorizontal: 10, alignSelf: 'center' }} source={require('../../../assets/images/photo_camera.png')} />
+                        }
+                    </Pressable>
+                
                 <InputField
                     label={t('strings:update_pan_number_manually')}
                     value={form2.pancard}
@@ -1214,7 +1196,7 @@ const EditProfile = () => {
                 <Text style={{ color: colors.black, fontSize: responsiveFontSize(2), marginBottom: 10 }}>{t('strings:lbl_nominee_details')}</Text>
                 <InputField
                     label={t('strings:lbl_name_of_nominee')}
-                    value={form2.nomineename}
+                    value={nominee.nomineename}
                     onChangeText={(text) => handlefiledchnage3("nomineename", text)}
                 />
                 {/* <DatePickerField

@@ -2,12 +2,13 @@ import axios from 'axios';
 import digestFetch from 'react-native-digest-fetch';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from "@react-native-firebase/messaging";
+import { baseUrl } from './constants';
 
 const API_LINK = 'http://34.100.133.239:18092';
 
 const imageURL = 'https://vguardrishta.com/';
 
-const BASE_URL = 'http://34.100.133.239:18092/vguard/api/';
+const BASE_URL = baseUrl
 
 export const createDigestPostRequest = async (relativeUrl = {}, data) => {
   try {
@@ -121,7 +122,7 @@ export const loginPasswordDigest = async (relativeUrl, username, password) => {
 };
 
 const api = axios.create({
-  baseURL: API_LINK,
+  baseURL: baseUrl,
 });
 const imageApi = axios.create({
   baseURL: imageURL,
@@ -136,7 +137,7 @@ export const forgotPassword = async mobileNumber => {
   try {
     console.log("Mobile Number--------", mobileNumber)
     const response = await api.post(
-      '/vguard/api/user/forgotPassword',
+      'user/forgotPassword',
       mobileNumber,
     );
     return response.data;
@@ -178,7 +179,7 @@ export const fetchSomeOtherData = async () => {
 export const fetchPinCodeData = async pincode => {
   console.log('Fetching data for pincode:===%%%%', typeof pincode);
   try {
-    const response = await api.get(`/vguard/api/state/pinCodeList/${pincode}`);
+    const response = await api.get(`state/pinCodeList/${pincode}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching pin code data:', error);
@@ -189,7 +190,7 @@ export const PincodedetailList = async pincodeid => {
   console.log('Fetching data for pincode:===%%%%', pincodeid);
   try {
     const response = await api.get(
-      `/vguard/api/state/detailByPincode/${pincodeid}`,
+      `state/detailByPincode/${pincodeid}`,
     );
     return response.data;
   } catch (error) {
@@ -201,7 +202,7 @@ export const PincodedetailList = async pincodeid => {
 export const GetProfession = async () => {
   console.log('Fetching data for profession:===%%%%');
   try {
-    const response = await api.get(`/vguard/api/user/getProfession/${0}`);
+    const response = await api.get(`user/getProfession/${0}`);
     console.log(response)
     return response.data;
   } catch (error) {
@@ -213,7 +214,7 @@ export const GetProfession = async () => {
 export const Getsubprofession = async () => {
   console.log('Fetching data for subprofession:===%%%%');
   try {
-    const response = await api.get(`/vguard/api/user/getSubProfession/${0}`);
+    const response = await api.get(`user/getSubProfession/${0}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching pin code data:', error);
@@ -224,7 +225,7 @@ export const Getsubprofession = async () => {
 export const Getallbanks = async () => {
   console.log('Fetching data for banks:===%%%%');
   try {
-    const response = await api.get('/vguard/api/banks/');
+    const response = await api.get('banks/');
     console.log(response)
     return response.data;
   } catch (error) {
@@ -242,7 +243,7 @@ export const NewusermobileNumberValidation = async (
       preferredLanguagePos: preferredLanguagePos,
     };
 
-    const response = await api.post('/vguard/api/user/validateNewMobileNo', {
+    const response = await api.post('user/validateNewMobileNo', {
       mobileNo: mobileNo,
       preferredLanguagePos: preferredLanguagePos,
     });
@@ -259,7 +260,7 @@ export const Newuserotpvalidation = async (mobileNo, otp) => {
       otp: otp,
     };
     console.log({mobileNo, otp});
-    const response = await api.post('/vguard/api/user/validateNewUserOtp', {
+    const response = await api.post('user/validateNewUserOtp', {
       mobileNo: mobileNo,
       otp: otp,
     });
@@ -274,7 +275,7 @@ export const Newuserotpvalidation = async (mobileNo, otp) => {
 export const Citylist = async disctrictId => {
   console.log('Fetching data for pincode:===%%%%', disctrictId);
   try {
-    const response = await api.get(`/vguard/api/city/${disctrictId}`);
+    const response = await api.get(`city/${disctrictId}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching pin code data:', error);
@@ -284,7 +285,7 @@ export const Citylist = async disctrictId => {
 
 export const RegisterNewUser = async userbody => {
   try {
-    const response = await api.post('/vguard/api/user/registerUser', userbody);
+    const response = await api.post('user/registerUser', userbody);
     console.log(response)
     return response.data;
   } catch (error) {
@@ -296,7 +297,7 @@ export const RegisterNewUser = async userbody => {
 export const sendFile = async formData => {
   try {
     //  console.log("INDE API SERVICE SEND FILE CJECLING FORM DATA ", formData);
-    const response = await api.post('/vguard/api/file', formData);
+    const response = await api.post('file', formData);
     return response;
   } catch (error) {
     if (error && error.response?.data) {
@@ -308,7 +309,7 @@ export const sendFile = async formData => {
 };
 export const sendFileAfterLogin = async formData1 => {
   try {
-    const response = await api.post('/vguard/api/file', formData1);
+    const response = await api.post('file', formData1);
     return response;
   } catch (error) {
     if (error && error.response?.data) {
@@ -321,7 +322,7 @@ export const sendFileAfterLogin = async formData1 => {
 
 export const Appversion = async () => {
   try {
-    const response = await api.get('/vguard/api/user/version');
+    const response = await api.get('user/version');
     return response;
   } catch (error) {
     throw error;
@@ -395,7 +396,7 @@ export function getKycIdTypes() {
 
 export const Profile = async () => {
   try {
-    const response = await api.get('/vguard/api/user/profile');
+    const response = await api.get('user/profile');
     return response;
   } catch (error) {
     console.log(error);
@@ -543,8 +544,8 @@ export function getInfoDeskBanners() {
       console.log('==============INSIDE aPI SERVIE ======================');
       console.log(userbody);
       console.log('====================================');
-      const response = await api.post('/vguard/api/user/generateOtpForReverify', userbody);
-      return response;
+      const response = await api.post('user/generateOtpForReverify', userbody);
+      return response.data;
     } catch (error) {
       console.error('Error ', error);
       throw error;
@@ -556,7 +557,7 @@ export function getInfoDeskBanners() {
       console.log('==============INSIDE aPI SERVIE ======================');
       console.log(userbody);
       console.log('====================================');
-      const response = await api.post('/vguard/api/user/validateReverifyOtp', userbody);
+      const response = await api.post('user/validateReverifyOtp', userbody);
       return response.data;
     } catch (error) {
       console.error('Error ', error);
@@ -607,4 +608,17 @@ export const processErrorCoupon = async userCredentials => {
 export function bankTransfer(data) {
   const path = 'order/bankTransfer';
   return createDigestPostRequest(path, data);
+}
+export function getCustDetByMobile(mobileNo) {
+  const path = `product/getCustomerDetails/${mobileNo}`;
+  return createDigestGetRequest(path);
+}
+export function sendCustomerData(cdr) {
+  const path = "product/registerWarranty";
+  return createDigestPostRequest(path, cdr);
+}
+
+export function productgenerateOtp(cdr) {
+  const path = "product/generateOTP";
+  return createDigestPostRequest(path, cdr);
 }

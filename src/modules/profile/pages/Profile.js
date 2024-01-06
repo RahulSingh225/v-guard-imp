@@ -18,6 +18,7 @@ import colors from "../../../../colors";
 import { getFile, getUserProfile } from "../../../utils/apiservice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
+import { getImages } from "../../../utils/FileUtils";
 
 const Profile = ({ navigation }) => {
   const { t } = useTranslation();
@@ -64,20 +65,21 @@ const Profile = ({ navigation }) => {
 
   useEffect(() => {
     if (userData.userRole && userData.userImage) {
-      const getImage = async () => {
+      const setProfileImg = async () => {
         try {
-          const profileImage = await getFile(
+          const profileImage =  getImages(
             userData.userImage,
             "PROFILE",
-            userData.userRole
+            
           );
-          setProfileImage(profileImage.url);
+          console.log(profileImage)
+          setProfileImage(profileImage);
         } catch (error) {
           console.log("Error while fetching profile image:", error);
         }
       };
 
-      getImage();
+      setProfileImg();
     }
   }, [userData.userRole, userData.userImage]);
 

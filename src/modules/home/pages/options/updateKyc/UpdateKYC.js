@@ -19,6 +19,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Popup from '../../../../../components/Popup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ActionPickerModal from '../../../../../components/ActionPickerModal';
+import { getImages } from '../../../../../utils/FileUtils';
 
 const UpdateKYC = ({ navigation }) => {
     const { t } = useTranslation();
@@ -361,17 +362,20 @@ const UpdateKYC = ({ navigation }) => {
     const fetchAndSetImageData = async (uuid, imageRelated, userRole) => {
         try {
             // setIsLoading(true)
-            const response = await getFile(uuid, imageRelated, userRole);
-            const imageUrl = response.url;
+            const imageUrl =  getImages(uuid, imageRelated);
+            
             switch (imageRelated) {
                 case 'ID_CARD_FRONT':
+                    console.log(imageUrl)
                     setIdProofFrontData(imageUrl);
                     break;
                 case 'ID_CARD_BACK':
+                    console.log(imageUrl)
                     setIdProofBackData(imageUrl);
-                    console.log("INSDE THE ID PROOF BACK IMAGE ", IdProofBackData);
+                    //console.log("INSDE THE ID PROOF BACK IMAGE ", IdProofBackData);
                     break;
                 case 'PAN_CARD_FRONT':
+                    console.log(imageUrl)
                     setPanData(imageUrl);
                     break;
                 case 'PROFILE':
@@ -383,7 +387,7 @@ const UpdateKYC = ({ navigation }) => {
             }
 
             console.log(`Data set for ${imageRelated} (${uuid}):`, imageUrl);
-            return response;
+            return null;
         } catch (error) {
             console.error(`Error getting file for ${imageRelated} (${uuid}):`, error);
             throw error;

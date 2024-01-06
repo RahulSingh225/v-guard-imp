@@ -24,6 +24,7 @@ import { sendImage } from '../../../../../utils/FileUtils';
 import { processErrorCoupon } from '../../../../../utils/apiservice';
 import Loader from '../../../../../components/Loader';
 import Popup from '../../../../../components/Popup';
+import { scanQR } from 'react-native-simple-qr-reader';
 
 const UploadError = () => {
   const { t } = useTranslation();
@@ -127,7 +128,7 @@ const UploadError = () => {
           style={styles.button}
           label={t('strings:click_here_to_report_error_scan')}
           variant="blackButton"
-          onPress={() => console.log('Pressed')}
+          onPress={() =>  setshowModal(true)}
           width="100%"
           height="10%"
         />
@@ -141,7 +142,7 @@ const UploadError = () => {
             placeholder={t('strings:enter_code_here')}
             placeholderTextColor={colors.grey}
           />
-          <Pressable style={styles.scanImage}>
+          <Pressable onPress={()=>scanQR().then(r=>setBarcode(r))} style={styles.scanImage}>
             <Image
               source={require('../../../../../assets/images/ic_scan_code_2.png')}
               style={{ width: '100%', height: '100%' }}

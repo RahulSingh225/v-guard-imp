@@ -21,6 +21,7 @@ export const Colors = {
   blue: '#3F51B5',
   white_translucent: '#70ffffff',
 };
-
-export const baseUrl = 'http://34.100.133.239:18092/vguard/api/';
-export const imageUrl = 'https://vguardrishta.com/';
+export const imageUrl = 'https://www.vguardrishta.com/img/appImages/'
+//export const baseUrl = 'http://34.100.133.239:18092/vguard/api/';
+//export const imageUrl = 'http://34.100.133.239/img/appImages/';
+export const baseUrl = 'http://202.66.175.34:18092/vguard/api/';

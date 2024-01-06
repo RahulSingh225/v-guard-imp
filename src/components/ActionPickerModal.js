@@ -14,7 +14,7 @@ const ActionPickerModal = ({onCamera,onGallery}) => {
       
     return (
        
-        <Modal style={{height:height/2,width:width/2,backgroundColor:'red'}}
+        <Modal style={{height:height/2,width:width/2}}
           animationType="slide"
           transparent={true}
           visible={modalVisible}
@@ -25,13 +25,13 @@ const ActionPickerModal = ({onCamera,onGallery}) => {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
             <Text style={styles.modalText}>Select Action!</Text>
-            <Pressable style={{height:40,marginVertical:15,backgroundColor:'red'}}
+            <Pressable style={{height:40,marginVertical:15}}
                 
                 onPress={onGallery}
                 >
               <Text style={styles.textStyle}>Select photo from gallery</Text>
               </Pressable>
-              <Pressable style={{height:40,marginVertical:15,backgroundColor:'blue'}}
+              <Pressable style={{height:40,marginVertical:15}}
                 
                 onPress={onCamera}>
                 <Text style={styles.textStyle}>Capture photo from camera</Text>
