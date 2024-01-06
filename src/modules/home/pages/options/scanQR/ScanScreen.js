@@ -190,6 +190,7 @@ const ScanScreen = ({navigation, route}) => {
       setscratchCardProps(data)
     
       }else if (CouponResponse.errorCode ==3) {
+        await AsyncStorage.setItem("CouponResponse",JSON.stringify(CouponResponse))
         setQrcode('');
         var couponPoints = CouponResponse.couponPoints;
         var basePoints = CouponResponse.basePoints;
@@ -229,15 +230,16 @@ const ScanScreen = ({navigation, route}) => {
             buttonColor: '#F0C300',
             buttonTextColor: 'black',
             buttonText: 'Register Warranty',
-            buttonAction:()=>navigation.navigate("Product Registration"),
+            buttonAction:()=>navigation.navigate("ProductRegForm"),
             fontWeight: '400',
           },
           textInput: false,
           scratchable:false,
           isVisible:true,
-          onClose:()=>navigation.navigate("Product Registration")
+          onClose:()=>navigation.navigate("ProductRegForm")
         };
         setscratchCardProps(data)
+        
       
         }
       else if(CouponResponse.errorCode ==2){

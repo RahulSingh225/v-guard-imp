@@ -4,8 +4,8 @@ import ScanScreen from '../ScanScreen';
 import UploadError from '../UploadError';
 import UniqueCodeHistory from '../UniqueCodeHistory';
 import ProductRegistration from '../ProductRegistration';
-import { CustomTabHeader } from '../../../../../common/services/BottomTab';
 import colors from '../../../../../../../colors';
+import ProductRegistrationForm from '../ProductRegForm';
 
 
 const ScanStack = () => {
@@ -43,7 +43,12 @@ const ScanStack = () => {
         options={{
           headerShown: true
         }}
-      />         
+      />       
+       <Stack.Screen name="ProductRegForm" component={ProductRegistrationForm} 
+        options={{
+          headerShown: true
+        }}
+      />    
     </Stack.Navigator>
   ); 
 };

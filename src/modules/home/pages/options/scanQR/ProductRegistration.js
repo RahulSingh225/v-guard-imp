@@ -6,8 +6,9 @@ import Buttons from '../../../../../components/Buttons';
 import { useTranslation } from 'react-i18next';
 import arrowIcon from '../../../../../assets/images/arrow.png';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import { sendFile } from '../../../../../utils/apiservice';
-const baseURL = 'https://www.vguardrishta.com/';
+import { sendCustomerData, sendFile } from '../../../../../utils/apiservice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const ProductRegistration = ({ navigation }) => {
     const { t } = useTranslation();
@@ -18,6 +19,11 @@ const ProductRegistration = ({ navigation }) => {
 
     const qrcode = '1234567890'
     const skuDetails = 'VS-400'
+
+    AsyncStorage.getItem("CouponResponse").then(cr=>{
+        // update qrcode andskuDetails from cr response 
+    })
+
     const purchaseDate = '12-12-2012'
     const [showImagePickerModal, setShowImagePickerModal] = useState(false);
 
@@ -25,9 +31,12 @@ const ProductRegistration = ({ navigation }) => {
     const [selectedBillImageName, setSelectedBillImageName] = useState('');
     const [selectedWarrantyImage, setSelectedWarrantyImage] = useState(null);
     const [selectedWarrantyImageName, setSelectedWarrantyImageName] = useState('');
-
+    const [verifyOtp,setVerifyOtp] = useState('')
     const [imageType, setImageType] = useState('')
-
+    const [entityUid,setEntityUid] = useState({
+        billImage:null,
+        warrantyImage:null
+    })
     const handleImagePickerPress = (type) => {
         setImageType(type);
         setShowImagePickerModal(true);
@@ -114,16 +123,83 @@ const ProductRegistration = ({ navigation }) => {
     
         try {
           const response = await sendFile(formData);
-          setEntityUid(response.data.entityUid);
+          if(imageType == 'bill'){
+            setEntityUid((prevData)=>({
+                ...prevData,
+                warrantyImage:response.data.entityUid
+            }))
+          }
+
+          if(imageType == 'warranty'){
+            setEntityUid((prevData)=>({
+                ...prevData,
+                billImage:response.data.entityUid
+            }))
+          }
         } catch (error) {
           console.error('API Error:', error);
         }
       };
 
+    const RegisterWarranty = async () => {
+      try {
+        let getData = await AsyncStorage.getItem("registerWarrantyData");
+        getData = getData ? JSON.parse(getData) : {}
+        const payload = {
+          contactNo: getData?.contactNo,
+          otp: verifyOtp,
+          name: getData?.name,
+          email: getData?.email,
+          currAdd: "",
+          alternateNo: getData?.alternateNo,
+          state: getData?.state,
+          district: getData?.district,
+          city: getData?.city,
+          pinCode: getData?.pincode,
+          landmark: getData?.landmark,
+          dealerName: getData?.dealerName,
+          dealerAdd: getData?.dealerAddress,
+          dealerState: getData?.dealerState,
+          dealerPinCode: getData?.dealerPincode,
+          dealerDist: getData?.dealerDistrict,
+          dealerCity: getData?.dealerCity,
+          dealerNumber: "",
+          dealerCategory: "",
+          addedBy: "",
+          transactId: "",
+          billDetails: entityUid.billImage,
+          warrantyPhoto: entityUid.warrantyImage,
+          sellingPrice: value,
+          emptStr: "",
+          selectedProd: "",
+          cresp: "",
+          latitude: "",
+          longitude: "",
+          geolocation: "",
+        };
+        let onSubmitResponse = await sendCustomerData(payload)
+        onSubmitResponse = await onSubmitResponse.json()
+        console.log(">>>>>",onSubmitResponse)
+      } catch (OnSubmitError) {
+        console.log("Internal Error: ", OnSubmitError);
+      }
+    };
+
     return (
         <ScrollView style={styles.mainWrapper}>
             <Text style={styles.heading}>Register Product</Text>
             <View style={styles.form}>
+            <View style={styles.inputRow}>
+                    <Text style={styles.label}>{t('strings:OTP')}</Text>
+                    <View style={styles.inputArea}>
+                        <TextInput
+                            value={verifyOtp}
+                            style={styles.input}
+                            placeholder={t('strings:enter_otp')}
+                            placeholderTextColor={colors.grey}
+                        />
+                    </View>
+                </View>
                 <View style={styles.inputRow}>
                     <Text style={styles.label}>{t('strings:qr_code')}</Text>
                     <View style={styles.inputArea}>
@@ -249,9 +325,9 @@ const ProductRegistration = ({ navigation }) => {
                 <View style={styles.inputRow}>
                     <Buttons
                         style={styles.button}
-                        label={t('strings:add_customer_details')}
+                        label={t('strings:submit')}
                         variant="filled"
-                        onPress={console.log('helo<><<><><')}
+                        onPress={()=>RegisterWarranty()}
                         width="100%"
                         iconHeight={10}
                         iconWidth={30}
