@@ -131,6 +131,7 @@ const LoginWithOtp = ({ navigation, route }) => {
                             jobprofession: jobprofession,
                             preferedLanguage: preferedLanguage,
                         })
+                        setIsPopupVisible(false)
 
                     }, 1000);
 
