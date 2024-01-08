@@ -34,11 +34,7 @@ const ScanStack = () => {
           headerShown: true
         }}
       />    
-       <Stack.Screen name="CustomerDetails" component={CustomerDetails} 
-        options={{
-          headerShown: true
-        }}
-      />           
+               
       <Stack.Screen name="Product Registration" component={ProductRegistration} 
         options={{
           headerShown: true
